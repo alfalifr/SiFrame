@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">JVM_Lib</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_manage">Kelola</string>
+    <string name="title_search">Pencarian</string>
+    <string name="title_message">Pesan</string>
+    <string name="title_account">Akun</string>
+    <string name="title_activity_billing">BillingActivity</string>
+
+    <string name="billing_tab1_title">Tagihan</string>
+    <string name="billing_tab2_title">Transaksi</string>
+</resources>

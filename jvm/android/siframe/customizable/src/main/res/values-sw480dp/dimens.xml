@@ -1,0 +1,12 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="standard_et_height">35dp</dimen>
+    <dimen name="standard_btn_height">40dp</dimen>
+    <dimen name="auth_iv_btn_social">40dp</dimen>
+    <dimen name="auth_et_margin_top">20dp</dimen>
+    <dimen name="auth_login_btn_margin_top">60dp</dimen>
+    <dimen name="auth_register_btn_margin_top">30dp</dimen>
+    <dimen name="auth_otp_btn_margin_top">50dp</dimen>
+    <dimen name="auth_margin_horizontal_sides">25dp</dimen>
+    <dimen name="auth_padding_horizontal_sides">15dp</dimen>
+</resources>
