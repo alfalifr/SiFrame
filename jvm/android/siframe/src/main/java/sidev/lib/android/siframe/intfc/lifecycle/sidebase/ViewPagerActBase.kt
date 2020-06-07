@@ -7,11 +7,11 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
 import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 
-interface ViewPagerActBase<F: SimpleAbsFrag>: LifecycleSideBase {
+interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _ConfigBase.LAYOUT_VP
 

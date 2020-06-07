@@ -6,17 +6,18 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
-import sidev.lib.implementation.universal.tool.util.ThreadUtil
+import sidev.lib.universal.tool.util.ThreadUtil
 
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
  */
-interface SimpleAbsActFragBase{
+interface SimpleAbsActFragBase: LifecycleRootBase{
     val layoutId: Int
     val styleId: Int
     var layoutView: View
@@ -56,12 +57,19 @@ interface SimpleAbsActFragBase{
                 ActManager.process(ActManager.REGISTER_ACT_TO_STACK, this)
 //                val app= application as BaseApp
 //                app.currentAct= this
-            } else if(this is SimpleAbsFrag){
+            }
+/*
+            /**
+            * Fragment gak didaftarkan karena memang yg berada di stack hanya Activity.
+            * Jika memang stack digunakan untuk blokir, maka yg yg diblokir adalah activity-nya.
+            */
+            else if(this is SimpleAbsFrag){
                 _SIF_Constant.REG_FRAG_FUN_REGISTERER_NAME= ThreadUtil.getCurrentFunName()
                 ActManager.process(ActManager.REGISTER_ACT_TO_STACK, this.activity!!)
 //                val app= context!!.applicationContext as BaseApp
 //                app.currentAct= this.actSimple
             }
+ */
         } catch (castExc: ClassCastException){}
     }
 }

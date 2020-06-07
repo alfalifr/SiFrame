@@ -13,8 +13,8 @@ import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.tool.RunQueue
-import sidev.lib.implementation.universal.`fun`.filter
-import sidev.lib.implementation.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.filter
+import sidev.lib.universal.`fun`.notNull
 
 //!!!!!!@@ 18 Jan 2020
 abstract class SimpleAbsRecyclerViewAdapter <D, LM: RecyclerView.LayoutManager> (

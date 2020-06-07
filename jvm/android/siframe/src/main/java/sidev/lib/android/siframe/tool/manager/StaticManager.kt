@@ -5,8 +5,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import sidev.lib.implementation.universal.`fun`.className
-import sidev.lib.implementation.universal.`fun`.classSimpleName
+import sidev.lib.universal.`fun`.className
+import sidev.lib.universal.`fun`.classSimpleName
 
 object StaticManager: LifecycleObserver {
     private var lifecycleOwner: ArrayList<LifecycleOwner>?= null

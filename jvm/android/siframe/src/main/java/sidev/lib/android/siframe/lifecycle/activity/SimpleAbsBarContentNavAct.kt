@@ -66,9 +66,9 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
         registerBackBtnView_int()
         registerBackBtnView(actBarViewContainer.findViewById(_ConfigBase.ID_IV_BACK)) //R.id.iv_back
 
-        val extraTitle= getIntentData<String?>(_SIF_Constant.EXTRA_TITLE)
-        if(extraTitle != null)
-            setActBarTitle(extraTitle)
+        val actTitle= getIntentData<String?>(_SIF_Constant.EXTRA_TITLE) ?: this::class.java.simpleName
+//        if(actTitle != null)
+            setActBarTitle(actTitle)
 
         initActBar(actBarViewContainer.getChildAt(0))
         if(contentViewContainer.childCount > 0){

@@ -3,6 +3,7 @@ package sidev.lib.android.siframe.tool.util.`fun`
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,6 +149,7 @@ fun ViewGroup.changeView(v: View){
     addView(v)
 }
 
-fun Context.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View {
-    return this.layoutInflater.inflate(layoutId, vg, attachToRoot)
+fun Context.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View? {
+    return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
+    catch (e: Resources.NotFoundException){ null }
 }

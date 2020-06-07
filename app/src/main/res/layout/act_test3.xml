@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sidev.lib.implementation.Test2Act">
+    tools:context="sidev.lib.implementation.act.Test2Act">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,14 +1,13 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.commitFrag
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 
-interface SingleFragActBase: LifecycleSideBase{
+interface SingleFragActBase: ComplexLifecycleSideBase{
     override val layoutId: Int
         get() = _ConfigBase.LAYOUT_ACT_SINGLE_FRAG
 

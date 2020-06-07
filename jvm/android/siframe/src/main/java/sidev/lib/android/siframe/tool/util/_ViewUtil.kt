@@ -35,8 +35,9 @@ import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.implementation.universal.tool.util.FileUtil
+import sidev.lib.universal.tool.util.FileUtil
 import java.lang.Exception
+import java.lang.NullPointerException
 
 //class ini digunakan tempat utility khusus view
 object  _ViewUtil{
@@ -265,7 +266,11 @@ object  _ViewUtil{
     }
     fun setBgColor(v: View, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
         val color= _ResUtil.getColor(v.context, colorId)
-        DrawableCompat.setTint(v.background, color)
+        try{
+            DrawableCompat.setTint(v.background, color)
+        } catch (e: NullPointerException){
+            v.setBackgroundColor(color)
+        }
 //        v.background.colorFilter = BlendModeColorFilter(color, blendMode) //Masih error karena masalah kompatibilitas API
     }
 
@@ -340,7 +345,7 @@ object  _ViewUtil{
         }
 
         fun overlayBlock(c: Context): View{
-            val overlay= c.inflate(_ConfigBase.LAYOUT_OVERLAY_BLOCK)
+            val overlay= c.inflate(_ConfigBase.LAYOUT_OVERLAY_BLOCK)!!
             val iv= overlay.findViewById<ImageView>(_ConfigBase.ID_IV_ICON)
             val tvTitle= overlay.findViewById<TextView>(_ConfigBase.ID_TV_TITLE)
             val tvDesc= overlay.findViewById<TextView>(_ConfigBase.ID_TV_DESC)

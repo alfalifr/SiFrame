@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.exception.IllegalAccessExc
 import sidev.lib.android.siframe.tool.ActLifecycleObs
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.implementation.universal.`fun`.className
-import sidev.lib.implementation.universal.`fun`.copy
-import sidev.lib.implementation.universal.tool.util.ThreadUtil
+import sidev.lib.universal.`fun`.className
+import sidev.lib.universal.`fun`.copy
+import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.ClassCastException
 import java.util.*
 

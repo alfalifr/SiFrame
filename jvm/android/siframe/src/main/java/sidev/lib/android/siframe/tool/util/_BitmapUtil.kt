@@ -129,7 +129,7 @@ object _BitmapUtil{
     }
 
     fun savePict(bm: Bitmap, pathFile: String,
-                 fileName: String= sidev.lib.implementation.universal.tool.util.TimeUtil.timestamp()
+                 fileName: String= sidev.lib.universal.tool.util.TimeUtil.timestamp()
     ): File? {
         val fileNameExt= fileName +".jpg"
         val pathFile= File(pathFile)

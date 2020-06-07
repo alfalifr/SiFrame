@@ -5,6 +5,9 @@ import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
@@ -30,7 +33,14 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
         get() = super<SimpleAbsBarContentNavAct>.layoutId
     override val contentLayoutId: Int
         get() = super<ViewPagerActBase>.layoutId
-
+/*
+    /**
+     * top-middle-bottom container terletak pada SimpleAbsBarContentNavAct.contentViewContainer
+     */
+    override var topContainer: View?= null
+    override var middleContainer: View?= null
+    override var bottomContainer: View?= null
+ */
 
     /*
     override val viewPagerActViewView: View
@@ -38,9 +48,10 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
  */
 
 
+    override lateinit var vpAdp: ViewPagerFragAdp
+    override lateinit var vpFragListMark: Array<Int>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
-    override lateinit var vpFragListMark: Array<Int>
 
 
     override fun _initInheritorBase() {
@@ -51,6 +62,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
         super.initView_int(contentView)
 //        initVp()
         _initInheritorBase()
+//        _initTopMiddleBottomView(contentView)
         addOnBackBtnListener {
             pageBackward()
 /*

@@ -31,12 +31,16 @@ abstract class SimpleAbsFrag : Fragment(),
         get() = _ConfigBase.STYLE_APP
     override lateinit var layoutView: View
     override val lifecycleCtx: Context
-        get() = ctx
+        get() = context!!
+/*
     lateinit var ctx: Context
         private set
+ */
     private var isContextInit= false
+/*
     val layoutInflaterSimple
         get() = LayoutInflater.from(callbackCtx)
+ */
 
     override var presenter: Presenter?= null
     override var callbackCtx: Context?= context

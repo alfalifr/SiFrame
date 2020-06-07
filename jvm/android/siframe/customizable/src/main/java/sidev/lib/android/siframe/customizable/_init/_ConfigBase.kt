@@ -58,8 +58,12 @@ object _ConfigBase {
     var ID_ED_SEARCH= R.id.ed_search
     var ID_BTN_RIGHT= R.id.btn_right
     var ID_BTN_LEFT= R.id.btn_left
+
     var ID_VG_CONTENT_CONTAINER= R.id.vg_content_container
     var ID_RL_BTN_CONTAINER= R.id.rl_btn_container
+    var ID_RL_TOP_CONTAINER= R.id.rl_top_container
+    var ID_RL_BOTTOM_CONTAINER= R.id.rl_bottom_container
+    var ID_RL_MIDDLE_CONTAINER= R.id.rl_middle_container
     var ID_LL_CONTENT_CONTAINER= R.id.ll_content_container
     var ID_LL_BAR_ACT_CONTAINER= R.id.ll_bar_act_container
     var ID_LL_BAR_NAV_CONTAINER= R.id.bnv_bar_nav_container
