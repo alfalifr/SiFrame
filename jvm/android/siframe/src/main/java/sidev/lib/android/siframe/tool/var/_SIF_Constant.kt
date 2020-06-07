@@ -1,5 +1,7 @@
 package sidev.lib.android.siframe.tool.`var`
 
+import android.util.Log
+
 object _SIF_Constant{
     val REQ_PERMISSION= 1
     val REQ_PICK_GALLERY= 2
@@ -23,9 +25,17 @@ object _SIF_Constant{
      * Tidak untuk dirubah oleh koder!!!
      */
     var REG_ACT_FUN_REGISTERER_NAME= ""
+        set(v){
+            field= v
+            Log.e("_SIF_Constant", "REG_ACT_FUN_REGISTERER_NAME= $v")
+        }
     
     /**
      * Tidak untuk dirubah oleh koder!!!
      */
     var REG_FRAG_FUN_REGISTERER_NAME= ""
+        set(v){
+            field= v
+            Log.e("_SIF_Constant", "REG_FRAG_FUN_REGISTERER_NAME= $v")
+        }
 }

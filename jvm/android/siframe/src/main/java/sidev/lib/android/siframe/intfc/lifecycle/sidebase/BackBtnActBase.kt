@@ -1,20 +1,26 @@
-package sidev.lib.android.siframe.intfc.view
+package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.app.Activity
 import android.view.View
+import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 
-interface BackBtnActView {
-    val actBackBtn: Activity
+interface BackBtnActBase: LifecycleSideBase {
+//    val actBackBtn: Activity
     var backBtnViewList: ArrayList<View>
     var onBackPressedListenerList: ArrayList<OnBackPressedListener>
 
+    override val layoutId: Int
+        get() = _ConfigBase.INT_EMPTY
+
+    override fun _initInheritorBase() {}
 
     fun registerBackBtnView_int(){
         backBtnViewList= registerBackBtnView()
         for(backBtn in backBtnViewList){
             backBtn.setOnClickListener{
-                actBackBtn.onBackPressed()
+                _sideBase_act.onBackPressed()
             }
         }
     }
@@ -26,7 +32,7 @@ interface BackBtnActView {
         if(!backBtnViewList.contains(v)){
             backBtnViewList.add(v)
             v.setOnClickListener {
-                actBackBtn.onBackPressed()
+                _sideBase_act.onBackPressed()
             }
         }
     }

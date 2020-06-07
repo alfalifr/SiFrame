@@ -1,45 +1,55 @@
-package sidev.lib.android.siframe.intfc.view
+package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
-import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
-import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 
-interface ViewPagerActView<F: SimpleAbsFrag> {
+interface ViewPagerActBase<F: SimpleAbsFrag>: LifecycleSideBase {
+    override val layoutId: Int
+        get() = _ConfigBase.LAYOUT_VP
+
     var onPageFragActiveListener: HashMap<Int, OnPageFragActiveListener>
 
     val vp: ViewPager
+        get()= _sideBase_view.findViewById(_ConfigBase.ID_VP)
     var vpFragList: Array<F>
+//    val viewPagerActViewView: View
     /**
      * Untuk menandai titik henti fragment page
      * Contoh:
      *      Ada 6 fragment dg alur page yang dapat dibuka yaitu:
-     *          1-3, 4, 5-6
+     *          0-2, 3, 4-5
      *          Penjelasan: Artinya dari page 1 bisa diteruskan hingga page 3, tidak bisa diteruskan ke page 4.
      *              Begitu juga page 4 gak bisa ke mana-mana
      * Mekanisme kerja di kelas ini:
-     * @see vpFragListMark Array Mark -> 0, 3, 4
-     * @see vpFragListMark_int jika dijabarkan -> * o o * * o
+     * @see vpFragListStartMark Array Mark -> 0, 3, 4
+     * @see vpFragListMark jika dijabarkan -> * o o * * o
      *
-     * @see vpFragListMark_int seharusnya private agar vp tidak kacau
+     * @see vpFragListMark seharusnya private agar vp tidak kacau
      */
-    var vpFragListMark_int: Array<Int>
     var vpFragListMark: Array<Int>
+    var vpFragListStartMark: Array<Int>
     var vpAdp: ViewPagerFragAdp
-    val fm: FragmentManager
-    val ctx: Context
+//    val vpFm: FragmentManager
+//    val vpCtx: Context
     var pageStartInd: Int
     var pageEndInd: Int
 
     companion object{
         val PAGE_MARK_START= 0
         val PAGE_MARK_CONT= 1
+    }
+
+
+    override fun _initInheritorBase() {
+        initVp()
     }
 
     /**
@@ -71,14 +81,15 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
                 vp.currentItem= pageStartInd
     }
 
-    val viewPagerActViewView: View
     @CallSuper
     fun initVp(){
         val fragList= initFragList()
         setFragList(fragList)
         setFragListMark(initFragListMark())
 
-        vpAdp= ViewPagerFragAdp(fm, *vpFragList)
+//        vp= _sideBase_view.findViewById(_ConfigBase.ID_VP)
+
+        vpAdp= ViewPagerFragAdp(_sideBase_fm, *vpFragList)
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -89,7 +100,7 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
             ) {}
 
             override fun onPageSelected(position: Int) {
-                onPageFragActiveListener[position]?.onPageFragActive(viewPagerActViewView, position)
+                onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
             }
         })
         Log.e("ADP_VP", "initVp() vpFragList.size= ${vpFragList.size}")
@@ -99,7 +110,7 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
         return null
     }
     fun initFragListMark(): Array<Int>{
-        return vpFragListMark ?:
+        return vpFragListStartMark ?:
             Array(vpFragList.size){
                 if(it == 0) PAGE_MARK_START
                 else PAGE_MARK_CONT
@@ -111,12 +122,14 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
      */
     fun setFragListMark(mark: Array<Int>){
         val markListInt= Array(vpFragList.size){ PAGE_MARK_CONT }
-        markListInt[0]= PAGE_MARK_START
+        markListInt[0]=
+            PAGE_MARK_START
         val limit= if(mark.size <= vpFragList.size) mark.size
             else vpFragList.size
         for(i in 0 until limit)
-            markListInt[mark[i]]= PAGE_MARK_START
-        vpFragListMark_int= markListInt
+            markListInt[mark[i]]=
+                PAGE_MARK_START
+        vpFragListMark= markListInt
 /*
         val markList= ArrayList<Int>()
         for(i in vpFragList.indices)
@@ -140,7 +153,7 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
         if(list != null){
             vpFragList= list
             size= vpFragList.size
-            vpAdp= ViewPagerFragAdp(fm, *list)
+            vpAdp= ViewPagerFragAdp(_sideBase_fm, *list)
         } else
             vp.adapter= null
         setPageLimitInd(0, size)
@@ -171,11 +184,11 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
     fun pageForth(): Boolean{
         return if(vp.currentItem < (vp.adapter?.count ?: 0) -1
             && (vp.currentItem <= pageEndInd || pageEndInd < 0)){
-            val bool= if(vpFragListMark_int[vp.currentItem +1] == PAGE_MARK_CONT){
+            val bool= if(vpFragListMark[vp.currentItem +1] == PAGE_MARK_CONT){
                 vp.currentItem= vp.currentItem +1
                 true
             } else false
-            Log.e("pageForth", "vp.currentItem = ${vp.currentItem} vpFragListMark_int[vp.currentItem +1] = ${vpFragListMark_int[vp.currentItem]} bool = $bool")
+            Log.e("pageForth", "vp.currentItem = ${vp.currentItem} vpFragListMark_int[vp.currentItem +1] = ${vpFragListMark[vp.currentItem]} bool = $bool")
             bool
         } else{
             Log.e("pageForth", "Gak masuk vp.currentItem = ${vp.currentItem} pageEndInd = $pageEndInd vp.childCount =${vp.childCount} bool = false")
@@ -185,8 +198,9 @@ interface ViewPagerActView<F: SimpleAbsFrag> {
     fun pageBackward(): Boolean{
         return if(vp.currentItem > 0
             && vp.currentItem >= pageStartInd){
-            if(vpFragListMark_int[vp.currentItem] == PAGE_MARK_START
-                && vpFragListMark_int[vp.currentItem -1] == PAGE_MARK_CONT){
+            if(vpFragListMark[vp.currentItem] == PAGE_MARK_START
+                && vpFragListMark[vp.currentItem -1] == PAGE_MARK_CONT
+            ){
                 false
             } else{
                 vp.currentItem= vp.currentItem -1

@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe.intfc.view
+package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,10 @@ import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.implementation.universal.tool.util.ThreadUtil
 
-interface SimpleAbsActFragView{
+/**
+ * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
+ */
+interface SimpleAbsActFragBase{
     val layoutId: Int
     val styleId: Int
     var layoutView: View
@@ -31,7 +34,13 @@ interface SimpleAbsActFragView{
     fun initView_int(layoutView: View){
         registerActiveAct()
         _AppUtil.checkAppValidity(lifecycleCtx)
+        initBase()
     }
+
+    /**
+     * Hanya boleh dioverride oleh interface Base paling akhir
+     */
+    fun initBase(){}
 
     fun setStyle(act: Activity){
         act.setTheme(styleId)

@@ -22,6 +22,7 @@ object ActManager {
 
     fun process(request: String, vararg params: Any){
         val callerFunName= ThreadUtil.getCurrentCallerFunName()
+        Log.e("ActManager", "callerFunName= $callerFunName")
 
         if(callerFunName == _SIF_Constant.REG_ACT_FUN_REGISTERER_NAME
             || callerFunName == _SIF_Constant.REG_FRAG_FUN_REGISTERER_NAME){

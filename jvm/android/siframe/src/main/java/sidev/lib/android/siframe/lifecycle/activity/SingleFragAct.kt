@@ -1,15 +1,53 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
+import android.content.Context
+import android.content.Intent
 import android.view.View
-import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-//import com.sigudang.android.R
-//ximport com.sigudang.android._template.util.ReceiverFun.commitFragment
-//import sidev.kuliah.agradia.R
-import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.commitFrag
+import androidx.fragment.app.FragmentManager
 
+
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragActBase
+
+abstract class SingleFragAct: SimpleAbsAct(), SingleFragActBase {
+    override val _sideBase_act: AppCompatActivity
+        get() = this
+    override val _sideBase_view: View
+        get() = layoutView
+    override val _sideBase_intent: Intent
+        get() = intent
+    override val _sideBase_ctx: Context
+        get() = this
+    override val _sideBase_fm: FragmentManager
+        get() = supportFragmentManager
+
+    override lateinit var fragment: Fragment
+
+    override var isFragLate: Boolean= false
+    override var isDataAsync: Boolean= false
+
+
+    override fun _initInheritorBase() {
+        super<SingleFragActBase>._initInheritorBase()
+    }
+
+    override fun initView_int(layoutView: View) {
+        super.initView_int(layoutView)
+        _initInheritorBase()
+    }
+
+    /*
+    override val styleId: Int
+        get() = super<SingleFragActBase>.styleId
+
+    override fun initView_int(layoutView: View) {
+        super<SimpleAbsAct>.initView_int(layoutView)
+    }
+ */
+}
+
+/*
 /**
  * Kelas dasar dalam framework yang digunakan sbg Activity yang berisi satu fragment
  */
@@ -62,3 +100,6 @@ abstract class SingleFragAct : SimpleAbsAct() {
         commitFrag(fragContainerId, fragment)
     }
 }
+
+
+ */

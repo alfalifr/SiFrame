@@ -1,7 +1,7 @@
 package sidev.lib.android.siframe.intfc.`fun`
 
 import android.view.View
-import sidev.lib.android.siframe.intfc.view.ViewPagerActView
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 
 /**
@@ -9,7 +9,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
  * saat halaman Fragment aktif.
  */
 interface RegisterOnPageFragActiveListenerFun {
-    fun registerOnPageFragActiveListener(act: ViewPagerActView<SimpleAbsFrag>, frag: SimpleAbsFrag, func: (vParent: View, pos: Int) -> Unit){
-        act.registerOnPageFragToActListener(frag, func)
+    fun registerOnPageFragActiveListener(vpAct: ViewPagerActBase<SimpleAbsFrag>, frag: SimpleAbsFrag, func: (vParent: View, pos: Int) -> Unit){
+        vpAct.registerOnPageFragToActListener(frag, func)
     }
 }

@@ -7,6 +7,11 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 
 
+class SingleFragAct_Simple: SingleFragAct(){
+    override fun initView(layoutView: View) {}
+}
+
+/*
 /**
  * Implementasi sederhana dari SingleFragAct
  */
@@ -48,3 +53,4 @@ class SingleFragAct_Simple : SingleFragAct() {
         fragTrans.commit()
     }
 }
+ */

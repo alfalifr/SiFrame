@@ -10,10 +10,11 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.android.siframe.intfc.view.BackBtnActView
-import sidev.lib.android.siframe.intfc.view.SimpleAbsActFragView
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
 import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.presenter.PresenterCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
@@ -23,12 +24,30 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Config
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
  * sbg pengganti dari AppCompatActivity
  */
-abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView,
-    PresenterCallback, BackBtnActView {
+abstract class SimpleAbsAct : AppCompatActivity(),
+    SimpleAbsActFragBase,
+    PresenterCallback,
+    BackBtnActBase {
+
     override val lifecycleCtx: Context
         get() = this
+
+    override val _sideBase_act: AppCompatActivity
+        get() = this
+    override val _sideBase_view: View
+        get() = layoutView
+    override val _sideBase_intent: Intent
+        get() = intent
+    override val _sideBase_ctx: Context
+        get() = lifecycleCtx
+    override val _sideBase_fm: FragmentManager
+        get() = supportFragmentManager
+
+    abstract override val layoutId: Int
+/*
     override val actBackBtn: Activity
         get() = this
+ */
     override var backBtnViewList= ArrayList<View>()
     override var onBackPressedListenerList: ArrayList<OnBackPressedListener>
         = ArrayList()

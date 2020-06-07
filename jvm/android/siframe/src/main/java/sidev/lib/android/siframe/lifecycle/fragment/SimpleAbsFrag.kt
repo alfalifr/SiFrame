@@ -14,14 +14,15 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
-import sidev.lib.android.siframe.intfc.view.SimpleAbsActFragView
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
 import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.presenter.PresenterCallback
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari Fragment
  */
-abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView, PresenterCallback {
+abstract class SimpleAbsFrag : Fragment(),
+    SimpleAbsActFragBase, PresenterCallback {
     val actSimple
         get() = activity as SimpleAbsAct?
     val actBarContentNavAct

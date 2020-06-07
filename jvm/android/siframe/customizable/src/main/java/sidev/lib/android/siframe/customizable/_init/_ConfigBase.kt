@@ -15,6 +15,8 @@ object _ConfigBase {
     var DEBUG= true
     var LOG= DEBUG
 
+    var INT_EMPTY= 0
+
     var STRING_APP_NAME= R.string.app_name
 
     var LAYOUT_ACT_SIMPLE= R.layout._sif_act_simple
@@ -29,6 +31,7 @@ object _ConfigBase {
     var LAYOUT_BLANK= R.layout._sif_page_blank
     var LAYOUT_TXT_CENTER= R.layout._sif_page_txt_center
     var LAYOUT_RV= R.layout._sif_page_rv //R.layout.content_abs_rv
+    var LAYOUT_VP= R.layout._sif_page_vp //R.layout.content_abs_rv
 
 
     var LAYOUT_COMP_ACT_BAR_DEFAULT= R.layout._sif_comp_action_bar_default
@@ -40,6 +43,8 @@ object _ConfigBase {
     var ID_RV= R.id.rv
     var ID_SRL= R.id.srl
     var ID_TV= R.id.tv
+    var ID_PB= R.id.pb
+    var ID_VP= R.id.vp
     //Specific ID
     var ID_FR_CONTAINER= R.id.fr_container
     var ID_IV_ICON= R.id.iv_icon

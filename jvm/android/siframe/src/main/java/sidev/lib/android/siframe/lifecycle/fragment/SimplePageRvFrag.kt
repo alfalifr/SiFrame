@@ -1,8 +1,10 @@
 package sidev.lib.android.siframe.lifecycle.fragment
 
 import android.view.View
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import sidev.lib.android.siframe.adapter.SimpleAbsRecyclerViewAdapter
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 
 abstract class SimplePageRvFrag : SimpleAbsFrag(){
@@ -11,6 +13,14 @@ abstract class SimplePageRvFrag : SimpleAbsFrag(){
 
     lateinit var rv: RecyclerView
         protected set
+    lateinit var rvAdp: SimpleAbsRecyclerViewAdapter<*, *>
+        protected set
+    lateinit var pb: ProgressBar
+        protected set
+
+    var onRefreshListener: (() -> Unit)?= null
+
+    abstract fun initRvAdp(): SimpleAbsRecyclerViewAdapter<*, *>
 
     override fun initView_int(layoutView: View) {
         super.initView_int(layoutView)
@@ -18,7 +28,13 @@ abstract class SimplePageRvFrag : SimpleAbsFrag(){
         layoutView.findViewById<SwipeRefreshLayout>(_ConfigBase.ID_SRL).setOnRefreshListener {
             onRefreshListener?.invoke()
         }
+        rvAdp= initRvAdp()
+        rvAdp.rv= rv
+        pb= layoutView.findViewById(_ConfigBase.ID_PB)
     }
 
-    var onRefreshListener: (() -> Unit)?= null
+    fun showLoading(show: Boolean= true){
+        pb.visibility= if(show) View.VISIBLE
+            else View.GONE
+    }
 }

@@ -36,7 +36,7 @@ fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     context?.toast(msg, length)
 }
 
-fun Activity.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment){
+fun Context.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment){
     when(this){
         is AppCompatActivity -> {
             val fragTrans= supportFragmentManager.beginTransaction()
@@ -98,17 +98,17 @@ fun <T> Fragment.getDefaultIntent(): T? {
 }
 
 
-fun <T> Activity.getIntent(key: String): T? {
+fun <T> Activity.getIntent(key: String, default: T?= null): T? {
     return try { intent.extras!![key] as T? }
-    catch (e: Exception) { null }
+    catch (e: Exception) { default }
 }
-fun <T> Fragment.getIntent(key: String): T? {
+fun <T> Fragment.getIntent(key: String, default: T?= null): T? {
     return try { activity!!.intent.extras!![key] as T? }
-    catch (e: Exception) { null }
+    catch (e: Exception) { default }
 }
-fun <T> Intent.getExtra(key: String): T? {
+fun <T> Intent.getExtra(key: String, default: T?= null): T? {
     return try { this.extras!![key] as T? }
-    catch (e: Exception) { null }
+    catch (e: Exception) { default }
 }
 
 

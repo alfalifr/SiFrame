@@ -5,6 +5,14 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 
+
+class SingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav(){
+    override fun initActBar(actBarView: View) {}
+    override fun initNavBar(navBarView: BottomNavigationView) {}
+    override fun initView(layoutView: View) {}
+}
+
+/*
 //import sidev.kuliah.agradia.R
 
 class SingleFragAct_BarContentNav_Simple : SingleFragAct_BarContentNav() {
@@ -58,3 +66,4 @@ class SingleFragAct_BarContentNav_Simple : SingleFragAct_BarContentNav() {
 
  */
 }
+ */

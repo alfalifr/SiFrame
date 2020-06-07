@@ -1,14 +1,5 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.app.Activity
-import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.android.siframe.intfc.view.BackBtnActView
 /*
 abstract class SimpleAbsBarContentNavAct_t : SimpleAbsAct(), BackBtnActView {
     override val styleId: Int
