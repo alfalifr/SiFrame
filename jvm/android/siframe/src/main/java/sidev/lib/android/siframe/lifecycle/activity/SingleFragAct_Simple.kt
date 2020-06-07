@@ -4,7 +4,7 @@ import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.util._Constant
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 
 
 /**
@@ -28,9 +28,9 @@ class SingleFragAct_Simple : SingleFragAct() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setDisplayShowCustomEnabled(true)
 
-        isFragLate= getIntentData(_Constant.EXTRA_TYPE_LATE, default = isFragLate)
+        isFragLate= getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         if(isFragLate){
-            val fragName= getIntentData<String?>(_Constant.FRAGMENT_NAME)!!
+            val fragName= getIntentData<String?>(_SIF_Constant.FRAGMENT_NAME)!!
             fragment= Class.forName(fragName).newInstance() as Fragment
         }
 

@@ -26,8 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/sf_pro_bold"
-            android:textSize="@dimen/semi_medium_text_size"
-            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/txt_med_normal"
+            android:textColor="@color/putih"
             android:text="Menu Title"/>
     </RelativeLayout>
 

@@ -26,6 +26,14 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -47,4 +55,11 @@ dependencies {
 
     //Google Material
     implementation 'com.google.android.material:material:1.0.0'
+
+    //Load Gambar dari Server
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Untuk nertwok
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.loopj.android:android-async-http:1.4.9'
 }

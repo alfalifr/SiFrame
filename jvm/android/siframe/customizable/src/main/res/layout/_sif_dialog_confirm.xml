@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/cv_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/iv_bg"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <androidx.cardview.widget.CardView
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp">
+
+                <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_indication"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_warning"
+                        android:tint="@color/colorPrimaryDark"/>
+
+                <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/iv_indication"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/template_msg_overlay"
+                        android:textColor="@color/hitam"
+                        android:textSize="@dimen/txt_normal_sm"/>
+
+                <ImageView
+                        android:id="@+id/border"
+                        android:layout_toRightOf="@id/tv_title"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"/>
+
+                <RelativeLayout
+                        android:layout_below="@id/tv_title"
+                        android:layout_toLeftOf="@id/border"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    <include
+                            layout="@layout/_sif_comp_btn_action_sm"
+                            android:id="@+id/btn_left"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    <include
+                            layout="@layout/_sif_comp_btn_action_sm"
+                            android:id="@+id/btn_right"
+                            android:layout_alignParentRight="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                </RelativeLayout>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

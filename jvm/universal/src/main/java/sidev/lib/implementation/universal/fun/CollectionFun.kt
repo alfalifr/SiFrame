@@ -1,5 +1,8 @@
 package sidev.lib.implementation.universal.`fun`
 
+import java.util.*
+import kotlin.collections.ArrayList
+
 fun <T> Array<T>.filterIn(array: Array<T>): Iterable<T> {
     val out= ArrayList<T>()
     for(e in this)
@@ -84,4 +87,35 @@ inline fun <T, C: MutableCollection<in String>> Iterable<T>.toStringList(dest: C
             dest.add(res)
     }
     return dest
+}
+
+
+fun <T> Any.get(pos: Int): T? {
+    return when(this){
+        is Array<*> -> this[pos] as T?
+        is List<*> -> this[pos] as T?
+        else -> null
+    }
+}
+
+fun Any.indices(): IntRange? {
+    return when(this){
+        is Array<*> -> this.indices
+        is Collection<*> -> this.indices
+        else -> null
+    }
+}
+
+inline fun <reified T> Array<T>.copy(reversed: Boolean= false): Array<T> {
+    return if(!reversed) this.copyOf()
+        else Array(this.size){this[size -it -1]}
+}
+
+fun <T> List<T>.copy(reversed: Boolean= false): List<T> {
+    val newList= mutableListOf<T>()
+    val range= if(!reversed) this.indices
+        else this.size .. 0
+    for(i in range)
+        newList.add(this[i])
+    return newList
 }

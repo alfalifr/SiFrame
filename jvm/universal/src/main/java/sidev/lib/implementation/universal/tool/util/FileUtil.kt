@@ -136,4 +136,8 @@ object FileUtil{
             return null
         }
     }
+
+    fun isDirLocal(dir: String): Boolean{
+        return File(dir).absoluteFile.exists()
+    }
 }

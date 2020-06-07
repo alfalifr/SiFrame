@@ -1,6 +1,5 @@
 package sidev.lib.android.siframe.customizable._init
 
-import androidx.annotation.StringRes
 import sidev.lib.android.siframe.customizable.R
 
 /**
@@ -9,35 +8,68 @@ import sidev.lib.android.siframe.customizable.R
  * untuk melakukan penyesuaian.
  */
 object _ConfigBase {
-    val DEBUG= true
-    val LOG= DEBUG
+    object ExternalRef{
+        val ID_CONTENT= android.R.id.content
+    }
 
-    val STRING_APP_NAME= R.string.app_name
+    var DEBUG= true
+    var LOG= DEBUG
 
-    val LAYOUT_ACT_SIMPLE= R.layout._sif_act_simple
-    val LAYOUT_ACT_SINGLE_FRAG= R.layout._sif_act_single_frag
-    val LAYOUT_COMP_ACT_BAR_DEFAULT= R.layout._sif_comp_action_bar_default
-//    val LAYOUT_ACT_BAR_SIMPLE= 0 //blum ada layout ternyata
-    val LAYOUT_ITEM_ADP_CONTAINER= R.layout._sif_item_adp_container
-    val LAYOUT_BLANK= R.layout._sif_page_blank
-    val LAYOUT_TXT_CENTER= R.layout._sif_page_txt_center
-    val LAYOUT_RV= R.layout._sif_page_rv //R.layout.content_abs_rv
+    var STRING_APP_NAME= R.string.app_name
+
+    var LAYOUT_ACT_SIMPLE= R.layout._sif_act_simple
+    var LAYOUT_ACT_SINGLE_FRAG= R.layout._sif_act_single_frag
+    var LAYOUT_BG_COMP_ACT_BAR_DEFAULT= R.layout._sif_bg_act_bar_default
+//    var LAYOUT_ACT_BAR_SIMPLE= 0 //blum ada layout ternyata
+    var LAYOUT_ITEM_ADP_CONTAINER= R.layout._sif_item_adp_container
+    var LAYOUT_OVERLAY_BLOCK= R.layout._sif_overlay_block
+    var LAYOUT_DIALOG_CONTAINER= R.layout._sif_dialog_container
+    var LAYOUT_DIALOG_CONFIRM= R.layout._sif_dialog_confirm
+    var LAYOUT_DIALOG_LIST= R.layout._sif_dialog_list
+    var LAYOUT_BLANK= R.layout._sif_page_blank
+    var LAYOUT_TXT_CENTER= R.layout._sif_page_txt_center
+    var LAYOUT_RV= R.layout._sif_page_rv //R.layout.content_abs_rv
+
+
+    var LAYOUT_COMP_ACT_BAR_DEFAULT= R.layout._sif_comp_action_bar_default
+    var LAYOUT_COMP_BTN_ACTION= R.layout._sif_comp_btn_action
+    var LAYOUT_COMP_ITEM_TXT_DESC= R.layout._sif_comp_item_txt_desc
 
 
     //Common ID
-    val ID_RV= R.id.rv
-    val ID_SRL= R.id.srl
-    val ID_TV= R.id.tv
+    var ID_RV= R.id.rv
+    var ID_SRL= R.id.srl
+    var ID_TV= R.id.tv
     //Specific ID
-    val ID_FR_CONTAINER= R.id.fr_container
-    val ID_IV_BACK= R.id.iv_back
-    val ID_IV_CHECK= R.id.iv_check
-    val ID_IV_OVERLAY= R.id.iv_overlay
-    val ID_TV_TITLE= R.id.tv_title
-    val ID_LL_CONTENT_CONTAINER= R.id.ll_content_container
-    val ID_LL_BAR_ACT_CONTAINER= R.id.ll_bar_act_container
-    val ID_LL_BAR_NAV_CONTAINER= R.id.bnv_bar_nav_container
+    var ID_FR_CONTAINER= R.id.fr_container
+    var ID_IV_ICON= R.id.iv_icon
+    var ID_IV_BACK= R.id.iv_back
+    var ID_IV_CHECK= R.id.iv_check
+    var ID_IV_OVERLAY= R.id.iv_overlay
+    var ID_IV_INDICATION= R.id.iv_indication
+    var ID_TV_TITLE= R.id.tv_title
+    var ID_TV_DESC= R.id.tv_desc
+    var ID_TV_NO_DATA= R.id.tv_no_data
+    var ID_ED_SEARCH= R.id.ed_search
+    var ID_BTN_RIGHT= R.id.btn_right
+    var ID_BTN_LEFT= R.id.btn_left
+    var ID_VG_CONTENT_CONTAINER= R.id.vg_content_container
+    var ID_RL_BTN_CONTAINER= R.id.rl_btn_container
+    var ID_LL_CONTENT_CONTAINER= R.id.ll_content_container
+    var ID_LL_BAR_ACT_CONTAINER= R.id.ll_bar_act_container
+    var ID_LL_BAR_NAV_CONTAINER= R.id.bnv_bar_nav_container
+    var ID_LL_SEARCH_CONTAINER_OUTER= R.id.ll_search_container_outer
 
-    val STYLE_NO_ACT_BAR= R.style.AppTheme_NoActionBar
-    val STYLE_APP= R.style.AppTheme
+    var DRAW_IC_WARNING= R.drawable.ic_warning
+    var DRAW_SHAPE_BORDER_ROUND= R.drawable.shape_border_round
+    var DRAW_SHAPE_BORDER_ROUND_BG= R.drawable.shape_border_round_bg
+    var DRAW_SHAPE_SOLID_SQUARE_ROUND= R.drawable.shape_solid_square_round
+
+    var STYLE_NO_ACT_BAR= R.style.AppTheme_NoActionBar
+    var STYLE_APP= R.style.AppTheme
+
+    var FORMAT_DATE= "dd/MM/yyyy"
+    var FORMAT_TIME= "$FORMAT_DATE HH:mm:ss"
+
+    var ENDPOINT_ROOT= ""
 }

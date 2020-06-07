@@ -11,8 +11,8 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.exception.Exc
-import sidev.lib.android.siframe.util.RunQueue
+import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.implementation.universal.`fun`.filter
 import sidev.lib.implementation.universal.`fun`.notNull
 
@@ -524,7 +524,8 @@ abstract class SimpleAbsRecyclerViewAdapter <D, LM: RecyclerView.LayoutManager> 
         }
     }
 
-    private val onLayoutCompletedQueue= RunQueue<RecyclerView.State?, Unit>()
+    private val onLayoutCompletedQueue=
+        RunQueue<RecyclerView.State?, Unit>()
 /*
     private val onLayoutCompletedQueue= ArrayList<
                 Pair<(state: RecyclerView.State?) -> Unit_, Boolean>
@@ -554,7 +555,7 @@ abstract class SimpleAbsRecyclerViewAdapter <D, LM: RecyclerView.LayoutManager> 
                 lm.onLayoutCompletedListener= onLayoutCompletedListener
                 Log.e("SimpleAbsRVA", "lm is NOT thrown")
             } else{
-                throw Exc(this::class.java, "lm is not LayoutManagerResp")
+                throw TypeExc(this::class.java, "lm is not LayoutManagerResp")
                 Log.e("SimpleAbsRVA", "lm is thrown")
             }
         }

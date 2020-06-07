@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.util._Constant
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe.tool.util._ViewUtil
 
 /**
  * Kelas dalam framework yang digunakan sbg Activity dg:
@@ -65,7 +66,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
         registerBackBtnView_int()
         registerBackBtnView(actBarViewContainer.findViewById(_ConfigBase.ID_IV_BACK)) //R.id.iv_back
 
-        val extraTitle= getIntentData<String?>(_Constant.EXTRA_TITLE)
+        val extraTitle= getIntentData<String?>(_SIF_Constant.EXTRA_TITLE)
         if(extraTitle != null)
             setActBarTitle(extraTitle)
 
@@ -85,7 +86,11 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
     }
 
     private fun inflateAndFillViewStructure(){
-        val actBar= layoutInflater.inflate(actBarId, actBarViewContainer, false)
+        val actBar=
+            if(actBarId != _ConfigBase.LAYOUT_COMP_ACT_BAR_DEFAULT)
+                layoutInflater.inflate(actBarId, actBarViewContainer, false)
+            else
+                _ViewUtil.Template.actBar_Primary(this)
         actBarViewContainer.addView(actBar)
 
         if(isContentLayoutInflatedFirst && contentLayoutId > 0){

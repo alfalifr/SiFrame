@@ -16,4 +16,8 @@
 
     <string name="billing_tab1_title">Tagihan</string>
     <string name="billing_tab2_title">Transaksi</string>
+
+    <string name="template_msg_overlay">Ini pesan overlay</string>
+    <string name="template_msg_btn">Ini Tombol</string>
+    <string name="template_msg_desc">Ini deskripsi</string>
 </resources>

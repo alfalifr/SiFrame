@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+<!--
     <color name="colorPrimary">#519FF5</color>
     <color name="colorPrimaryDark">#005FC7</color>
     <color name="colorAccent">#057091</color>
+-->
     <color name="colorDefault" tools:ignore="ReferenceType">@drawable/bg_default</color>
     <color name="colorText">#8E8E8E</color>
 </resources>

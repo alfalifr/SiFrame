@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 //ximport com.sigudang.android._template.util.ReceiverFun.commitFragment
 //import sidev.kuliah.agradia.R
 import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.util._Constant
-import sidev.lib.android.siframe.util.`fun`.commitFrag
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe.tool.util.`fun`.commitFrag
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Activity yang berisi satu fragment
@@ -33,14 +33,14 @@ abstract class SingleFragAct : SimpleAbsAct() {
         supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar?.setDisplayShowCustomEnabled(true)
 
-        isFragLate= getIntentData(_Constant.EXTRA_TYPE_LATE, default = isFragLate)
+        isFragLate= getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         initFrag()
 
         /**
          * Karena jika fragment langsung dipasang ke container, maka data pada fragment gak bisa direload.
          * Jadi inisiasi fragment harus setelah data didownload.
          */
-        isDataAsync= getIntentData(_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)
+        isDataAsync= getIntentData(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)
         if(!isDataAsync)
             attachFrag()
     }

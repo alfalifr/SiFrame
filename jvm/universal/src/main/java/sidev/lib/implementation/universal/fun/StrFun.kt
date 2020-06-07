@@ -1,5 +1,9 @@
 package sidev.lib.implementation.universal.`fun`
 
+fun <T> T.toString(func: (obj: T) -> String): String{
+    return func(this)
+}
+
 fun CharSequence.getPrefixIn(array: Array<String>): String? {
     for(e in array)
         if(this.startsWith(e))
@@ -38,6 +42,15 @@ fun CharSequence.getQuoted(quoter: CharSequence, startIndex: Int= 0, withQuote: 
                                 else value
                         }
             }
+        }
+    }
+    return null
+}
+
+fun CharSequence.nextNonWhitespaceChar(startInd: Int= 0): Char? {
+    for(i in startInd until this.length){
+        if(!this[i].isWhitespace()){
+            return this[i]
         }
     }
     return null

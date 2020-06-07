@@ -1,7 +1,10 @@
 package sidev.lib.implementation.universal.tool.util
 
 //import org.apache.commons.lang3.StringUtils
+import android.util.Log
 import org.apache.commons.lang3.StringUtils
+import sidev.lib.implementation.universal.`fun`.nextNonWhitespaceChar
+import java.lang.IndexOutOfBoundsException
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.regex.Pattern
@@ -358,5 +361,121 @@ object StringUtil{
                 strHasil= strHasil.substring(0, i) +strHasil[i+1].toUpperCase() +(if(i+2 < strHasil.length) strHasil.substring(i+2) else "")
             }
         return strHasil
+    }
+
+/*
+===========================
+JSON area -> Untuk operasi simpel string JSON
+===========================
+ */
+    /**
+     * First occurrence
+     */
+    fun getJsonPrimitiveValue(jsonStr: String, key: String, occurrenceInd: Int= 0,
+                              quote: Char= '"', delimiter: Char= ','): String? {
+//        var keyIndFound= false
+        var occFound= false
+        var keyStartItr= 0
+        var occItr= -1
+
+        while(!occFound && keyStartItr < jsonStr.length){
+            val keyStartInd= jsonStr.indexOf(key, keyStartItr)
+            if(keyStartInd == -1) //Brarti key nya gakda di jsonStr
+                break
+
+//            Log.e("UTIL", "keyStartInd= $keyStartInd keyStartItr= $keyStartItr key= $key")
+
+            val nextCharInd= keyStartInd +key.length
+            val nextChar= try { jsonStr[nextCharInd] }
+            catch (e: IndexOutOfBoundsException){ return null } //Itu artinya key nya gak punya nilai
+
+            val expectedNextColonStartInd= if(nextChar == quote) nextCharInd+1
+            else nextCharInd
+
+            val keyIndFound= jsonStr.nextNonWhitespaceChar(expectedNextColonStartInd) == ':'
+            if(keyIndFound){
+//                Log.e("UTIL", "keyIndFound")
+//                Log.e("UTIL", "occItr= ${occItr+1} occurrenceInd= $occurrenceInd")
+                if(++occItr == occurrenceInd){
+                    occFound= true
+                    val colonInd= jsonStr.indexOf(":", expectedNextColonStartInd)
+//                val valStartInd= colonStartInd +1
+                    val nextNonWhitespaceChar= jsonStr.nextNonWhitespaceChar(colonInd+1)
+                    if(nextNonWhitespaceChar != null
+                        && nextNonWhitespaceChar != '['
+                        && nextNonWhitespaceChar != '{'){
+                        var valStartInd= jsonStr.indexOf(nextNonWhitespaceChar, colonInd+1)
+                        val limitChar= if(nextNonWhitespaceChar == quote) {
+                            valStartInd++
+                            quote
+                        } else delimiter
+                        var valEndInd= jsonStr.indexOf(limitChar, valStartInd)
+                        if(valEndInd == -1){ //Kemungkinan value yang ditemukan berada di akhir string
+                            val lastChar= jsonStr.last()
+
+                            valEndInd = if(lastChar == ']' || lastChar == '}')
+                                jsonStr.length-1
+                            else
+                                jsonStr.length
+                        }
+
+//                        Log.e("UTIL", "valStartInd= $valStartInd valEndInd= $valEndInd limitChar= $limitChar")
+
+                        val res= jsonStr.substring(valStartInd, valEndInd)
+//                        Log.e("UTIL", "res= $res")
+                        return res
+                    }
+                } else
+                    keyStartItr= keyStartInd +key.length
+            } else
+                keyStartItr= keyStartInd +key.length
+        }
+        return null
+    }
+
+
+
+/*
+===========================
+Password
+===========================
+*/
+    var PASWD_MIN= 6
+    const val PASWD_STRENGTH_VERY_WEAK= -1 //krg dari 6 karakter
+    const val PASWD_STRENGTH_WEAK= 0 //terdiri dari 6 atau lebih karakter
+    const val PASWD_STRENGTH_MED= 1 //alphanumeric
+    const val PASWD_STRENGTH_STRONG= 2 //alphanumeric + upper-lower
+    const val PASWD_STRENGTH_VERY_STRONG= 3 //alphanumeric + upper-lower + symbol
+    fun assessPassStrength(paswd: String): Int {
+        val lowercaseRegex= "[a-z]".toRegex()
+        val uppercaseRegex= "[A-Z]".toRegex()
+        val numberRegex= "[0-9]".toRegex()
+        val symbolRegex= "[\$-/:-?{-~!\"^_`\\[\\]]".toRegex()
+        return if(paswd.length < PASWD_MIN) PASWD_STRENGTH_VERY_WEAK
+        else if(paswd.contains(lowercaseRegex) && paswd.contains(uppercaseRegex)
+            && paswd.contains(numberRegex) && paswd.contains(symbolRegex))
+            PASWD_STRENGTH_VERY_STRONG
+        else if(paswd.contains(lowercaseRegex) && paswd.contains(uppercaseRegex) && paswd.contains(numberRegex)
+            || paswd.contains(lowercaseRegex) && paswd.contains(uppercaseRegex) && paswd.contains(symbolRegex)
+            || paswd.contains(lowercaseRegex) && paswd.contains(numberRegex) && paswd.contains(symbolRegex)
+            || paswd.contains(uppercaseRegex) && paswd.contains(numberRegex) && paswd.contains(symbolRegex))
+            PASWD_STRENGTH_STRONG
+        else if(paswd.contains(lowercaseRegex) && paswd.contains(numberRegex)
+            || paswd.contains(lowercaseRegex) && paswd.contains(symbolRegex)
+            || paswd.contains(lowercaseRegex) && paswd.contains(uppercaseRegex)
+            || paswd.contains(uppercaseRegex) && paswd.contains(numberRegex)
+            || paswd.contains(uppercaseRegex) && paswd.contains(symbolRegex)
+            || paswd.contains(numberRegex) && paswd.contains(symbolRegex))
+            PASWD_STRENGTH_MED
+        else PASWD_STRENGTH_WEAK
+/*
+            else if(paswd.contains("[a-z][A-Z][0-9][\$-/:-?{-~!\"^_`\\[\\]]".toRegex())) PASWD_STRENGTH_VERY_STRONG
+            else if(paswd.contains("[a-z][A-Z][0-9]".toRegex())) PASWD_STRENGTH_STRONG
+            else if(
+                paswd.contains("[a-z][0-9]".toRegex())
+                || paswd.contains("[A-Z][0-9]".toRegex())
+            ) PASWD_STRENGTH_MED
+            else PASWD_STRENGTH_WEAK
+ */
     }
 }

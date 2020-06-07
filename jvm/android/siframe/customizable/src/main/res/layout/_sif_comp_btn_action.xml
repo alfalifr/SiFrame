@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingTop="@dimen/padding_btn_vertical"
+        android:paddingBottom="@dimen/padding_btn_vertical"
+        android:paddingLeft="@dimen/padding_btn_horizontal"
+        android:paddingRight="@dimen/padding_btn_horizontal"
+        android:background="@drawable/shape_solid_square_round"
+        android:text="@string/template_msg_btn"
+        android:textSize="@dimen/txt_med_normal"
+        android:textColor="#FFFFFF"/>

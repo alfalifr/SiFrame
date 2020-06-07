@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,12 +14,19 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.view.BackBtnActView
 import sidev.lib.android.siframe.intfc.view.SimpleAbsActFragView
+import sidev.lib.android.siframe.presenter.Presenter
+import sidev.lib.android.siframe.presenter.PresenterCallback
+import sidev.lib.android.siframe.tool.util._AppUtil
+import sidev.lib.android.siframe.tool.`var`._SIF_Config
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
  * sbg pengganti dari AppCompatActivity
  */
-abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView, BackBtnActView {
+abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView,
+    PresenterCallback, BackBtnActView {
+    override val lifecycleCtx: Context
+        get() = this
     override val actBackBtn: Activity
         get() = this
     override var backBtnViewList= ArrayList<View>()
@@ -30,7 +38,11 @@ abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView, BackBtn
     override lateinit var layoutView: View
     open val isViewInitFirst= true
 
-//    private val onDestroyListenerQueue= RunQueue<Any?, Unit_>()
+    override var presenter: Presenter?= null
+    override var callbackCtx: Context?= this
+
+
+    //    private val onDestroyListenerQueue= RunQueue<Any?, Unit_>()
 
 
     @CallSuper
@@ -49,6 +61,11 @@ abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView, BackBtn
             initView_int(v)
             initView(v)
         }
+    }
+
+    override fun initView_int(layoutView: View) {
+        super.initView_int(layoutView)
+        presenter= initPresenter()
     }
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
@@ -101,8 +118,11 @@ abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView, BackBtn
 
     @CallSuper
     override fun onBackPressed() {
-        if(!isBackPressedHandled())
-            super.onBackPressed()
+        if(_SIF_Config.APP_VALID){
+            if(!isBackPressedHandled())
+                super.onBackPressed()
+        } else
+            _AppUtil.toHomeScreen(this)
     }
 
     @CallSuper
@@ -111,6 +131,9 @@ abstract class SimpleAbsAct : AppCompatActivity(), SimpleAbsActFragView, BackBtn
 //        onDestroyListenerQueue.iterateRunQueue(null)
         Log.e("SimpleAbsAct", "Activity ${this::class.java.simpleName} is destroyed!!!")
     }
+
+    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
+    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 
     /*
     private val onBackPressedListenerList= ArrayList<OnBackPressedListener>()

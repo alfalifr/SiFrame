@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/colorWhite"/>
+        android:background="@color/putih"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:visibility="gone"

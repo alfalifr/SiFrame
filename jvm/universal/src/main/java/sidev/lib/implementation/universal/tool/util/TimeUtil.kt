@@ -1,9 +1,12 @@
 package sidev.lib.implementation.universal.tool.util
 
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
 object TimeUtil {
+
+    val FORMAT= "dd/MM/yyyy"
 
     val month: Array<String>
         get() = arrayOf(
@@ -30,7 +33,7 @@ object TimeUtil {
         val dateArr= date.split(delimiter)
 
         var monthName= month[dateArr[1].toInt() -1]
-        if(monthLen > 0)
+        if(monthLen > 0 && monthLen <= monthName.length)
             monthName= monthName.substring(0, monthLen)
         return "${dateArr[0]} $monthName ${dateArr[2]}"
     }
@@ -48,8 +51,19 @@ object TimeUtil {
         val simpleDateFormat = SimpleDateFormat(pattern)
         return simpleDateFormat.format(Date())
     }
+/*
     fun getDateString(cal: Calendar, pattern: String= "dd/MM/yyyy"): String{
         val simpleDateFormat = SimpleDateFormat(pattern)
+        return simpleDateFormat.format(cal.time)
+    }
+ */
+
+    /**
+     * @param diff dalam millisecond
+     */
+    fun getDateString(cal: Calendar= Calendar.getInstance(), pattern: String= FORMAT, diff: Long= 0): String{
+        val simpleDateFormat = SimpleDateFormat(pattern)
+        cal.add(Calendar.MILLISECOND, diff.toInt())
         return simpleDateFormat.format(cal.time)
     }
 
@@ -57,7 +71,7 @@ object TimeUtil {
      * Otomatis menghitung tanggal yang sesuai
      * @param month dimulai dari 1
      */
-    fun getDateString(day: Int, month: Int, year: Int, pattern: String= "dd/MM/yyyy"): String{
+    fun getDateString(day: Int, month: Int, year: Int, pattern: String= FORMAT): String{
         val cal= Calendar.getInstance()
         val month= if(month in 1 .. 12) month
         else if(month > 12) 12
@@ -80,10 +94,33 @@ object TimeUtil {
         )
     }
 
-    fun toCalObj(time: String, pattern: String= "dd/MM/yyyy"): Calendar{
+    fun toCalObj(time: String, pattern: String= FORMAT): Calendar{
         val simpleDateFormat = SimpleDateFormat(pattern)
         val cal= Calendar.getInstance()
         cal.time= simpleDateFormat.parse(time)
         return cal
+    }
+
+
+    /**
+     * time2 - time1
+     */
+    fun getTimeDiff(time1: String, time2: String, format: String= FORMAT, out: String= ""): Long{
+        val simpleDateFormat = SimpleDateFormat(format)
+
+        val date1 = simpleDateFormat.parse(time1) //"08:00 AM"
+        val date2 = simpleDateFormat.parse(time2) //"04:00 PM"
+
+        val diff= date2.time - date1.time
+        val res= when(out){
+            "d" -> diff / (1000 *60 *60 *24) //.toInt()
+            "h" -> diff / (1000 *60 *60)
+            "m" -> diff / (1000 *60) //(difference - 1000 * 60 * 60 * 24 * days - 1000 * 60 * 60 * hours) /*as Int*/ / (1000 * 60)
+            "s" -> diff / (1000)
+            else -> diff
+        }
+//        hours = if (hours < 0) -hours else hours
+        Log.e("TIME_UTIL", " :: diff= $diff out= $out res= $res")
+        return res
     }
 }

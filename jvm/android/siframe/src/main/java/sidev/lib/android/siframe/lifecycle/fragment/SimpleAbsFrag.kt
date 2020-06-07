@@ -15,11 +15,13 @@ import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
 import sidev.lib.android.siframe.intfc.view.SimpleAbsActFragView
+import sidev.lib.android.siframe.presenter.Presenter
+import sidev.lib.android.siframe.presenter.PresenterCallback
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari Fragment
  */
-abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView {
+abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView, PresenterCallback {
     val actSimple
         get() = activity as SimpleAbsAct?
     val actBarContentNavAct
@@ -27,11 +29,19 @@ abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView {
     override val styleId: Int
         get() = _ConfigBase.STYLE_APP
     override lateinit var layoutView: View
+    override val lifecycleCtx: Context
+        get() = ctx
     lateinit var ctx: Context
         private set
     private var isContextInit= false
     val layoutInflaterSimple
-        get() = LayoutInflater.from(ctx)
+        get() = LayoutInflater.from(callbackCtx)
+
+    override var presenter: Presenter?= null
+    override var callbackCtx: Context?= context
+        set(v) {
+            field= v ?: context
+        }
 
     /**
      * Dipakai untuk judul pada TabLayout yang dipasang pada ViewPager
@@ -43,7 +53,7 @@ abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView {
 
     fun inflateView(c: Context, container: ViewGroup?, savedInstanceState: Bundle?): View{
         val v= if(!::layoutView.isInitialized){
-            ctx= c
+            callbackCtx= c
             isContextInit= true
             val infl= LayoutInflater.from(c)
             val vInt= onCreateView(infl, container, savedInstanceState)!!
@@ -64,7 +74,7 @@ abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView {
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(!isContextInit) ctx= context!!
+        if(!isContextInit) callbackCtx= context!!
         layoutView= view
         initView_int(view)
         initView(view)
@@ -77,6 +87,11 @@ abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView {
     override fun onDetach() {
         super.onDetach()
         Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is detached!!!")
+    }
+
+    override fun initView_int(layoutView: View) {
+        super.initView_int(layoutView)
+        presenter= initPresenter()
     }
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
@@ -97,4 +112,7 @@ abstract class SimpleAbsFrag : Fragment(), SimpleAbsActFragView {
         if(activity != null)
             func(activity!!)
     }
+
+    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
+    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 }
