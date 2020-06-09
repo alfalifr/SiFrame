@@ -208,7 +208,8 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
         return if(vp.currentItem > 0
             && vp.currentItem >= pageStartInd){
             if(vpFragListMark[vp.currentItem] == PAGE_MARK_START
-                && vpFragListMark[vp.currentItem -1] == PAGE_MARK_CONT
+                && (vpFragListMark[vp.currentItem -1] == PAGE_MARK_CONT
+                        || vpFragListMark[vp.currentItem -1] == PAGE_MARK_START)
             ){
                 false
             } else{
