@@ -17,7 +17,14 @@ object _ConfigBase {
 
     var INT_EMPTY= 0
 
+    var TEMPLATE_VIEW_ACT_BAR_TYPE= _Constant.TEMPLATE_VIEW_TYPE_ACT_BAR_DEFAULT
+
+
     var STRING_APP_NAME= R.string.app_name
+
+    var DIMEN_ACT_BAR_HEIGHT= R.dimen.act_bar_height
+    var DIMEN_ACT_BAR_OFFSET= R.dimen.act_bar_offset
+    var DIMEN_ACT_BAR_OFFSET_NEG= R.dimen.act_bar_offset_neg
 
     var LAYOUT_ACT_SIMPLE= R.layout._sif_act_simple
     var LAYOUT_ACT_SINGLE_FRAG= R.layout._sif_act_single_frag
@@ -32,6 +39,7 @@ object _ConfigBase {
     var LAYOUT_TXT_CENTER= R.layout._sif_page_txt_center
     var LAYOUT_RV= R.layout._sif_page_rv //R.layout.content_abs_rv
     var LAYOUT_VP= R.layout._sif_page_vp //R.layout.content_abs_rv
+    var LAYOUT_DL= R.layout._sif_page_drawer //R.layout.content_abs_rv
 
 
     var LAYOUT_COMP_ACT_BAR_DEFAULT= R.layout._sif_comp_action_bar_default
@@ -64,7 +72,13 @@ object _ConfigBase {
     var ID_RL_TOP_CONTAINER= R.id.rl_top_container
     var ID_RL_BOTTOM_CONTAINER= R.id.rl_bottom_container
     var ID_RL_MIDDLE_CONTAINER= R.id.rl_middle_container
-    var ID_LL_CONTENT_CONTAINER= R.id.ll_content_container
+
+    var ID_VG_START_DRAWER_CONTAINER= R.id.vg_start_drawer_container
+    var ID_VG_END_DRAWER_CONTAINER= R.id.vg_end_drawer_container
+//    var ID_SL_BOTTOM_DRAWER_CONTAINER= R.id.sl_bottom_drawer_container
+//    var ID_SL_TOP_DRAWER_CONTAINER= R.id.sl_top_drawer_container
+
+//    var ID_VG_CONTENT_CONTAINER= R.id.ll_content_container
     var ID_LL_BAR_ACT_CONTAINER= R.id.ll_bar_act_container
     var ID_LL_BAR_NAV_CONTAINER= R.id.bnv_bar_nav_container
     var ID_LL_SEARCH_CONTAINER_OUTER= R.id.ll_search_container_outer

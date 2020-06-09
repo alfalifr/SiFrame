@@ -7,11 +7,15 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import org.jetbrains.anko.layoutInflater
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
-import sidev.lib.android.siframe.adapter.SimpleAbsRecyclerViewAdapter
+import sidev.lib.android.siframe.adapter.RvAdp
+import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.util._ViewUtil
 
 
@@ -28,7 +32,7 @@ New
 ===============================
  */
 
-fun SimpleAbsRecyclerViewAdapter<*, *>.notifyDatasetChanged_ui(){
+fun RvAdp<*, *>.notifyDatasetChanged_ui(){
     ctx.runOnUiThread{
         notifyDataSetChanged_()
     }
@@ -56,6 +60,13 @@ fun View.iterateChildWithStop(func: (child: View) -> Boolean){
             } else break
         }
     }
+}
+
+fun Activity.getRootView(): View{
+    return this.findViewById<View>(android.R.id.content).rootView
+}
+fun Fragment.getRootView(): View?{
+    return this.view?.findViewById<View>(android.R.id.content)?.rootView
 }
 
 /**
@@ -120,6 +131,24 @@ fun View.detachFromParent(): Boolean{
         }
         else -> false
     }
+}
+
+fun View.setPadding_(left: Int= this.paddingLeft, top: Int= this.paddingTop, right: Int= this.paddingRight, bottom: Int= this.paddingBottom){
+    this.setPadding(left, top, right, bottom)
+}
+
+fun View.setChildPadding(childIndex: Int= 0, left: Int= this.paddingLeft, top: Int= this.paddingTop, right: Int= this.paddingRight, bottom: Int= this.paddingBottom){
+    val parent= when(this){
+        is ViewGroup -> this
+        else -> this.parent as ViewGroup
+    }
+//    val child
+//    val a= ListView
+    when(val child= parent.getChildAt(childIndex)){
+        is View -> child.setPadding(left, top, right, bottom)
+//        is Adp ->
+    }
+//    parent.getChildAt(childIndex).setPadding(left, top, right, bottom)
 }
 
 

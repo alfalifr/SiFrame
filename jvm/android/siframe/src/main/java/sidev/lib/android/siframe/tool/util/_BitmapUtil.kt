@@ -167,7 +167,7 @@ object _BitmapUtil{
     }
 
     fun from(c: Context, dir: String?= null, file: File?= null): Bitmap? {
-        Log.e("ActFragUtil", "getBitmap requestCode MASUK!!!")
+//        Log.e("ActFragUtil", "getBitmap requestCode MASUK!!!")
 
         val uri = try{ Uri.parse(dir) ?: File(dir!!).toUri() }
             catch (e: Exception){ file?.toUri() } //ActFragUtil.intent!!.data!!

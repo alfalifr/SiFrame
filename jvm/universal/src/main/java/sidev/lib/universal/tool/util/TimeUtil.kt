@@ -120,7 +120,7 @@ object TimeUtil {
             else -> diff
         }
 //        hours = if (hours < 0) -hours else hours
-        Log.e("TIME_UTIL", " :: diff= $diff out= $out res= $res")
+//        Log.e("TIME_UTIL", " :: diff= $diff out= $out res= $res")
         return res
     }
 }

@@ -10,6 +10,7 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.universal.tool.util.ThreadUtil
 
 interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     override val layoutId: Int
@@ -19,6 +20,14 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
     val vp: ViewPager
         get()= _sideBase_view.findViewById(_ConfigBase.ID_VP)
+/*
+        get(){
+            val parId= _sideBase_view.id
+            val callerFun= ThreadUtil.getCurrentCallerFunName(-1)
+            Log.e("ViewPagerActBase", "parId= $parId callerFun= $callerFun")
+            return _sideBase_view.findViewById(_ConfigBase.ID_VP)
+        }
+ */
     var vpFragList: Array<F>
 //    val viewPagerActViewView: View
     /**
@@ -48,7 +57,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     }
 
 
-    override fun _initInheritorBase() {
+    override fun ___initSideBase() {
         initVp()
     }
 
@@ -103,7 +112,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
             }
         })
-        Log.e("ADP_VP", "initVp() vpFragList.size= ${vpFragList.size}")
+//        Log.e("ADP_VP", "initVp() vpFragList.size= ${vpFragList.size}")
         vp.adapter= vpAdp
     }
     fun initFragList(): Array<F>?{
@@ -188,10 +197,10 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 vp.currentItem= vp.currentItem +1
                 true
             } else false
-            Log.e("pageForth", "vp.currentItem = ${vp.currentItem} vpFragListMark_int[vp.currentItem +1] = ${vpFragListMark[vp.currentItem]} bool = $bool")
+//            Log.e("pageForth", "vp.currentItem = ${vp.currentItem} vpFragListMark_int[vp.currentItem +1] = ${vpFragListMark[vp.currentItem]} bool = $bool")
             bool
         } else{
-            Log.e("pageForth", "Gak masuk vp.currentItem = ${vp.currentItem} pageEndInd = $pageEndInd vp.childCount =${vp.childCount} bool = false")
+//            Log.e("pageForth", "Gak masuk vp.currentItem = ${vp.currentItem} pageEndInd = $pageEndInd vp.childCount =${vp.childCount} bool = false")
             false
         }
     }

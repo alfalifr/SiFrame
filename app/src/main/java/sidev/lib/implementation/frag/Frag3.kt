@@ -10,7 +10,7 @@ class Frag3 : SimpleAbsFrag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
 
-    override fun initView(layoutView: View) {
+    override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag3"
         _ViewUtil.setBgColor(layoutView, R.color.merahMuda)
     }

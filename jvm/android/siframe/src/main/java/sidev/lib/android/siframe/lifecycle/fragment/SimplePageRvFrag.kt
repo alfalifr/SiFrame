@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import sidev.lib.android.siframe.adapter.SimpleAbsRecyclerViewAdapter
+import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 
 abstract class SimplePageRvFrag : SimpleAbsFrag(){
@@ -13,17 +13,17 @@ abstract class SimplePageRvFrag : SimpleAbsFrag(){
 
     lateinit var rv: RecyclerView
         protected set
-    lateinit var rvAdp: SimpleAbsRecyclerViewAdapter<*, *>
+    lateinit var rvAdp: RvAdp<*, *>
         protected set
     lateinit var pb: ProgressBar
         protected set
 
     var onRefreshListener: (() -> Unit)?= null
 
-    abstract fun initRvAdp(): SimpleAbsRecyclerViewAdapter<*, *>
+    abstract fun initRvAdp(): RvAdp<*, *>
 
-    override fun initView_int(layoutView: View) {
-        super.initView_int(layoutView)
+    override fun __initView(layoutView: View) {
+        super.__initView(layoutView)
         rv= layoutView.findViewById(_ConfigBase.ID_RV) //.rv
         layoutView.findViewById<SwipeRefreshLayout>(_ConfigBase.ID_SRL).setOnRefreshListener {
             onRefreshListener?.invoke()

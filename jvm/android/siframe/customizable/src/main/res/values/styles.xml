@@ -22,8 +22,8 @@
     </style>
 
     <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
-        <item name="android:height">@dimen/action_bar_height</item>
-        <item name="height">@dimen/action_bar_height</item>
+        <item name="android:height">@dimen/act_bar_height</item>
+        <item name="height">@dimen/act_bar_height</item>
         <item name="android:width">-1px</item>
     </style>
 

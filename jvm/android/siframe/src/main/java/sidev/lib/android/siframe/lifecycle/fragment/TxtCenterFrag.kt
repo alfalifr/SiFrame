@@ -10,7 +10,7 @@ open class TxtCenterFrag : SimpleAbsFrag(){
 
     open var txt: String= "Tidak ada data"
 
-    override fun initView(layoutView: View) {
+    override fun _initView(layoutView: View) {
         layoutView.findViewById<TextView>(_ConfigBase.ID_TV).text= txt
     }
 }

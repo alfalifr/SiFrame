@@ -13,9 +13,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 abstract class SimpleAbsBarContentNavAct_ViewPager_Simple
     : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(){
 
-    override fun initActBar(actBarView: View) {}
-    override fun initNavBar(navBarView: BottomNavigationView) {}
-    override fun initView(layoutView: View) {}
+    override fun _initActBar(actBarView: View) {}
+    override fun _initNavBar(navBarView: BottomNavigationView) {}
+    override fun _initView(layoutView: View) {}
 
     override var vpFragList: Array<SimpleAbsFrag> = arrayOf()
     override var vpFragListStartMark: Array<Int> = arrayOf()

@@ -5,10 +5,10 @@ import android.util.Log
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe.adapter.SimpleAbsRecyclerViewAdapter
+import sidev.lib.android.siframe.adapter.RvAdp
 
 class LinearLayoutManagerResp(c: Context) : LinearLayoutManager(c), LayoutManagerResp{
-    override var onLayoutCompletedListener: SimpleAbsRecyclerViewAdapter.OnLayoutCompletedListener?
+    override var onLayoutCompletedListener: RvAdp.OnLayoutCompletedListener?
         = null
 
     @CallSuper

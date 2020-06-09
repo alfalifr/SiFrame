@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.model.StringId
 
 class DialogListAdp(ctx: Context, dataList: ArrayList<StringId>?)
-    : SimpleAbsRecyclerViewAdapter<StringId, LinearLayoutManager>(ctx, dataList){
+    : RvAdp<StringId, LinearLayoutManager>(ctx, dataList){
     override val itemLayoutId: Int
         get() = _ConfigBase.LAYOUT_COMP_ITEM_TXT_DESC
 

@@ -8,6 +8,11 @@ fun <T> T?.notNull(f: (T) -> Unit): T? {
         f(this)
     return this
 }
+fun <T> T?.isNull(f: () -> Unit): T? {
+    if(this == null)
+        f()
+    return this
+}
 
 /*
 =============================

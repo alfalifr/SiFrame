@@ -1,6 +1,5 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
@@ -19,15 +19,19 @@ import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.presenter.PresenterCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
+import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
  * sbg pengganti dari AppCompatActivity
  */
-abstract class SimpleAbsAct : AppCompatActivity(),
+abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
     SimpleAbsActFragBase,
     PresenterCallback,
     BackBtnActBase {
+
+    override var isInherited: Boolean= false
+    override fun _configInheritable(){}
 
     override val lifecycleCtx: Context
         get() = this
@@ -69,23 +73,27 @@ abstract class SimpleAbsAct : AppCompatActivity(),
         setStyle(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
+//        Log.e("SimpleAbsAct", "onCreate isViewInitFirst= $isViewInitFirst name= ${this::class.java.simpleName}")
+//        val v=  findViewById<View>(android.R.id.content).rootView
+//        layoutView= v
 
-        Log.e("SimpleAbsAct", "onCreate isViewInitFirst= $isViewInitFirst name= ${this::class.java.simpleName}")
-
-        val v= findViewById<View>(android.R.id.content).getRootView()
-        layoutView= v
-
+        doWhenNotIherited {
+            ___initRootBase(this, getRootView())
+        }
+/*
         if(isViewInitFirst){
             Log.e("SimpleAbsAct", "::layoutView.isInitialized ${::layoutView.isInitialized} name= ${this::class.java.simpleName}")
-            initView_int(v)
-            initView(v)
+            __initView(v)
+            _initView(v)
         }
+ */
     }
 
-    override fun initView_int(layoutView: View) {
-        super.initView_int(layoutView)
+    override fun ___initRootBase(vararg args: Any) {
+        super.___initRootBase(*args)
         presenter= initPresenter()
     }
+
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
         return if(i != null) super.getIntentData(key, i, default)

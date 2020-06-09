@@ -64,13 +64,13 @@ object StaticManager: LifecycleObserver {
         staticObjList = null
     }
 
-    fun attachObj(obj: Any, key: String){
+    fun attachObj(key: String, obj: Any){
         if(staticObjList == null)
             staticObjList = HashMap()
         staticObjList!![key]= obj
         Log.e("StaticManager", "object attached obj::class.java.simpleName= ${obj::class.java.simpleName}")
     }
-    fun attachObjToLifecycle(obj: Any, key: String, lifecycleOwner: LifecycleOwner){
+    fun attachObjToLifecycle(key: String, obj: Any, lifecycleOwner: LifecycleOwner){
         if(staticObjList == null)
             staticObjList = HashMap()
         staticObjList!![getObjKeyForOwner(

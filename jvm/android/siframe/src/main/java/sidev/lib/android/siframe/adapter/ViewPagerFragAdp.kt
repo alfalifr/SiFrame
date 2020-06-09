@@ -1,9 +1,14 @@
 package sidev.lib.android.siframe.adapter
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.addView
+import java.lang.Exception
 import java.util.ArrayList
 /*
 //class ViewPagerFragAdp (var fm: FragmentManager, vararg items: SimpleAbsFrag): PagerAdapter(){
@@ -52,7 +57,7 @@ class ViewPagerFragAdp (val c: Context, vararg items: SimpleAbsFrag): PagerAdapt
 }
  */
 
-class ViewPagerFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : FragmentPagerAdapter(fm) {
+class ViewPagerFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : FragmentPagerAdapter(fm), Adp {
     var items: List<SimpleAbsFrag> = ArrayList()
         private set
 
@@ -60,6 +65,21 @@ class ViewPagerFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : Fragm
         for(item in items)
             (this.items as ArrayList).add(item)
     }
+
+    override fun getItemId(pos: Int): Long = super<FragmentPagerAdapter>.getItemId(pos)
+    override fun getItemCount(): Int= count
+    override fun getView(pos: Int): View? {
+        return try{ items[pos].layoutView }
+        catch (e: Exception){ null }
+    }
+
+/*
+    override fun instantiateItem(container: View, position: Int): Any {
+        val v= super.instantiateItem(container, position) as View
+        v.setPadding(v.paddingLeft, v.paddingTop +_ViewUtil.dpToPx(20f, v.context), v.paddingRight, v.paddingBottom)
+        return v
+    }
+ */
 
     init {
         for(element in items)
@@ -85,5 +105,4 @@ class ViewPagerFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : Fragm
     override fun getPageTitle(pos: Int): CharSequence? {
         return items[pos].fragTitle
     }
-
 }

@@ -13,9 +13,9 @@ interface BackBtnActBase: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _ConfigBase.INT_EMPTY
 
-    override fun _initInheritorBase() {}
+    override fun ___initSideBase() {}
 
-    fun registerBackBtnView_int(){
+    fun __registerBackBtnView(){
         backBtnViewList= registerBackBtnView()
         for(backBtn in backBtnViewList){
             backBtn.setOnClickListener{

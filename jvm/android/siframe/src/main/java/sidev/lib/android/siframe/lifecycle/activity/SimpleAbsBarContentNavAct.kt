@@ -1,13 +1,15 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.setChildPadding
 
 /**
  * Kelas dalam framework yang digunakan sbg Activity dg:
@@ -16,13 +18,21 @@ import sidev.lib.android.siframe.tool.util._ViewUtil
  * - NavBar (bar yang ada di bawah Activity)
  */
 abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
+/*
+    override var isInherited: Boolean= false
+    override fun _configInheritable() {
+        super.isInherited= true
+    }
+ */
+
     override val styleId: Int
         get() = _ConfigBase.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar
     override val layoutId: Int
         get() = _ConfigBase.LAYOUT_ACT_SIMPLE //R.layout.activity_simple
-
+/*
     override val isViewInitFirst: Boolean
         get() = false
+ */
     open val isContentLayoutInflatedFirst= true
 
     abstract val contentLayoutId: Int
@@ -31,53 +41,58 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
     open val menuId: Int?= null
 
     open val actBarViewContainerId= _ConfigBase.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container
-    open val contentViewContainerId= _ConfigBase.ID_LL_CONTENT_CONTAINER //R.id.ll_content_container
+    open val contentViewContainerId= _ConfigBase.ID_VG_CONTENT_CONTAINER //R.id.ll_content_container
     open val navBarId= _ConfigBase.ID_LL_BAR_NAV_CONTAINER //R.id.bnv_bar_nav_container
 
     /**
      * Harus dimodifikasi secara internal (private) agar tidak terjadi inkonsistensi
      */
-    lateinit var contentViewContainer: ViewGroup
-        private set
-    lateinit var actBarViewContainer: ViewGroup
-        private set
-    lateinit var navBar: BottomNavigationView
-        private set
+    protected open lateinit var contentViewContainer: ViewGroup
+    protected open lateinit var actBarViewContainer: ViewGroup
+    protected open lateinit var navBar: BottomNavigationView
 
-    abstract fun initActBar(actBarView: View)
-    abstract fun initNavBar(navBarView: BottomNavigationView)
+    abstract fun _initActBar(actBarView: View)
+    abstract fun _initNavBar(navBarView: BottomNavigationView)
 /*
     abstract fun initView(contentView: View)
     @CallSuper
     protected open fun initView_int(contentView: View){}
  */
-
+/*
     override fun onCreate(savedInstanceState: Bundle?) {
 //        setTheme(R.style.AppThemeNoActionBar)
 //        Log.e("SimpleAbsBarContentNavAct", "onCreate ===AWAL===== name: ${this::class.java.simpleName} ")
         super.onCreate(savedInstanceState)
 //        Log.e("SimpleAbsBarContentNavAct", "onCreate ===AKHIR===== name: ${this::class.java.simpleName} ")
+        doWhenNotIherited {
+            ___initRootBase(this, getRootView())
+        }
+    }
+ */
+
+    override fun __initViewFlow(rootView: View) {
+//        Log.e("BarContentNavAct", "__initViewFlow className= ${this::class.java.simpleName}")
         supportActionBar?.hide()
-//        setContentView(R.layout.activity_simple)
 
         initViewRoot()
         inflateAndFillViewStructure()
 
-        registerBackBtnView_int()
+        __registerBackBtnView()
         registerBackBtnView(actBarViewContainer.findViewById(_ConfigBase.ID_IV_BACK)) //R.id.iv_back
 
-        val actTitle= getIntentData<String?>(_SIF_Constant.EXTRA_TITLE) ?: this::class.java.simpleName
+        val actTitle= getIntentData(_SIF_Constant.EXTRA_TITLE) ?: this::class.java.simpleName
 //        if(actTitle != null)
-            setActBarTitle(actTitle)
+        setActBarTitle(actTitle)
 
-        initActBar(actBarViewContainer.getChildAt(0))
-        if(contentViewContainer.childCount > 0){
-//            Log.e("SimpleAbsBarContentNavAct", "onCreate layoutView==null = ${layoutView==null}")
-            initView_int(contentViewContainer.getChildAt(0))
-            initView(contentViewContainer.getChildAt(0))
+        _initActBar(actBarViewContainer.getChildAt(0))
+        if(isViewInitFirst && contentViewContainer.childCount > 0){
+//            Log.e("BarContentNavAct", "__initViewFlow className= ${this::class.java.simpleName} isViewInitFirst==false = ${!isViewInitFirst}")
+            __initView(rootView)
+            _initView(contentViewContainer.getChildAt(0))
         }
-        initNavBar(navBar)
+        _initNavBar(navBar)
     }
+
 
     private fun initViewRoot(){
         contentViewContainer= findViewById(contentViewContainerId) //ll_content_container
@@ -90,13 +105,15 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
             if(actBarId != _ConfigBase.LAYOUT_COMP_ACT_BAR_DEFAULT)
                 layoutInflater.inflate(actBarId, actBarViewContainer, false)
             else
-                _ViewUtil.Template.actBar_Primary(this)
+                _ViewUtil.Template.actBar_Primary(this, _ConfigBase.TEMPLATE_VIEW_ACT_BAR_TYPE)
         actBarViewContainer.addView(actBar)
 
         if(isContentLayoutInflatedFirst && contentLayoutId > 0){
             val contentView= layoutInflater.inflate(contentLayoutId, contentViewContainer, false)
             contentViewContainer.addView(contentView)
         }
+        val topPadding= _ResUtil.getDimen(this, _ConfigBase.DIMEN_ACT_BAR_OFFSET)
+        contentViewContainer.setChildPadding(top= topPadding.toInt())
 
         if(menuId != null)
             navBar.inflateMenu(menuId!!)

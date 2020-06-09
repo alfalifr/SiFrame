@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="201dp"
+    android:height="171dp"
+    android:viewportWidth="201"
+    android:viewportHeight="171">
+
+    <path
+        android:fillColor="#fff"
+        android:fillAlpha="1.00"
+        android:strokeAlpha="1.00"
+        android:strokeWidth="1"
+        android:pathData="M 90.49 6.41 C 94.88 -1.13 107.10 -0.91 111.25 6.73 C 140.38 54.94 169.42 103.21 198.53 151.43 C 200.91 155.00 201.52 159.74 199.63 163.66 C 197.72 168.09 193.07 170.65 188.40 171.00 L 14.06 171.00 C 10.42 170.80 6.60 169.75 4.10 166.93 C 0.23 162.96 -0.27 156.39 2.78 151.81 C 32.02 103.34 61.20 54.84 90.49 6.41 Z" />
+</vector>

@@ -7,9 +7,9 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 
 
 class SingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav(){
-    override fun initActBar(actBarView: View) {}
-    override fun initNavBar(navBarView: BottomNavigationView) {}
-    override fun initView(layoutView: View) {}
+    override fun _initActBar(actBarView: View) {}
+    override fun _initNavBar(navBarView: BottomNavigationView) {}
+    override fun _initView(layoutView: View) {}
 }
 
 /*

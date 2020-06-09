@@ -18,10 +18,7 @@ import android.transition.TransitionManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -283,7 +280,7 @@ object  _ViewUtil{
             if (isDirLocal) url
             else _ConfigBase.ENDPOINT_ROOT + url
 
-        Log.e("SERVER_UTIL", "isDirLocal= $isDirLocal url= $url dir= $dir")
+//        Log.e("SERVER_UTIL", "isDirLocal= $isDirLocal url= $url dir= $dir")
 
         if(!isDirLocal){
             var dim = 500
@@ -328,15 +325,27 @@ object  _ViewUtil{
      * Untuk templating view dari SiFrame.
      */
     object Template{
-        fun actBar_Primary(c: Context): View {
+        object Type{
+            val ACT_BAR_DEFAULT= 0
+            val ACT_BAR_SQUARE= 1
+        }
+        fun actBar_Primary(c: Context, type: Int= Type.ACT_BAR_DEFAULT): View {
             val actBar= c.inflate(_ConfigBase.LAYOUT_COMP_ACT_BAR_DEFAULT) as ViewGroup
             val bg= c.inflate(_ConfigBase.LAYOUT_BG_COMP_ACT_BAR_DEFAULT) as ImageView
+            if(type == Type.ACT_BAR_SQUARE)
+                bg.setImageResource(_ColorRes.COLOR_PRIMARY_DARK)
+
             val tvTitle= actBar.findViewById<TextView>(_ConfigBase.ID_TV_TITLE)
             val ivBack= actBar.findViewById<ImageView>(_ConfigBase.ID_IV_BACK)
             
             actBar.removeViewAt(0)
             actBar.addView(bg, 0)
-
+/*
+            actBar.layoutParams= RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                _ResUtil.getDimen(c, _ConfigBase.DIMEN_ACT_BAR_HEIGHT).toInt()
+            )
+ */
             setColor(bg, _ColorRes.COLOR_PRIMARY_DARK)
             setColor(ivBack, _ColorRes.COLOR_LIGHT)
             tvTitle.textColorResource= _ColorRes.TEXT_LIGHT

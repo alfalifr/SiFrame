@@ -1,11 +1,10 @@
 package sidev.lib.implementation.act
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
-import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.customizable.view.intfc.ModableView
+//import sidev.lib.android.siframe.intfc.customview.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
@@ -33,14 +32,16 @@ class ViewPagerAct : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMi
         get() = R.layout.comp_nav_arrow
 
 
-    override fun initActBar(actBarView: View) {}
-    override fun initNavBar(navBarView: BottomNavigationView) {}
-    override fun initView(layoutView: View) {
-        _initTopMiddleBottomView(layoutView)
+    override fun _initActBar(actBarView: View) {}
+    override fun _initNavBar(navBarView: BottomNavigationView) {}
+    override fun _initView(layoutView: View) {
+        __initTopMiddleBottomView(layoutView)
     }
 
-    override fun initBottomView(bottomView: View) {
+    override fun _initBottomView(bottomView: View) {
         bottomView.iv_arrow_back.setOnClickListener { pageBackward() }
         bottomView.iv_arrow_forth.setOnClickListener { pageForth() }
     }
+    override fun _initTopView(topView: View) {}
+    override fun _initMiddleView(middleView: View) {}
 }

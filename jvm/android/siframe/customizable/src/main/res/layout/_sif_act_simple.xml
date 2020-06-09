@@ -6,19 +6,21 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/ll_bar_act_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
-
-    <LinearLayout
-        android:id="@+id/ll_content_container"
+        android:id="@+id/vg_content_container"
         android:layout_below="@id/ll_bar_act_container"
         android:layout_above="@id/bnv_bar_nav_container"
+        android:layout_marginTop="@dimen/act_bar_offset_neg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/putih"/>
+
+    <LinearLayout
+        android:id="@+id/ll_bar_act_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:elevation="10dp"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:visibility="gone"

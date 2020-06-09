@@ -6,8 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
-import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
@@ -54,14 +52,14 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
 
 
-    override fun _initInheritorBase() {
-        super<ViewPagerActBase>._initInheritorBase()
+    override fun ___initSideBase() {
+        super<ViewPagerActBase>.___initSideBase()
     }
 
-    override fun initView_int(contentView: View) {
-        super.initView_int(contentView)
+    override fun __initView(contentView: View) {
+        super.__initView(contentView)
 //        initVp()
-        _initInheritorBase()
+        ___initSideBase()
 //        _initTopMiddleBottomView(contentView)
         addOnBackBtnListener {
             pageBackward()

@@ -50,7 +50,9 @@
     <!-- chat section -->
     <dimen name="corner_chat">20dp</dimen>
 
-    <dimen name="action_bar_height">65dp</dimen>
+    <dimen name="act_bar_height">65dp</dimen>
+    <dimen name="act_bar_offset">20dp</dimen>
+    <dimen name="act_bar_offset_neg">-20dp</dimen>
 
 
     <dimen name="padding_btn_horizontal">17dp</dimen>
@@ -59,4 +61,6 @@
     <dimen name="padding_btn_vertical_sm">4dp</dimen>
 
     <dimen name="margin_bar_fill_between">7dp</dimen>
+
+    <dimen name="drawer_horizontal_width">400dp</dimen>
 </resources>

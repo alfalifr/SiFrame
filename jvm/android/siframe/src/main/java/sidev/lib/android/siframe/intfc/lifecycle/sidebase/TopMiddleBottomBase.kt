@@ -26,7 +26,7 @@ interface TopMiddleBottomBase: LifecycleSideBase {
     val bottomLayoutId: Int
         get()= _ConfigBase.INT_EMPTY
 
-    fun _initTopMiddleBottomView(layoutView: View){
+    fun __initTopMiddleBottomView(layoutView: View){
         topContainer= try{ layoutView.findViewById(topContainerId) } catch (e: Exception){ null }
         middleContainer= try{ layoutView.findViewById(middleContainerId) } catch (e: Exception){ null }
         bottomContainer= try{ layoutView.findViewById(bottomContainerId) } catch (e: Exception){ null }
@@ -36,27 +36,27 @@ interface TopMiddleBottomBase: LifecycleSideBase {
             c.inflate(topLayoutId, topContainer as ViewGroup)
                 .notNull { v ->
                     (topContainer as ViewGroup).addView(v)
-                    initTopView(v)
+                    _initTopView(v)
                 }
         }
         if(middleContainer != null){
             c.inflate(middleLayoutId, middleContainer as ViewGroup)
                 .notNull { v ->
                     (middleContainer as ViewGroup).addView(v)
-                    initMiddleView(v)
+                    _initMiddleView(v)
                 }
         }
         if(bottomContainer != null){
             c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
                 .notNull { v ->
                     (bottomContainer as ViewGroup).addView(v)
-                    initBottomView(v)
+                    _initBottomView(v)
                 }
         }
         //initTopView()
     }
 
-    fun initTopView(topView: View){}
-    fun initMiddleView(middleView: View){}
-    fun initBottomView(bottomView: View){}
+    fun _initTopView(topView: View)
+    fun _initMiddleView(middleView: View)
+    fun _initBottomView(bottomView: View)
 }

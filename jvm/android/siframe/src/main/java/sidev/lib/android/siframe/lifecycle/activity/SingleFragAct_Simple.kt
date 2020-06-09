@@ -8,7 +8,7 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 
 
 class SingleFragAct_Simple: SingleFragAct(){
-    override fun initView(layoutView: View) {}
+    override fun _initView(layoutView: View) {}
 }
 
 /*

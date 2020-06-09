@@ -26,9 +26,9 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     var isDataAsync: Boolean //= false
 
 
-    override fun _initInheritorBase() {
+    override fun ___initSideBase() {
         isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
-        initFrag()
+        __initFrag()
 
         /**
          * Karena jika fragment langsung dipasang ke container, maka data pada fragment gak bisa direload.
@@ -36,7 +36,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
          */
         isDataAsync= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)!! //getIntentData(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)
         if(!isDataAsync)
-            attachFrag()
+            __attachFrag()
     }
 
     /*  override fun onStart() {
@@ -45,7 +45,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
       }
   */
 
-    fun initFrag(){
+    fun __initFrag(){
         if(isFragLate) {
             val fragTrans= _sideBase_fm.beginTransaction()
             fragTrans.replace(fragContainerId, fragment)
@@ -53,7 +53,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
         }
     }
 
-    fun attachFrag(){
+    fun __attachFrag(){
         _sideBase_ctx.commitFrag(fragContainerId, fragment)
     }
 }

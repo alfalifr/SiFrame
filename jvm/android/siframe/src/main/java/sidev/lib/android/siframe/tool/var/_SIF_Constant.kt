@@ -14,28 +14,36 @@ object _SIF_Constant{
     val EXTRA_TITLE= "title"
     val CALLING_LIFECYCLE= "calling_lifecycle"
 
+    const val PROP_STACK= "::STACK"
 
-//    const val EXTRA_CLASS_NAME= "class_name"
+    //    const val EXTRA_CLASS_NAME= "class_name"
     const val EXTRA_TYPE_LATE= "type_late"
     const val EXTRA_DATA_ASYNC= "data_async"
 
     val BLOCK_VIEW_TAG= "block_view"
 
+    const val STATIC_BOOLEAN= "stat_bool"
+    const val STATIC_BOOLEAN_TYPE= "HashMap<String, Boolean>"
+
     /**
      * Tidak untuk dirubah oleh koder!!!
      */
     var REG_ACT_FUN_REGISTERER_NAME= ""
+/*
         set(v){
             field= v
             Log.e("_SIF_Constant", "REG_ACT_FUN_REGISTERER_NAME= $v")
         }
+ */
     
     /**
      * Tidak untuk dirubah oleh koder!!!
      */
     var REG_FRAG_FUN_REGISTERER_NAME= ""
+/*
         set(v){
             field= v
             Log.e("_SIF_Constant", "REG_FRAG_FUN_REGISTERER_NAME= $v")
         }
+ */
 }

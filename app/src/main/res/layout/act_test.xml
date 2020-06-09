@@ -10,7 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
         <TextView
             android:layout_margin="10dp"
             android:padding="10dp"
@@ -20,6 +22,27 @@
             android:textColor="@color/hitam"
             android:text="To ViewPagerAct"
             android:onClick="toVpAct"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="To DrawerAct"
+            android:onClick="toDrawerAct"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="To VpDrawerAct"
+            android:onClick="toVpDrawerAct"/>
+
     </LinearLayout>
 
 </ScrollView>

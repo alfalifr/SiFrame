@@ -1,6 +1,7 @@
 package sidev.lib.universal.tool.util
 
 import android.os.Handler
+import android.util.Log
 
 object ThreadUtil{
     fun delayRun(millis: Long, func: () -> Unit){
@@ -9,13 +10,13 @@ object ThreadUtil{
 
     fun getStackFunName(ind: Int): String {
         val stackTrace= Thread.currentThread().stackTrace
-/*
+
         for((i, stack) in stackTrace.withIndex()){
             val funName= stack.methodName
             val className= stack.className
             Log.e("ThreadUtil", "i= $i $className.$funName()")
         }
- */
+
         val stack= stackTrace[ind]
         val funName= stack.methodName
         val className= stack.className

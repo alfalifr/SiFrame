@@ -67,7 +67,7 @@ object _ActFragUtil: ResetableUtil {
     fun blockLayout(c: Context): View? {
         val currentAct= try{ ActManager.peekStack() } //try{ (c.applicationContext as BaseApp).currentAct }
             catch (castExc: ClassCastException){
-                Log.e("_ActFragUtil", "blockLayout c is Activity = ${c is Activity}")
+//                Log.e("_ActFragUtil", "blockLayout c is Activity = ${c is Activity}")
                 if(c is Activity) c
                 else null
             }
@@ -91,7 +91,7 @@ object _ActFragUtil: ResetableUtil {
     fun openLayoutBlock(c: Context): Boolean {
         val currentAct= try{ ActManager.peekStack() } //try{ (c.applicationContext as BaseApp).currentAct }
         catch (castExc: ClassCastException){
-            Log.e("_ActFragUtil", "blockLayout c is Activity = ${c is Activity}")
+//            Log.e("_ActFragUtil", "blockLayout c is Activity = ${c is Activity}")
             if(c is Activity) c
             else null
         }
@@ -106,7 +106,7 @@ object _ActFragUtil: ResetableUtil {
     }
 
     fun getResult(act: Activity, requestCode: Int, resultCode: Int, intent: Intent?): Result {
-        Log.e("ActFragUtil", "getResult requestCode == Constants.PICK_IMAGE_GALLERY_REQUEST = ${requestCode == _SIF_Constant.REQ_PICK_GALLERY}")
+//        Log.e("ActFragUtil", "getResult requestCode == Constants.PICK_IMAGE_GALLERY_REQUEST = ${requestCode == _SIF_Constant.REQ_PICK_GALLERY}")
         this.act= act
         this.requestCode= requestCode
         this.resultCode= resultCode
@@ -120,12 +120,12 @@ object _ActFragUtil: ResetableUtil {
     object Result{
         fun getBitmap(func: (bm: Bitmap, imgPath: String, imgFile: File?) -> Unit): Result? {
             actNotNull {
-                Log.e("ActFragUtil", "getBitmap requestCode == Constants.PICK_IMAGE_GALLERY_REQUEST = ${requestCode == _SIF_Constant.REQ_PICK_GALLERY}")
+//                Log.e("ActFragUtil", "getBitmap requestCode == Constants.PICK_IMAGE_GALLERY_REQUEST = ${requestCode == _SIF_Constant.REQ_PICK_GALLERY}")
                 if (requestCode == _SIF_Constant.REQ_PICK_GALLERY
                     && resultCode == AppCompatActivity.RESULT_OK
                     && intent != null && intent!!.data != null) {
 
-                    Log.e("ActFragUtil", "getBitmap requestCode MASUK!!!")
+//                    Log.e("ActFragUtil", "getBitmap requestCode MASUK!!!")
                     val uri = intent!!.data!!
                     try {
                         var bitmap = MediaStore.Images.Media.getBitmap(act!!.contentResolver, uri)

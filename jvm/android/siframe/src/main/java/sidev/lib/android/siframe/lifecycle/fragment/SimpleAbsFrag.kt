@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe.customizable._init._ConfigBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
@@ -43,7 +44,7 @@ abstract class SimpleAbsFrag : Fragment(),
  */
 
     override var presenter: Presenter?= null
-    override var callbackCtx: Context?= context
+    override var callbackCtx: Context?= null
         set(v) {
             field= v ?: context
         }
@@ -80,11 +81,13 @@ abstract class SimpleAbsFrag : Fragment(),
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(!isContextInit) callbackCtx= context!!
+        ___initRootBase(act, view)
+/*
         layoutView= view
-        initView_int(view)
-        initView(view)
-
-        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
+        __initView(view)
+        _initView(view)
+ */
+//        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
         listener_onViewCreated?.onViewCreated_(view, savedInstanceState)
     }
 
@@ -94,8 +97,8 @@ abstract class SimpleAbsFrag : Fragment(),
         Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is detached!!!")
     }
 
-    override fun initView_int(layoutView: View) {
-        super.initView_int(layoutView)
+    override fun __initView(layoutView: View) {
+        super.__initView(layoutView)
         presenter= initPresenter()
     }
 

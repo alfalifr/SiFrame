@@ -28,13 +28,13 @@ abstract class SingleFragAct: SimpleAbsAct(), SingleFragActBase {
     override var isDataAsync: Boolean= false
 
 
-    override fun _initInheritorBase() {
-        super<SingleFragActBase>._initInheritorBase()
+    override fun ___initSideBase() {
+        super<SingleFragActBase>.___initSideBase()
     }
 
-    override fun initView_int(layoutView: View) {
-        super.initView_int(layoutView)
-        _initInheritorBase()
+    override fun __initView(layoutView: View) {
+        super.__initView(layoutView)
+        ___initSideBase()
     }
 
     /*
