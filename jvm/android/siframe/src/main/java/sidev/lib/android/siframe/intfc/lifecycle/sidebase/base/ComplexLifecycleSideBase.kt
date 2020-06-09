@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import sidev.lib.android.siframe.customizable._init._ConfigBase
 
 /**
  * Isi fun memiliki nama berawal _ bertujuan agar tidak dipanggil pada implementasi.

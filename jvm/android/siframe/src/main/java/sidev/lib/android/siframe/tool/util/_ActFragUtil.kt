@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.util.ResetableUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
@@ -55,7 +55,7 @@ object _ActFragUtil: ResetableUtil {
     }
 
     fun getRootView(act: Activity): View {
-        return act.findViewById<View>(_ConfigBase.ExternalRef.ID_CONTENT).rootView
+        return act.findViewById<View>(_Config.ExternalRef.ID_CONTENT).rootView
     }
 
     /**

@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.lifecycle.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +12,7 @@ import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.jetbrains.anko.support.v4.act
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
@@ -29,7 +30,7 @@ abstract class SimpleAbsFrag : Fragment(),
     val actBarContentNavAct
         get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
-        get() = _ConfigBase.STYLE_APP
+        get() = _Config.STYLE_APP
     override lateinit var layoutView: View
     override val lifecycleCtx: Context
         get() = context!!
@@ -75,11 +76,13 @@ abstract class SimpleAbsFrag : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} onCreateView!!!")
         return inflater.inflate(layoutId, container, false)
     }
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} onViewCreated!!!")
         if(!isContextInit) callbackCtx= context!!
         ___initRootBase(act, view)
 /*
@@ -89,6 +92,15 @@ abstract class SimpleAbsFrag : Fragment(),
  */
 //        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
         listener_onViewCreated?.onViewCreated_(view, savedInstanceState)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is attached to context!!!")
+    }
+    override fun onAttach(act: Activity) {
+        super.onAttach(act)
+        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is attached to activity!!!")
     }
 
     @CallSuper

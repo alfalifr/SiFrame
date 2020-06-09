@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 
 
 abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
@@ -20,7 +20,7 @@ abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
     protected set
 //    lateinit var adp: DialogListAdapter
 //    lateinit var rv: RecyclerView
-    protected val layoutContainerId= _ConfigBase.LAYOUT_DIALOG_CONTAINER //R.layout.dialog_container_cardview
+    protected val layoutContainerId= _Config.LAYOUT_DIALOG_CONTAINER //R.layout.dialog_container_cardview
     protected val layoutContainerView: View
     protected abstract val layoutId: Int
     protected val layoutView: View
@@ -33,7 +33,7 @@ abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
     init{
         layoutView= LayoutInflater.from(c).inflate(layoutId, null, false)
         layoutContainerView= LayoutInflater.from(c).inflate(layoutContainerId, null, false) //as ViewGroup
-        layoutContainerView.findViewById<LinearLayout>(_ConfigBase.ID_VG_CONTENT_CONTAINER) //
+        layoutContainerView.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //
             .addView(layoutView)
         dialog= AlertDialog.Builder(c)
             .setView(layoutContainerView)
@@ -55,14 +55,14 @@ abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
     }
 
     open fun setTitle(title: String): T {
-        layoutContainerView.findViewById<TextView>(_ConfigBase.ID_TV_TITLE).text= title //tv_title.text= title
+        layoutContainerView.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //tv_title.text= title
         return this as T
     }
 
     open fun showTitle(show: Boolean= true): T {
         val vis= if(show) View.VISIBLE
             else View.GONE
-        layoutContainerView.findViewById<TextView>(_ConfigBase.ID_TV_TITLE).visibility= vis //.tv_title.visibility= vis
+        layoutContainerView.findViewById<TextView>(_Config.ID_TV_TITLE).visibility= vis //.tv_title.visibility= vis
         return this as T
     }
 

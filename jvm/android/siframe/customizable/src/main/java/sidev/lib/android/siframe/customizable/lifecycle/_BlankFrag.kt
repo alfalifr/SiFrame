@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe.lifecycle.fragment
+package sidev.lib.android.siframe.customizable.lifecycle
 
 import android.os.Bundle
 import android.view.LayoutInflater

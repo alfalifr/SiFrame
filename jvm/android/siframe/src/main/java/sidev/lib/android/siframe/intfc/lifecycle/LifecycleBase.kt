@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 
 /**
  * <8 Juni 2020> => Sementara hanya sbg penanda (marker)
@@ -22,5 +22,5 @@ import sidev.lib.android.siframe.customizable._init._ConfigBase
 interface LifecycleBase{
     val layoutId: Int
     val styleId: Int
-        get() = _ConfigBase.STYLE_APP
+        get() = _Config.STYLE_APP
 }

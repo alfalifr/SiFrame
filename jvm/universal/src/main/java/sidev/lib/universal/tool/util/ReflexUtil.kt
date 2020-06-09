@@ -6,6 +6,16 @@ object ReflexUtil {
 newInstance
 ======================
 */
+    fun <I> newInstance(className: String): I {
+        return Class.forName(className)
+            .newInstance() as I
+    }
+
+    inline fun <reified I> newInstance(): I {
+        return Class.forName(I::class.java.name)
+            .newInstance() as I
+    }
+
     inline fun <reified I, reified C> newInstance(vararg arg: C): I {
         return Class.forName(I::class.java.name)
             .getConstructor(C::class.java)

@@ -1,7 +1,7 @@
 package sidev.lib.android.siframe.lifecycle.app
 
 import android.app.Application
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
 import kotlin.system.exitProcess
@@ -34,7 +34,7 @@ open class BaseApp: Application(){
         logHpError= LogHP(this)
         logHpError.letakFolder("Error")
 
-        if(_ConfigBase.DEBUG){
+        if(_Config.DEBUG){
             Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
                 LogApp.e(throwable::class.java.simpleName, throwable.message, throwable)
                 try{

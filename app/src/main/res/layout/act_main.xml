@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="sidev.lib.implementation.act.TestAct"
+    tools:context="sidev.lib.implementation.act.MainAct"
     tools:ignore="MissingConstraints" >
 
     <LinearLayout
@@ -42,6 +42,16 @@
             android:textColor="@color/hitam"
             android:text="To VpDrawerAct"
             android:onClick="toVpDrawerAct"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="To SingleFragAct"
+            android:onClick="toSingleFragAct"/>
 
     </LinearLayout>
 

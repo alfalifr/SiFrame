@@ -2,15 +2,15 @@ package sidev.lib.android.siframe.lifecycle.fragment
 
 import android.view.View
 import android.widget.TextView
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 
 open class TxtCenterFrag : SimpleAbsFrag(){
     override val layoutId: Int
-        get() = _ConfigBase.LAYOUT_TXT_CENTER //R.layout._t_frag_txt_center
+        get() = _Config.LAYOUT_TXT_CENTER //R.layout._t_frag_txt_center
 
     open var txt: String= "Tidak ada data"
 
     override fun _initView(layoutView: View) {
-        layoutView.findViewById<TextView>(_ConfigBase.ID_TV).text= txt
+        layoutView.findViewById<TextView>(_Config.ID_TV).text= txt
     }
 }

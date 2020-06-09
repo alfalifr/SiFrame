@@ -61,3 +61,7 @@ fun setStatic(key: String, obj: Any){
     StaticManager.attachObj(key, obj)
 }
 
+fun removeStatic(key: String){
+    StaticManager.removeObj(key)
+}
+

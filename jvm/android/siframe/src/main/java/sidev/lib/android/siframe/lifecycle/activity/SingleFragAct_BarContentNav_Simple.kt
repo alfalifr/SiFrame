@@ -3,10 +3,11 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.customizable._init._ConfigBase
 
 
 class SingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav(){
+    override lateinit var fragment: Fragment
+
     override fun _initActBar(actBarView: View) {}
     override fun _initNavBar(navBarView: BottomNavigationView) {}
     override fun _initView(layoutView: View) {}

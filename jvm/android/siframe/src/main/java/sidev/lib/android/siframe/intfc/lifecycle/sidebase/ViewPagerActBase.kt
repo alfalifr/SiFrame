@@ -1,25 +1,23 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
-import sidev.lib.universal.tool.util.ThreadUtil
 
 interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     override val layoutId: Int
-        get() = _ConfigBase.LAYOUT_VP
+        get() = _Config.LAYOUT_VP
 
     var onPageFragActiveListener: HashMap<Int, OnPageFragActiveListener>
 
     val vp: ViewPager
-        get()= _sideBase_view.findViewById(_ConfigBase.ID_VP)
+        get()= _sideBase_view.findViewById(_Config.ID_VP)
 /*
         get(){
             val parId= _sideBase_view.id

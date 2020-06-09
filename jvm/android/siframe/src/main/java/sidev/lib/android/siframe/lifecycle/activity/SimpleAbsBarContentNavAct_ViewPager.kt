@@ -54,13 +54,6 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
 
     override fun ___initSideBase() {
         super<ViewPagerActBase>.___initSideBase()
-    }
-
-    override fun __initView(contentView: View) {
-        super.__initView(contentView)
-//        initVp()
-        ___initSideBase()
-//        _initTopMiddleBottomView(contentView)
         addOnBackBtnListener {
             pageBackward()
 /*
@@ -72,4 +65,12 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
  */
         }
     }
+/*
+    override fun __initView(contentView: View) {
+        super.__initView(contentView)
+//        initVp()
+        ___initSideBase()
+//        _initTopMiddleBottomView(contentView)
+    }
+ */
 }

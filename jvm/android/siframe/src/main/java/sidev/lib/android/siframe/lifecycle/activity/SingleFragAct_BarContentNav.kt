@@ -27,8 +27,8 @@ abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleF
     override val _sideBase_fm: FragmentManager
         get() = supportFragmentManager
 
-    override lateinit var fragment: Fragment
-    override var isFragLate: Boolean= false
+//    override lateinit var fragment: Fragment
+//    override var isFragLate: Boolean= false
     override var isDataAsync: Boolean= false
 
     override fun ___initSideBase() {

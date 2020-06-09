@@ -1,7 +1,7 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 
@@ -11,7 +11,7 @@ interface BackBtnActBase: ComplexLifecycleSideBase {
     var onBackPressedListenerList: ArrayList<OnBackPressedListener>
 
     override val layoutId: Int
-        get() = _ConfigBase.INT_EMPTY
+        get() = _Config.INT_EMPTY
 
     override fun ___initSideBase() {}
 

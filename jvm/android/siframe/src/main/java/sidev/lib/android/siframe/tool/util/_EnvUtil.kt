@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build
 import android.os.Environment
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 
 
 object _EnvUtil{
@@ -13,7 +13,7 @@ object _EnvUtil{
 
     fun projectDir(c: Context): String{
         var dir= Environment.getExternalStorageDirectory().absolutePath
-        dir += "/" +_ResUtil.getString(c, _ConfigBase.STRING_APP_NAME) //+c.resources.getString(_ConfigBase.STRING_APP_NAME) //R.string.app_name
+        dir += "/" +_ResUtil.getString(c, _Config.STRING_APP_NAME) //+c.resources.getString(_ConfigBase.STRING_APP_NAME) //R.string.app_name
         return dir
     }
     fun projectTempDir(c: Context): String{
@@ -22,7 +22,7 @@ object _EnvUtil{
 
     fun projectLogDir(c: Context): String{
         return Environment.getExternalStorageDirectory().absolutePath + "/Android/Develop/LogHP/" +
-                _ResUtil.getString(c, _ConfigBase.STRING_APP_NAME)
+                _ResUtil.getString(c, _Config.STRING_APP_NAME)
     }
 
     fun getVersionName(c: Context): String{

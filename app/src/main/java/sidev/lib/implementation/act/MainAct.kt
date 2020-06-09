@@ -2,18 +2,17 @@ package sidev.lib.implementation.act
 
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.act_test.*
-import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.customizable._init._Constant
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
+import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
 import sidev.lib.implementation.R
+import sidev.lib.implementation.frag.Frag4
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class TestAct : SimpleAbsBarContentNavAct() {
+class MainAct : SimpleAbsBarContentNavAct() {
     override val contentLayoutId: Int
-        get() = R.layout.act_test
+        get() = R.layout.act_main
 
     override fun _initActBar(actBarView: View) {
         setActBarTitle("TestAct...")
@@ -36,4 +35,5 @@ class TestAct : SimpleAbsBarContentNavAct() {
     fun toVpAct(v: View)= startAct<ViewPagerAct>()
     fun toDrawerAct(v: View)= startAct<DrawerImplAct>()
     fun toVpDrawerAct(v: View)= startAct<VpDrawerAct>()
+    fun toSingleFragAct(v: View)= startSingleFragAct_config<Frag4>() //startAct<VpDrawerAct>()
 }

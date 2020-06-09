@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
@@ -87,7 +87,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         protected set
 
     abstract val itemLayoutId: Int
-    val itemContainerLayoutId= _ConfigBase.LAYOUT_ITEM_ADP_CONTAINER //R.layout._t_item_adp_container
+    val itemContainerLayoutId= _Config.LAYOUT_ITEM_ADP_CONTAINER //R.layout._t_item_adp_container
 
     var isCheckIndicatorShown= false
         set(v){
@@ -115,11 +115,11 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
             else (selectedItemPos_list?.indexOf(pos) ?: -1) >= 0
 
         if(proceedVis){
-            v.findViewById<ImageView>(_ConfigBase.ID_IV_CHECK) //R.id.iv_check
+            v.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
                 ?.visibility=
                     if(isCheckIndicatorShown) View.VISIBLE
                     else View.GONE
-            v.findViewById<ImageView>(_ConfigBase.ID_IV_OVERLAY) //R.id.iv_overlay
+            v.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
                 ?.visibility=
                     if(isOverlayShown) View.VISIBLE
                     else View.GONE
@@ -135,7 +135,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         val v= LayoutInflater.from(ctx).inflate(itemContainerLayoutId, parent, false)
         val contentV= LayoutInflater.from(ctx).inflate(itemLayoutId, parent, false)
-        v.findViewById<LinearLayout>(_ConfigBase.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
+        v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
             .addView(contentV)
         return SimpleViewHolder(v)
     }
@@ -150,7 +150,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         Log.e("SImpleAbsRVA", "bindVh() position= $position name= ${this::class.java.simpleName}")
         selectedItemView= holder.itemView
-        selectedItemView?.findViewById<ImageView>(_ConfigBase.ID_IV_CHECK) //R.id.iv_check
+        selectedItemView?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
             ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE
             else View.GONE
         __bindVH(holder, position, dataList!![position])
@@ -280,15 +280,15 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
             }
 
             if(isCheckIndicatorShown){
-                selectedItemView?.findViewById<ImageView>(_ConfigBase.ID_IV_CHECK) //R.id.iv_check
+                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
                     ?.visibility= View.VISIBLE
-                selectedItemView_before?.findViewById<ImageView>(_ConfigBase.ID_IV_CHECK) //R.id.iv_check
+                selectedItemView_before?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
                     ?.visibility= View.GONE
             }
             if(isOverlayShown){
-                selectedItemView?.findViewById<ImageView>(_ConfigBase.ID_IV_OVERLAY) //R.id.iv_overlay
+                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
                     ?.visibility= View.VISIBLE
-                selectedItemView_before?.findViewById<ImageView>(_ConfigBase.ID_IV_OVERLAY) //R.id.iv_overlay
+                selectedItemView_before?.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
                     ?.visibility= View.GONE
             }
         } else{
@@ -315,13 +315,13 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
             }
 
             if(isCheckIndicatorShown){
-                selectedItemView?.findViewById<ImageView>(_ConfigBase.ID_IV_CHECK) //R.id.iv_check
+                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
                     ?.visibility=
                         if(isPosNotExisting) View.VISIBLE
                         else View.GONE
             }
             if(isOverlayShown){
-                selectedItemView?.findViewById<ImageView>(_ConfigBase.ID_IV_OVERLAY)
+                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_OVERLAY)
                     ?.visibility=
                         if(isPosNotExisting) View.VISIBLE
                         else View.GONE
@@ -341,7 +341,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     protected fun showCheckIndicator(isShown: Boolean= true, pos: Int= selectedItemPos_single){
-        getView(pos)?.findViewById<ImageView>(_ConfigBase.ID_IV_CHECK)
+        getView(pos)?.findViewById<ImageView>(_Config.ID_IV_CHECK)
             ?.visibility=
                 if(isShown) View.VISIBLE
                 else View.GONE
@@ -351,7 +351,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         val vis= if(isShown) View.VISIBLE
             else View.GONE
         if(!isMultiSelectionEnabled){
-            selectedItemView?.findViewById<ImageView>(_ConfigBase.ID_IV_OVERLAY)
+            selectedItemView?.findViewById<ImageView>(_Config.ID_IV_OVERLAY)
                 ?.visibility= vis
         } else{
             for(selectedPos in selectedItemPos_list!!){

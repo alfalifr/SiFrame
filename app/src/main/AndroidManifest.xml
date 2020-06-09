@@ -14,7 +14,8 @@
         <activity android:name=".act.Test2Act" />
         <activity android:name=".act.DrawerImplAct" />
         <activity android:name=".act.VpDrawerAct" />
-        <activity android:name=".act.TestAct">
+        <activity android:name=".act.SingleFragImplAct" />
+        <activity android:name=".act.MainAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

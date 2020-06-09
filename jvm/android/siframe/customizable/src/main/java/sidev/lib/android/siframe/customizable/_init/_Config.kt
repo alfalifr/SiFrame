@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.customizable.R
  * Mengubah nilai dari variabel yang ada diperbolehkan
  * untuk melakukan penyesuaian.
  */
-object _ConfigBase {
+object _Config {
     object ExternalRef{
         val ID_CONTENT= android.R.id.content
     }

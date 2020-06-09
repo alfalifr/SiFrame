@@ -6,9 +6,16 @@
         android:layout_height="match_parent">
 
     <fragment
+        android:id="@+id/fr_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="sidev.lib.android.siframe.customizable.lifecycle._BlankFrag"/>
+<!--
+    <fragment
             android:id="@+id/fr_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="sidev.lib.android.siframe.lifecycle.fragment._BlankFrag"/>
+-->
 
 </RelativeLayout>

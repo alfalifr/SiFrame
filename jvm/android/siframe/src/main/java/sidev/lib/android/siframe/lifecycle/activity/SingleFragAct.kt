@@ -22,9 +22,9 @@ abstract class SingleFragAct: SimpleAbsAct(), SingleFragActBase {
     override val _sideBase_fm: FragmentManager
         get() = supportFragmentManager
 
-    override lateinit var fragment: Fragment
+//    override lateinit var fragment: Fragment
 
-    override var isFragLate: Boolean= false
+//    override var isFragLate: Boolean= false
     override var isDataAsync: Boolean= false
 
 

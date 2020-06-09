@@ -1,11 +1,10 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
@@ -26,9 +25,9 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
  */
 
     override val styleId: Int
-        get() = _ConfigBase.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar
+        get() = _Config.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar
     override val layoutId: Int
-        get() = _ConfigBase.LAYOUT_ACT_SIMPLE //R.layout.activity_simple
+        get() = _Config.LAYOUT_ACT_SIMPLE //R.layout.activity_simple
 /*
     override val isViewInitFirst: Boolean
         get() = false
@@ -36,13 +35,13 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
     open val isContentLayoutInflatedFirst= true
 
     abstract val contentLayoutId: Int
-    open val actBarId: Int= _ConfigBase.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
+    open val actBarId: Int= _Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
     open val isNavBarVisible= false
     open val menuId: Int?= null
 
-    open val actBarViewContainerId= _ConfigBase.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container
-    open val contentViewContainerId= _ConfigBase.ID_VG_CONTENT_CONTAINER //R.id.ll_content_container
-    open val navBarId= _ConfigBase.ID_LL_BAR_NAV_CONTAINER //R.id.bnv_bar_nav_container
+    open val actBarViewContainerId= _Config.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container
+    open val contentViewContainerId= _Config.ID_VG_CONTENT_CONTAINER //R.id.ll_content_container
+    open val navBarId= _Config.ID_LL_BAR_NAV_CONTAINER //R.id.bnv_bar_nav_container
 
     /**
      * Harus dimodifikasi secara internal (private) agar tidak terjadi inkonsistensi
@@ -78,7 +77,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
         inflateAndFillViewStructure()
 
         __registerBackBtnView()
-        registerBackBtnView(actBarViewContainer.findViewById(_ConfigBase.ID_IV_BACK)) //R.id.iv_back
+        registerBackBtnView(actBarViewContainer.findViewById(_Config.ID_IV_BACK)) //R.id.iv_back
 
         val actTitle= getIntentData(_SIF_Constant.EXTRA_TITLE) ?: this::class.java.simpleName
 //        if(actTitle != null)
@@ -102,17 +101,17 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
 
     private fun inflateAndFillViewStructure(){
         val actBar=
-            if(actBarId != _ConfigBase.LAYOUT_COMP_ACT_BAR_DEFAULT)
+            if(actBarId != _Config.LAYOUT_COMP_ACT_BAR_DEFAULT)
                 layoutInflater.inflate(actBarId, actBarViewContainer, false)
             else
-                _ViewUtil.Template.actBar_Primary(this, _ConfigBase.TEMPLATE_VIEW_ACT_BAR_TYPE)
+                _ViewUtil.Template.actBar_Primary(this, _Config.TEMPLATE_VIEW_ACT_BAR_TYPE)
         actBarViewContainer.addView(actBar)
 
         if(isContentLayoutInflatedFirst && contentLayoutId > 0){
             val contentView= layoutInflater.inflate(contentLayoutId, contentViewContainer, false)
             contentViewContainer.addView(contentView)
         }
-        val topPadding= _ResUtil.getDimen(this, _ConfigBase.DIMEN_ACT_BAR_OFFSET)
+        val topPadding= _ResUtil.getDimen(this, _Config.DIMEN_ACT_BAR_OFFSET)
         contentViewContainer.setChildPadding(top= topPadding.toInt())
 
         if(menuId != null)
@@ -123,7 +122,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
 
     open fun setActBarTitle(title: String){
         if(::actBarViewContainer.isInitialized)
-            actBarViewContainer.findViewById<TextView>(_ConfigBase.ID_TV_TITLE).text= title //R.id.tv_title
+            actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
     }
 /*
     fun <D> getIntentData(key: String, i: Intent?= null, default: D?= null): D {

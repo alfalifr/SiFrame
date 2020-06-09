@@ -16,7 +16,6 @@ import android.transition.ChangeBounds
 import android.transition.TransitionSet
 import android.transition.TransitionManager
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.widget.*
 import androidx.annotation.ColorRes
@@ -30,7 +29,7 @@ import com.squareup.picasso.Picasso
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.tool.util.FileUtil
 import java.lang.Exception
@@ -278,7 +277,7 @@ object  _ViewUtil{
 
         val dir=
             if (isDirLocal) url
-            else _ConfigBase.ENDPOINT_ROOT + url
+            else _Config.ENDPOINT_ROOT + url
 
 //        Log.e("SERVER_UTIL", "isDirLocal= $isDirLocal url= $url dir= $dir")
 
@@ -310,12 +309,12 @@ object  _ViewUtil{
      */
     object Comp{
         fun setBtnHollow(btn: Button){
-            btn.setBackgroundResource(_ConfigBase.DRAW_SHAPE_BORDER_ROUND) //R.drawable.shape_border_square_round_edge_main
+            btn.setBackgroundResource(_Config.DRAW_SHAPE_BORDER_ROUND) //R.drawable.shape_border_square_round_edge_main
             btn.setTextColor(ContextCompat.getColor(btn.context, _ColorRes.COLOR_PRIMARY_DARK))
         }
 
         fun setBtnSolid(btn: Button){
-            btn.setBackgroundResource(_ConfigBase.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
+            btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
             setBgColor(btn, _ColorRes.COLOR_PRIMARY_DARK)
             btn.setTextColor(ContextCompat.getColor(btn.context, _ColorRes.TEXT_LIGHT))
         }
@@ -330,13 +329,13 @@ object  _ViewUtil{
             val ACT_BAR_SQUARE= 1
         }
         fun actBar_Primary(c: Context, type: Int= Type.ACT_BAR_DEFAULT): View {
-            val actBar= c.inflate(_ConfigBase.LAYOUT_COMP_ACT_BAR_DEFAULT) as ViewGroup
-            val bg= c.inflate(_ConfigBase.LAYOUT_BG_COMP_ACT_BAR_DEFAULT) as ImageView
+            val actBar= c.inflate(_Config.LAYOUT_COMP_ACT_BAR_DEFAULT) as ViewGroup
+            val bg= c.inflate(_Config.LAYOUT_BG_COMP_ACT_BAR_DEFAULT) as ImageView
             if(type == Type.ACT_BAR_SQUARE)
                 bg.setImageResource(_ColorRes.COLOR_PRIMARY_DARK)
 
-            val tvTitle= actBar.findViewById<TextView>(_ConfigBase.ID_TV_TITLE)
-            val ivBack= actBar.findViewById<ImageView>(_ConfigBase.ID_IV_BACK)
+            val tvTitle= actBar.findViewById<TextView>(_Config.ID_TV_TITLE)
+            val ivBack= actBar.findViewById<ImageView>(_Config.ID_IV_BACK)
             
             actBar.removeViewAt(0)
             actBar.addView(bg, 0)
@@ -354,12 +353,12 @@ object  _ViewUtil{
         }
 
         fun overlayBlock(c: Context): View{
-            val overlay= c.inflate(_ConfigBase.LAYOUT_OVERLAY_BLOCK)!!
-            val iv= overlay.findViewById<ImageView>(_ConfigBase.ID_IV_ICON)
-            val tvTitle= overlay.findViewById<TextView>(_ConfigBase.ID_TV_TITLE)
-            val tvDesc= overlay.findViewById<TextView>(_ConfigBase.ID_TV_DESC)
+            val overlay= c.inflate(_Config.LAYOUT_OVERLAY_BLOCK)!!
+            val iv= overlay.findViewById<ImageView>(_Config.ID_IV_ICON)
+            val tvTitle= overlay.findViewById<TextView>(_Config.ID_TV_TITLE)
+            val tvDesc= overlay.findViewById<TextView>(_Config.ID_TV_DESC)
 
-            iv.setImageResource(_ConfigBase.DRAW_IC_WARNING)
+            iv.setImageResource(_Config.DRAW_IC_WARNING)
             setColor(iv, _ColorRes.RED)
             tvTitle.text= "Mohon Maaf"
             tvDesc.text= "Aplikasi telah kadaluwarsa.\nMohon update ke versi terbaru."

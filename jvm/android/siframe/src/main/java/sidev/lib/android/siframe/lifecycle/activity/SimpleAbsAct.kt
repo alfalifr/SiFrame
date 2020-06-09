@@ -10,7 +10,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentManager
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
@@ -57,7 +57,7 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
         = ArrayList()
 
     override val styleId: Int
-        get() = _ConfigBase.STYLE_APP
+        get() = _Config.STYLE_APP
     override lateinit var layoutView: View
     open val isViewInitFirst= true
 
@@ -80,6 +80,7 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
         doWhenNotIherited {
             ___initRootBase(this, getRootView())
         }
+        ___initSideBase()
 /*
         if(isViewInitFirst){
             Log.e("SimpleAbsAct", "::layoutView.isInitialized ${::layoutView.isInitialized} name= ${this::class.java.simpleName}")

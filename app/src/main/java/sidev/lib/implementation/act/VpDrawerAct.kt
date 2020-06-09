@@ -5,7 +5,7 @@ import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.act_drawer.view.*
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.customizable.view.intfc.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct_ViewPager
@@ -29,7 +29,7 @@ class VpDrawerAct : DrawerBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMiddle
     override val startDrawerLayoutId: Int
         get() = R.layout.comp_drawer_start
     override val endDrawerLayoutId: Int
-        get() = _ConfigBase.INT_EMPTY
+        get() = _Config.INT_EMPTY
 
     override var topContainer: View?= null
     override var middleContainer: View?= null

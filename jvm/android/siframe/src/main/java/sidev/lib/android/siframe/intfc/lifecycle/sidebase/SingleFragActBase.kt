@@ -1,19 +1,23 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
+import android.util.Log
+import android.view.View
 import androidx.fragment.app.Fragment
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.commitFrag
-import sidev.lib.android.siframe.tool.util.`fun`.getExtra
+import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.universal.`fun`.isNull
+import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.tool.util.ReflexUtil
 
 interface SingleFragActBase: ComplexLifecycleSideBase{
     override val layoutId: Int
-        get() = _ConfigBase.LAYOUT_ACT_SINGLE_FRAG
+        get() = _Config.LAYOUT_ACT_SINGLE_FRAG //.LAYOUT_ACT_SIMPLE
 
     var fragment: Fragment
     val fragContainerId: Int
-        get()= _ConfigBase.ID_FR_CONTAINER
+        get()= _Config.ID_FR_CONTAINER //.ID_VG_CONTENT_CONTAINER
 //    val supportFm: FragmentManager
     /*
         companion object{
@@ -22,13 +26,15 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
             const val EXTRA_DATA_ASYNC= "data_async"
         }
      */
-    var isFragLate: Boolean //= false
+//    var isFragLate: Boolean //= false <10 Juni 2020> => DIhilangkan karena jika intent nge-pass _SIF_Constant.FRAGMENT_NAME, maka otomatis isFragLate= true
     var isDataAsync: Boolean //= false
 
 
     override fun ___initSideBase() {
-        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
+        Log.e("SingleFragActBase", "___initSideBase")
+//        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         __initFrag()
+        giveFrag()
 
         /**
          * Karena jika fragment langsung dipasang ke container, maka data pada fragment gak bisa direload.
@@ -45,15 +51,56 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
       }
   */
 
+    /**
+     * Digunakan saat Fragment lateinit. Biasanya saat pemanggilan pada fungsi startSingleFragAct()
+     */
     fun __initFrag(){
-        if(isFragLate) {
+//        if(isFragLate) {
+            _sideBase_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
+                .notNull { fragName ->
+                    fragment= ReflexUtil.newInstance(fragName)
+                    _sideBase_view.findViewById<View>(fragContainerId)!!
+                    Log.e("SingleFragActBase", "__initFrag MULAI")
+                    __attachFrag()
+                    Log.e("SingleFragActBase", "__initFrag AKHIR")
+                }
+/*
             val fragTrans= _sideBase_fm.beginTransaction()
             fragTrans.replace(fragContainerId, fragment)
             fragTrans.commit()
-        }
+ */
+//        }
     }
 
     fun __attachFrag(){
         _sideBase_ctx.commitFrag(fragContainerId, fragment)
+    }
+
+    fun waitForFrag(func: (Fragment) -> Unit){
+        Log.e("SingleFragActBase", "waitForFrag")
+        try{
+            func(fragment)
+            Log.e("SingleFragActBase", "waitForFrag TRY BERHASIL")
+        } catch (e: Exception){
+            getStatic<ArrayList<(Fragment) -> Unit>>(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER)
+                .notNull { listener -> listener.add(func) }
+                .isNull {
+                    val listener= ArrayList<(Fragment) -> Unit>()
+                    listener.add(func)
+                    setStatic(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER, listener)
+                }
+            Log.e("SingleFragActBase", "waitForFrag CATCH")
+        }
+    }
+    private fun giveFrag(){
+        Log.e("SingleFragActBase", "giveFrag")
+        getStatic<ArrayList<(Fragment) -> Unit>>(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER)
+            .notNull { listener ->
+                Log.e("SingleFragActBase", "giveFrag listener NOT NULL")
+                listener.forEach { func ->
+                    func(fragment)
+                }
+                removeStatic(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER)
+            }
     }
 }

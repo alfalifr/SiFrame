@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import sidev.lib.android.siframe.tool.util._BitmapUtil
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
+import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import java.lang.Exception
 
@@ -99,15 +101,15 @@ fun <T> Fragment.getDefaultIntent(): T? {
 
 
 fun <T> Activity.getIntent(key: String, default: T?= null): T? {
-    return try { intent.extras!![key] as T? }
+    return try { (intent.extras!![key] as T)!! }
     catch (e: Exception) { default }
 }
 fun <T> Fragment.getIntent(key: String, default: T?= null): T? {
-    return try { activity!!.intent.extras!![key] as T? }
+    return try { (activity!!.intent.extras!![key] as T)!! }
     catch (e: Exception) { default }
 }
 fun <T> Intent.getExtra(key: String, default: T?= null): T? {
-    return try { this.extras!![key] as T? }
+    return try { (this.extras!![key] as T)!! }
     catch (e: Exception) { default }
 }
 
@@ -120,7 +122,25 @@ fun Fragment.getActReqCode(): Int? {
 }
 
 
+fun <T: Activity> Context.startAct(actClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
+    var inParamsSize= params.size +1
+    val callingLifeCycleName=
+        if(this is LifecycleOwner) Pair(_SIF_Constant.CALLING_LIFECYCLE, this::class.java.name)
+        else { inParamsSize = params.size; null }
+    val inParams= Array(inParamsSize){ if(it < params.size) params[it] else callingLifeCycleName!! }
 
+    val intent= sidev.lib.android.external._AnkoInternals.createIntent(this, actClass, inParams)
+    if(!waitForResult || this !is Activity)
+        startActivity(intent)
+    else{
+        intent.putExtra(_SIF_Constant.REQ_CODE, reqCode)
+        startActivityForResult(intent, reqCode)
+    }
+}
+inline fun <reified T: Activity> Context.startAct(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
+    this.startAct(T::class.java, *params, waitForResult= waitForResult, reqCode= reqCode)
+}
+/*
 inline fun <reified T: Activity> Context.startAct(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
     var inParamsSize= params.size +1
     val callingLifeCycleName=
@@ -136,12 +156,14 @@ inline fun <reified T: Activity> Context.startAct(vararg params: Pair<String, An
         startActivityForResult(intent, reqCode)
     }
 }
-inline fun <reified T: Activity> Fragment.startAct(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
+ */
+
+fun <T: Activity> Fragment.startAct(actClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
 //    context!!.startAct<T>(*params)
     val callingLifeCycleName= Pair(_SIF_Constant.CALLING_LIFECYCLE, this::class.java.name)
     val inParams= Array(params.size +1){ if(it < params.size) params[it] else callingLifeCycleName!! }
 
-    val intent= sidev.lib.android.external._AnkoInternals.createIntent(context!!, T::class.java, inParams)
+    val intent= sidev.lib.android.external._AnkoInternals.createIntent(context!!, actClass, inParams)
     if(!waitForResult)
         startActivity(intent)
     else{
@@ -149,11 +171,48 @@ inline fun <reified T: Activity> Fragment.startAct(vararg params: Pair<String, A
         startActivityForResult(intent, reqCode)
     }
 }
+inline fun <reified T: Activity> Fragment.startAct(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
+    this.startAct(T::class.java, *params, waitForResult= waitForResult, reqCode= reqCode)
+}
 
+
+fun <T: Fragment> Context.startSingleFragAct(fragClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, isCustomActBar: Boolean= true) {
+    startAct<SingleFragAct_Simple>(
+        SingleFragAct_Simple::class.java,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragClass.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
 inline fun <reified T: Fragment> Context.startSingleFragAct(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, isCustomActBar: Boolean= true) {
     startAct<SingleFragAct_Simple>(
         Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
+inline fun <reified T: Fragment> Context.startSingleFragAct_config(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, isCustomActBar: Boolean= true) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
+
+fun <T: Fragment> Fragment.startSingleFragAct(fragClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, customActBar: Boolean= true) {
+    startAct<SingleFragAct_Simple>(
+        SingleFragAct_Simple::class.java,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragClass.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
         *params,
         waitForResult = waitForResult,
         reqCode = reqCode
@@ -168,6 +227,18 @@ inline fun <reified T: Fragment> Fragment.startSingleFragAct(vararg params: Pair
         reqCode = reqCode
     )
 }
+
+inline fun <reified T: Fragment> Fragment.startSingleFragAct_config(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, customActBar: Boolean= true) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
 
 fun Activity.setResult(vararg params: Pair<String, Any?>, resCode: Int= Activity.RESULT_OK, isFinished: Boolean= true) {
     val intent= sidev.lib.android.external._AnkoInternals.createIntent<Any>(params = params)

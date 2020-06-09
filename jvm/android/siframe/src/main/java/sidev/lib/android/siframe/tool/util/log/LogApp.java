@@ -2,10 +2,10 @@ package sidev.lib.android.siframe.tool.util.log;
 
 import android.util.Log;
 
-import sidev.lib.android.siframe.customizable._init._ConfigBase;
+import sidev.lib.android.siframe.customizable._init._Config;
 
 public class LogApp {
-    public static boolean log= _ConfigBase.INSTANCE.getLOG(); //true;
+    public static boolean log= _Config.INSTANCE.getLOG(); //true;
     public static final int GAGAL= -2;
 
     public static int v(String tag, String msg) {

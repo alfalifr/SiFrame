@@ -1,13 +1,11 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
 import android.view.View
-import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
-import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 
 
 class SingleFragAct_Simple: SingleFragAct(){
+    override lateinit var fragment: Fragment
     override fun _initView(layoutView: View) {}
 }
 

@@ -2,7 +2,7 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
-import sidev.lib.android.siframe.customizable._init._ConfigBase
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.notNull
@@ -13,18 +13,18 @@ interface TopMiddleBottomBase: LifecycleSideBase {
     var bottomContainer: View?
 
     val topContainerId: Int
-        get()= _ConfigBase.ID_RL_TOP_CONTAINER
+        get()= _Config.ID_RL_TOP_CONTAINER
     val middleContainerId: Int
-        get()= _ConfigBase.ID_RL_MIDDLE_CONTAINER
+        get()= _Config.ID_RL_MIDDLE_CONTAINER
     val bottomContainerId: Int
-        get()= _ConfigBase.ID_RL_BOTTOM_CONTAINER
+        get()= _Config.ID_RL_BOTTOM_CONTAINER
 
     val topLayoutId: Int
-        get()= _ConfigBase.INT_EMPTY
+        get()= _Config.INT_EMPTY
     val middleLayoutId: Int
-        get()= _ConfigBase.INT_EMPTY
+        get()= _Config.INT_EMPTY
     val bottomLayoutId: Int
-        get()= _ConfigBase.INT_EMPTY
+        get()= _Config.INT_EMPTY
 
     fun __initTopMiddleBottomView(layoutView: View){
         topContainer= try{ layoutView.findViewById(topContainerId) } catch (e: Exception){ null }

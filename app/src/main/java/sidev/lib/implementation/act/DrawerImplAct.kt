@@ -1,13 +1,10 @@
 package sidev.lib.implementation.act
 
-import android.util.Log
 import android.view.View
-import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.act_drawer.view.*
 import org.jetbrains.anko.textColorResource
-import sidev.lib.android.siframe.customizable._init._ConfigBase
-import sidev.lib.android.siframe.lifecycle.activity.DrawerAct
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct
 import sidev.lib.implementation.R
 
@@ -17,7 +14,7 @@ class DrawerImplAct : DrawerBarContentNavAct(){
     override val startDrawerLayoutId: Int
         get() = R.layout.comp_drawer_start
     override val endDrawerLayoutId: Int
-        get() = _ConfigBase.INT_EMPTY
+        get() = _Config.INT_EMPTY
 
 
     override fun _initActBar(actBarView: View) {}

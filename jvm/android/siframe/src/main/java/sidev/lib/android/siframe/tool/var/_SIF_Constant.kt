@@ -24,6 +24,8 @@ object _SIF_Constant{
 
     const val STATIC_BOOLEAN= "stat_bool"
     const val STATIC_BOOLEAN_TYPE= "HashMap<String, Boolean>"
+    const val STATIC_SINGLE_FRAG_LISTENER= "single_frag_liste"
+    const val STATIC_SINGLE_FRAG_LISTENER_TYPE= "ArrayList<(Fragment) -> Unit>"
 
     /**
      * Tidak untuk dirubah oleh koder!!!
