@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import java.lang.Exception
@@ -34,5 +36,10 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), ViewPagerActBase<F>{
     override fun ___initRootBase(vararg args: Any) {
         super.___initRootBase(*args)
         ___initSideBase()
+        if(_sideBase_act is BackBtnActBase){
+            (_sideBase_act as BackBtnActBase).addOnBackBtnListener{
+                pageBackward()
+            }
+        }
     }
 }
