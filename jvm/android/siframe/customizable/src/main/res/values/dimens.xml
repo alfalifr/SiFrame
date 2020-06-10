@@ -63,4 +63,5 @@
     <dimen name="margin_bar_fill_between">7dp</dimen>
 
     <dimen name="drawer_horizontal_width">400dp</dimen>
+    <dimen name="drawer_horizontal_width_percent">0.7</dimen>
 </resources>

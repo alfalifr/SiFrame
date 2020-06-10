@@ -9,8 +9,10 @@ import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 
-
-abstract class SimpleAbsBarContentNavAct_ViewPager_Simple
+/**
+ * Kelas yg properti abstraknya dapat di-lateinit
+ */
+open class SimpleAbsBarContentNavAct_ViewPager_Simple
     : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(){
 
     override fun _initActBar(actBarView: View) {}

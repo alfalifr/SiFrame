@@ -4,8 +4,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
-class SingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav(){
+/**
+ * Kelas yg properti abstraknya dapat di-lateinit
+ */
+open class SingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav(){
     override lateinit var fragment: Fragment
 
     override fun _initActBar(actBarView: View) {}

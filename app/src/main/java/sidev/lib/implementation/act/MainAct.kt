@@ -2,7 +2,9 @@ package sidev.lib.implementation.act
 
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
@@ -35,5 +37,7 @@ class MainAct : SimpleAbsBarContentNavAct() {
     fun toVpAct(v: View)= startAct<ViewPagerAct>()
     fun toDrawerAct(v: View)= startAct<DrawerImplAct>()
     fun toVpDrawerAct(v: View)= startAct<VpDrawerAct>()
-    fun toSingleFragAct(v: View)= startSingleFragAct_config<Frag4>() //startAct<VpDrawerAct>()
+    fun toSingleFragAct(v: View)= startSingleFragAct_config<Frag4>(
+        _SIF_Constant.DRAWER_END_LAYOUT_ID to R.layout.comp_drawer_start
+    ) //startAct<VpDrawerAct>()
 }

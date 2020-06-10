@@ -1,20 +1,22 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.intfc.lifecycle.`fun`.initView
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
+import sidev.lib.android.siframe.intfc.lifecycle.`fun`.initViewFun
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
+import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 
-interface DrawerActBase: LifecycleSideBase, initView{
+interface DrawerActBase: ComplexLifecycleSideBase, initViewFun{
     override val layoutId: Int
         get() = _Config.LAYOUT_DL
 
@@ -46,14 +48,28 @@ interface DrawerActBase: LifecycleSideBase, initView{
 
     fun _initStartDrawerView(startDrawerView: View)
     fun _initEndDrawerView(endDrawerView: View)
+
 //    abstract fun _initBottomDrawerView(bottomDrawerView: View)
 //    abstract fun _initTopDrawerView(topDrawerView: View)
 
 
     fun __initDrawer(rootView: View) {
+//        contentLayoutId= _sideBase_intent.getExtra(_SIF_Constant.DRAWER_START_LAYOUT_ID, contentLayoutId)!!
         contentViewContainer= rootView.findViewById(contentContainerId)
         startDrawerContainer= rootView.findViewById(startDrawerContainerId)
         endDrawerContainer= rootView.findViewById(endDrawerContainerId)
+
+        val drawerWidthPercent= _ResUtil.getDimen(_sideBase_ctx, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
+        val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_sideBase_act, drawerWidthPercent)
+
+        val lpStart= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
+        lpStart.gravity= Gravity.START
+
+        val lpEnd= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
+        lpEnd.gravity= Gravity.END
+
+        startDrawerContainer.layoutParams= lpStart
+        endDrawerContainer.layoutParams= lpEnd
 
         _ViewUtil.setBgColor(startDrawerContainer, _ColorRes.COLOR_PRIMARY_DARK)
         _ViewUtil.setBgColor(endDrawerContainer, _ColorRes.COLOR_PRIMARY_DARK)
@@ -77,8 +93,8 @@ interface DrawerActBase: LifecycleSideBase, initView{
                 rootDrawerLayout.closeDrawer(startDrawerContainer)
                 _initStartDrawerView(it)
             }.isNull {
-                startDrawerContainer.visibility= View.GONE
-                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, startDrawerContainer)
+                setDrawerGone(startDrawerContainer)
+//                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, startDrawerContainer)
             }
         c.inflate(endDrawerLayoutId, endDrawerContainer)
             .notNull {
@@ -87,8 +103,8 @@ interface DrawerActBase: LifecycleSideBase, initView{
                 rootDrawerLayout.closeDrawer(endDrawerContainer)
                 _initEndDrawerView(it)
             }.isNull {
-                endDrawerContainer.visibility= View.GONE
-                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, endDrawerContainer)
+                setDrawerGone(endDrawerContainer)
+//                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, endDrawerContainer)
             }
 /*
         inflate(bottomDrawerLayoutId, contentViewContainer)
@@ -96,5 +112,12 @@ interface DrawerActBase: LifecycleSideBase, initView{
         inflate(topDrawerLayoutId, contentViewContainer)
             .notNull { _initTopDrawerView(it) }
  */
+    }
+
+    private fun setDrawerGone(drawer: View){
+        drawer.visibility= View.GONE
+        val lp= drawer.layoutParams as DrawerLayout.LayoutParams //DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
+        lp.gravity= Gravity.NO_GRAVITY
+        lp.width= 0
     }
 }

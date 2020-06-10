@@ -13,6 +13,8 @@ object _SIF_Constant{
     val EXTRA_IS_CUSTOM_ACT_BAR= "is_custom_act_bar"
     val EXTRA_TITLE= "title"
     val CALLING_LIFECYCLE= "calling_lifecycle"
+    val DRAWER_START_LAYOUT_ID= "drawer_start_layout_id"
+    val DRAWER_END_LAYOUT_ID= "drawer_end_layout_id"
 
     const val PROP_STACK= "::STACK"
 

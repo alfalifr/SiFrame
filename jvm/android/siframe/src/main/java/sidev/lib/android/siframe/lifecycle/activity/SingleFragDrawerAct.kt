@@ -5,12 +5,16 @@ import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleDrawerFragActBase
 
-abstract class SingleFragDrawerAct: SingleFragAct(), DrawerActBase{
+abstract class SingleFragDrawerAct: SingleFragAct(), SingleDrawerFragActBase{
     override val layoutId: Int
-        get()= super<DrawerActBase>.layoutId
-    override val contentLayoutId: Int
-        get() = super<SingleFragAct>.layoutId
+        get()= super<SingleDrawerFragActBase>.layoutId
+//    override val contentLayoutId: Int
+//        get() = super<SingleFragAct>.layoutId
+
+//    abstract override var startDrawerLayoutId: Int
+//    abstract override var endDrawerLayoutId: Int
 
     override lateinit var rootDrawerLayout: DrawerLayout
     override lateinit var contentViewContainer: ViewGroup
@@ -24,5 +28,10 @@ abstract class SingleFragDrawerAct: SingleFragAct(), DrawerActBase{
     /**
      * Gak usah karena view kontennya ada di dalam fragment
      */
-    override fun _initView(layoutView: View) {}
+    final override fun _initView(layoutView: View) {}
+
+    final override fun _reinitStartDrawerView(func: (startDrawerView: View) -> Unit)
+            = super._reinitStartDrawerView(func)
+    final override fun _reinitEndDrawerView(func: (endDrawerView: View) -> Unit)
+            = super._reinitEndDrawerView(func)
 }

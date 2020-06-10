@@ -25,6 +25,8 @@ object _Config {
     var DIMEN_ACT_BAR_HEIGHT= R.dimen.act_bar_height
     var DIMEN_ACT_BAR_OFFSET= R.dimen.act_bar_offset
     var DIMEN_ACT_BAR_OFFSET_NEG= R.dimen.act_bar_offset_neg
+    var DIMEN_DRAWER_HORIZONTAL_WIDTH= R.dimen.drawer_horizontal_width
+    var DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT= R.dimen.drawer_horizontal_width_percent
 
     var LAYOUT_ACT_SIMPLE= R.layout._sif_act_simple
     var LAYOUT_ACT_SINGLE_FRAG= R.layout._sif_act_single_frag

@@ -8,10 +8,7 @@ import kotlinx.android.synthetic.main.act_drawer.view.*
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct
-import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
-import sidev.lib.android.siframe.lifecycle.activity.SingleFragDrawerAct
-import sidev.lib.android.siframe.lifecycle.activity.SingleFragDrawerAct_BarContentNav
+import sidev.lib.android.siframe.lifecycle.activity.*
 import sidev.lib.android.siframe.tool.util.`fun`.detachFromParent
 import sidev.lib.implementation.R
 
@@ -31,12 +28,9 @@ class SingleFragImplAct : SingleFragDrawerAct(){
 }
  */
 
-class SingleFragImplAct : SingleFragDrawerAct_BarContentNav(){
-    override lateinit var fragment: Fragment
-    override val startDrawerLayoutId: Int
-        get() = R.layout.comp_drawer_start
-    override val endDrawerLayoutId: Int
-        get() = _Config.INT_EMPTY
+class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
+    override var startDrawerLayoutId: Int= R.layout.comp_drawer_start
+    override var endDrawerLayoutId: Int= _Config.INT_EMPTY
 
 
     override fun _initActBar(actBarView: View) {
@@ -52,10 +46,8 @@ class SingleFragImplAct : SingleFragDrawerAct_BarContentNav(){
         startDrawerView.tv.text= "Ini teks sebenarnya dari StartDrawer SingleFragImplAct"
         startDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
     }
-    override fun _initEndDrawerView(endDrawerView: View) {}
-
-    override fun __initViewFlow(rootView: View) {
-        super.__initViewFlow(rootView)
-        rootView.findViewById<View>(fragContainerId)!!//.detachFromParent()
+    override fun _initEndDrawerView(endDrawerView: View) {
+        endDrawerView.tv.text= "Ini teks sebenarnya dari EndDrawer SingleFragImplAct"
+        endDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
     }
 }

@@ -54,11 +54,19 @@ object  _ViewUtil{
         act.windowManager.defaultDisplay.getMetrics(dm)
         return dm.widthPixels
     }
-
     fun getScreenHeight(act: Activity): Int{
         val dm = DisplayMetrics()
         act.windowManager.defaultDisplay.getMetrics(dm)
         return dm.heightPixels
+    }
+
+    fun getPercentOfScreenHeight(act: Activity, percent: Float): Int{
+        val screenHeight= getScreenHeight(act)
+        return (screenHeight *percent).toInt()
+    }
+    fun getPercentOfScreenWidth(act: Activity, percent: Float): Int{
+        val screenWidth= getScreenWidth(act)
+        return (screenWidth *percent).toInt()
     }
 
     fun setViewHeight(view: View, height: Int){

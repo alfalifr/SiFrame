@@ -3,8 +3,10 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.view.View
 import androidx.fragment.app.Fragment
 
-
-class SingleFragAct_Simple: SingleFragAct(){
+/**
+ * Kelas yg properti abstraknya dapat di-lateinit
+ */
+open class SingleFragAct_Simple: SingleFragAct(){
     override lateinit var fragment: Fragment
     override fun _initView(layoutView: View) {}
 }
