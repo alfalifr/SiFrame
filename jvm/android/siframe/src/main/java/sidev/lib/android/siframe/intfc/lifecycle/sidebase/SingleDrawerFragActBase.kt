@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
+import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
@@ -28,10 +29,10 @@ interface SingleDrawerFragActBase : SingleFragActBase, DrawerActBase{
     /**
      * Dapat dipanggil oleh fragment yg dilakukan tidak di awal.
      */
-    fun _reinitStartDrawerView(func: (startDrawerView: View) -> Unit){
-        func(startDrawerContainer.getChildAt(0))
+    fun _reinitStartDrawerView(func: (drawer: DrawerLayout, startDrawerView: View) -> Unit){
+        func(rootDrawerLayout, startDrawerContainer.getChildAt(0))
     }
-    fun _reinitEndDrawerView(func: (endDrawerView: View) -> Unit){
-        func(endDrawerContainer.getChildAt(0))
+    fun _reinitEndDrawerView(func: (drawer: DrawerLayout, endDrawerView: View) -> Unit){
+        func(rootDrawerLayout, endDrawerContainer.getChildAt(0))
     }
 }

@@ -17,6 +17,10 @@ import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 
 interface DrawerActBase: ComplexLifecycleSideBase, initViewFun{
+    enum class Type{
+        DRAWER_START, DRAWER_END
+    }
+
     override val layoutId: Int
         get() = _Config.LAYOUT_DL
 
@@ -112,6 +116,17 @@ interface DrawerActBase: ComplexLifecycleSideBase, initViewFun{
         inflate(topDrawerLayoutId, contentViewContainer)
             .notNull { _initTopDrawerView(it) }
  */
+    }
+
+    fun slideDrawer(type: Type, toOpen: Boolean= true){
+        val drawer= when(type){
+            Type.DRAWER_START -> startDrawerContainer
+            Type.DRAWER_END -> endDrawerContainer
+        }
+        if(toOpen)
+            rootDrawerLayout.openDrawer(drawer)
+        else
+            rootDrawerLayout.closeDrawer(drawer)
     }
 
     private fun setDrawerGone(drawer: View){

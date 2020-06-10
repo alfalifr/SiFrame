@@ -31,9 +31,4 @@ abstract class SingleFragDrawerAct_BarContentNav: SingleFragAct_BarContentNav(),
      * Gak usah karena view kontennya ada di dalam fragment
      */
     final override fun _initView(layoutView: View) {}
-
-    final override fun _reinitStartDrawerView(func: (startDrawerView: View) -> Unit)
-            = super._reinitStartDrawerView(func)
-    final override fun _reinitEndDrawerView(func: (endDrawerView: View) -> Unit)
-            = super._reinitEndDrawerView(func)
 }

@@ -18,7 +18,7 @@ class Frag4 : SimpleAbsFrag(){
         _ViewUtil.setBgColor(layoutView, R.color.kuningMuda)
 
         if(actSimple is SingleDrawerFragActBase){
-            (actSimple as SingleDrawerFragActBase)._reinitStartDrawerView { startDrawer ->
+            (actSimple as SingleDrawerFragActBase)._reinitStartDrawerView { drawer, startDrawer ->
                 startDrawer.tv.text= "Ini teks sebenarnya StartDrawer dari Frag4"
                 startDrawer.tv.textColorResource= _ColorRes.TEXT_LIGHT
                 _ViewUtil.setBgColor(startDrawer.parent as View, R.color.ijo)
