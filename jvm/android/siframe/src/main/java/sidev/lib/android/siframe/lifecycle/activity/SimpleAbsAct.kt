@@ -9,12 +9,14 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
+import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.presenter.PresenterCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
@@ -158,6 +160,19 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
         super.onDestroy()
 //        onDestroyListenerQueue.iterateRunQueue(null)
         Log.e("SimpleAbsAct", "Activity ${this::class.java.simpleName} is destroyed!!!")
+    }
+
+
+    private var frag: Fragment?= null
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        frag= fragment
+    }
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        if(frag != null && frag is SimpleAbsFrag){
+            (frag as SimpleAbsFrag).onActive(layoutView, 0) //pos di sini adalah untuk ViewPager.
+        }
     }
 
     override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}

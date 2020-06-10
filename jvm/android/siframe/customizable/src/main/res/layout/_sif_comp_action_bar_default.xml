@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/_sif_bg_act_bar_default"/>
+    <include
+        layout="@layout/_sif_bg_act_bar_default"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,6 +32,5 @@
             android:textColor="@color/putih"
             android:text="Menu Title"/>
     </RelativeLayout>
-
 
 </FrameLayout>

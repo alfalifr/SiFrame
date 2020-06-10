@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
-import sidev.lib.android.siframe.intfc.lifecycle.`fun`.initViewFun
+import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
@@ -18,7 +18,8 @@ import sidev.lib.universal.tool.util.ThreadUtil
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
  */
-interface SimpleAbsActFragBase: LifecycleRootBase, initViewFun{
+interface SimpleAbsActFragBase: LifecycleRootBase,
+    InitViewFun {
 //    val layoutId: Int
 //    val styleId: Int
     var layoutView: View

@@ -1,8 +1,8 @@
-package sidev.lib.android.siframe.intfc.lifecycle.`fun`
+package sidev.lib.android.siframe.intfc.`fun`
 
 import android.view.View
 
-interface initViewFun{
+interface InitViewFun{
     /**
      * Fungsi yg dipanggil secara internal.
      * @param layoutView kemungkinan besar adalah rootView, namun tidak harus.

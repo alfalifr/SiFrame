@@ -53,6 +53,26 @@
             android:text="To SingleFragAct"
             android:onClick="toSingleFragAct"/>
 
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="To RvPageFragAct"
+            android:onClick="toRvPageFrag"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="To VpPageFragAct"
+            android:onClick="toVpPageFrag"/>
+
     </LinearLayout>
 
 </ScrollView>

@@ -27,8 +27,8 @@ abstract class SimpleAbsFrag : Fragment(),
     SimpleAbsActFragBase, PresenterCallback {
     val actSimple
         get() = activity as SimpleAbsAct?
-    val actBarContentNavAct
-        get() = activity as SimpleAbsBarContentNavAct?
+//    val actBarContentNavAct
+//        get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
         get() = _Config.STYLE_APP
     override lateinit var layoutView: View
@@ -53,7 +53,7 @@ abstract class SimpleAbsFrag : Fragment(),
     /**
      * Dipakai untuk judul pada TabLayout yang dipasang pada ViewPager
      */
-    open val fragTitle= "Judul"
+    open val fragTitle= this::class.java.simpleName
 
     //=========Obj Listener
     var listener_onViewCreated: OnViewCreatedListener?= null
@@ -119,7 +119,15 @@ abstract class SimpleAbsFrag : Fragment(),
         else activity?.intent?.extras?.get(key) as D? ?: default as D
     }
 
+    /**
+     * Dipanggil saat fragment terlihat di screen.
+     * Untuk case ViewPager, fungsi ini dipanggil setiap kali penggunamembuka halaman fragment ini.
+     *
+     * @param parentView merupakan view tempat fragment ini menempel.
+     */
+    fun onActive(parentView: View, pos: Int){}
 
+/*
     fun actSimple(func: (actSimple: SimpleAbsAct) -> Unit){
         if(actSimple != null)
             func(actSimple!!)
@@ -132,6 +140,7 @@ abstract class SimpleAbsFrag : Fragment(),
         if(activity != null)
             func(activity!!)
     }
+ */
 
     override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
     override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}

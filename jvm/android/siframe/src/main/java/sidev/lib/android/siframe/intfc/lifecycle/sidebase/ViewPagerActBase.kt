@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
+import android.util.SparseArray
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.viewpager.widget.ViewPager
@@ -8,13 +9,15 @@ import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
+import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import java.lang.Exception
 
 interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _Config.LAYOUT_VP
 
-    var onPageFragActiveListener: HashMap<Int, OnPageFragActiveListener>
+    var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
 
     val vp: ViewPager
         get()= _sideBase_view.findViewById(_Config.ID_VP)
@@ -48,6 +51,8 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 //    val vpCtx: Context
     var pageStartInd: Int
     var pageEndInd: Int
+
+    var isVpTitleFragBased: Boolean
 
     companion object{
         val PAGE_MARK_START= 0
@@ -108,6 +113,15 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
             override fun onPageSelected(position: Int) {
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
+                vpFragList[position].onActive(_sideBase_view, position)
+                if(isVpTitleFragBased && this is SimpleAbsBarContentNavAct){
+                    try{ this.setActBarTitle(vpFragList[position].fragTitle) }
+                    catch (e: Exception){
+                        /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
+                        tidak menyebabkan error.
+                         */
+                    }
+                }
             }
         })
 //        Log.e("ADP_VP", "initVp() vpFragList.size= ${vpFragList.size}")
@@ -167,7 +181,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     }
 
     fun registerOnPageFragToActListener(frag: F, l: OnPageFragActiveListener){
-        onPageFragActiveListener[vpAdp.items.indexOf(frag)]= l
+        onPageFragActiveListener.setValueAt(vpAdp.items.indexOf(frag), l) //= l
     }
     fun registerOnPageFragToActListener(frag: F, func: (vParent: View, pos: Int) -> Unit){
         registerOnPageFragToActListener(frag, object :

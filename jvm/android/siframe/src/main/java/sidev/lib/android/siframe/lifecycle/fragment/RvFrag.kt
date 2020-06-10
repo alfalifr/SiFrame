@@ -7,20 +7,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.customizable._init._Config
 
-abstract class SimplePageRvFrag : SimpleAbsFrag(){
+abstract class RvFrag<R: RvAdp<*, *>> : SimpleAbsFrag(){
     override val layoutId: Int
         get() = _Config.LAYOUT_RV //R.layout.content_abs_rv
 
     lateinit var rv: RecyclerView
         protected set
-    lateinit var rvAdp: RvAdp<*, *>
+    lateinit var rvAdp: R //RvAdp<*, *>
         protected set
     lateinit var pb: ProgressBar
         protected set
 
     var onRefreshListener: (() -> Unit)?= null
 
-    abstract fun initRvAdp(): RvAdp<*, *>
+    abstract fun initRvAdp(): R //RvAdp<*, *>
 
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)
@@ -36,5 +36,10 @@ abstract class SimplePageRvFrag : SimpleAbsFrag(){
     fun showLoading(show: Boolean= true){
         pb.visibility= if(show) View.VISIBLE
             else View.GONE
+    }
+
+    fun showRefresh(show: Boolean= true){
+        layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL)
+            .isRefreshing= show
     }
 }

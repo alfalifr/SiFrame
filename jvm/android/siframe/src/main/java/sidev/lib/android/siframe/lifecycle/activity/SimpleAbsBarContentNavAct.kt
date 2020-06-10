@@ -124,6 +124,16 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
         if(::actBarViewContainer.isInitialized)
             actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
     }
+
+    /**
+     * @return view actBar sebelumnya yg dilepaskan.
+     */
+    fun setActBarView(v: View): View{
+        val prevView= actBarViewContainer.getChildAt(0)
+        actBarViewContainer.removeView(prevView)
+        actBarViewContainer.addView(v)
+        return prevView
+    }
 /*
     fun <D> getIntentData(key: String, i: Intent?= null, default: D?= null): D {
         return if(i != null) i?.extras?.get(key) as D? ?: default as D

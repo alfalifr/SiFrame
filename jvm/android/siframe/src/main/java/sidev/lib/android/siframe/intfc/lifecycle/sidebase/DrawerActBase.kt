@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.intfc.lifecycle.`fun`.initViewFun
+import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
@@ -16,7 +16,8 @@ import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 
-interface DrawerActBase: ComplexLifecycleSideBase, initViewFun{
+interface DrawerActBase: ComplexLifecycleSideBase,
+    InitViewFun {
     enum class Type{
         DRAWER_START, DRAWER_END
     }

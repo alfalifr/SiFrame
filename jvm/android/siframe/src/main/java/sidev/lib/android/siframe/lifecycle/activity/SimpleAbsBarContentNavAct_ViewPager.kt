@@ -2,6 +2,7 @@ package sidev.lib.android.siframe.lifecycle.activity
 
 import android.content.Context
 import android.content.Intent
+import android.util.SparseArray
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
@@ -24,8 +25,8 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override val _sideBase_fm: FragmentManager
         get() = supportFragmentManager
 
-    override var onPageFragActiveListener: HashMap<Int, OnPageFragActiveListener>
-        = HashMap()
+    override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
+        = SparseArray()
 
     override val layoutId: Int
         get() = super<SimpleAbsBarContentNavAct>.layoutId
@@ -50,7 +51,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override lateinit var vpFragListMark: Array<Int>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
-
+    override var isVpTitleFragBased: Boolean= false
 
     override fun ___initSideBase() {
         super<ViewPagerActBase>.___initSideBase()

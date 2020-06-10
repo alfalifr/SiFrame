@@ -10,7 +10,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.getExtra
  * Interface yg digunakan untuk menggabungkan fungsionalitas SingleFragActBase dan DrawerActBase.
  * Terdapat beberapa fungsi yg muncul pada gabungan fungsional ini.
  */
-interface SingleDrawerFragActBase : SingleFragActBase, DrawerActBase{
+interface SingleFragDrawerActBase : SingleFragActBase, DrawerActBase{
     override val layoutId: Int
         get() = super<DrawerActBase>.layoutId
     override val contentLayoutId: Int
