@@ -14,6 +14,14 @@ fun <T> T?.isNull(f: () -> Unit): T? {
     return this
 }
 
+fun <T> ifNullElse(any: T?, default: T?): T?{
+    return any ?: default
+}
+
+fun <T> ifNullDefault(any: T?, default: T): T{
+    return any ?: default
+}
+
 /*
 =============================
 Assert Function

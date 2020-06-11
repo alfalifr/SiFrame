@@ -348,16 +348,19 @@ object  _ViewUtil{
          * Untuk mencari TextView berupa title dalam komponen.
          */
         var getTvTitle: ((View) -> TextView?)?= null
+            get()= field ?: getTv
 
         /**
          * Untuk mencari TextView berupa desc dalam komponen.
          */
         var getTvDesc: ((View) -> TextView?)?= null
+            get()= field ?: getTv
 
         /**
          * Untuk mencari TextView berupa note dalam komponen.
          */
         var getTvNote: ((View) -> TextView?)?= null
+            get()= field ?: getTv
 
         /**
          * Untuk mencari EditText dalam komponen.
@@ -368,6 +371,7 @@ object  _ViewUtil{
          * Untuk mencari EditText atau field yg dapat diisi dalam komponen.
          */
         var getField: ((View) -> View?)?= null
+            get()= field ?: getEd
 
         /**
          * Untuk mencari ImageView dalam komponen.
@@ -378,11 +382,13 @@ object  _ViewUtil{
          * Untuk mencari ImageView yg berupa action pada suatu bar dalam komponen.
          */
         var getIvAction: ((View) -> ImageView?)?= null
+            get()= field ?: getIv
 
         /**
          * Untuk mencari ImageView yg menunjukan indikasi password ditunjukan atau tidak dalam komponen.
          */
         var getIvPswdIndication: ((View) -> ImageView?)?= null
+            get()= field ?: getIv
 
         /**
          * Untuk mencari RecyclerView dalam komponen.
