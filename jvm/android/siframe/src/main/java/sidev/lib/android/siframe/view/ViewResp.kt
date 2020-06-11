@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import sidev.lib.android.siframe.customizable.view.intfc.ViewRespIntfc
 
-class ViewResp: View, ViewRespIntfc {
+open class ViewResp: View, ViewRespIntfc {
     constructor(c: Context, attrs: AttributeSet): super(c, attrs)
     constructor(c: Context) : super(c)
 

@@ -8,7 +8,7 @@ import sidev.lib.android.siframe.customizable.view.intfc.ModableView
 
 //import sidev.lib.android.siframe.customizable.view.intfc.ModableView
 
-class ModableVp : ViewPager, ModableView {
+open class ModableVp : ViewPager, ModableView {
     override var isTouchable: Boolean= true
     override var isTouchInterceptable: Boolean= true
 

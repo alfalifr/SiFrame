@@ -19,18 +19,21 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.widget.*
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.tool.util.FileUtil
 import java.lang.Exception
 import java.lang.NullPointerException
@@ -316,15 +319,85 @@ object  _ViewUtil{
      * Untuk penyesuaian view yang merupakan komponen template.
      */
     object Comp{
+        /*
+        =====================
+        get-Lambda Area  --AWAL--
+            Knp kok lambda daripada fungsi?
+            Agar user dapat mendefinisikan sendiri caranya mencari komponen dalam ViewGroup.
+        =====================
+         */
+        /**
+         * Untuk mencari TextView dalam komponen.
+         */
+        var getTv: ((View) -> TextView?)?= null
+
+        /**
+         * Untuk mencari TextView berupa title dalam komponen.
+         */
+        var getTvTitle: ((View) -> TextView?)?= null
+
+        /**
+         * Untuk mencari TextView berupa desc dalam komponen.
+         */
+        var getTvDesc: ((View) -> TextView?)?= null
+
+        /**
+         * Untuk mencari TextView berupa note dalam komponen.
+         */
+        var getTvNote: ((View) -> TextView?)?= null
+
+        /**
+         * Untuk mencari EditText dalam komponen.
+         */
+        var getEd: ((View) -> EditText?)?= null
+
+        /**
+         * Untuk mencari EditText atau field yg dapat diisi dalam komponen.
+         */
+        var getField: ((View) -> View?)?= null
+
+        /**
+         * Untuk mencari ImageView atau field yg dapat diisi dalam komponen.
+         */
+        var getIv: ((View) -> ImageView?)?= null
+
+        /**
+         * Untuk mencari RecyclerView atau field yg dapat diisi dalam komponen.
+         */
+        var getRv: ((View) -> RecyclerView?)?= null
+
+        /*
+        =====================
+        get-Lambda Area  --AKHIR--
+        =====================
+         */
+
+        fun setTvTitleTxt(compView: View, txt: String){
+            getTvTitle?.invoke(compView).notNull { tv -> tv.text= txt }
+        }
+        fun setTvDescTxt(compView: View, txt: String){
+            getTvDesc?.invoke(compView).notNull { tv -> tv.text= txt }
+        }
+        fun setTvNoteTxt(compView: View, txt: String){
+            getTvNote?.invoke(compView).notNull { tv -> tv.text= txt }
+        }
+
+        fun setIvImg(compView: View, @DrawableRes imgRes: Int){
+            getIv?.invoke(compView).notNull { iv -> iv.setImageResource(imgRes) }
+        }
+        fun setIvTint(compView: View, @ColorRes colorRes: Int){
+            getIv?.invoke(compView).notNull { iv -> setColor(iv, colorRes) }
+        }
+
         fun setBtnHollow(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_BORDER_ROUND) //R.drawable.shape_border_square_round_edge_main
-            btn.setTextColor(ContextCompat.getColor(btn.context, _ColorRes.COLOR_PRIMARY_DARK))
+            btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.COLOR_PRIMARY_DARK))
         }
 
         fun setBtnSolid(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
             setBgColor(btn, _ColorRes.COLOR_PRIMARY_DARK)
-            btn.setTextColor(ContextCompat.getColor(btn.context, _ColorRes.TEXT_LIGHT))
+            btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.TEXT_LIGHT))
         }
     }
 

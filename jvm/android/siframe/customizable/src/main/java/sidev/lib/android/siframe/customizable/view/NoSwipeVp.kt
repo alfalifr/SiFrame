@@ -5,19 +5,14 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
 
-class NoSwipeVp : ViewPager {
+class NoSwipeVp : ModableVp {
+    override var isTouchable: Boolean
+        get() = false
+        set(value) {}
+    override var isTouchInterceptable: Boolean
+        get() = false
+        set(value) {}
 
     constructor(context: Context) : super(context)
-
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        // Never allow swiping to switch between pages
-        return false
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        // Never allow swiping to switch between pages
-        return false
-    }
 }

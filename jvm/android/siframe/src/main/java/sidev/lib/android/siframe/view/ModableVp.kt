@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.customizable.view.intfc.ModableView
 
-class ModableVp : ViewPager, ModableView {
+open class ModableVp : ViewPager, ModableView {
     override var isTouchable: Boolean= true
     override var isTouchInterceptable: Boolean= true
 

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.customizable.view.intfc.CustomView
 import sidev.lib.android.siframe.tool.util._ViewUtil
 
-class CustomSizeRV : RecyclerView, CustomView {
+open class CustomSizeRV : RecyclerView, CustomView {
 
     constructor(context: Context) : super(context)
 
