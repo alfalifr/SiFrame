@@ -8,6 +8,9 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -16,7 +19,9 @@ import android.transition.ChangeBounds
 import android.transition.TransitionSet
 import android.transition.TransitionManager
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -320,6 +325,14 @@ object  _ViewUtil{
      */
     object Comp{
         /*
+        =======================
+        Area Konstanta
+        =======================
+         */
+        val MODE_NOTE= 1
+        val MODE_WARNING= 2
+
+        /*
         =====================
         get-Lambda Area  --AWAL--
             Knp kok lambda daripada fungsi?
@@ -357,20 +370,53 @@ object  _ViewUtil{
         var getField: ((View) -> View?)?= null
 
         /**
-         * Untuk mencari ImageView atau field yg dapat diisi dalam komponen.
+         * Untuk mencari ImageView dalam komponen.
          */
         var getIv: ((View) -> ImageView?)?= null
 
         /**
-         * Untuk mencari RecyclerView atau field yg dapat diisi dalam komponen.
+         * Untuk mencari ImageView yg berupa action pada suatu bar dalam komponen.
+         */
+        var getIvAction: ((View) -> ImageView?)?= null
+
+        /**
+         * Untuk mencari ImageView yg menunjukan indikasi password ditunjukan atau tidak dalam komponen.
+         */
+        var getIvPswdIndication: ((View) -> ImageView?)?= null
+
+        /**
+         * Untuk mencari RecyclerView dalam komponen.
          */
         var getRv: ((View) -> RecyclerView?)?= null
+
+        /**
+         * Untuk mencari ProgressBar dalam komponen.
+         */
+        var getPb: ((View) -> ProgressBar?)?= null
 
         /*
         =====================
         get-Lambda Area  --AKHIR--
         =====================
          */
+
+        /**
+         * @param onlyPb bertujuan menghilangkan iv_action yg letaknya sama dg pb
+         */
+        fun showPb(compView: View, show: Boolean= true, onlyPb: Boolean= false){
+            getPb?.invoke(compView).notNull { pb ->
+                pb.visibility=
+                    if(show) View.VISIBLE
+                    else View.GONE
+
+                if(onlyPb)
+                    getIvAction?.invoke(compView).notNull { iv ->
+                        iv.visibility=
+                            if(show) View.GONE
+                            else View.VISIBLE
+                    }
+            }
+        }
 
         fun setTvTitleTxt(compView: View, txt: String){
             getTvTitle?.invoke(compView).notNull { tv -> tv.text= txt }
@@ -389,6 +435,31 @@ object  _ViewUtil{
             getIv?.invoke(compView).notNull { iv -> setColor(iv, colorRes) }
         }
 
+        fun showPassword(compView: View, show: Boolean= true){
+            val transfMethod =
+                if(show) PasswordTransformationMethod.getInstance()
+                else null
+            getEd?.invoke(compView).notNull { ed ->
+                ed.transformationMethod= transfMethod
+                ed.setSelection(ed.text.toString().length)
+                getIvPswdIndication?.invoke(compView).notNull { iv ->
+                    iv.setImageResource(
+                        if(show) _Config.DRAW_PSWD_SHOWN
+                        else _Config.DRAW_PSWD_HIDDEN
+                    )
+                }
+            }
+        }
+
+        fun setTvNoteMode(compView: View, mode: Int){
+            getTvNote?.invoke(compView).notNull { tv ->
+                tv.textColorResource= when(mode){
+                    MODE_WARNING -> _ColorRes.RED
+                    else -> _ColorRes.TEXT_TRANS
+                }
+            }
+        }
+
         fun setBtnHollow(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_BORDER_ROUND) //R.drawable.shape_border_square_round_edge_main
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.COLOR_PRIMARY_DARK))
@@ -398,6 +469,86 @@ object  _ViewUtil{
             btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
             setBgColor(btn, _ColorRes.COLOR_PRIMARY_DARK)
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.TEXT_LIGHT))
+        }
+
+        /**
+         * @param compViews berisi sederet view yg saling terhubung untuk membentuk input kode OTP
+         */
+        fun initSingleCodeInput(vararg compViews: View){
+            val lastIndex= compViews.lastIndex
+            for((i, comp) in compViews.withIndex()){
+                val edPrev= try{ getEd?.invoke(compViews[i-1]) }
+                catch (e: Exception){ null }
+                val edNext= try{ getEd?.invoke(compViews[i+1]) }
+                catch (e: Exception){ null }
+                val ed= getEd?.invoke(comp)
+                val c= ed?.context
+
+                ed?.addTextChangedListener(object : TextWatcher {
+                    var isTextEdited= false
+                    var newlyInputedTxt= ""
+                    override fun afterTextChanged(s: Editable?) {
+                        if(!isTextEdited && s != null){
+                            isTextEdited= true
+                            if(s.isEmpty()){
+                                if(newlyInputedTxt.isNotEmpty() && newlyInputedTxt[0].isLetterOrDigit())
+                                    s.append(newlyInputedTxt[0])
+                                else if(edPrev != null){
+                                    edPrev.requestFocus()
+                                    val imm=
+                                        c?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                                    imm?.showSoftInput(edPrev, InputMethodManager.SHOW_IMPLICIT)
+                                }
+                            } else if(s.length == 1 && (s.isBlank() || !s[0].isLetterOrDigit())){
+                                s.clear()
+                                if(newlyInputedTxt[0].isLetterOrDigit())
+                                    s.append(newlyInputedTxt[0])
+                            } else if(s.length > 1){
+                                if(newlyInputedTxt[0].isLetterOrDigit()){
+                                    s.clear()
+                                    s.append(newlyInputedTxt[0])
+                                } else {
+                                    val str= s.toString().replace(newlyInputedTxt[0].toString(), "")
+                                    s.clear()
+                                    s.append(str)
+                                }
+                            }
+
+                            if(s.isNotBlank() && s.length == 1){
+                                if(i == lastIndex){
+                                    val imm=
+                                        c?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                                    imm?.hideSoftInputFromWindow(ed.windowToken, 0)
+                                } else if(edNext != null){
+                                    edNext.requestFocus()
+                                    val imm=
+                                        c?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                                    imm?.showSoftInput(edNext, InputMethodManager.SHOW_IMPLICIT)
+                                }
+                            }
+                            isTextEdited= false
+                        }
+                    }
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                        Log.e("VIEW_UTIL", "BEFORE----EARLIEST==== newlyInputedTxt= $newlyInputedTxt s= $s start= $start count= $count")
+                        if(!isTextEdited){
+//                            Log.e("VIEW_UTIL", "BEFORE==== newlyInputedTxt= $newlyInputedTxt s= $s start= $start count= $count")
+                            newlyInputedTxt=
+                                if(start > 0 || count == 1) {
+                                    val str= s?.toString()?.substring(start, start +count) ?: newlyInputedTxt
+                                    if(str[0].isLetterOrDigit())
+                                        str
+                                    else newlyInputedTxt
+                                } else {
+                                    if(s?.isNotEmpty() == true) s.toString().last().toString()
+                                    else ""
+                                }
+                            Log.e("VIEW_UTIL", "newlyInputedTxt= $newlyInputedTxt s= $s start= $start count= $count")
+                        }
+                    }
+                })
+            }
         }
     }
 

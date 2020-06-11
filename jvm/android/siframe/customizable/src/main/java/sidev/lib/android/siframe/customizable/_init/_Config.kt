@@ -89,6 +89,8 @@ object _Config {
     var DRAW_SHAPE_BORDER_ROUND= R.drawable.shape_border_round
     var DRAW_SHAPE_BORDER_ROUND_BG= R.drawable.shape_border_round_bg
     var DRAW_SHAPE_SOLID_SQUARE_ROUND= R.drawable.shape_solid_square_round
+    var DRAW_PSWD_SHOWN= R.drawable.ic_eye_yes
+    var DRAW_PSWD_HIDDEN= R.drawable.ic_eye_no
 
     var STYLE_NO_ACT_BAR= R.style.AppTheme_NoActionBar
     var STYLE_APP= R.style.AppTheme

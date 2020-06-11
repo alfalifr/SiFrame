@@ -8,6 +8,7 @@ object _ColorRes{
     var COLOR_ACCENT= R.color.colorAccent
 
     var TEXT_DARK= R.color.hitam
+    var TEXT_TRANS= R.color.abuTeks
     var TEXT_LIGHT= R.color.putih
 
     var COLOR_DARK= R.color.hitam

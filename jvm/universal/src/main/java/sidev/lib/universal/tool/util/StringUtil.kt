@@ -3,8 +3,9 @@ package sidev.lib.universal.tool.util
 //import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils
 import sidev.lib.universal.`fun`.nextNonWhitespaceChar
-import java.lang.IndexOutOfBoundsException
 import java.math.RoundingMode
+import java.net.MalformedURLException
+import java.net.URL
 import java.text.DecimalFormat
 import java.util.regex.Pattern
 import kotlin.math.pow
@@ -476,5 +477,35 @@ Password
             ) PASWD_STRENGTH_MED
             else PASWD_STRENGTH_WEAK
  */
+    }
+
+
+
+/*
+===========================
+Pola String Umum
+===========================
+*/
+    val urlRegexStr= "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+
+    fun getUrl(str: String): List<String>? {
+        val p = Pattern.compile(urlRegexStr, Pattern.CASE_INSENSITIVE)
+        val m = p.matcher(str)
+        var result = m.find()
+        var i= 0
+        val list= ArrayList<String>()
+        while (result) {
+            val url= m.group(0)
+            list.add(url)
+            println("i= $i - url= $url")
+            result = m.find()
+            i++
+        }
+        return if(list.isNotEmpty()) list
+        else null
+    }
+
+    fun isUrl(str: String): Boolean{
+        return str.matches(urlRegexStr.toRegex())
     }
 }

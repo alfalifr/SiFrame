@@ -8,20 +8,22 @@ object ThreadUtil{
         Handler().postDelayed(func, millis)
     }
 
-    fun getStackFunName(ind: Int): String {
-        val stackTrace= Thread.currentThread().stackTrace
-
-        for((i, stack) in stackTrace.withIndex()){
+    fun logCurrentStackTrace(){
+        Thread.currentThread().stackTrace.forEachIndexed{ i, stack ->
             val funName= stack.methodName
             val className= stack.className
             Log.e("ThreadUtil", "i= $i $className.$funName()")
         }
+    }
 
+    fun getStackFunName(ind: Int): String {
+        val stackTrace= Thread.currentThread().stackTrace
         val stack= stackTrace[ind]
         val funName= stack.methodName
         val className= stack.className
         return "$className.$funName()"
     }
+
     fun getCurrentCallerFunName(backInd: Int= 0): String {
         val tempRes= getStackFunName(6 +backInd)
         val thisFunName= "getCurrentCallerFunName"
