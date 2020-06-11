@@ -443,14 +443,14 @@ object  _ViewUtil{
 
         fun showPassword(compView: View, show: Boolean= true){
             val transfMethod =
-                if(show) PasswordTransformationMethod.getInstance()
+                if(!show) PasswordTransformationMethod.getInstance()
                 else null
             getEd?.invoke(compView).notNull { ed ->
                 ed.transformationMethod= transfMethod
                 ed.setSelection(ed.text.toString().length)
                 getIvPswdIndication?.invoke(compView).notNull { iv ->
                     iv.setImageResource(
-                        if(show) _Config.DRAW_PSWD_SHOWN
+                        if(!show) _Config.DRAW_PSWD_SHOWN
                         else _Config.DRAW_PSWD_HIDDEN
                     )
                 }
