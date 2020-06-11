@@ -39,6 +39,7 @@ import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.tool.util.FileUtil
 import java.lang.Exception
 import java.lang.NullPointerException
@@ -400,6 +401,11 @@ object  _ViewUtil{
          */
         var getPb: ((View) -> ProgressBar?)?= null
 
+        /**
+         * Untuk mencari Button dalam komponen.
+         */
+        var getBtn: ((View) -> Button?)?= null
+
         /*
         =====================
         get-Lambda Area  --AKHIR--
@@ -421,6 +427,48 @@ object  _ViewUtil{
                             if(show) View.GONE
                             else View.VISIBLE
                     }
+            }
+        }
+
+        fun getEdTxt(compView: View): String?{
+            return getEd?.invoke(compView).notNullTo { ed ->
+                ed.text.toString()
+            }
+        }
+        fun getEdHint(compView: View): String?{
+            return getEd?.invoke(compView).notNullTo { ed ->
+                ed.hint.toString()
+            }
+        }
+        fun getTvTxt(compView: View): String?{
+            return getTv?.invoke(compView).notNullTo { tv ->
+                tv.text.toString()
+            }
+        }
+        fun getTvTitleTxt(compView: View): String?{
+            return getTvTitle?.invoke(compView).notNullTo { tv ->
+                tv.text.toString()
+            }
+        }
+        fun getTvDescTxt(compView: View): String?{
+            return getTvDesc?.invoke(compView).notNullTo { tv ->
+                tv.text.toString()
+            }
+        }
+        fun getTvNoteTxt(compView: View): String?{
+            return getTvNote?.invoke(compView).notNullTo { tv ->
+                tv.text.toString()
+            }
+        }
+
+        fun setEdTxt(compView: View, str: String){
+            getEd?.invoke(compView).notNull { ed ->
+                ed.setText(str)
+            }
+        }
+        fun setEdHint(compView: View, str: String){
+            getEd?.invoke(compView).notNull { ed ->
+                ed.hint= str
             }
         }
 
@@ -466,11 +514,21 @@ object  _ViewUtil{
             }
         }
 
+        fun setBtnHollow(compView: View){
+            getBtn?.invoke(compView).notNull { btn ->
+                setBtnHollow(btn)
+            }
+        }
         fun setBtnHollow(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_BORDER_ROUND) //R.drawable.shape_border_square_round_edge_main
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.COLOR_PRIMARY_DARK))
         }
 
+        fun setBtnSolid(compView: View){
+            getBtn?.invoke(compView).notNull { btn ->
+                setBtnSolid(btn)
+            }
+        }
         fun setBtnSolid(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
             setBgColor(btn, _ColorRes.COLOR_PRIMARY_DARK)
