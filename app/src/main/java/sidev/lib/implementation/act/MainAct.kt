@@ -9,9 +9,7 @@ import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
 import sidev.lib.implementation.R
-import sidev.lib.implementation.frag.Frag4
-import sidev.lib.implementation.frag.RvFrag
-import sidev.lib.implementation.frag.VpImplFrag
+import sidev.lib.implementation.frag.*
 import sidev.lib.universal.tool.util.ThreadUtil
 
 class MainAct : SimpleAbsBarContentNavAct() {
@@ -44,4 +42,6 @@ class MainAct : SimpleAbsBarContentNavAct() {
     ) //startAct<VpDrawerAct>()
     fun toRvPageFrag(v: View)= startSingleFragAct_config<RvFrag>()
     fun toVpPageFrag(v: View)= startSingleFragAct_config<VpImplFrag>()
+    fun toActBarFrag(v: View)= startSingleFragAct_config<ActBarFrag>()
+    fun toVpPageFrag2(v: View)= startSingleFragAct_config<VpImpl2Frag>()
 }

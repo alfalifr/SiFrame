@@ -4,6 +4,7 @@ import android.util.SparseArray
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
 import sidev.lib.android.siframe.customizable._init._Config
@@ -11,6 +12,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleS
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import java.lang.Exception
 
 interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
@@ -180,11 +182,18 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
         setPageLimitInd(0, size)
     }
 
-    fun registerOnPageFragToActListener(frag: F, l: OnPageFragActiveListener){
-        onPageFragActiveListener.setValueAt(vpAdp.items.indexOf(frag), l) //= l
+    /**
+     * @return true jika berhasil dan sebaliknya.
+     */
+    fun registerOnPageFragToActListener(frag: F, l: OnPageFragActiveListener): Boolean{
+        val pos= vpAdp.items.indexOf(frag)
+        return if(pos >= 0){
+            onPageFragActiveListener.setValueAt(pos, l) //= l
+            true
+        } else false
     }
-    fun registerOnPageFragToActListener(frag: F, func: (vParent: View, pos: Int) -> Unit){
-        registerOnPageFragToActListener(frag, object :
+    fun registerOnPageFragToActListener(frag: F, func: (vParent: View, pos: Int) -> Unit): Boolean{
+        return registerOnPageFragToActListener(frag, object :
             OnPageFragActiveListener {
             override fun onPageFragActive(vParent: View, pos: Int) {
                 func(vParent, pos)
@@ -192,10 +201,18 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
         })
     }
 
-    fun setupVPWithTab(tab: TabLayout){
+    fun setupVpWithTab(tab: TabLayout){
         tab.setupWithViewPager(vp)
         for(i in 0 until vp.childCount)
             tab.getTabAt(i)?.text= vpFragList[i].fragTitle
+    }
+    fun setupVpWithNavBar(bnv: BottomNavigationView){
+        val menu= bnv.menu
+        bnv.setOnNavigationItemSelectedListener { menuItem ->
+            val pos= menuItem.getPosFrom(menu)
+            vp.currentItem= pos
+            true
+        }
     }
 
     /**

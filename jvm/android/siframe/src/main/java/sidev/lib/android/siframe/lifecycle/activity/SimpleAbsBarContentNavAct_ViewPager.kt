@@ -4,16 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 import java.lang.Exception
 
 abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
-    : SimpleAbsBarContentNavAct(), ViewPagerActBase<F> {
+    : SimpleAbsBarContentNavAct(), MultipleActBarViewPagerActBase<F> { //ViewPagerActBase<F>
     override val _sideBase_act: AppCompatActivity
         get() = this
     override val _sideBase_view: View
@@ -31,7 +33,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override val layoutId: Int
         get() = super<SimpleAbsBarContentNavAct>.layoutId
     override val contentLayoutId: Int
-        get() = super<ViewPagerActBase>.layoutId
+        get() = super<MultipleActBarViewPagerActBase>.layoutId
 /*
     /**
      * top-middle-bottom container terletak pada SimpleAbsBarContentNavAct.contentViewContainer
@@ -45,6 +47,15 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override val viewPagerActViewView: View
         get() = contentViewContainer
  */
+    override val actBarViewList: SparseArray<View> = SparseArray()
+    override var isActBarViewFromFragment: Boolean= false
+        set(v){
+            field= v
+            if(v) attachActBarView(vp.currentItem)
+        }
+    override val actBarContainer_vp: ViewGroup
+        get() = actBarViewContainer
+    override var defaultActBarView: View?= null
 
 
     override lateinit var vpAdp: ViewPagerFragAdp
@@ -54,7 +65,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var isVpTitleFragBased: Boolean= false
 
     override fun ___initSideBase() {
-        super<ViewPagerActBase>.___initSideBase()
+        super<MultipleActBarViewPagerActBase>.___initSideBase()
         addOnBackBtnListener {
             pageBackward()
 /*

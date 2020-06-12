@@ -21,10 +21,12 @@ import android.transition.TransitionManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
+import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.MenuRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -37,12 +39,14 @@ import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe.model.PictModel
+import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.tool.util.FileUtil
-import java.lang.Exception
 import java.lang.NullPointerException
+import kotlin.Exception
 
 //class ini digunakan tempat utility khusus view
 object  _ViewUtil{
@@ -288,7 +292,20 @@ object  _ViewUtil{
     }
 
 
-    fun loadImageToImageView(iv: ImageView, /*ivSizeType: Int, */url: String?){
+    fun setImg(iv: ImageView, img: PictModel?): Boolean{
+        return if(img != null){
+            when {
+                img.bm != null -> {
+                    iv.setImageBitmap(img.bm)
+                    true
+                }
+                img.dir != null -> loadImageToImageView(iv, img.dir)
+                else -> false
+            }
+        } else false
+    }
+
+    fun loadImageToImageView(iv: ImageView, /*ivSizeType: Int, */url: String?): Boolean{
         val isDirLocal= try{ FileUtil.isDirLocal(url!!) }
         catch(e: Exception){ false }
 
@@ -298,7 +315,7 @@ object  _ViewUtil{
 
 //        Log.e("SERVER_UTIL", "isDirLocal= $isDirLocal url= $url dir= $dir")
 
-        if(!isDirLocal){
+        return if(!isDirLocal){
             var dim = 500
 /*
             when(ivSizeType){
@@ -315,14 +332,29 @@ object  _ViewUtil{
                 .resize(dim, dim)
                 .centerCrop()
                 .into(iv)
+            true
         } else{
-            val bm= _BitmapUtil.decode(dir!!)!!
-            iv.setImageBitmap(bm)
+            try {
+                val bm = _BitmapUtil.decode(dir!!)!!
+                iv.setImageBitmap(bm)
+                true
+            } catch (e: Exception){ false }
         }
     }
 
+    fun setPopupMenu(anchorView: View, @MenuRes res: Int,
+                     onMenuItemListener: ((menuItem: MenuItem, pos: Int) -> Boolean)?= null): PopupMenu{
+        val popupMenu= PopupMenu(anchorView.context, anchorView)
+        popupMenu.inflate(res)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            onMenuItemListener?.invoke(menuItem, menuItem.getPosFrom(popupMenu.menu))
+                ?: false
+        }
+        return popupMenu
+    }
+
     /**
-     * Untuk penyesuaian view yang merupakan komponen template.
+     * Untuk penyesuaian view komponen dalam view template.
      */
     object Comp{
         /*
@@ -332,6 +364,10 @@ object  _ViewUtil{
          */
         val MODE_NOTE= 1
         val MODE_WARNING= 2
+
+        val TYPE_FILL_TXT_IGNORE= -1
+        val TYPE_FILL_TXT_BORDER= 1
+        val TYPE_FILL_TXT_UNDERLINE= 2
 
         /*
         =====================
@@ -366,13 +402,13 @@ object  _ViewUtil{
         /**
          * Untuk mencari EditText dalam komponen.
          */
-        var getEd: ((View) -> EditText?)?= null
+        var getEt: ((View) -> EditText?)?= null
 
         /**
          * Untuk mencari EditText atau field yg dapat diisi dalam komponen.
          */
         var getField: ((View) -> View?)?= null
-            get()= field ?: getEd
+            get()= field ?: getEt
 
         /**
          * Untuk mencari ImageView dalam komponen.
@@ -406,6 +442,14 @@ object  _ViewUtil{
          */
         var getBtn: ((View) -> Button?)?= null
 
+        /**
+         * Untuk fungsi kustom sesuai kriteria user.
+         * @param compView komponen scr keseluruhan.
+         * @param et EditText dalm compView.
+         * @param type tipe fill yg diajukan.
+         */
+        var enableFillTxt: ((compView: View, et: EditText, type: Int) -> Unit)?= null
+
         /*
         =====================
         get-Lambda Area  --AKHIR--
@@ -430,16 +474,6 @@ object  _ViewUtil{
             }
         }
 
-        fun getEdTxt(compView: View): String?{
-            return getEd?.invoke(compView).notNullTo { ed ->
-                ed.text.toString()
-            }
-        }
-        fun getEdHint(compView: View): String?{
-            return getEd?.invoke(compView).notNullTo { ed ->
-                ed.hint.toString()
-            }
-        }
         fun getTvTxt(compView: View): String?{
             return getTv?.invoke(compView).notNullTo { tv ->
                 tv.text.toString()
@@ -461,17 +495,9 @@ object  _ViewUtil{
             }
         }
 
-        fun setEdTxt(compView: View, str: String){
-            getEd?.invoke(compView).notNull { ed ->
-                ed.setText(str)
-            }
+        fun setTvTxt(compView: View, txt: String){
+            getTv?.invoke(compView).notNull { tv -> tv.text= txt }
         }
-        fun setEdHint(compView: View, str: String){
-            getEd?.invoke(compView).notNull { ed ->
-                ed.hint= str
-            }
-        }
-
         fun setTvTitleTxt(compView: View, txt: String){
             getTvTitle?.invoke(compView).notNull { tv -> tv.text= txt }
         }
@@ -481,6 +507,45 @@ object  _ViewUtil{
         fun setTvNoteTxt(compView: View, txt: String){
             getTvNote?.invoke(compView).notNull { tv -> tv.text= txt }
         }
+
+        fun setTvNoteMode(compView: View, mode: Int){
+            getTvNote?.invoke(compView).notNull { tv ->
+                tv.textColorResource= when(mode){
+                    MODE_WARNING -> _ColorRes.RED
+                    else -> _ColorRes.TEXT_TRANS
+                }
+            }
+        }
+
+        fun getEtTxt(compView: View): String?{
+            return getEt?.invoke(compView).notNullTo { et ->
+                et.text.toString()
+            }
+        }
+        fun getEtHint(compView: View): String?{
+            return getEt?.invoke(compView).notNullTo { et ->
+                et.hint.toString()
+            }
+        }
+        fun setEtTxt(compView: View, str: String){
+            getEt?.invoke(compView).notNull { et ->
+                et.setText(str)
+            }
+        }
+        fun setEtHint(compView: View, str: String){
+            getEt?.invoke(compView).notNull { et ->
+                et.hint= str
+            }
+        }
+
+
+        fun enableFillTxt(compView: View, enable: Boolean= true, type: Int= TYPE_FILL_TXT_IGNORE){
+            getEt?.invoke(compView).notNull { et ->
+                et.isEnabled= enable
+                enableFillTxt?.invoke(compView, et, type)
+            }
+        }
+
 
         fun setIvImg(compView: View, @DrawableRes imgRes: Int){
             getIv?.invoke(compView).notNull { iv -> iv.setImageResource(imgRes) }
@@ -493,7 +558,7 @@ object  _ViewUtil{
             val transfMethod =
                 if(!show) PasswordTransformationMethod.getInstance()
                 else null
-            getEd?.invoke(compView).notNull { ed ->
+            getEt?.invoke(compView).notNull { ed ->
                 ed.transformationMethod= transfMethod
                 ed.setSelection(ed.text.toString().length)
                 getIvPswdIndication?.invoke(compView).notNull { iv ->
@@ -501,15 +566,6 @@ object  _ViewUtil{
                         if(!show) _Config.DRAW_PSWD_SHOWN
                         else _Config.DRAW_PSWD_HIDDEN
                     )
-                }
-            }
-        }
-
-        fun setTvNoteMode(compView: View, mode: Int){
-            getTvNote?.invoke(compView).notNull { tv ->
-                tv.textColorResource= when(mode){
-                    MODE_WARNING -> _ColorRes.RED
-                    else -> _ColorRes.TEXT_TRANS
                 }
             }
         }
@@ -536,7 +592,7 @@ object  _ViewUtil{
         }
 
         fun initPasswordField(compView: View){
-            getEd?.invoke(compView).notNull { ed ->
+            getEt?.invoke(compView).notNull { ed ->
                 var isPswdShown= true
                 ed.setOnClickListener {
                     isPswdShown= !isPswdShown
@@ -552,11 +608,11 @@ object  _ViewUtil{
         fun initSingleCodeInput(vararg compViews: View){
             val lastIndex= compViews.lastIndex
             for((i, comp) in compViews.withIndex()){
-                val edPrev= try{ getEd?.invoke(compViews[i-1]) }
+                val edPrev= try{ getEt?.invoke(compViews[i-1]) }
                 catch (e: Exception){ null }
-                val edNext= try{ getEd?.invoke(compViews[i+1]) }
+                val edNext= try{ getEt?.invoke(compViews[i+1]) }
                 catch (e: Exception){ null }
-                val ed= getEd?.invoke(comp)
+                val ed= getEt?.invoke(comp)
                 val c= ed?.context
 
                 ed?.addTextChangedListener(object : TextWatcher {

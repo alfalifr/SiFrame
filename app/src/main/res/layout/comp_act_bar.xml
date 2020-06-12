@@ -2,16 +2,17 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@color/merah"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/tv"
-        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Ini Text ActBar"
         android:textSize="@dimen/txt_med"
-        android:text="@string/template_msg_desc"
-        android:textStyle="bold" />
-
+        android:textColor="@color/putih"/>
 
 </RelativeLayout>

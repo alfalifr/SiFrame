@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.setChildPadding
 
 /**
@@ -16,7 +18,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.setChildPadding
  * - Content (isi secara keseluruhan pada Activity),
  * - NavBar (bar yang ada di bawah Activity)
  */
-abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
+abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
 /*
     override var isInherited: Boolean= false
     override fun _configInheritable() {
@@ -35,7 +37,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
     open val isContentLayoutInflatedFirst= true
 
     abstract val contentLayoutId: Int
-    open val actBarId: Int= _Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
+    override val actBarId: Int= _Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
     open val isNavBarVisible= false
     open val menuId: Int?= null
 
@@ -47,10 +49,11 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
      * Harus dimodifikasi secara internal (private) agar tidak terjadi inkonsistensi
      */
     protected open lateinit var contentViewContainer: ViewGroup
-    protected open lateinit var actBarViewContainer: ViewGroup
+    open lateinit var actBarViewContainer: ViewGroup
+        protected set
     protected open lateinit var navBar: BottomNavigationView
 
-    abstract fun _initActBar(actBarView: View)
+    abstract override fun _initActBar(actBarView: View)
     abstract fun _initNavBar(navBarView: BottomNavigationView)
 /*
     abstract fun initView(contentView: View)
@@ -132,6 +135,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(){
         val prevView= actBarViewContainer.getChildAt(0)
         actBarViewContainer.removeView(prevView)
         actBarViewContainer.addView(v)
+        loge("setActBarView()")
         return prevView
     }
 /*

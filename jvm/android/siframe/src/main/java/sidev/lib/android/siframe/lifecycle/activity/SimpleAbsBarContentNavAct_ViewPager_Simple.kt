@@ -1,7 +1,9 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
 import android.content.Context
+import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
@@ -14,7 +16,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
  */
 open class SimpleAbsBarContentNavAct_ViewPager_Simple
     : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(){
-
+    
     override fun _initActBar(actBarView: View) {}
     override fun _initNavBar(navBarView: BottomNavigationView) {}
     override fun _initView(layoutView: View) {}

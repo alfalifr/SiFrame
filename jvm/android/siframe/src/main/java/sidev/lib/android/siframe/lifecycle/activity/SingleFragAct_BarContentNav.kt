@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.`fun`.notNull
 
 //import sidev.kuliah.agradia.R
 
-abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleFragActBase{
+abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleFragActBase, ActBarFromFragBase{
     override val layoutId: Int
         get() = super<SimpleAbsBarContentNavAct>.layoutId
     override val contentLayoutId: Int
@@ -31,8 +33,47 @@ abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleF
 //    override var isFragLate: Boolean= false
     override var isDataAsync: Boolean= false
 
+    var defaultActBarView: View?= null
+    override var isActBarViewFromFragment: Boolean= false
+        set(v){
+            field= v
+            if(v) attachFragActBar()
+        }
+
+
+    override fun __initViewFlow(rootView: View) {
+        super.__initViewFlow(rootView)
+        attachFragActBar()
+    }
+
     override fun ___initSideBase() {
         super<SingleFragActBase>.___initSideBase()
+    }
+
+    protected fun attachFragActBar(){
+        if(isActBarViewFromFragment){
+            loge("attachFragActBar() fragment::class.java.simpleName= ${fragment::class.java.simpleName}")
+            fragment.asNotNull { frag: ActBarFragBase ->
+                frag.getActBar().notNull { actBar ->
+                    if(defaultActBarView == null)
+                        defaultActBarView= actBarViewContainer.getChildAt(0)
+                    setActBarView(actBar)
+                    frag._initActBar(actBar)
+                    loge("attachFragActBar() asNotNull frag: ActBarFragBase")
+                }
+            }.asNotNull { frag: MultipleActBarViewPagerActBase<*> ->
+                loge("attachFragActBar() asNotNull frag: MultipleActBarViewPagerActBase")
+                frag.isActBarViewFromFragment= isActBarViewFromFragment
+                frag.attachActBarView(frag.vp.currentItem)
+            }
+        }
+    }
+
+    fun resetDefaultActBar(){
+        if(defaultActBarView != null){
+            actBarViewContainer.removeAllViews()
+            actBarViewContainer.addView(defaultActBarView)
+        }
     }
 }
 
