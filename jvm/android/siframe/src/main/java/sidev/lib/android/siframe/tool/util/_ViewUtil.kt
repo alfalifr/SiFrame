@@ -535,6 +535,17 @@ object  _ViewUtil{
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.TEXT_LIGHT))
         }
 
+        fun initPasswordField(compView: View){
+            getEd?.invoke(compView).notNull { ed ->
+                var isPswdShown= true
+                ed.setOnClickListener {
+                    isPswdShown= !isPswdShown
+                    showPassword(ed, isPswdShown)
+                }
+                ed.callOnClick()
+            }
+        }
+
         /**
          * @param compViews berisi sederet view yg saling terhubung untuk membentuk input kode OTP
          */
