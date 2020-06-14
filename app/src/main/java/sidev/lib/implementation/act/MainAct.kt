@@ -22,7 +22,7 @@ class MainAct : SimpleAbsBarContentNavAct() {
     override fun _initNavBar(navBarView: BottomNavigationView) {}
     override fun _initView(layoutView: View) {
 //        tv.text= "Test bro oy!!!"
-
+/*
         ThreadUtil.delayRun(3000){
             startAct<Test2Act>()
         }
@@ -32,6 +32,7 @@ class MainAct : SimpleAbsBarContentNavAct() {
         ThreadUtil.delayRun(9000){
             _AppUtil.openAppBlock(this)
         }
+ */
     }
 
     fun toVpAct(v: View)= startAct<ViewPagerAct>()
@@ -44,4 +45,5 @@ class MainAct : SimpleAbsBarContentNavAct() {
     fun toVpPageFrag(v: View)= startSingleFragAct_config<VpImplFrag>()
     fun toActBarFrag(v: View)= startSingleFragAct_config<ActBarFrag>()
     fun toVpPageFrag2(v: View)= startSingleFragAct_config<VpImpl2Frag>()
+    fun toRvFragDbPage(v: View)= startSingleFragAct_config<RvDbFrag>()
 }

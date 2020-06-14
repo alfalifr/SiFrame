@@ -2,8 +2,36 @@ package sidev.lib.universal.tool.util
 
 import android.os.Handler
 import android.util.Log
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.RunnableFuture
+import java.util.concurrent.ThreadPoolExecutor
 
 object ThreadUtil{
+    object Pool{
+        val processorCount= Runtime.getRuntime().availableProcessors()
+        private var threadPoolService= Executors.newFixedThreadPool(processorCount) as ThreadPoolExecutor
+//        private val daftarTugas= HashMap<String, ArrayList<() -> Unit>>()
+
+        //@return juga menghasilkan RunnableFuture<T>
+        //simpan @return untuk membatalkan tugas di waktu kemudian dengan @method batalkan()
+        fun <T> submit(tugas: () -> T?): Future<T> {
+            if(threadPoolService.isShutdown)
+                threadPoolService= Executors.newFixedThreadPool(processorCount) as ThreadPoolExecutor
+            return threadPoolService.submit(tugas)
+        }
+
+        //@param juga menerima parameter hasil @return @method kumpulkan()
+        fun <T> cancel(tugas: RunnableFuture<T>){
+            threadPoolService.remove(tugas)
+        }
+
+        //mematikan ThreadPool yang lama dan meng-instansiasi object yang baru
+        fun recycle(): List<Runnable>{
+            return threadPoolService.shutdownNow()
+        }
+    }
+
     fun delayRun(millis: Long, func: () -> Unit){
         Handler().postDelayed(func, millis)
     }

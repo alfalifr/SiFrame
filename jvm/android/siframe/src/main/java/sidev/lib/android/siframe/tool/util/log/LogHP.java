@@ -81,7 +81,7 @@ public class LogHP {
     }
     private void cekFile(){
         if(!fileYgSama){
-            String tglSkrg= TimeUtil.INSTANCE.timestamp("dd-MM-yyyy"); //.Companion.waktuSkrg("dd-MM-yyyy");//strTimestamp.split(" ")[0];
+            String tglSkrg= TimeUtil.INSTANCE.simpleTimestamp("dd-MM-yyyy"); //.Companion.waktuSkrg("dd-MM-yyyy");//strTimestamp.split(" ")[0];
             int noKeluaran= 1;
             namaFileOutput= alamatFile +"/Log_" +namaApp /*+":" +namaAktifitas*/ +"_" +tglSkrg +"_" +noKeluaran +".txt";
 

@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.model
 
+import sidev.lib.android.siframe.model.intfc.Fk
 import java.io.Serializable
 
 /**
@@ -16,4 +17,7 @@ import java.io.Serializable
  *
  * Kelas yang merepresentasikan db perantara yang menghubungkan 2 tabel.
  */
-data class FK_DB<FROM, TO>(var fkRow: ArrayList<FK_Row<FROM, TO>> = ArrayList()): Serializable
+data class FK_DB<FROM, TO>(var fkRow: ArrayList<FK_Row<FROM, TO>> = ArrayList()): Fk, Serializable{
+    override fun getCount(): Int = fkRow.size
+    override fun getFkId(pos: Int): String = fkRow[pos].toId
+}

@@ -6,7 +6,12 @@ import java.util.*
 
 object TimeUtil {
 
-    val FORMAT= "dd/MM/yyyy"
+//    val FORMAT= "dd/MM/yyyy"
+
+    var FORMAT_DATE= "dd/MM/yyyy"
+    var FORMAT_TIME= "HH:mm:ss"
+    var FORMAT_TIMESTAMP= "$FORMAT_DATE $FORMAT_TIME"
+    var FORMAT_TIMESTAMP_NO_SPACE= "ddMMyyyyHHmmss"
 
     val month: Array<String>
         get() = arrayOf(
@@ -23,7 +28,7 @@ object TimeUtil {
             "November",
             "Desember"
         )
-
+/*
     /**
      * Sementara ini hanya untuk format dd/MM/yyyy
      * update:
@@ -37,8 +42,9 @@ object TimeUtil {
             monthName= monthName.substring(0, monthLen)
         return "${dateArr[0]} $monthName ${dateArr[2]}"
     }
+ */
 
-    fun parseToNamedMonth(date: String, monthLen: Int= 3, patternIn: String= "yyyy-MM-dd", patternOut: String= "dd MMM yyyy")
+    fun parseToNamedMonth(date: String, monthLen: Int= 3, patternIn: String= FORMAT_DATE, patternOut: String= FORMAT_DATE)
     : String{
         val sdfOut= SimpleDateFormat(patternOut, Locale.getDefault())
         val sdfIn= SimpleDateFormat(patternIn)
@@ -47,10 +53,11 @@ object TimeUtil {
         return sdfOut.format(dateObj)
     }
 
-    fun timestamp(pattern: String= "yyyyddMMhhmmss"): String{
+    fun simpleTimestamp(pattern: String= "yyyyddMMhhmmss"): String{
         val simpleDateFormat = SimpleDateFormat(pattern)
         return simpleDateFormat.format(Date())
     }
+
 /*
     fun getDateString(cal: Calendar, pattern: String= "dd/MM/yyyy"): String{
         val simpleDateFormat = SimpleDateFormat(pattern)
@@ -61,7 +68,7 @@ object TimeUtil {
     /**
      * @param diff dalam millisecond
      */
-    fun getDateString(cal: Calendar= Calendar.getInstance(), pattern: String= FORMAT, diff: Long= 0): String{
+    fun timestamp(cal: Calendar= Calendar.getInstance(), pattern: String= FORMAT_TIMESTAMP, diff: Long= 0): String{
         val simpleDateFormat = SimpleDateFormat(pattern)
         cal.add(Calendar.MILLISECOND, diff.toInt())
         return simpleDateFormat.format(cal.time)
@@ -71,7 +78,7 @@ object TimeUtil {
      * Otomatis menghitung tanggal yang sesuai
      * @param month dimulai dari 1
      */
-    fun getDateString(day: Int, month: Int, year: Int, pattern: String= FORMAT): String{
+    fun timestamp(day: Int, month: Int, year: Int, pattern: String= FORMAT_TIMESTAMP): String{
         val cal= Calendar.getInstance()
         val month= if(month in 1 .. 12) month
         else if(month > 12) 12
@@ -88,13 +95,13 @@ object TimeUtil {
         cal.set(Calendar.DATE, day)
 
 //            cal.set(year, month-1, day)
-        return getDateString(
+        return timestamp(
             cal,
             pattern
         )
     }
 
-    fun toCalObj(time: String, pattern: String= FORMAT): Calendar{
+    fun toCalObj(time: String, pattern: String= FORMAT_TIMESTAMP): Calendar{
         val simpleDateFormat = SimpleDateFormat(pattern)
         val cal= Calendar.getInstance()
         cal.time= simpleDateFormat.parse(time)
@@ -105,7 +112,7 @@ object TimeUtil {
     /**
      * time2 - time1
      */
-    fun getTimeDiff(time1: String, time2: String, format: String= FORMAT, out: String= ""): Long{
+    fun getTimeDiff(time1: String, time2: String, format: String= FORMAT_TIMESTAMP, out: String= ""): Long{
         val simpleDateFormat = SimpleDateFormat(format)
 
         val date1 = simpleDateFormat.parse(time1) //"08:00 AM"

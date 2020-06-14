@@ -17,6 +17,10 @@ object _Config {
 
     var INT_EMPTY= 0
 
+    var DB_NAME= "DEFAULT"
+    var DB_VERSION= 1
+
+
     var TEMPLATE_VIEW_ACT_BAR_TYPE= _Constant.TEMPLATE_VIEW_TYPE_ACT_BAR_DEFAULT
 
 
@@ -96,7 +100,8 @@ object _Config {
     var STYLE_APP= R.style.AppTheme
 
     var FORMAT_DATE= "dd/MM/yyyy"
-    var FORMAT_TIME= "$FORMAT_DATE HH:mm:ss"
+    var FORMAT_TIME= "HH:mm:ss"
+    var FORMAT_TIMESTAMP= "$FORMAT_DATE $FORMAT_TIME"
 
     var ENDPOINT_ROOT= ""
 }

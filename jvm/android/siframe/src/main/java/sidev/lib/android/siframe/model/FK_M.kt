@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.model
 
+import sidev.lib.android.siframe.model.intfc.Fk
 import java.io.Serializable
 
 /**
@@ -16,7 +17,10 @@ import java.io.Serializable
  *
  * Kelas yang merepresentasikan FK pada model.
  */
-data class FK_M<TO>(var toId: Array<String>, var toObj: Array<TO>?= null): Serializable {
+data class FK_M<TO>(var toId: Array<String>, var toObj: Array<TO>?= null): Fk, Serializable {
+    override fun getCount(): Int = toId.size
+    override fun getFkId(pos: Int): String = toId[pos]
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

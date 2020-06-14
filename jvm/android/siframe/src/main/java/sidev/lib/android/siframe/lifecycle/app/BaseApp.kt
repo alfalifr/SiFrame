@@ -2,6 +2,7 @@ package sidev.lib.android.siframe.lifecycle.app
 
 import android.app.Application
 import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
 import kotlin.system.exitProcess

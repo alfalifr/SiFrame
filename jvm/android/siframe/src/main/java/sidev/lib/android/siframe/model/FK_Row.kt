@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.model
 
+import sidev.lib.android.siframe.model.intfc.Fk
 import java.io.Serializable
 
 /**
@@ -17,4 +18,7 @@ import java.io.Serializable
  * Kelas yang merepresentasikan row di dalam tabel
  */
 data class FK_Row<FROM, TO>(var fromId: String, var toId: String,
-                            var fromObj: FROM?= null, var toObj: TO?= null) : Serializable
+                            var fromObj: FROM?= null, var toObj: TO?= null) : Fk, Serializable{
+    override fun getCount(): Int = 1
+    override fun getFkId(pos: Int): String = toId
+}

@@ -2,6 +2,44 @@ package sidev.lib.universal.`fun`
 
 import kotlin.collections.ArrayList
 
+/*
+===============
+Convert
+===============
+ */
+fun <T> Array<T>.toArrayList(): ArrayList<T>{
+    val list= ArrayList<T>()
+    this.forEach { list.add(it) }
+    return list
+}
+
+
+/*
+===============
+Fungsi lain
+===============
+ */
+fun <T> Array<T>.ifExists(func: (T) -> Boolean): Boolean{
+    var exists= false
+    this.forEach { t ->
+        if(func(t)){
+            exists= true
+            return@forEach
+        }
+    }
+    return exists
+}
+fun <T> Collection<T>.ifExists(func: (T) -> Boolean): Boolean{
+    var exists= false
+    this.forEach { t ->
+        if(func(t)){
+            exists= true
+            return@forEach
+        }
+    }
+    return exists
+}
+
 fun <T> Array<T>.filterIn(array: Array<T>): Iterable<T> {
     val out= ArrayList<T>()
     for(e in this)

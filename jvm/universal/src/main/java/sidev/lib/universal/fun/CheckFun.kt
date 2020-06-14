@@ -2,6 +2,10 @@ package sidev.lib.universal.`fun`
 
 import java.lang.Exception
 
+fun <T> T.iff(func: (T) -> Boolean): Boolean{
+    return func(this)
+}
+
 /**
  * Mirip dg notNull() namun terdapat cast untuk input lambda.
  */

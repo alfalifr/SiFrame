@@ -2,13 +2,20 @@ package sidev.lib.android.siframe.tool.`var`
 
 import android.util.Log
 
+/**
+ * Untuk val yg berawalan dg _ merupakan suffix.
+ */
 object _SIF_Constant{
     val REQ_PERMISSION= 1
     val REQ_PICK_GALLERY= 2
     val REQ_PICK_GALLERY_MULTIPLE= 3
 
-    val EXTRA_DATA= "extra_data"
     val REQ_CODE= "req_code"
+    val EXTRA_DATA= "extra_data"
+
+    val MAIN_REF= "main_ref"
+    val _KEY_PREF_EXP_TIME= "_pref_exp_time"
+
     val FRAGMENT_NAME= "frag_name"
     val EXTRA_IS_CUSTOM_ACT_BAR= "is_custom_act_bar"
     val EXTRA_TITLE= "title"
