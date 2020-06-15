@@ -39,7 +39,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
 
     abstract val contentLayoutId: Int
     override val actBarId: Int= _Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
-    open val isNavBarVisible= false
+    open val isNavBarVisible= true
     open val menuId: Int?= null
 
     open val actBarViewContainerId= _Config.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container

@@ -17,11 +17,54 @@ import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.universal.`fun`.filter
 import sidev.lib.universal.`fun`.notNull
 
+abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context, dataList: ArrayList<D>?)
+    : RvAdp<D, LM>(ctx, dataList){
+    override val itemLayoutId: Int
+        get() = _Config.INT_EMPTY
+
+    /**
+     * Untuk mengambil layoutId pada posisi tertentu dg data tertentu pula.
+     */
+    abstract fun getItemViewType(pos: Int, data: D): Int
+    abstract fun bindVhMulti(vh: SimpleViewHolder, pos: Int, viewType: Int, data: D)
+
+    override fun getItemViewType(pos: Int): Int{
+        return getItemViewType(pos, dataList!![pos])
+    }
+    override fun bindVH(vh: SimpleViewHolder, pos: Int, data: D){}
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
+        val v= LayoutInflater.from(ctx).inflate(itemContainerLayoutId, parent, false)
+        val contentV= LayoutInflater.from(ctx).inflate(viewType, parent, false)
+        v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
+            .addView(contentV)
+        return SimpleViewHolder(v)
+    }
+
+    override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
+        Log.e("SImpleAbsRVA", "bindVh() position= $position name= ${this::class.java.simpleName}")
+//        selectedItemView= holder.itemView
+        holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+            ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE
+        else View.GONE
+
+        val viewType= getItemViewType(position)
+        __bindVH(holder, position, dataList!![position])
+        bindVhMulti(holder, position, viewType, dataList!![position])
+
+        holder.itemView.setOnClickListener { v ->
+            selectItem(position)
+            onItemClickListener?.onClickItem(v, holder.adapterPosition, dataList!![position])
+        }
+    }
+}
+
+/*
 //!!!!!!@@ 18 Jan 2020
-abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
+abstract class RvMultiViewAdp <D, LM: RecyclerView.LayoutManager> (
     val ctx: Context, dataList: ArrayList<D>?
     )
-    : RecyclerView.Adapter<RvAdp<D, LM>.SimpleViewHolder>(), Adp{
+    : RecyclerView.Adapter<RvMultiViewAdp<D, LM>.SimpleViewHolder>(), Adp{
 
     protected var isInternalEdit= false
     protected var isDataListInternalEdit= false
@@ -149,8 +192,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         Log.e("SImpleAbsRVA", "bindVh() position= $position name= ${this::class.java.simpleName}")
-//        selectedItemView= holder.itemView
-        holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+        selectedItemView= holder.itemView
+        selectedItemView?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
             ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE
             else View.GONE
         __bindVH(holder, position, dataList!![position])
@@ -607,3 +650,4 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     internal fun `access$setDataListSetFromInternal`(func: () -> Unit) =
         setDataListSetFromInternal(func)
 }
+ */
