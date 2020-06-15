@@ -125,7 +125,7 @@ abstract class SimpleAbsFrag : Fragment(),
      *
      * @param parentView merupakan view tempat fragment ini menempel.
      */
-    fun onActive(parentView: View, pos: Int){}
+    open fun onActive(parentView: View, pos: Int){}
 
 /*
     fun actSimple(func: (actSimple: SimpleAbsAct) -> Unit){

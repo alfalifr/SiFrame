@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.util.set
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 

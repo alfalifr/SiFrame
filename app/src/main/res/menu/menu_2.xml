@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Plus"
+        android:id="@+id/menu_plus"
+        android:icon="@drawable/ic_plus_circle"/>
+    <item
+        android:title="Profile"
+        android:id="@+id/menu_profile"
+        android:icon="@drawable/ic_profile"/>
+    <item
+        android:title="Warning"
+        android:id="@+id/menu_warning"
+        android:icon="@drawable/ic_warning"/>
+</menu>

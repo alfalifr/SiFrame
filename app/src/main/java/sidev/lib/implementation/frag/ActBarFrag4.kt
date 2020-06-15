@@ -3,6 +3,7 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
+import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
@@ -25,5 +26,9 @@ class ActBarFrag4 : SimpleActBarFrag(){
     override fun _initActBar(actBarView: View) {
         _ViewUtil.setBgColor(actBarView, R.color.unguTua)
         actBarView.tv.text= fragTitle
+    }
+
+    override fun onActive(parentView: View, pos: Int) {
+        actSimple.asNotNull { act: SimpleAbsBarContentNavAct -> act.setMenu(null) }
     }
 }

@@ -11,6 +11,7 @@ import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.setChildPadding
+import java.lang.Exception
 
 /**
  * Kelas dalam framework yang digunakan sbg Activity dg:
@@ -117,15 +118,30 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
         val topPadding= _ResUtil.getDimen(this, _Config.DIMEN_ACT_BAR_OFFSET)
         contentViewContainer.setChildPadding(top= topPadding.toInt())
 
-        if(menuId != null)
+        if(menuId != null && isNavBarVisible){
             navBar.inflateMenu(menuId!!)
-        else
+            navBar.visibility= View.VISIBLE
+        } else
             navBar.visibility= View.GONE
     }
 
     open fun setActBarTitle(title: String){
-        if(::actBarViewContainer.isInitialized)
-            actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
+        if(::actBarViewContainer.isInitialized){
+            try{
+                actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
+            } catch (e: Exception){
+                _ViewUtil.Comp.setTvTitleTxt(actBarViewContainer, title)
+            }
+        }
+    }
+
+    fun setMenu(menuId: Int?){
+        navBar.menu.clear()
+        if(menuId != null){
+            navBar.inflateMenu(menuId)
+            navBar.visibility= View.VISIBLE
+        } else
+            navBar.visibility= View.GONE
     }
 
     /**
