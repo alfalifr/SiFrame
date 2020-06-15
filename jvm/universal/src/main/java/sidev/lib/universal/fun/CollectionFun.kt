@@ -97,6 +97,13 @@ inline fun <T> Iterable<T>.filter(func: (element: T, pos: Int) -> Boolean): List
             filteredList.add(e)
     return filteredList
 }
+inline fun <T> Array<out T>.filter(func: (element: T, pos: Int) -> Boolean): List<T> {
+    val filteredList= ArrayList<T>()
+    for((i, e) in this.withIndex())
+        if(func(e, i))
+            filteredList.add(e)
+    return filteredList
+}
 
 
 inline fun <T> Iterable<T>.search(filter: (element: T, pos: Int) -> Boolean): T?{
@@ -106,8 +113,37 @@ inline fun <T> Iterable<T>.search(filter: (element: T, pos: Int) -> Boolean): T?
     }
     return null
 }
+inline fun <T> Iterable<T>.search(filter: (element: T) -> Boolean): T?{
+    for(el in this){
+        val bool= filter(el)
+        if(bool) return el
+    }
+    return null
+}
+
+inline fun <T> Array<T>.search(filter: (element: T, pos: Int) -> Boolean): T?{
+    for((i, el) in this.withIndex()){
+        val bool= filter(el, i)
+        if(bool) return el
+    }
+    return null
+}
+inline fun <T> Array<T>.search(filter: (element: T) -> Boolean): T?{
+    for(el in this){
+        val bool= filter(el)
+        if(bool) return el
+    }
+    return null
+}
 
 inline fun <T> Iterable<T>.indexOf(filter: (element: T, pos: Int) -> Boolean): Int{
+    for((i, el) in this.withIndex()){
+        val bool= filter(el, i)
+        if(bool) return i
+    }
+    return -1
+}
+inline fun <T> Array<T>.indexOf(filter: (element: T, pos: Int) -> Boolean): Int{
     for((i, el) in this.withIndex()){
         val bool= filter(el, i)
         if(bool) return i

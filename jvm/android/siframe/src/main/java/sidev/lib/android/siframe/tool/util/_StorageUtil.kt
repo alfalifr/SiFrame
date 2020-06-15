@@ -12,7 +12,7 @@ object _StorageUtil{
         /**
          * @param expDuration in sec
          */
-        fun setSharedPref(c: Context, value: String?, key: String, expDuration: Long= 0) {
+        fun setSharedPref(c: Context, key: String, value: String?, expDuration: Long= 0) {
 //        val callerFun= ReflexUtil.getCurrentCallerFunName()
 //        Log.e("UTIL", "setSharedPref() callerFun= $callerFun")
             Log.e("UTIL", "setSharedPref() key= $key value= $value expDuration= $expDuration")
@@ -37,7 +37,7 @@ object _StorageUtil{
                 if(diff > 0)
                     prefs.getString(key, null)
                 else {
-                    setSharedPref(c, null, key)
+                    setSharedPref(c, key, null)
                     removeSharedPrefExp(c, key)
                     null
                 }
