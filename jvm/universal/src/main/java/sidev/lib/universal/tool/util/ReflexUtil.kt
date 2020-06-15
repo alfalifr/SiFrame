@@ -6,11 +6,17 @@ object ReflexUtil {
 newInstance
 ======================
 */
-    fun <I> newInstance(className: String): I {
+    fun <O> newInstance(className: String): O {
         return Class.forName(className)
-            .newInstance() as I
+            .newInstance() as O
     }
 
+    fun <O> newInstance(className: String, constParamType: Array<Class<*>>, constParamVal: Array<Any>): O {
+        return Class.forName(className)
+            .getConstructor(*constParamType)
+            .newInstance(*constParamVal) as O
+    }
+/*
     inline fun <reified I> newInstance(): I {
         return Class.forName(I::class.java.name)
             .newInstance() as I
@@ -40,4 +46,5 @@ newInstance
             .getConstructor(C1::class.java, C2::class.java, C3::class.java, C4::class.java)
             .newInstance(*arg1, *arg2, *arg3, *arg4) as I
     }
+ */
 }

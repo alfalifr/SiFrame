@@ -36,7 +36,10 @@ import java.lang.reflect.Modifier
  *                      Double, Float -> Double
  *
  *
- *  NOTE: <1> sementara msh bisa hanya read/write FK_M.toId.first()
+ *  NOTE: <1, 14 Juni 2020> sementara msh bisa hanya read/write FK_M.toId.first()
+ *        <1, 15 Juni 2020>!!! Fk tidak dianggap sbg data yg dicatat karena secara logis beda tabel.
+ *        <2, 15 Juni 2020> Declared field dg nama berawalan _ dianggap sbg private dan tidak dicatat.
+ *        <3, 15 Juni 2020> Hanya mencatat field primitive, bkn obj.
  */
 abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
 //    : SQLiteOpenHelper(konteks, BuildConfig.DB_NAMA, null, BuildConfig.DB_VERSI){
@@ -45,7 +48,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
         val TYPE_NULL= "NULL" /*jika suatu field tidak merepresentasikan nilai scr langsung, atau dg kata lain merupakan object,
                                 maka tidak dianggap sbg attribut pada db SQLite.
                              */
-        var EXCLUDED_FIELD_NAME= "_id" //Replika dari id
+        var EXCLUDED_FIELD_NAME= "_id" //Replika dari id. <2 Juni 2020> => field yg gak dianggap adalah yg dg nama berawalan _
         val ERROR= "error"
     }
 
@@ -56,7 +59,8 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
 
     var primaryKey: String= ""
         protected set
-    val tableName: String
+    lateinit var tableName: String
+        protected set
     protected abstract val modelClass: Class<M>
 
     /**
@@ -77,8 +81,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
 //    private val DATA_HOLDER_= ViewModelHolder<M>()
 
     init{
-        tableName= createTableName()
-        readAttribFromModel()
+        initHandler()
 //        DATA_HOLDER_.idVHM= "DATA_HOLDER_$tableName"
     }
 
@@ -102,30 +105,34 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
 //        db?.close()
     }
 */
+    /**
+     * <2, 15 Juni 2020> Sementara tidak mengepass fk karena berada di beda tabel.
+     */
     abstract fun createModel(petaNilai: Map<String, *>): M
+
+    fun initHandler(){
+        tableName= createTableName()
+        readAttribFromModel()
+    }
 
     fun deleteDb(): Boolean{
         return ctx.deleteDatabase(sqliteHelper.databaseName)
     }
 
-    fun dropTable(l: (progres: Int, total: Int, isiProgres: Boolean?, idProgres: String) -> Unit){
-        val objPengawas= object: ProgressListener<Boolean>(){
-            override fun onProgres(progres: Int, total: Int, isiProgres: Boolean?, idProgres: String) {
-                l(progres, total, isiProgres, idProgres)
+    fun dropTable(): LiveVal<Boolean>{
+        val liveVal= LiveVal<Boolean>(ctx)
+        ThreadUtil.Pool.submit {
+            val db= sqliteHelper.writableDatabase
+            try{
+                db?.execSQL("DROP TABLE $tableName")
+                liveVal.value= true
+                liveVal
+            } catch(error: Exception){
+                liveVal.setVal(false, ERROR)
+                null
             }
         }
-        dropTable(objPengawas)
-    }
-    fun dropTable(l: ProgressListener<Boolean>?= null){
-        val db= sqliteHelper.writableDatabase
-        l?.total(1, "hapusTabel")
-        try{
-            db?.execSQL("DROP TABLE $tableName")
-            l?.progresSucc(true)
-        } catch(error: Exception){
-            l?.progresSucc(false)
-        }
-//        db.close()
+        return liveVal
     }
 
     private fun mapValue(valueCursor: Cursor): HashMap<String, Any>{
@@ -152,7 +159,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
         return valMap
     }
 
-    private fun createTableName(): String{
+    open fun createTableName(): String{
         var namaTabel= modelClass.simpleName
         return StringUtil.snakeCase(namaTabel)
     }
@@ -206,7 +213,10 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
         }
     */
 
-    private fun readAttribFromModel(){
+    /**
+     * Sekalian assign ke declared field terkait attribField, attribName, attribType.
+     */
+    protected open fun readAttribFromModel(){
         val attribs= modelClass.declaredFields
         val attribCount= attribs.size
 
@@ -238,7 +248,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
             val attName= field.name
             loge("attName= $attName pub= $pub pro= $pro priv= $priv isAc= $isAc")
 
-            if(attName != EXCLUDED_FIELD_NAME){
+            if(!attName.startsWith("_")){
                 var type= when(field.type){
                     Int::class.java -> "INTEGER"
                     Long::class.java -> "INTEGER"
@@ -249,10 +259,12 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
                     else -> {
                         var type= TYPE_NULL
 //                        field.type.interfaces.forEach { i -> loge("attName= $attName i::class.java.simpleName= ${i::class.java.simpleName}") }
+/*
                         if(field.type.interfaces.ifExists { intfc -> intfc == Fk::class.java }){
                             type= "STRING"
 //                            loge("intfc == Fk::class.java")
                         }
+ */
                         type
                     }
                 }
@@ -824,7 +836,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 
             val perNilai= atributIsi.get(model)
             if(perNilai != null){
-                if(!atributIsi.type.interfaces.ifExists { intfc -> intfc == Fk::class.java }){
+//                if(!atributIsi.type.interfaces.ifExists { intfc -> intfc == Fk::class.java }){
                     when(atributIsi.type){
                         Int::class.java -> nilai.put(perNamaAtribut, perNilai as Int) ///*atributIsi.getInt(model)*/)
                         Long::class.java -> nilai.put(perNamaAtribut, perNilai as Long)
@@ -833,7 +845,9 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         Double::class.java -> nilai.put(perNamaAtribut, perNilai as Double) //atributIsi.getDouble(model))
                         Float::class.java -> nilai.put(perNamaAtribut, perNilai as Float) //atributIsi.getDouble(model))
                     }
-                } else {
+//                }
+                /*
+                else {
                     perNilai.asNotNull { fk: Fk ->
                         if(fk.getCount() > 0){
                             val fkVal= fk.getFkId(0) /*<1>*/
@@ -843,6 +857,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         }
                     }
                 }
+                */
             } else{
                 nilai.putNull(perNamaAtribut)
                 LogApp.e("SQLITE", "NILAI NULL!!! namaAtribut= $perNamaAtribut")
@@ -859,10 +874,12 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             val defAcces= field.isAccessible
             field.isAccessible= true
             var value= field.get(model)
+            /*
             if(field.type.iff{
                     it.interfaces.ifExists { intfc -> intfc == Fk::class.java }
                 }
             ) value= value.asNotNullTo { fk: Fk -> fk.getFkId(0) /*<1>*/ }
+            */
             field.isAccessible= defAcces
 
             res += "$name = $value AND "
