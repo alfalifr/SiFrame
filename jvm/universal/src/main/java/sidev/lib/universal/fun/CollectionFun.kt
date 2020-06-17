@@ -29,7 +29,7 @@ fun <T> Array<T>.ifExists(func: (T) -> Boolean): Boolean{
     }
     return exists
 }
-fun <T> Collection<T>.ifExists(func: (T) -> Boolean): Boolean{
+fun <T> Iterable<T>.ifExists(func: (T) -> Boolean): Boolean{
     var exists= false
     this.forEach { t ->
         if(func(t)){
@@ -136,17 +136,29 @@ inline fun <T> Array<T>.search(filter: (element: T) -> Boolean): T?{
     return null
 }
 
+
+inline fun <T> Iterable<T>.indexOf(filter: (element: T) -> Boolean): Int{
+    for((i, el) in this.withIndex()){
+        if(filter(el)) return i
+    }
+    return -1
+}
 inline fun <T> Iterable<T>.indexOf(filter: (element: T, pos: Int) -> Boolean): Int{
     for((i, el) in this.withIndex()){
-        val bool= filter(el, i)
-        if(bool) return i
+        if(filter(el, i)) return i
+    }
+    return -1
+}
+
+inline fun <T> Array<T>.indexOf(filter: (element: T) -> Boolean): Int{
+    for((i, el) in this.withIndex()){
+        if(filter(el)) return i
     }
     return -1
 }
 inline fun <T> Array<T>.indexOf(filter: (element: T, pos: Int) -> Boolean): Int{
     for((i, el) in this.withIndex()){
-        val bool= filter(el, i)
-        if(bool) return i
+        if(filter(el, i)) return i
     }
     return -1
 }
@@ -191,4 +203,34 @@ fun <T> List<T>.copy(reversed: Boolean= false): List<T> {
     for(i in range)
         newList.add(this[i])
     return newList
+}
+
+fun <I, O> Array<I>.toListOf(func: (I) -> O?): MutableList<O> {
+    val newList= mutableListOf<O>()
+    for(inn in this){
+        func(inn).notNull { newList.add(it) }
+    }
+    return newList
+}
+fun <I, O> Iterable<I>.toListOf(func: (I) -> O?): MutableList<O> {
+    val newList= mutableListOf<O>()
+    for(inn in this){
+        func(inn).notNull { newList.add(it) }
+    }
+    return newList
+}
+
+inline fun <I, reified O> Array<I>.toArrayOf(func: (I) -> O?): Array<O> {
+    val newList= mutableListOf<O>()
+    for(inn in this){
+        func(inn).notNull { newList.add(it) }
+    }
+    return newList.toTypedArray()
+}
+inline fun <I, reified O> Iterable<I>.toArrayOf(func: (I) -> O?): Array<O> {
+    val newList= mutableListOf<O>()
+    for(inn in this){
+        func(inn).notNull { newList.add(it) }
+    }
+    return newList.toTypedArray()
 }

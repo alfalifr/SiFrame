@@ -1,4 +1,4 @@
-package com.sigudang.android._template.util.ReceiverFun
+package sidev.lib.android.siframe.tool.util.`fun`
 
 //import org.jetbrains.anko.runOnUiThread
 //import org.jetbrains.anko.toast

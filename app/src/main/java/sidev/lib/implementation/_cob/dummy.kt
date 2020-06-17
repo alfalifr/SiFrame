@@ -1,6 +1,6 @@
 package sidev.lib.implementation._cob
 
-import id.go.surabaya.ediscont.utilities.modelutil.fkmOf
+import sidev.lib.android.siframe.tool.util.`fun`.fkmOf
 import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.model.Page
 import sidev.lib.implementation.model.Profile

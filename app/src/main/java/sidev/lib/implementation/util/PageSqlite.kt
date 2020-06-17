@@ -1,7 +1,7 @@
 package sidev.lib.implementation.util
 
 import android.content.Context
-import id.go.surabaya.ediscont.utilities.modelutil.fkmId
+import sidev.lib.android.siframe.tool.util.`fun`.fkmId
 import sidev.lib.android.siframe.tool.SQLiteHandler
 import sidev.lib.implementation.model.Page
 
