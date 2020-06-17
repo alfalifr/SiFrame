@@ -14,6 +14,7 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
+import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.filter
 import sidev.lib.universal.`fun`.notNull
 
@@ -35,9 +36,11 @@ abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context, d
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         val v= LayoutInflater.from(ctx).inflate(itemContainerLayoutId, parent, false)
-        val contentV= LayoutInflater.from(ctx).inflate(viewType, parent, false)
-        v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
-            .addView(contentV)
+//        val contentV= LayoutInflater.from(ctx).inflate(viewType, parent, false)
+        ctx.inflate(viewType, parent, false).notNull { contentView ->
+            v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
+                .addView(contentView)
+        }
         return SimpleViewHolder(v)
     }
 

@@ -46,4 +46,5 @@ class MainAct : SimpleAbsBarContentNavAct() {
     fun toActBarFrag(v: View)= startSingleFragAct_config<ActBarFrag>()
     fun toVpPageFrag2(v: View)= startSingleFragAct_config<VpImpl2Frag>()
     fun toRvFragDbPage(v: View)= startSingleFragAct_config<RvDbFrag>()
+    fun toRadioFrag(v: View)= startSingleFragAct_config<RadioFrag>()
 }

@@ -40,8 +40,8 @@ interface SimpleAbsActFragBase: LifecycleRootBase,
             registerActiveAct()
             _AppUtil.checkAppValidity(lifecycleCtx)
         }
-        __initViewFlow(layoutView)
         _initDataFromIntent(act.intent)
+        __initViewFlow(layoutView)
     }
 
     /**

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/comp_1"
+            layout="@layout/comp_rb"/>
+        <include
+            android:id="@+id/comp_2"
+            layout="@layout/comp_rb"/>
+        <include
+            android:id="@+id/comp_3"
+            layout="@layout/comp_rb"/>
+        <include
+            android:id="@+id/comp_3"
+            layout="@layout/comp_rb"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_below="@id/rg"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ini teksnya"/>
+
+    </LinearLayout>
+    
+</RelativeLayout>
