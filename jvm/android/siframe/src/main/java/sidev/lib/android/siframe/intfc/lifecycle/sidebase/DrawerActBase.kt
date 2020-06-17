@@ -98,7 +98,7 @@ interface DrawerActBase: ComplexLifecycleSideBase,
                 rootDrawerLayout.closeDrawer(startDrawerContainer)
                 _initStartDrawerView(it)
             }.isNull {
-                setDrawerGone(startDrawerContainer)
+                setDrawerGone(Type.DRAWER_START)
 //                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, startDrawerContainer)
             }
         c.inflate(endDrawerLayoutId, endDrawerContainer)
@@ -108,7 +108,7 @@ interface DrawerActBase: ComplexLifecycleSideBase,
                 rootDrawerLayout.closeDrawer(endDrawerContainer)
                 _initEndDrawerView(it)
             }.isNull {
-                setDrawerGone(endDrawerContainer)
+                setDrawerGone(Type.DRAWER_END)
 //                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, endDrawerContainer)
             }
 /*
@@ -117,6 +117,19 @@ interface DrawerActBase: ComplexLifecycleSideBase,
         inflate(topDrawerLayoutId, contentViewContainer)
             .notNull { _initTopDrawerView(it) }
  */
+    }
+
+    fun setDrawerView(type: Type, v: View?){
+        val drawer= when(type){
+            Type.DRAWER_START -> startDrawerContainer
+            Type.DRAWER_END -> endDrawerContainer
+        }
+        val isGone= v == null
+        setDrawerGone(type, isGone)
+        if(!isGone)
+            drawer.addView(v)
+        else
+            drawer.removeAllViews()
     }
 
     fun slideDrawer(type: Type, toOpen: Boolean= true){
@@ -130,10 +143,22 @@ interface DrawerActBase: ComplexLifecycleSideBase,
             rootDrawerLayout.closeDrawer(drawer)
     }
 
-    private fun setDrawerGone(drawer: View){
-        drawer.visibility= View.GONE
+    private fun setDrawerGone(type: Type, gone: Boolean= true){
+        val drawer= when(type){
+            Type.DRAWER_START -> startDrawerContainer
+            Type.DRAWER_END -> endDrawerContainer
+        }
+
+        drawer.visibility= if(gone) View.GONE
+        else View.VISIBLE
+
         val lp= drawer.layoutParams as DrawerLayout.LayoutParams //DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
-        lp.gravity= Gravity.NO_GRAVITY
-        lp.width= 0
+
+        lp.gravity= if(gone) Gravity.NO_GRAVITY
+        else when(type){
+            Type.DRAWER_START -> Gravity.START
+            Type.DRAWER_END -> Gravity.END
+        }
+//        lp.width= 0
     }
 }
