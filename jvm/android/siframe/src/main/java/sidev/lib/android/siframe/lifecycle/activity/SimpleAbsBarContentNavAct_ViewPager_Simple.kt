@@ -1,15 +1,9 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.content.Context
-import android.util.SparseArray
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
-import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 
 /**
  * Kelas yg properti abstraknya dapat di-lateinit
@@ -23,7 +17,7 @@ open class SimpleAbsBarContentNavAct_ViewPager_Simple
 
     override var vpFragList: Array<SimpleAbsFrag> = arrayOf()
     override var vpFragListStartMark: Array<Int> = arrayOf()
-    override lateinit var vpAdp: ViewPagerFragAdp
+    override lateinit var vpAdp: VpFragAdp
 }
 
 

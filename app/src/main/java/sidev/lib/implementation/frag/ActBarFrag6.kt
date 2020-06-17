@@ -4,6 +4,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
@@ -30,7 +31,7 @@ class ActBarFrag6 : SimpleActBarFrag(){
         actBarView.tv.text= fragTitle
     }
 
-    override fun onActive(parentView: View, pos: Int) {
+    override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
         actSimple.asNotNull { act: SimpleAbsBarContentNavAct -> act.setMenu(R.menu.menu_3) }
     }
 }

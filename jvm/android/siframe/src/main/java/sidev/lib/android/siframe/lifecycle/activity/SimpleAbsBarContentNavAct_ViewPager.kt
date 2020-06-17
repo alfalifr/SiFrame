@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 import java.lang.Exception
 
 abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
@@ -58,7 +57,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var defaultActBarView: View?= null
 
 
-    override lateinit var vpAdp: ViewPagerFragAdp
+    override lateinit var vpAdp: VpFragAdp
     override lateinit var vpFragListMark: Array<Int>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}

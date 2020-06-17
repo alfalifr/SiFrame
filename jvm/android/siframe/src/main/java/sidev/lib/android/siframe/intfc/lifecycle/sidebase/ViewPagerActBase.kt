@@ -6,13 +6,14 @@ import androidx.annotation.CallSuper
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
-import sidev.lib.android.siframe.adapter.ViewPagerFragAdp
+import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import java.lang.Exception
 
 interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
@@ -48,7 +49,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
      */
     var vpFragListMark: Array<Int>
     var vpFragListStartMark: Array<Int>
-    var vpAdp: ViewPagerFragAdp
+    var vpAdp: VpFragAdp
 //    val vpFm: FragmentManager
 //    val vpCtx: Context
     var pageStartInd: Int
@@ -97,13 +98,11 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
     @CallSuper
     fun initVp(){
-        val fragList= initFragList()
-        setFragList(fragList)
-        setFragListMark(initFragListMark())
+//        setFragListMark(initFragListMark())
 
 //        vp= _sideBase_view.findViewById(_ConfigBase.ID_VP)
 
-        vpAdp= ViewPagerFragAdp(_sideBase_fm, *vpFragList)
+//        vpAdp= ViewPagerFragAdp(_sideBase_fm, *vpFragList)
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -115,7 +114,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
             override fun onPageSelected(position: Int) {
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
-                vpFragList[position].onActive(_sideBase_view, position)
+                vpFragList[position].onActive(_sideBase_view, this@ViewPagerActBase, position)
                 if(isVpTitleFragBased && this is SimpleAbsBarContentNavAct){
                     try{ this.setActBarTitle(vpFragList[position].fragTitle) }
                     catch (e: Exception){
@@ -126,11 +125,14 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 }
             }
         })
+//        val fragList= initFragList()
+        setFragList(vpFragList)
+
 //        Log.e("ADP_VP", "initVp() vpFragList.size= ${vpFragList.size}")
-        vp.adapter= vpAdp
+//        vp.adapter= vpAdp
     }
     fun initFragList(): Array<F>?{
-        return null
+        return vpFragList
     }
     fun initFragListMark(): Array<Int>{
         return vpFragListStartMark ?:
@@ -145,14 +147,17 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
      */
     fun setFragListMark(mark: Array<Int>){
         val markListInt= Array(vpFragList.size){ PAGE_MARK_CONT }
-        markListInt[0]=
-            PAGE_MARK_START
-        val limit= if(mark.size <= vpFragList.size) mark.size
+        loge("setFragListMark() vpFragList.size= ${vpFragList.size} markListInt.size= ${markListInt.size}")
+        if(markListInt.isNotEmpty()){
+            markListInt[0]= PAGE_MARK_START
+            val limit= if(mark.size <= vpFragList.size) mark.size
             else vpFragList.size
-        for(i in 0 until limit)
-            markListInt[mark[i]]=
-                PAGE_MARK_START
-        vpFragListMark= markListInt
+            for(i in 0 until limit){
+                val markStart= mark[i]
+                if(markStart < markListInt.size)
+                    markListInt[markStart]= PAGE_MARK_START
+            }
+            vpFragListMark= markListInt
 /*
         val markList= ArrayList<Int>()
         for(i in vpFragList.indices)
@@ -165,6 +170,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
             )
         vpFragListMark_int= markList.toTypedArray()
  */
+        }
     }
 
     /**
@@ -176,10 +182,22 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
         if(list != null){
             vpFragList= list
             size= vpFragList.size
-            vpAdp= ViewPagerFragAdp(_sideBase_fm, *list)
-        } else
+            vpAdp= VpFragAdp(_sideBase_fm, *list)
+//            vp.removeAllViews()
+            vp.adapter= vpAdp
+        } else{
             vp.adapter= null
+        }
+
         setPageLimitInd(0, size)
+        setFragListMark(initFragListMark())
+
+        if(list != null)
+            vpFragList.firstOrNull()?.onActive(_sideBase_view, this, 0)
+    }
+
+    fun getFragPos(frag: F): Int{
+        return vpAdp.items.indexOf(frag)
     }
 
     /**

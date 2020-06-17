@@ -171,7 +171,7 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
     override fun onResumeFragments() {
         super.onResumeFragments()
         if(frag != null && frag is SimpleAbsFrag){
-            (frag as SimpleAbsFrag).onActive(layoutView, 0) //pos di sini adalah untuk ViewPager.
+            (frag as SimpleAbsFrag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
         }
     }
 

@@ -1,15 +1,18 @@
 package sidev.lib.android.siframe.adapter
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.addView
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.asNotNull
 import java.lang.Exception
-import java.util.ArrayList
 /*
 //class ViewPagerFragAdp (var fm: FragmentManager, vararg items: SimpleAbsFrag): PagerAdapter(){
 class ViewPagerFragAdp (val c: Context, vararg items: SimpleAbsFrag): PagerAdapter(){
@@ -57,16 +60,30 @@ class ViewPagerFragAdp (val c: Context, vararg items: SimpleAbsFrag): PagerAdapt
 }
  */
 
-class ViewPagerFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : FragmentPagerAdapter(fm), Adp {
-    var items: List<SimpleAbsFrag> = ArrayList()
-        private set
+/**
+ * Hanya sekali pake. Jika ingin update adapter, maka instantiate lagi kelas ini.
+ */
+class VpFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : FragmentStatePagerAdapter(fm), Adp {
+    val items: ArrayList<SimpleAbsFrag> = ArrayList()
+/*
+    var items: ArrayList<SimpleAbsFrag>?= null// = ArrayList()
+        set(v){
+            field= v
+            notifyDataSetChanged()
+        }
+ */
 
-    constructor(fm: FragmentManager, items: ArrayList<out SimpleAbsFrag>) : this(fm) {
-        for(item in items)
-            (this.items as ArrayList).add(item)
+    init {
+        for(element in items)
+            this.items.add(element)
     }
 
-    override fun getItemId(pos: Int): Long = super<FragmentPagerAdapter>.getItemId(pos)
+    constructor(fm: FragmentManager, items: ArrayList<out SimpleAbsFrag>) : this(fm) {
+        for(element in items)
+            this.items.add(element)
+    }
+
+    override fun getItemId(pos: Int): Long = pos.toLong() //super<FragmentPagerAdapter>.getItemId(pos)
     override fun getItemCount(): Int= count
     override fun getView(pos: Int): View? {
         return try{ items[pos].layoutView }
@@ -75,16 +92,19 @@ class ViewPagerFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : Fragm
 
 /*
     override fun instantiateItem(container: View, position: Int): Any {
-        val v= super.instantiateItem(container, position) as View
-        v.setPadding(v.paddingLeft, v.paddingTop +_ViewUtil.dpToPx(20f, v.context), v.paddingRight, v.paddingBottom)
-        return v
+        val any= super.instantiateItem(container, position) as View
+        any.asNotNull { v: View ->
+            loge("instantiateItem() any is View")
+            v.parent.asNotNull { parent: ViewGroup ->
+
+            }
+        }
+//        v.setPadding(v.paddingLeft, v.paddingTop +_ViewUtil.dpToPx(20f, v.context), v.paddingRight, v.paddingBottom)
+
+        return any
     }
  */
 
-    init {
-        for(element in items)
-            (this.items as ArrayList).add(element)
-    }
 /*
     override fun destroyItem(container: View, position: Int, `object`: Any) {
         (container as ViewGroup).removeView(`object` as View)

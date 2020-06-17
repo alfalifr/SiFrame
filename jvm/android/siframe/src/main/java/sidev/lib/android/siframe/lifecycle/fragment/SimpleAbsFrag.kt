@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
@@ -125,7 +126,7 @@ abstract class SimpleAbsFrag : Fragment(),
      *
      * @param parentView merupakan view tempat fragment ini menempel.
      */
-    open fun onActive(parentView: View, pos: Int){}
+    open fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int){}
 
 /*
     fun actSimple(func: (actSimple: SimpleAbsAct) -> Unit){
