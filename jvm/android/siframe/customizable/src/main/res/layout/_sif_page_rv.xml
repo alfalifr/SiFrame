@@ -19,23 +19,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/rl_middle_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"
-                    android:layout_above="@id/rl_bottom_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"/>
+                <LinearLayout
+                    android:id="@+id/ll"
+                    android:layout_below="@id/rv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"/>
-                <RelativeLayout
-                    android:id="@+id/rl_bottom_container"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
+                    android:gravity="bottom">
+                    <RelativeLayout
+                        android:id="@+id/rl_bottom_container"
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </RelativeLayout>
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

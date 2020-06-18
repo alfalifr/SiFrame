@@ -30,6 +30,7 @@ class RvFrag : RvFrag<StrAdp>(), TopMiddleBottomBase{
             "Halo",
             "Bro",
             "Hoho",
+// /*
             "Hihe",
             "Hihe",
             "Hihe",
@@ -41,6 +42,7 @@ class RvFrag : RvFrag<StrAdp>(), TopMiddleBottomBase{
             "Hihe",
             "Hihe",
             "Hihe"
+// */
         )
         rvAdp.dataList= ArrayList(data.toList())
     }
