@@ -41,13 +41,19 @@ abstract class Presenter (private val callback: PresenterCallback) {
             DataIntegrityExc(this::class.java, "Pengecekan keluar di presenter")
     }
 
-    fun postSucc(resCode: Int, data: Map<String, Any>?){
-        if(checkDataIntegrity(reqCode, Direction.IN, data))
-            callback.onPresenterSucc(reqCode, resCode, data)
+    /**
+     * @param reqCode dapat digunakan untuk operasi presenter yg berbarengan sehingga this.reqCode dapat berganti sebelum
+     *      dipass ke PresenterCallback
+     */
+    fun postSucc(resCode: Int, data: Map<String, Any>?, reqCode: String?= null){
+        val sentReqCode= reqCode ?: this.reqCode
+        if(checkDataIntegrity(sentReqCode, Direction.IN, data))
+            callback.onPresenterSucc(sentReqCode, resCode, data)
         else
             DataIntegrityExc(this::class.java, "Pengecekan masuk di presenter")
     }
-    fun postFail(resCode: Int, msg: String?= null, e: Exception?= null){
-        callback.onPresenterFail(reqCode, resCode, msg, e)
+    fun postFail(resCode: Int, msg: String?= null, e: Exception?= null, reqCode: String?= null){
+        val sentReqCode= reqCode ?: this.reqCode
+        callback.onPresenterFail(sentReqCode, resCode, msg, e)
     }
 }
