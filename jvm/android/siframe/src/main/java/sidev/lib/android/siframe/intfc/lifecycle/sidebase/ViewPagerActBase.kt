@@ -3,6 +3,8 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 import android.util.SparseArray
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.core.view.get
+import androidx.core.view.isNotEmpty
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
@@ -62,6 +64,8 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
         val PAGE_MARK_START= 0
         val PAGE_MARK_CONT= 1
     }
+
+    var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?
 
 
     override fun ___initSideBase() {
@@ -225,13 +229,33 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
         for(i in 0 until vp.childCount)
             tab.getTabAt(i)?.text= vpFragList[i].fragTitle
     }
+
     fun setupVpWithNavBar(bnv: BottomNavigationView){
         val menu= bnv.menu
+        var isVpSliding= false
         bnv.setOnNavigationItemSelectedListener { menuItem ->
             val pos= menuItem.getPosFrom(menu)
-            vp.currentItem= pos
+            if(!isVpSliding){
+                isVpSliding= true
+                vp.currentItem= pos
+                isVpSliding= false
+            }
             true
         }
+        if(vpOnPageListenerToNavBar != null)
+            vp.removeOnPageChangeListener(vpOnPageListenerToNavBar!!)
+        vpOnPageListenerToNavBar= object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(pos: Int, posOffset: Float, posOffsetPx: Int) {}
+            override fun onPageSelected(position: Int) {
+                if(!isVpSliding && menu.isNotEmpty()){
+                    isVpSliding= true
+                    bnv.selectedItemId= menu[position].itemId
+                    isVpSliding= false
+                }
+            }
+        }
+        vp.addOnPageChangeListener(vpOnPageListenerToNavBar!!)
     }
 
     /**

@@ -36,6 +36,7 @@ class MainAct : SimpleAbsBarContentNavAct() {
     }
 
     fun toVpAct(v: View)= startAct<ViewPagerAct>()
+    fun toVpBnvAct(v: View)= startAct<ViewPagerBnvAct>()
     fun toVpLateinitAct(v: View)= startAct<ViewPagerLateinitAct>()
     fun toDrawerAct(v: View)= startAct<DrawerImplAct>()
     fun toVpDrawerAct(v: View)= startAct<VpDrawerAct>()

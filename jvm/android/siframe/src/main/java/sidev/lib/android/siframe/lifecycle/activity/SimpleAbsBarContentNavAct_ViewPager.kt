@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
@@ -63,6 +64,9 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
     override var isVpTitleFragBased: Boolean= false
     override var vpBackOnBackPressed: Boolean= true
+
+    override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
+
 
     override fun ___initSideBase() {
         super<MultipleActBarViewPagerActBase>.___initSideBase()
