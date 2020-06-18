@@ -6,25 +6,39 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/vg_content_container"
-        android:layout_below="@id/ll_bar_act_container"
-        android:layout_above="@id/bnv_bar_nav_container"
-        android:layout_marginTop="@dimen/act_bar_offset_neg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/putih"/>
-
-    <LinearLayout
         android:id="@+id/ll_bar_act_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:elevation="10dp"/>
+<!--
+    <18 Juni 2020> => untuk sementara offset top ditiadakan
+    android:layout_marginTop="@dimen/act_bar_offset_neg"
+-->
+    <RelativeLayout
+        android:id="@+id/rl_middle_container"
+        android:layout_below="@id/ll_bar_act_container"
+        android:layout_above="@id/bnv_bar_nav_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/vg_content_container"
+            android:layout_above="@id/rl_bottom_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/putih"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom_container"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:visibility="gone"
         android:id="@+id/bnv_bar_nav_container"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

@@ -40,7 +40,8 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
     abstract val contentLayoutId: Int
     override val actBarId: Int= _Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
     open val isNavBarVisible= true
-    open val menuId: Int?= null
+    open var menuId: Int?= null
+        protected set
 
     open val actBarViewContainerId= _Config.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container
     open val contentViewContainerId= _Config.ID_VG_CONTENT_CONTAINER //R.id.ll_content_container
@@ -115,8 +116,11 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
             val contentView= layoutInflater.inflate(contentLayoutId, contentViewContainer, false)
             contentViewContainer.addView(contentView)
         }
+/*
+        <18 Juni 2020> => untuk sementara offset top ditiadakan
         val topPadding= _ResUtil.getDimen(this, _Config.DIMEN_ACT_BAR_OFFSET)
         contentViewContainer.setChildPadding(top= topPadding.toInt())
+ */
 
         if(menuId != null && isNavBarVisible){
             navBar.inflateMenu(menuId!!)
@@ -136,12 +140,15 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
     }
 
     fun setMenu(menuId: Int?){
-        navBar.menu.clear()
-        if(menuId != null){
-            navBar.inflateMenu(menuId)
-            navBar.visibility= View.VISIBLE
-        } else
-            navBar.visibility= View.GONE
+        if(menuId != this.menuId){
+            navBar.menu.clear()
+            this.menuId= menuId
+            if(menuId != null){
+                navBar.inflateMenu(menuId)
+                navBar.visibility= View.VISIBLE
+            } else
+                navBar.visibility= View.GONE
+        }
     }
 
     /**

@@ -16,7 +16,7 @@ class ViewPagerLateinitAct : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(
     override var vpFragList: Array<SimpleAbsFrag> =
         arrayOf()
     override var vpFragListStartMark: Array<Int> =
-        arrayOf(0, 3, 4)
+        arrayOf()
 
     override var topContainer: View?= null
     override var middleContainer: View?= null
