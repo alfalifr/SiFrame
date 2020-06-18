@@ -42,6 +42,8 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.universal.`fun`.isNull
+import sidev.lib.universal.`fun`.isNullTo
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.tool.util.FileUtil
@@ -455,7 +457,16 @@ object  _ViewUtil{
         get-Lambda Area  --AKHIR--
         =====================
          */
-
+/*
+        inline fun <reified V> getDefView(compView: View): V? {
+            return if(compView is V) compView
+            else null
+        }
+ */
+        inline fun <reified V> getDefView(compView: View, noinline defFunc: ((View) -> V?)?= null): V? {
+            return if(compView is V) compView
+            else defFunc?.invoke(compView)
+        }
         /**
          * @param onlyPb bertujuan menghilangkan iv_action yg letaknya sama dg pb
          */
@@ -475,41 +486,33 @@ object  _ViewUtil{
         }
 
         fun getTvTxt(compView: View): String?{
-            return getTv?.invoke(compView).notNullTo { tv ->
-                tv.text.toString()
-            }
+            return getDefView(compView, getTv).notNullTo { tv -> tv.text.toString() }
         }
         fun getTvTitleTxt(compView: View): String?{
-            return getTvTitle?.invoke(compView).notNullTo { tv ->
-                tv.text.toString()
-            }
+            return getDefView(compView, getTvTitle).notNullTo { tv -> tv.text.toString() }
         }
         fun getTvDescTxt(compView: View): String?{
-            return getTvDesc?.invoke(compView).notNullTo { tv ->
-                tv.text.toString()
-            }
+            return getDefView(compView, getTvDesc).notNullTo { tv -> tv.text.toString() }
         }
         fun getTvNoteTxt(compView: View): String?{
-            return getTvNote?.invoke(compView).notNullTo { tv ->
-                tv.text.toString()
-            }
+            return getDefView(compView, getTvNote).notNullTo { tv -> tv.text.toString() }
         }
 
         fun setTvTxt(compView: View, txt: String){
-            getTv?.invoke(compView).notNull { tv -> tv.text= txt }
+            getDefView(compView, getTv).notNull { tv -> tv.text= txt }
         }
         fun setTvTitleTxt(compView: View, txt: String){
-            getTvTitle?.invoke(compView).notNull { tv -> tv.text= txt }
+            getDefView(compView, getTvTitle).notNull { tv -> tv.text= txt }
         }
         fun setTvDescTxt(compView: View, txt: String){
-            getTvDesc?.invoke(compView).notNull { tv -> tv.text= txt }
+            getDefView(compView, getTvDesc).notNull { tv -> tv.text= txt }
         }
         fun setTvNoteTxt(compView: View, txt: String){
-            getTvNote?.invoke(compView).notNull { tv -> tv.text= txt }
+            getDefView(compView, getTvNote).notNull { tv -> tv.text= txt }
         }
 
         fun setTvNoteMode(compView: View, mode: Int){
-            getTvNote?.invoke(compView).notNull { tv ->
+            getDefView(compView, getTvNote).notNull { tv ->
                 tv.textColorResource= when(mode){
                     MODE_WARNING -> _ColorRes.RED
                     else -> _ColorRes.TEXT_TRANS
@@ -518,29 +521,21 @@ object  _ViewUtil{
         }
 
         fun getEtTxt(compView: View): String?{
-            return getEt?.invoke(compView).notNullTo { et ->
-                et.text.toString()
-            }
+            return getDefView(compView, getEt).notNullTo { et -> et.text.toString() }
         }
         fun getEtHint(compView: View): String?{
-            return getEt?.invoke(compView).notNullTo { et ->
-                et.hint.toString()
-            }
+            return getDefView(compView, getEt).notNullTo { et -> et.hint.toString() }
         }
         fun setEtTxt(compView: View, str: String){
-            getEt?.invoke(compView).notNull { et ->
-                et.setText(str)
-            }
+            getDefView(compView, getEt).notNull { et -> et.setText(str) }
         }
         fun setEtHint(compView: View, str: String){
-            getEt?.invoke(compView).notNull { et ->
-                et.hint= str
-            }
+            getDefView(compView, getEt).notNull { et -> et.hint= str }
         }
 
 
         fun enableFillTxt(compView: View, enable: Boolean= true, type: Int= TYPE_FILL_TXT_IGNORE){
-            getEt?.invoke(compView).notNull { et ->
+            getDefView(compView, getEt).notNull { et ->
                 et.isEnabled= enable
                 enableFillTxt?.invoke(compView, et, type)
             }
@@ -548,20 +543,21 @@ object  _ViewUtil{
 
 
         fun setIvImg(compView: View, @DrawableRes imgRes: Int){
-            getIv?.invoke(compView).notNull { iv -> iv.setImageResource(imgRes) }
+            getDefView(compView, getIv).notNull { iv -> iv.setImageResource(imgRes) }
         }
         fun setIvTint(compView: View, @ColorRes colorRes: Int){
-            getIv?.invoke(compView).notNull { iv -> setColor(iv, colorRes) }
+            getDefView(compView, getIv).notNull { iv -> setColor(iv, colorRes) }
         }
 
         fun showPassword(compView: View, show: Boolean= true){
             val transfMethod =
                 if(!show) PasswordTransformationMethod.getInstance()
                 else null
-            getEt?.invoke(compView).notNull { ed ->
-                ed.transformationMethod= transfMethod
-                ed.setSelection(ed.text.toString().length)
-                getIvPswdIndication?.invoke(compView).notNull { iv ->
+
+            getDefView(compView, getEt).notNull { et ->
+                et.transformationMethod= transfMethod
+                et.setSelection(et.text.toString().length)
+                getDefView(compView, getIvPswdIndication).notNull { iv ->
                     iv.setImageResource(
                         if(!show) _Config.DRAW_PSWD_SHOWN
                         else _Config.DRAW_PSWD_HIDDEN
@@ -571,9 +567,7 @@ object  _ViewUtil{
         }
 
         fun setBtnHollow(compView: View){
-            getBtn?.invoke(compView).notNull { btn ->
-                setBtnHollow(btn)
-            }
+            getDefView(compView, getBtn).notNull { btn -> setBtnHollow(btn) }
         }
         fun setBtnHollow(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_BORDER_ROUND) //R.drawable.shape_border_square_round_edge_main
@@ -581,9 +575,7 @@ object  _ViewUtil{
         }
 
         fun setBtnSolid(compView: View){
-            getBtn?.invoke(compView).notNull { btn ->
-                setBtnSolid(btn)
-            }
+            getDefView(compView, getBtn).notNull { btn -> setBtnSolid(btn) }
         }
         fun setBtnSolid(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
@@ -592,7 +584,7 @@ object  _ViewUtil{
         }
 
         fun initPasswordField(compView: View){
-            getEt?.invoke(compView).notNull { ed ->
+            getDefView(compView, getEt).notNull { ed ->
                 var isPswdShown= true
                 ed.setOnClickListener {
                     isPswdShown= !isPswdShown
@@ -608,11 +600,11 @@ object  _ViewUtil{
         fun initSingleCodeInput(vararg compViews: View){
             val lastIndex= compViews.lastIndex
             for((i, comp) in compViews.withIndex()){
-                val edPrev= try{ getEt?.invoke(compViews[i-1]) }
+                val edPrev= try{ getDefView(compViews[i-1], getEt) }
                 catch (e: Exception){ null }
-                val edNext= try{ getEt?.invoke(compViews[i+1]) }
+                val edNext= try{ getDefView(compViews[i-1], getEt) }
                 catch (e: Exception){ null }
-                val ed= getEt?.invoke(comp)
+                val ed= getDefView(comp, getEt)
                 val c= ed?.context
 
                 ed?.addTextChangedListener(object : TextWatcher {
