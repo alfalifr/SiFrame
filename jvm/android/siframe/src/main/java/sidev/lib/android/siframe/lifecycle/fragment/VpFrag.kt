@@ -54,13 +54,16 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPag
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
     override var isVpTitleFragBased: Boolean= false
+    override var vpBackOnBackPressed: Boolean= true
 
     override fun ___initRootBase(vararg args: Any) {
         super.___initRootBase(*args)
         ___initSideBase()
         if(_sideBase_act is BackBtnActBase){
             (_sideBase_act as BackBtnActBase).addOnBackBtnListener{
-                pageBackward()
+                if(vpBackOnBackPressed)
+                    pageBackward()
+                else false
             }
         }
     }

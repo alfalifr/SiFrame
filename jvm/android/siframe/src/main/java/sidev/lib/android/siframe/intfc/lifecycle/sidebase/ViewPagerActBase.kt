@@ -56,6 +56,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     var pageEndInd: Int
 
     var isVpTitleFragBased: Boolean
+    var vpBackOnBackPressed: Boolean
 
     companion object{
         val PAGE_MARK_START= 0

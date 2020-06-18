@@ -62,18 +62,14 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
     override var isVpTitleFragBased: Boolean= false
+    override var vpBackOnBackPressed: Boolean= true
 
     override fun ___initSideBase() {
         super<MultipleActBarViewPagerActBase>.___initSideBase()
         addOnBackBtnListener {
-            pageBackward()
-/*
-            val isFirstPage= vp.currentItem == 0
-            if(!isFirstPage){
-                vp.currentItem= vp.currentItem -1
-            }
-            !isFirstPage
- */
+            if(vpBackOnBackPressed)
+                pageBackward()
+            else false
         }
     }
 /*
