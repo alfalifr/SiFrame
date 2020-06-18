@@ -111,8 +111,8 @@ abstract class SimpleAbsFrag : Fragment(),
     }
 
     override fun __initView(layoutView: View) {
-        super.__initView(layoutView)
         presenter= initPresenter()
+        super.__initView(layoutView)
     }
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {

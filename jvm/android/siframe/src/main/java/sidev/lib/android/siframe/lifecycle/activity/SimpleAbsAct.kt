@@ -93,8 +93,8 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
     }
 
     override fun ___initRootBase(vararg args: Any) {
-        super.___initRootBase(*args)
         presenter= initPresenter()
+        super.___initRootBase(*args)
     }
 
 
