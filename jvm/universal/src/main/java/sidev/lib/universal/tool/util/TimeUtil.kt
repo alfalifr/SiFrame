@@ -47,14 +47,22 @@ object TimeUtil {
     fun parseToNamedMonth(date: String, monthLen: Int= 3, patternIn: String= FORMAT_DATE, patternOut: String= FORMAT_DATE)
     : String{
         val sdfOut= SimpleDateFormat(patternOut, Locale.getDefault())
-        val sdfIn= SimpleDateFormat(patternIn)
+        val sdfIn= SimpleDateFormat(patternIn, Locale.getDefault())
 
         val dateObj = sdfIn.parse(date)
         return sdfOut.format(dateObj)
     }
 
+    fun convertFormatTo(time: String, patternIn: String= FORMAT_TIMESTAMP, patternOut: String= FORMAT_DATE): String{
+        val sdfOut= SimpleDateFormat(patternOut, Locale.getDefault())
+        val sdfIn= SimpleDateFormat(patternIn, Locale.getDefault())
+
+        val dateObj = sdfIn.parse(time)
+        return sdfOut.format(dateObj)
+    }
+
     fun simpleTimestamp(pattern: String= "yyyyddMMhhmmss"): String{
-        val simpleDateFormat = SimpleDateFormat(pattern)
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         return simpleDateFormat.format(Date())
     }
 
@@ -69,7 +77,7 @@ object TimeUtil {
      * @param diff dalam millisecond
      */
     fun timestamp(cal: Calendar= Calendar.getInstance(), pattern: String= FORMAT_TIMESTAMP, diff: Long= 0): String{
-        val simpleDateFormat = SimpleDateFormat(pattern)
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         cal.add(Calendar.MILLISECOND, diff.toInt())
         return simpleDateFormat.format(cal.time)
     }
@@ -102,7 +110,7 @@ object TimeUtil {
     }
 
     fun toCalObj(time: String, pattern: String= FORMAT_TIMESTAMP): Calendar{
-        val simpleDateFormat = SimpleDateFormat(pattern)
+        val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         val cal= Calendar.getInstance()
         cal.time= simpleDateFormat.parse(time)
         return cal
@@ -113,7 +121,7 @@ object TimeUtil {
      * time2 - time1
      */
     fun getTimeDiff(time1: String, time2: String, format: String= FORMAT_TIMESTAMP, out: String= ""): Long{
-        val simpleDateFormat = SimpleDateFormat(format)
+        val simpleDateFormat = SimpleDateFormat(format, Locale.getDefault())
 
         val date1 = simpleDateFormat.parse(time1) //"08:00 AM"
         val date2 = simpleDateFormat.parse(time2) //"04:00 PM"
