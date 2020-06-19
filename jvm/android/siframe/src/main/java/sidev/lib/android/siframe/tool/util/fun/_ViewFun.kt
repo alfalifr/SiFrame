@@ -17,6 +17,9 @@ import sidev.lib.android.external._AnkoInternals.runOnUiThread
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.notNullTo
 
 
 /*
@@ -66,7 +69,8 @@ fun Activity.getRootView(): View{
     return this.findViewById<View>(android.R.id.content).rootView
 }
 fun Fragment.getRootView(): View?{
-    return this.view?.findViewById<View>(android.R.id.content)?.rootView
+    return activity.notNullTo { act -> act.getRootView() }
+        ?: this.view?.rootView
 }
 
 /**
