@@ -12,6 +12,9 @@ import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
+import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
 abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
@@ -26,6 +29,8 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
         get() = this
     override val _sideBase_fm: FragmentManager
         get() = supportFragmentManager
+
+    override lateinit var lateVp: ViewPager
 
     override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
         = SparseArray()
@@ -63,7 +68,13 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
     override var isVpTitleFragBased: Boolean= false
-    override var vpBackOnBackPressed: Boolean= true
+        set(v){
+            field= v
+            if(!v)
+                try{ setActBarTitle(this.classSimpleName()) }
+                catch (e: Exception){}
+        }
+    override var isVpBackOnBackPressed: Boolean= true
 
     override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
 
@@ -71,7 +82,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override fun ___initSideBase() {
         super<MultipleActBarViewPagerActBase>.___initSideBase()
         addOnBackBtnListener {
-            if(vpBackOnBackPressed)
+            if(isVpBackOnBackPressed)
                 pageBackward()
             else false
         }

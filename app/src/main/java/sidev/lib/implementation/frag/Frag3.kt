@@ -25,12 +25,16 @@ class Frag3 : SimpleAbsFrag(){
         callingLifecycle.notNull { act ->
             val callName= act::class.java.simpleName
             loge("onActive() callName= $callName")
+            for((i, stack) in Thread.currentThread().stackTrace.withIndex()){
+                loge("Frag3 onActive() i= $i stack= ${stack.methodName}")
+            }
         }
         actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
             act.setActBarTitle("Frag 3 bro!!")
         }
         actSimple.asNotNull { act: ViewPagerActBase<SimpleAbsFrag> ->
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
+            loge("Frag3 act.vp == act.lateVp => ${act.vp == act.lateVp}")
         }
     }
 }

@@ -5,8 +5,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
+import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.tool.util.ReflexUtil
@@ -28,6 +31,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
      */
 //    var isFragLate: Boolean //= false <10 Juni 2020> => DIhilangkan karena jika intent nge-pass _SIF_Constant.FRAGMENT_NAME, maka otomatis isFragLate= true
     var isDataAsync: Boolean //= false
+    var isTitleFragBased: Boolean
 
 
     override fun ___initSideBase() {
@@ -74,6 +78,17 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
 
     fun __attachFrag(){
         _sideBase_ctx.commitFrag(fragContainerId, fragment)
+        if(isTitleFragBased)
+            this.asNotNull { act: SimpleAbsBarContentNavAct ->
+                fragment.asNotNull { frag: SimpleAbsFrag ->
+                    try{ act.setActBarTitle(frag.fragTitle) }
+                    catch (e: Exception){
+                        /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
+                        tidak menyebabkan error.
+                         */
+                    }
+                }
+            }
     }
 
     fun waitForFrag(func: (Fragment) -> Unit){

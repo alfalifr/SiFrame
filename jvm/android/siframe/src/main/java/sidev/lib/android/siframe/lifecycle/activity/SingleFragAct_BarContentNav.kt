@@ -6,10 +6,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
+import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.*
 
 //import sidev.kuliah.agradia.R
 
@@ -33,6 +32,22 @@ abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleF
 //    override lateinit var fragment: Fragment
 //    override var isFragLate: Boolean= false
     override var isDataAsync: Boolean= false
+    override var isTitleFragBased: Boolean= false
+        set(v){
+            field= v
+            this.asNotNull { act: SimpleAbsBarContentNavAct ->
+                val title=
+                    if(v) fragment.asNotNullTo { frag: SimpleAbsFrag -> frag.fragTitle }
+                        ?: fragment.classSimpleName()
+                    else fragment.classSimpleName()
+                try{ act.setActBarTitle(title) }
+                catch (e: Exception){
+                    /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
+                    tidak menyebabkan error.
+                     */
+                }
+            }
+        }
 
     var defaultActBarView: View?= null
     override var isActBarViewFromFragment: Boolean= false

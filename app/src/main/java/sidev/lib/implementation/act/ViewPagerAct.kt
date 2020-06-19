@@ -1,6 +1,7 @@
 package sidev.lib.implementation.act
 
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe.customizable.view.intfc.ModableView
@@ -8,10 +9,13 @@ import sidev.lib.android.siframe.customizable.view.intfc.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
+import sidev.lib.universal.`fun`.classSimpleName
 
 class ViewPagerAct : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMiddleBottomBase {
+    override var isVpTitleFragBased: Boolean= true
     override var vpFragList: Array<SimpleAbsFrag> =
         arrayOf(
             Frag1(),
@@ -36,6 +40,18 @@ class ViewPagerAct : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMi
     override fun _initNavBar(navBarView: BottomNavigationView) {}
     override fun _initView(layoutView: View) {
         __initTopMiddleBottomView(layoutView)
+        vp.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {}
+            override fun onPageSelected(position: Int) {
+                val clsName= this.classSimpleName()
+                loge("clsName= $clsName pos= $position")
+            }
+        })
     }
 
     override fun _initBottomView(bottomView: View) {

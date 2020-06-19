@@ -22,6 +22,7 @@ import sidev.lib.android.siframe.presenter.PresenterCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
@@ -171,6 +172,7 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
     override fun onResumeFragments() {
         super.onResumeFragments()
         if(frag != null && frag is SimpleAbsFrag){
+            loge("onResumeFragments() onActive() caller")
             (frag as SimpleAbsFrag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
         }
     }
