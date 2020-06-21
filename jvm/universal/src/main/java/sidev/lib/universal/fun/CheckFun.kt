@@ -17,6 +17,7 @@ inline fun <T1, reified T2> T1?.asNotNull(f: (T2) -> Unit): T1? {
 
 /**
  * Mirip dg notNull() namun terdapat cast untuk input lambda.
+ * Bkn merupakan fungsi chaining.
  */
 inline fun <T1, reified T2, O> T1?.asNotNullTo(f: (T2) -> O): O? {
     return if(this is T2) f(this)
@@ -29,6 +30,9 @@ fun <T> T?.notNull(f: (T) -> Unit): T? {
     return this
 }
 
+/**
+ * Bkn merupakan fungsi chaining.
+ */
 fun <I, O> I?.notNullTo(f: (I) -> O): O? {
     return if(this != null) f(this)
     else null
@@ -40,6 +44,9 @@ fun <T> T?.isNull(f: () -> Unit): T? {
     return this
 }
 
+/**
+ * Bkn merupakan fungsi chaining.
+ */
 fun <I, O> I?.isNullTo(f: () -> O): O? {
     return if(this == null) f()
     else null

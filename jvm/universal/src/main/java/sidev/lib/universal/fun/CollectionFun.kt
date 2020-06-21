@@ -1,5 +1,7 @@
 package sidev.lib.universal.`fun`
 
+import android.util.SparseArray
+import android.util.SparseIntArray
 import kotlin.collections.ArrayList
 
 /*
@@ -233,4 +235,67 @@ inline fun <I, reified O> Iterable<I>.toArrayOf(func: (I) -> O?): Array<O> {
         func(inn).notNull { newList.add(it) }
     }
     return newList.toTypedArray()
+}
+
+
+
+fun <T> SparseArray<T>.keys(): List<Int>{
+    val keys= ArrayList<Int>()
+    for(i in 0 until this.size()){
+        keys.add(this.keyAt(i))
+    }
+    return keys
+}
+
+operator fun <T> SparseArray<T>.iterator(): Iterator<Pair<Int, T>> {
+    return object : Iterator<Pair<Int, T>>{
+        var i= 0
+        override fun hasNext(): Boolean {
+            return i < this@iterator.size()
+        }
+
+        override fun next(): Pair<Int, T> {
+            val key= this@iterator.keyAt(i++)
+            return Pair(
+                key,
+                this@iterator[key]
+            )
+        }
+    }
+}
+operator fun SparseIntArray.iterator(): Iterator<Pair<Int, Int>> {
+    return object : Iterator<Pair<Int, Int>>{
+        var i= 0
+        override fun hasNext(): Boolean {
+            return i < this@iterator.size()
+        }
+
+        override fun next(): Pair<Int, Int> {
+            val key= this@iterator.keyAt(i++)
+            return Pair(
+                key,
+                this@iterator[key]
+            )
+        }
+    }
+}
+
+
+inline fun <reified T> Collection<T>.toSimpleString(): String{
+    val elClsName= T::class.java.simpleName
+    var str= "Collection:$elClsName:("
+    for(e in this)
+        str += "$e, "
+    str= str.removeSuffix(", ")
+    str += ")"
+    return str
+}
+inline fun <reified T> Array<T>.toSimpleString(): String{
+    val elClsName= T::class.java.simpleName
+    var str= "Array:$elClsName:("
+    for(e in this)
+        str += "$e, "
+    str= str.removeSuffix(", ")
+    str += ")"
+    return str
 }

@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -185,4 +187,17 @@ fun ViewGroup.changeView(v: View){
 fun Context.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View? {
     return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
     catch (e: Resources.NotFoundException){ null }
+}
+
+
+
+fun RadioGroup.getSelectedInd(): Int{
+    for(i in 0 until this.childCount){
+        val child= getChildAt(i)
+        if(child is RadioButton){
+            if(child.isChecked)
+                return i
+        }
+    }
+    return -1
 }
