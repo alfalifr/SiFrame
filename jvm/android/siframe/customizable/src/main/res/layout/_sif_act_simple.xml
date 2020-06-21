@@ -11,13 +11,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:elevation="10dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_top_container"
+        android:layout_below="@id/ll_bar_act_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 <!--
     <18 Juni 2020> => untuk sementara offset top ditiadakan
     android:layout_marginTop="@dimen/act_bar_offset_neg"
 -->
     <RelativeLayout
         android:id="@+id/rl_middle_container"
-        android:layout_below="@id/ll_bar_act_container"
+        android:layout_below="@id/rl_top_container"
         android:layout_above="@id/bnv_bar_nav_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
