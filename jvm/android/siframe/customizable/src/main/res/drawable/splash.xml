@@ -1,5 +1,0 @@
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:antialias="true"
-        android:dither="true"
-        android:gravity="fill"
-        android:src="@drawable/splash_bg" />
