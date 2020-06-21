@@ -4,7 +4,6 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
-import sidev.lib.android.siframe.customizable.view.intfc.ModableView
 //import sidev.lib.android.siframe.intfc.customview.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct_ViewPager

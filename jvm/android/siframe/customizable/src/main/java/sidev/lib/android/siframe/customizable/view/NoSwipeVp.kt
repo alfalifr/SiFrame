@@ -2,10 +2,8 @@ package sidev.lib.android.siframe.customizable.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
-import androidx.viewpager.widget.ViewPager
 
-class NoSwipeVp : ModableVp {
+class NoSwipeVp : ModVp {
     override var isTouchable: Boolean
         get() = false
         set(value) {}
