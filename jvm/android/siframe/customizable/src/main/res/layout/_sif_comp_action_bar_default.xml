@@ -5,14 +5,17 @@
     android:layout_height="wrap_content">
 
     <include
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
         layout="@layout/_sif_bg_act_bar_default"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_wide"
+        android:layout_marginRight="14dp"
         android:layout_marginLeft="14dp"
-        android:layout_marginTop="@dimen/standard_menu_top_margin">
+        android:layout_marginTop="@dimen/standard_menu_top_margin"
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -24,13 +27,16 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/iv_back"
+            android:layout_toLeftOf="@id/iv_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/sf_pro_bold"
             android:textSize="@dimen/txt_med_normal"
             android:textColor="@color/putih"
-            android:text="Menu Title"/>
+            android:text="Menu Title"
+            android:gravity="center"/>
 
         <ImageView
             android:id="@+id/iv_action"
