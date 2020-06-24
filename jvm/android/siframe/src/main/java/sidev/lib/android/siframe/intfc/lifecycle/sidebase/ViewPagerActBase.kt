@@ -28,7 +28,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
     val vp: ViewPager
         get()= _sideBase_view.findViewById(_Config.ID_VP)
-    var lateVp: ViewPager
+//    var lateVp: ViewPager
 /*
         get(){
             val parId= _sideBase_view.id
@@ -106,16 +106,18 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
     @CallSuper
     fun initVp(){
-        lateVp= vp
-        loge("initVp() lateVp= vp")
+//        lateVp= vp
+//        loge("initVp() lateVp= vp")
 //        setFragListMark(initFragListMark())
 
 //        vp= _sideBase_view.findViewById(_ConfigBase.ID_VP)
 
 //        vpAdp= ViewPagerFragAdp(_sideBase_fm, *vpFragList)
+/*
         loge("initVp() ")
         loge("initVp() isVpTitleFragBased= $isVpTitleFragBased this is SimpleAbsBarContentNavAct= ${this is SimpleAbsBarContentNavAct}")
         loge("initVp() vp != null = ${vp != null}")
+ */
 
         setFragList(vpFragList)
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
@@ -126,19 +128,20 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 positionOffsetPixels: Int
             ) {}
             override fun onPageSelected(position: Int) {
-//                loge("onPageSelected() isVpTitleFragBased= $isVpTitleFragBased this is SimpleAbsBarContentNavAct= ${this is SimpleAbsBarContentNavAct}")
-//                val fragName= vpFragList[position].classSimpleName()
-                this@ViewPagerActBase.asNotNull { act: SimpleAbsBarContentNavAct ->
-                    if(isVpTitleFragBased){
-                        try{ act.setActBarTitle(vpFragList[position].fragTitle) }
-                        catch (e: Exception){
-                            /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
-                            tidak menyebabkan error.
-                             */
+                if(this@ViewPagerActBase !is MultipleActBarViewPagerActBase<*>){
+                    //Karena fungsi untuk isVpTitleFragBased udah didefinisikan sendiri
+                    // di kelas MultipleActBarViewPagerActBase
+                    this@ViewPagerActBase.asNotNull { act: SimpleAbsBarContentNavAct ->
+                        if(isVpTitleFragBased){
+                            try{ act.setActBarTitle(vpFragList[position].fragTitle) }
+                            catch (e: Exception){
+                                /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
+                                tidak menyebabkan error.
+                                 */
+                            }
                         }
                     }
                 }
-//                loge("onPageSelected() onActive() caller fragName= $fragName")
                 vpFragList[position].onActive(_sideBase_view, this@ViewPagerActBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
             }

@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.core.util.set
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
+import java.lang.Exception
 
 interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>, ActBarFromFragBase{
     val actBarViewList: SparseArray<View>
@@ -37,6 +39,16 @@ interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>
 
             override fun onPageSelected(position: Int) {
                 attachActBarView(position)
+                if(isVpTitleFragBased){
+                    val actBar= actBarViewList[position] ?: defaultActBarView
+                    if(actBar != null){
+                        _ViewUtil.Comp.setTvTitleTxt(actBar, vpFragList[position].fragTitle)
+                        //Knp kok gak pake act.setActBarTitle?
+                        //Karena pada Lifecycle tipe ini, tiap fragment memiliki actBarView yg beda-beda.
+                        //Sehingga fungsi ini berusaha secara default mengganti title menggunakan
+                        //fungsi yang tersedia.
+                    }
+                }
             }
         })
     }

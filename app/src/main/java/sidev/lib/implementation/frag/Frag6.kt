@@ -22,7 +22,7 @@ class Frag6 : SimpleAbsFrag(){
     override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
         actSimple.asNotNull { act: ViewPagerActBase<SimpleAbsFrag> ->
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
-            loge("Frag6 act.vp == act.lateVp => ${act.vp == act.lateVp}")
+//            loge("Frag6 act.vp == act.lateVp => ${act.vp == act.lateVp}")
         }
     }
 }

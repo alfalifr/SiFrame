@@ -60,7 +60,7 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPag
 
     override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
 
-    override lateinit var lateVp: ViewPager
+//    override lateinit var lateVp: ViewPager
 
     override fun ___initRootBase(vararg args: Any) {
         super.___initRootBase(*args)

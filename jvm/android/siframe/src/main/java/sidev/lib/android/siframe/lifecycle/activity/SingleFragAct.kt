@@ -50,11 +50,12 @@ abstract class SingleFragAct: SimpleAbsAct(), SingleFragActBase {
     override fun ___initSideBase() {
         super<SingleFragActBase>.___initSideBase()
     }
-
+/*
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)
         ___initSideBase()
     }
+ */
 
     /*
     override val styleId: Int

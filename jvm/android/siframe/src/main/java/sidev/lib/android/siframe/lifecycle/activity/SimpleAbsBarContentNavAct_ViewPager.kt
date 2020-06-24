@@ -30,7 +30,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override val _sideBase_fm: FragmentManager
         get() = supportFragmentManager
 
-    override lateinit var lateVp: ViewPager
+//    override lateinit var lateVp: ViewPager
 
     override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
         = SparseArray()

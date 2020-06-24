@@ -34,7 +34,7 @@ class Frag3 : SimpleAbsFrag(){
         }
         actSimple.asNotNull { act: ViewPagerActBase<SimpleAbsFrag> ->
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
-            loge("Frag3 act.vp == act.lateVp => ${act.vp == act.lateVp}")
+//            loge("Frag3 act.vp == act.lateVp => ${act.vp == act.lateVp}")
         }
     }
 }
