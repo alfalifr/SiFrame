@@ -1,27 +1,27 @@
 package sidev.lib.android.siframe.tool.util
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.hardware.Camera
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
-import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.ViewGroup
 import android.transition.ChangeBounds
-import android.transition.TransitionSet
 import android.transition.TransitionManager
+import android.transition.TransitionSet
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
-import android.view.MenuItem
+import android.view.*
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.ColorRes
@@ -42,13 +42,10 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.isNullTo
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.tool.util.FileUtil
-import java.lang.NullPointerException
-import kotlin.Exception
+import kotlin.math.abs
 
 //class ini digunakan tempat utility khusus view
 object  _ViewUtil{
@@ -74,6 +71,20 @@ object  _ViewUtil{
         act.windowManager.defaultDisplay.getMetrics(dm)
         return dm.heightPixels
     }
+
+    //Untuk sementara msh berjalan scr terpisah dari Main Thread.
+    fun getViewSize(v: View, l: (w: Int, h: Int) -> Unit): ViewTreeObserver.OnGlobalLayoutListener{
+        val list= object : ViewTreeObserver.OnGlobalLayoutListener{
+            @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+            override fun onGlobalLayout() {
+                l(v.width, v.height)
+                v.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        }
+        v.viewTreeObserver.addOnGlobalLayoutListener(list)
+        return list
+    }
+
 
     fun getPercentOfScreenHeight(act: Activity, percent: Float): Int{
         val screenHeight= getScreenHeight(act)
@@ -445,6 +456,11 @@ object  _ViewUtil{
         var getBtn: ((View) -> Button?)?= null
 
         /**
+         * Untuk mencari Button dalam komponen.
+         */
+        var getSfv: ((View) -> SurfaceView?)?= null
+
+        /**
          * Untuk fungsi kustom sesuai kriteria user.
          * @param compView komponen scr keseluruhan.
          * @param et EditText dalm compView.
@@ -591,6 +607,66 @@ object  _ViewUtil{
                     showPassword(ed, isPswdShown)
                 }
                 ed.callOnClick()
+            }
+        }
+
+        /**
+         * <24 Juni 2020> Sementara, hanya dapat digunakan untuk kamera belakang model lama, yaitu hanya satu.
+         * @return object Camera agar dapat digunakan.
+         *          null jika gagal untuk meng-init SurfaceView.
+         */
+        fun initSurfaceView(compView: View, callback: SurfaceHolder.Callback?, act: Activity?= null): Camera? {
+            if(act != null)
+                _ManifestUtil.requestPermission(act, Manifest.permission.CAMERA)
+            return getDefView(compView, getSfv).notNullTo { sfv ->
+                val camera= Camera.open()
+                val callbackInner= callback
+                    ?: object : SurfaceHolder.Callback{
+                    override fun surfaceCreated(holder: SurfaceHolder?) {
+                        getViewSize(sfv){ sfvW, sfvH ->
+                            val params= camera.parameters
+                            val viewRatio= sfvH / sfvW.toDouble()
+
+                            val sizes= params.supportedPreviewSizes
+                            val point= Point()
+                            var minDiff= Double.MAX_VALUE
+                            //Cari rasio supported yg paling mendekati dg rasio ukuran SurfaceView
+                            for(size in sizes){
+                                val w= size.width
+                                val h= size.height
+                                val ratio= w /h.toDouble()
+
+                                val diff= abs(viewRatio -ratio)
+                                if(minDiff > diff){
+                                    point.x= w
+                                    point.y= h
+                                    minDiff= diff
+                                }
+                            }
+                            params.setPreviewSize(point.x, point.y)
+
+                            camera.parameters= params
+
+                            try {
+                                // The Surface has been created, now tell the camera where to draw
+                                // the preview.
+                                camera.setDisplayOrientation(90)
+                                camera.setPreviewDisplay(holder)
+                                camera.startPreview()
+                            } catch (e: Exception) {
+                                // check for exceptions
+                                System.err.println(e)
+                            }
+                        }
+                    }
+                    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {}
+                    override fun surfaceDestroyed(holder: SurfaceHolder?) {
+                        camera.stopPreview()
+                        camera.release()
+                    }
+                }
+                sfv.holder.addCallback(callbackInner)
+                camera
             }
         }
 
