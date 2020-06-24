@@ -46,7 +46,7 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPag
     override var isActBarViewFromFragment: Boolean= false
         set(v) {
             field= v
-            if(v) attachActBarView(vp.currentItem)
+            if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
 
 

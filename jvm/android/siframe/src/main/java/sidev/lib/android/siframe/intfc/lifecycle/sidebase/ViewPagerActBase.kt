@@ -217,6 +217,10 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                     try{ act.setActBarTitle(vpFragList.first().fragTitle) }
                     catch (e: Exception){}
                 }
+            this.asNotNull { act: MultipleActBarViewPagerActBase<*> ->
+                act.actBarViewList.clear()
+                act.attachActBarView(0)
+            }
         } else{
             vp.adapter= null
         }

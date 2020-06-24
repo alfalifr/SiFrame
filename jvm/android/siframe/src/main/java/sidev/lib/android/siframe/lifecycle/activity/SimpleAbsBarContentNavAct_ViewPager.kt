@@ -56,7 +56,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override var isActBarViewFromFragment: Boolean= false
         set(v){
             field= v
-            if(v) attachActBarView(vp.currentItem)
+            if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
     override val actBarContainer_vp: ViewGroup
         get() = actBarViewContainer
@@ -87,7 +87,8 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
             else false
         }
     }
-/*
+
+    /*
     override fun __initView(contentView: View) {
         super.__initView(contentView)
 //        initVp()

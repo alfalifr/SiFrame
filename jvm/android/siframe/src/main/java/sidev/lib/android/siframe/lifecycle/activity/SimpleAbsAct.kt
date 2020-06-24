@@ -16,6 +16,7 @@ import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.presenter.PresenterCallback
@@ -165,9 +166,15 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
 
 
     private var frag: Fragment?= null
+    private var isActBarAttached= false //agar attachActBarView() inisial dilakukan sekali
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
         frag= fragment
+        if(this is MultipleActBarViewPagerActBase<*>
+            && isActBarViewFromFragment && !isActBarAttached){
+            attachActBarView(0)
+            isActBarAttached= true
+        }
     }
     override fun onResumeFragments() {
         super.onResumeFragments()

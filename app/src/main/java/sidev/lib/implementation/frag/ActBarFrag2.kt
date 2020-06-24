@@ -5,6 +5,7 @@ import kotlinx.android.synthetic.main.comp_act_bar.view.*
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import kotlinx.android.synthetic.main.frag_txt.view.tv
 import org.jetbrains.anko.textColorResource
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
@@ -20,7 +21,7 @@ class ActBarFrag2 : SimpleActBarFrag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
     override val actBarId: Int
-        get() = R.layout.comp_act_bar
+        get() = _Config.INT_EMPTY //R.layout.comp_act_bar
 
 
     override fun _initView(layoutView: View) {

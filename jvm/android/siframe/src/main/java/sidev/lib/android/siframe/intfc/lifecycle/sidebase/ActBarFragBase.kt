@@ -39,7 +39,7 @@ interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, 
      */
     fun getActBar(): View? {
         return actBarView
-            ?: _sideBase_act.inflate(actBarId).notNullTo {
+            ?: _sideBase_act?.inflate(actBarId).notNullTo {
                 actBarView= it
                 it
             }

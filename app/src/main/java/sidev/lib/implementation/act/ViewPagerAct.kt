@@ -35,7 +35,9 @@ class ViewPagerAct : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMi
         get() = R.layout.comp_nav_arrow
 
 
-    override fun _initActBar(actBarView: View) {}
+    override fun _initActBar(actBarView: View) {
+        isActBarViewFromFragment= true
+    }
     override fun _initNavBar(navBarView: BottomNavigationView) {}
     override fun _initView(layoutView: View) {
         __initTopMiddleBottomView(layoutView)

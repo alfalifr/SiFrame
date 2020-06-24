@@ -34,6 +34,7 @@ class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
 
 
     override fun _initActBar(actBarView: View) {
+//        isActBarViewFromFragment= true
         waitForFrag { frag ->
             val fragName= fragment::class.java.simpleName
             setActBarTitle("SingleFragAct: $fragName")

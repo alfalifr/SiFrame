@@ -188,6 +188,10 @@ fun Context.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= 
     return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
     catch (e: Resources.NotFoundException){ null }
 }
+fun Fragment.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View? {
+    return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
+    catch (e: Resources.NotFoundException){ null }
+}
 
 
 

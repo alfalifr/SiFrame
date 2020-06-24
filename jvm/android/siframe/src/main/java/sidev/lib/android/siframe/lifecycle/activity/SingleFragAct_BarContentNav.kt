@@ -67,22 +67,24 @@ abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleF
     }
 
     protected fun attachFragActBar(){
-        if(isActBarViewFromFragment){
-            loge("attachFragActBar() fragment::class.java.simpleName= ${fragment::class.java.simpleName}")
-            fragment.asNotNull { frag: ActBarFragBase ->
-                frag.getActBar().notNull { actBar ->
-                    if(defaultActBarView == null)
-                        defaultActBarView= actBarViewContainer.getChildAt(0)
-                    setActBarView(actBar)
-                    frag._initActBar(actBar)
-                    loge("attachFragActBar() asNotNull frag: ActBarFragBase")
+        try{ //di try-catch karena fragment bisa di lateinit namun tidak bisa dicek langsung di kelas ini.
+            if(isActBarViewFromFragment){
+//            loge("attachFragActBar() fragment::class.java.simpleName= ${fragment::class.java.simpleName}")
+                fragment.asNotNull { frag: ActBarFragBase ->
+                    frag.getActBar().notNull { actBar ->
+                        if(defaultActBarView == null)
+                            defaultActBarView= actBarViewContainer.getChildAt(0)
+                        setActBarView(actBar)
+                        frag._initActBar(actBar)
+//                        loge("attachFragActBar() asNotNull frag: ActBarFragBase")
+                    }
+                }.asNotNull { frag: MultipleActBarViewPagerActBase<*> ->
+//                    loge("attachFragActBar() asNotNull frag: MultipleActBarViewPagerActBase")
+                    frag.isActBarViewFromFragment= isActBarViewFromFragment
+                    frag.attachActBarView(frag.vp.currentItem)
                 }
-            }.asNotNull { frag: MultipleActBarViewPagerActBase<*> ->
-                loge("attachFragActBar() asNotNull frag: MultipleActBarViewPagerActBase")
-                frag.isActBarViewFromFragment= isActBarViewFromFragment
-                frag.attachActBarView(frag.vp.currentItem)
             }
-        }
+        } catch(e: Exception){}
     }
 
     fun resetDefaultActBar(){

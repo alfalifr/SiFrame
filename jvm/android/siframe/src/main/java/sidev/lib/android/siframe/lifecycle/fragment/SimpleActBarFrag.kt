@@ -17,6 +17,6 @@ abstract class SimpleActBarFrag : SimpleAbsFrag(), ActBarFragBase{
                 act.isActBarViewFromFragment= v
             }
         }
-    override val _sideBase_act: AppCompatActivity
-        get() = actSimple!!
+    override val _sideBase_act: AppCompatActivity?
+        get() = actSimple
 }
