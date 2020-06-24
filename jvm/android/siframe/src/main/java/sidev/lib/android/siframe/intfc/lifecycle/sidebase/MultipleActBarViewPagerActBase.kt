@@ -53,8 +53,9 @@ interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>
                         frag.getActBar().notNull { actBar ->
                             setActBarView(frag, actBar)
                             frag._initActBar(actBar)
-                        }
-                    }
+                        }.isNull { resetDefaultActBar() }
+                    } else
+                        resetDefaultActBar()
                 }
             }
         }
