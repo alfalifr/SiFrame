@@ -767,7 +767,8 @@ object  _ViewUtil{
 
             val tvTitle= actBar.findViewById<TextView>(_Config.ID_TV_TITLE)
             val ivBack= actBar.findViewById<ImageView>(_Config.ID_IV_BACK)
-            
+            val ivAction= actBar.findViewById<ImageView>(_Config.ID_IV_ACTION)
+
             actBar.removeViewAt(0)
             actBar.addView(bg, 0)
 /*
@@ -778,7 +779,10 @@ object  _ViewUtil{
  */
             setColor(bg, _ColorRes.COLOR_PRIMARY_DARK)
             setColor(ivBack, _ColorRes.COLOR_LIGHT)
+            setColor(ivAction, _ColorRes.COLOR_LIGHT)
             tvTitle.textColorResource= _ColorRes.TEXT_LIGHT
+
+            ivAction.setImageBitmap(null) //Secara default, gambar iv_action tidak ada.
 
             return actBar
         }

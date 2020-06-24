@@ -31,6 +31,15 @@
             android:textSize="@dimen/txt_med_normal"
             android:textColor="@color/putih"
             android:text="Menu Title"/>
+
+        <ImageView
+            android:id="@+id/iv_action"
+            android:layout_alignParentRight="true"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_dot_3_vertical"/>
+
     </RelativeLayout>
 
 </FrameLayout>

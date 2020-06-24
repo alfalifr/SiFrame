@@ -63,6 +63,7 @@ object _Config {
     var ID_FR_CONTAINER= R.id.fr_container
     var ID_IV_ICON= R.id.iv_icon
     var ID_IV_BACK= R.id.iv_back
+    var ID_IV_ACTION= R.id.iv_action
     var ID_IV_CHECK= R.id.iv_check
     var ID_IV_OVERLAY= R.id.iv_overlay
     var ID_IV_INDICATION= R.id.iv_indication
