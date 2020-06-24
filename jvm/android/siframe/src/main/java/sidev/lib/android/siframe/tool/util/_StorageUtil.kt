@@ -12,24 +12,26 @@ object _StorageUtil{
         /**
          * @param expDuration in sec
          */
-        fun setSharedPref(c: Context, key: String, value: String?, expDuration: Long= 0) {
+        fun set(c: Context, key: String, value: String?, expDuration: Long= 0): Boolean {
 //        val callerFun= ReflexUtil.getCurrentCallerFunName()
 //        Log.e("UTIL", "setSharedPref() callerFun= $callerFun")
             Log.e("UTIL", "setSharedPref() key= $key value= $value expDuration= $expDuration")
-            val editor = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE).edit()
-            editor.putString(key, value)
-            if(expDuration >= 1)
-                setSharedPrefExpDuration(c, key, expDuration)
-            if(value == null)
-                removeSharedPrefExp(c, key)
-            editor.commit()
+            return if(value != null){
+                if(expDuration >= 1)
+                    setExpDuration(c, key, expDuration)
+
+                c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
+                    .edit().putString(key, value)
+                    .commit()
+            } else
+                remove(c, key)
         }
 
         //untuk mendapatkan status negara pengguna
-        fun getSharedPref(c: Context, key: String): String? {
+        fun get(c: Context, key: String): String? {
 //        Log.e("UTIL", "getSharedPref() key= $key")
             val prefs = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
-            val expTime= getSharedPrefExp(c, key)
+            val expTime= getExpTime(c, key)
             Log.e("UTIL", "getSharedPref() key= $key expTime= $expTime")
             return if(expTime != null){
                 val timeNow= TimeUtil.timestamp()
@@ -37,50 +39,66 @@ object _StorageUtil{
                 if(diff > 0)
                     prefs.getString(key, null)
                 else {
-                    setSharedPref(c, key, null)
-                    removeSharedPrefExp(c, key)
+                    remove(c, key)
+                    /* set(c, key, null)
+                    removeExpTime(c, key) */
                     null
                 }
             } else prefs.getString(key, null)
 //        return prefs.getString(key, null)
         }
 
-        fun setSharedPrefExpTime(c: Context, key: String, timestamp: String?) {
+        fun setExpTime(c: Context, key: String, timestamp: String?): Boolean {
             val expKey= key + _SIF_Constant._KEY_PREF_EXP_TIME
-            val editor = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE).edit()
-            editor.putString(expKey, timestamp)
-            editor.commit()
+            return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
+                .edit().putString(expKey, timestamp)
+                .commit()
         }
 
         /**
          * @param duration in sec
          */
-        fun setSharedPrefExpDuration(c: Context, key: String, duration: Long) {
+        fun setExpDuration(c: Context, key: String, duration: Long): Boolean {
             val expKey= key + _SIF_Constant._KEY_PREF_EXP_TIME
-            val editor = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE).edit()
             val timestampA= TimeUtil.timestamp()
             val timestamp= if(duration > 0)
                 TimeUtil.timestamp(diff= duration *1000)
             else null
             Log.e("UTIL", "timestampA= $timestampA timestamp= $timestamp")
 
-            editor.putString(expKey, timestamp)
-            editor.commit()
+            return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
+                .edit().putString(expKey, timestamp)
+                .commit()
         }
 
-        fun getSharedPrefExp(c: Context, key: String): String? {
+        fun getExpTime(c: Context, key: String): String? {
             val expKey= key + _SIF_Constant._KEY_PREF_EXP_TIME
             Log.e("UTIL", "getSharedPrefExp() expKey= $expKey")
-            val prefs = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
-            return prefs.getString(expKey, null)
+            return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
+                .getString(expKey, null)
         }
 
-        fun removeSharedPrefExp(c: Context, key: String){
+        fun removeExpTime(c: Context, key: String): Boolean{
             Log.e("UTIL", "removeSharedPrefExp()")
             val expKey= key + _SIF_Constant._KEY_PREF_EXP_TIME
-            val editor = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE).edit()
-            editor.putString(expKey, null)
-            editor.commit()
+            return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
+                .edit().remove(expKey)
+                .commit()
+        }
+
+        fun remove(c: Context, key: String): Boolean{
+            removeExpTime(c, key)
+
+            return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE).edit()
+                .remove(key)
+                .commit()
+            //val expTime= getExpTime(c, key)
+        }
+
+        fun clear(c: Context): Boolean{
+            return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE).edit()
+                .clear()
+                .commit()
         }
     }
 }
