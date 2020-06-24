@@ -71,6 +71,13 @@ object _BitmapUtil{
         return BitmapFactory.decodeFile(pathFoto)
     }
 
+
+    fun rotateBitmap(bm: Bitmap, rotation: Float): Bitmap{
+        val mtrx= Matrix()
+        mtrx.postRotate(rotation)
+        return Bitmap.createBitmap(bm, 0, 0, bm.width, bm.height, mtrx, true)
+    }
+
     //crop
     fun pictSquare(bm: Bitmap, size: Int): Bitmap {
         val bmResize= resizePict(bm, size)
@@ -166,7 +173,7 @@ object _BitmapUtil{
         return null
     }
 
-    fun from(c: Context, dir: String?= null, file: File?= null): Bitmap? {
+    fun fromFile(c: Context, dir: String?= null, file: File?= null): Bitmap? {
 //        Log.e("ActFragUtil", "getBitmap requestCode MASUK!!!")
 
         val uri = try{ Uri.parse(dir) ?: File(dir!!).toUri() }
@@ -181,6 +188,10 @@ object _BitmapUtil{
             e.printStackTrace()
             null
         }
+    }
+
+    fun fromByteArray(byarr: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byarr, 0, byarr.size)
     }
 
     fun decode(dir: String): Bitmap? {

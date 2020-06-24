@@ -49,13 +49,29 @@ object _NetworkUtil{
             return RQ
         }
 
-        fun get(c: Context, url: String, params: RequestParams, callback: NetworkCallback){
+        fun get(c: Context, url: String, params: RequestParams?, callback: NetworkCallback){
             request(c, Method.GET, url, params, callback)
         }
-        fun post(c: Context, url: String, params: RequestParams, callback: NetworkCallback){
+        fun get(c: Context, url: String, params: RequestParams?,
+                onSuccess: (code: Int, response: String?) -> Unit){
+            val callback= object : NetworkCallback{
+                override fun onSucc(code: Int, response: String?) { onSuccess(code, response) }
+            }
+            request(c, Method.GET, url, params, callback)
+        }
+
+        fun post(c: Context, url: String, params: RequestParams?, callback: NetworkCallback){
             request(c, Method.POST, url, params, callback)
         }
-        fun request(c: Context, method: Method, url: String, params: RequestParams, callback: NetworkCallback): RequestQueue? {
+        fun post(c: Context, url: String, params: RequestParams?,
+                onSuccess: (code: Int, response: String?) -> Unit){
+            val callback= object : NetworkCallback{
+                override fun onSucc(code: Int, response: String?) { onSuccess(code, response) }
+            }
+            request(c, Method.POST, url, params, callback)
+        }
+
+        fun request(c: Context, method: Method, url: String, params: RequestParams?, callback: NetworkCallback): RequestQueue? {
             if(isNetworkActive(c)){
                 val methodVolley= when(method){
                     Method.GET -> Request.Method.GET
@@ -82,14 +98,29 @@ object _NetworkUtil{
      * (-) Gakda cache. Cuma plain library.
      */
     object Loopj{
-        fun get(c: Context, url: String, params: RequestParams, token: String?= null, callback: NetworkCallback){
+        fun get(c: Context, url: String, params: RequestParams?, token: String?= null, callback: NetworkCallback){
             request(c, Method.GET, url, params, token, callback)
         }
-        fun post(c: Context, url: String, params: RequestParams, token: String?= null, callback: NetworkCallback){
+        fun get(c: Context, url: String, params: RequestParams?, token: String?= null,
+                onSuccess: (code: Int, response: String?) -> Unit){
+            val callback= object : NetworkCallback{
+                override fun onSucc(code: Int, response: String?) { onSuccess(code, response) }
+            }
+            request(c, Method.GET, url, params, token, callback)
+        }
+
+        fun post(c: Context, url: String, params: RequestParams?, token: String?= null, callback: NetworkCallback){
+            request(c, Method.POST, url, params, token, callback)
+        }
+        fun post(c: Context, url: String, params: RequestParams?, token: String?= null,
+                onSuccess: (code: Int, response: String?) -> Unit){
+            val callback= object : NetworkCallback{
+                override fun onSucc(code: Int, response: String?) { onSuccess(code, response) }
+            }
             request(c, Method.POST, url, params, token, callback)
         }
 
-        fun request(c: Context, method: Method, url: String, params: RequestParams, token: String?= null, callback: NetworkCallback){
+        fun request(c: Context, method: Method, url: String, params: RequestParams?, token: String?= null, callback: NetworkCallback){
             if(isNetworkActive(c)){
                 val connection= AsyncHttpClient()
 

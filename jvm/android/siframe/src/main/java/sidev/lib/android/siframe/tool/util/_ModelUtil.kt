@@ -371,9 +371,9 @@ object _ModelUtil {
             }
             if(pict.bm == null){
                 if(pict.dir != null)
-                    pict.bm= _BitmapUtil.from(c, dir = pict.dir)!!
+                    pict.bm= _BitmapUtil.fromFile(c, dir = pict.dir)!!
                 else if(pict.file != null)
-                    pict.bm= _BitmapUtil.from(c, file = pict.file)!!
+                    pict.bm= _BitmapUtil.fromFile(c, file = pict.file)!!
                 Log.e("MODEL_UTIL", "pict.bm != null = ${pict.bm != null} pict.dir= ${pict.dir}")
             }
         }
