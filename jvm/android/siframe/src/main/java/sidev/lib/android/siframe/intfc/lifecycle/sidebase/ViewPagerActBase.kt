@@ -1,10 +1,12 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
+import android.app.Activity
 import android.util.SparseArray
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.core.view.get
 import androidx.core.view.isNotEmpty
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
@@ -104,6 +106,9 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 vp.currentItem= pageStartInd
     }
 
+    /**
+     * Opsional pada turunan yg memiliki tujuan yg berkaitan erat dg vp, seperti MultipleActBarViewPagerActBase.
+     */
     @CallSuper
     fun initVp(){
 //        lateVp= vp
@@ -128,37 +133,13 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 positionOffsetPixels: Int
             ) {}
             override fun onPageSelected(position: Int) {
-                if(this@ViewPagerActBase !is MultipleActBarViewPagerActBase<*>){
-                    //Karena fungsi untuk isVpTitleFragBased udah didefinisikan sendiri
-                    // di kelas MultipleActBarViewPagerActBase
-                    this@ViewPagerActBase.asNotNull { act: SimpleAbsBarContentNavAct ->
-                        if(isVpTitleFragBased){
-                            try{ act.setActBarTitle(vpFragList[position].fragTitle) }
-                            catch (e: Exception){
-                                /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
-                                tidak menyebabkan error.
-                                 */
-                            }
-                        }
-                    }
-                }
+                attachActBarTitle(position)
                 vpFragList[position].onActive(_sideBase_view, this@ViewPagerActBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
             }
         })
-        if(isVpTitleFragBased && vpFragList.isNotEmpty())
-            this.asNotNull { act: SimpleAbsBarContentNavAct ->
-                try{ act.setActBarTitle(vpFragList.first().fragTitle) }
-                catch (e: Exception){
-                    /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
-                    tidak menyebabkan error.
-                     */
-                }
-            }
-//        val fragList= initFragList()
-
-//        Log.e("ADP_VP", "initVp() vpFragList.size= ${vpFragList.size}")
-//        vp.adapter= vpAdp
+        if(vpFragList.isNotEmpty())
+            attachActBarTitle(0)
     }
     fun initFragList(): Array<F>?{
         return vpFragList
@@ -237,6 +218,23 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
 
     fun getFragPos(frag: F): Int{
         return vpAdp.items.indexOf(frag)
+    }
+
+    fun attachActBarTitle(pos: Int){
+        if(isVpTitleFragBased){
+            when(this){
+                is Activity -> this
+                is Fragment -> this.activity
+                else -> null
+            }.asNotNull { act: SimpleAbsBarContentNavAct ->
+                try{ act.setActBarTitle(vpFragList[pos].fragTitle) }
+                catch (e: Exception){
+                    /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()
+                    tidak menyebabkan error.
+                     */
+                }
+            }
+        }
     }
 
     /**

@@ -34,7 +34,10 @@ class ActBarFrag3 : SimpleActBarFrag(){
     }
 
     override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
-        actSimple.asNotNull { act: SimpleAbsBarContentNavAct -> act.setMenu(R.menu.menu_1) }
+        actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
+            act.setMenu(R.menu.menu_1)
+            act.setActBarTitle("$fragTitle onActive()")
+        }
         actSimple.asNotNull { act: DrawerActBase ->
             context!!.inflate(R.layout.comp_drawer_start, act.endDrawerContainer).notNull { v ->
                 v.tv.textColorResource= R.color.putih

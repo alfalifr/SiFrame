@@ -131,6 +131,7 @@ abstract class SimpleAbsBarContentNavAct : SimpleAbsAct(), InitActBarFun{
 
     open fun setActBarTitle(title: String){
         if(::actBarViewContainer.isInitialized){
+            loge("setActBarTitle() title= $title")
             try{
                 actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
             } catch (e: Exception){

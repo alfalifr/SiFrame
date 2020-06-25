@@ -17,6 +17,7 @@ import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.presenter.PresenterCallback
@@ -173,12 +174,14 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
         if(this is MultipleActBarViewPagerActBase<*>
             && isActBarViewFromFragment && !isActBarAttached){
             attachActBarView(0)
+            attachActBarTitle(0)
             isActBarAttached= true
         }
     }
     override fun onResumeFragments() {
         super.onResumeFragments()
-        if(frag != null && frag is SimpleAbsFrag){
+        if(this !is ViewPagerActBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
+            && frag != null && frag is SimpleAbsFrag){
             loge("onResumeFragments() onActive() caller")
             (frag as SimpleAbsFrag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
         }

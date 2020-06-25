@@ -8,6 +8,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
 import sidev.lib.implementation.R
 
 class VpImpl2Frag : VpFrag<SimpleAbsFrag>(), TopMiddleBottomBase{
+//    override var isVpTitleFragBased: Boolean= true
     override var vpFragList: Array<SimpleAbsFrag> =
         arrayOf(
             ActBarFrag(),

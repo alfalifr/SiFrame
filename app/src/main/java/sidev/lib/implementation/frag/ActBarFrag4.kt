@@ -31,7 +31,7 @@ class ActBarFrag4 : SimpleActBarFrag(){
 
     override fun _initActBar(actBarView: View) {
         _ViewUtil.setBgColor(actBarView, R.color.unguTua)
-        actBarView.tv.text= fragTitle
+        actBarView.tv.text= "$fragTitle _initActBar()"
     }
 
     override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
@@ -39,7 +39,10 @@ class ActBarFrag4 : SimpleActBarFrag(){
             val callName= callingLifecycle::class.java.simpleName
             loge("onActive() callName= $callName")
         }
-        actSimple.asNotNull { act: SimpleAbsBarContentNavAct -> act.setMenu(null) }
+        actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
+            act.setMenu(null)
+//            act.setActBarTitle("$fragTitle onActive()")
+        }
         actSimple.asNotNull { act: ViewPagerActBase<SimpleAbsFrag> ->
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
         }

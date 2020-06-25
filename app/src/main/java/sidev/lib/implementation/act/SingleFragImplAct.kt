@@ -10,6 +10,7 @@ import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.lifecycle.activity.*
 import sidev.lib.android.siframe.tool.util.`fun`.detachFromParent
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 
 /*
@@ -35,8 +36,9 @@ class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
 
     override fun _initActBar(actBarView: View) {
 //        isActBarViewFromFragment= true
+        loge("SingleFragImplAct._initActBar()")
         waitForFrag { frag ->
-            val fragName= fragment::class.java.simpleName
+            val fragName= frag::class.java.simpleName
             setActBarTitle("SingleFragAct: $fragName")
             Log.e("SingleFragImplAct", "_initActBar")
         }
