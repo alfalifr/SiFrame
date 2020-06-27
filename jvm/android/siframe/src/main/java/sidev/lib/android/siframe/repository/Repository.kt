@@ -1,23 +1,27 @@
-package sidev.lib.android.siframe.presenter
+package sidev.lib.android.siframe.repository
 
 import android.content.Context
 import sidev.lib.android.siframe.exception.DataIntegrityExc
+import sidev.lib.android.siframe.lifecycle.app.App
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
 /*
-<Alif -> Amir, 2 Mei 2020> <Selesai:0> <baca> => Semua presenter pada pengembangan tahap 2 ini
-disarankan memakai kelas ini sebagai superclass agar standar.
+<27 Juni 2020> => Perubahan nama dari Presenter menjadi Repository. Perubahan nama menjadi Repository
+                  mengisyaratkan bahwa kelas ini ditujukan untuk tugas pengambil / penyimpan
+                  data baik scr lokal maupun remote.
  */
-abstract class Presenter (private val callback: PresenterCallback) {
+abstract class Repository (private var callback: RepositoryCallback?) {
     enum class Direction{
         IN, OUT
     }
-    protected var reqCode: String= ""
+    var reqCode: String= ""
         private set
-    protected var ctx: Context?= null
-        private set
+    val ctx: Context
+        get()= App.ctx
 
-    init{ ctx= callback.callbackCtx }
+//    init{ ctx= callback.callbackCtx }
 
     /**
      * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest().
@@ -31,7 +35,7 @@ abstract class Presenter (private val callback: PresenterCallback) {
 
 
     /**
-     * Semua instance PresenterCallableFragAct harus manggil ini kalo mau request ke presenter.
+     * Semua instance PresenterCallback harus manggil ini kalo mau request ke presenter.
      */
     fun postRequest(reqCode: String, data: Map<String, Any>?= null){
         this.reqCode= reqCode
@@ -47,13 +51,23 @@ abstract class Presenter (private val callback: PresenterCallback) {
      */
     fun postSucc(resCode: Int, data: Map<String, Any>?, reqCode: String?= null){
         val sentReqCode= reqCode ?: this.reqCode
-        if(checkDataIntegrity(sentReqCode, Direction.IN, data))
-            callback.onPresenterSucc(sentReqCode, resCode, data)
-        else
+        if(checkDataIntegrity(sentReqCode, Direction.IN, data)){
+            if(callback?.isExpired == false)
+                callback!!.onRepoSucc(sentReqCode, resCode, data)
+            else{
+                loge("callback: \"${callback?.classSimpleName()}\" sudah kadaluwarsa")
+                callback= null
+            }
+        } else
             DataIntegrityExc(this::class.java, "Pengecekan masuk di presenter")
     }
     fun postFail(resCode: Int, msg: String?= null, e: Exception?= null, reqCode: String?= null){
-        val sentReqCode= reqCode ?: this.reqCode
-        callback.onPresenterFail(sentReqCode, resCode, msg, e)
+        if(callback?.isExpired == false){
+            val sentReqCode= reqCode ?: this.reqCode
+            callback!!.onRepoFail(sentReqCode, resCode, msg, e)
+        } else{
+            loge("callback: \"${callback?.classSimpleName()}\" sudah kadaluwarsa")
+            callback= null
+        }
     }
 }

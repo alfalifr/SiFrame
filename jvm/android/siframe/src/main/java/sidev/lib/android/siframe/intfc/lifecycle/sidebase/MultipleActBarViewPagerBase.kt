@@ -12,13 +12,12 @@ import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.Exception
 
-interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>, ActBarFromFragBase{
+interface MultipleActBarViewPagerBase<F: SimpleAbsFrag> : ViewPagerBase<F>, ActBarFromFragBase{
     val actBarViewList: SparseArray<View>
     /**
      * Child pada ViewGroup ini harus 1.
@@ -49,7 +48,7 @@ interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>
             override fun onPageSelected(position: Int) {
                 attachActBarView(position)
                 attachActBarTitle(position)
-                vpFragList[position].onActive(_sideBase_view, this@MultipleActBarViewPagerActBase, position)
+                vpFragList[position].onActive(_sideBase_view, this@MultipleActBarViewPagerBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
             }
         })
@@ -60,14 +59,16 @@ interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>
     }
 
     fun attachActBarView(pos: Int){
+/*
         val isActContentNavAct= this is SimpleAbsBarContentNavAct
         val caller= ThreadUtil.getCurrentCallerFunName()
         val caller1= ThreadUtil.getCurrentCallerFunName(1)
         val caller2= ThreadUtil.getCurrentCallerFunName(2)
         val caller3= ThreadUtil.getCurrentCallerFunName(3)
         loge("attachActBarView() ||| pos= $pos this::class.java.simpleName= ${this::class.java.simpleName} \n caller= $caller \n caller1= $caller1 \n caller2= $caller2 \n caller3= $caller3 \n isActContentNavAct= $isActContentNavAct")
+ */
         if(actBarContainer_vp != null){
-            loge("MASUK ||||")
+//            loge("MASUK ||||")
             actBarViewList[pos].notNull { actBar ->
                 actBarContainer_vp!!.removeAllViews()
                 actBarContainer_vp!!.addView(actBar)
@@ -87,14 +88,16 @@ interface MultipleActBarViewPagerActBase<F: SimpleAbsFrag> : ViewPagerActBase<F>
     }
 
     override fun attachActBarTitle(pos: Int){
+/*
         val isActContentNavAct= this is SimpleAbsBarContentNavAct
         val caller= ThreadUtil.getCurrentCallerFunName()
         val caller1= ThreadUtil.getCurrentCallerFunName(1)
         val caller2= ThreadUtil.getCurrentCallerFunName(2)
         val caller3= ThreadUtil.getCurrentCallerFunName(3)
         loge("attachActBarTitle() ||| pos= $pos this::class.java.simpleName= ${this::class.java.simpleName} \n caller= $caller \n caller1= $caller1 \n caller2= $caller2 \n caller3= $caller3 \n isActContentNavAct= $isActContentNavAct")
+ */
         if(isVpTitleFragBased){
-            loge("MASUK ||||")
+//            loge("MASUK ||||")
             when(this){
                 is Activity -> this
                 is Fragment -> this.activity

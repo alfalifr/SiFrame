@@ -10,16 +10,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe.adapter.VpFragAdp
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
-abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPagerActBase<F>{
+abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPagerBase<F>{
     override val _sideBase_act: AppCompatActivity
         get() = act as AppCompatActivity
     override val _sideBase_view: View
@@ -61,12 +60,19 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPag
     override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
 
 //    override lateinit var lateVp: ViewPager
-
+/*
     override fun ___initRootBase(vararg args: Any) {
         super.___initRootBase(*args)
-        ___initSideBase()
-        if(_sideBase_act is BackBtnActBase){
-            (_sideBase_act as BackBtnActBase).addOnBackBtnListener{
+//        ___initSideBase()
+    }
+ */
+
+    override fun ___initSideBase() {
+        super<SimpleAbsFrag>.___initSideBase()
+        super<MultipleActBarViewPagerBase>.___initSideBase()
+
+        if(_sideBase_act is BackBtnBase){
+            (_sideBase_act as BackBtnBase).addOnBackBtnListener{
                 if(isVpBackOnBackPressed)
                     pageBackward()
                 else false

@@ -4,9 +4,9 @@ import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragDrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
@@ -31,8 +31,8 @@ class Frag4 : SimpleAbsFrag(){
         }
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
-        callingLifecycle.asNotNull { act: ViewPagerActBase<*> ->
+    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        callingLifecycle.asNotNull { act: ViewPagerBase<*> ->
             act.isVpTitleFragBased= true
             loge("onActive() act.isVpTitleFragBased= true")
         }

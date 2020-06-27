@@ -19,22 +19,27 @@ import sidev.lib.universal.`fun`.notNull
 
 //!!!!!!@@ 18 Jan 2020
 abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
-    val ctx: Context, dataList: ArrayList<D>?
+    val ctx: Context //, dataList: ArrayList<D>? <27 Juni 2020> => param konstruktor primer dataList jadi opsional agar menghemat waktu ngoding.
     )
     : RecyclerView.Adapter<RvAdp<D, LM>.SimpleViewHolder>(), Adp{
 
+    //<27 Juni 2020> => konstruktor dg param dataList jadi konstruktor sekunder agar menghemat waktu ngoding.
+    constructor(ctx: Context, dataList: ArrayList<D>?): this(ctx){
+        this.dataList= dataList
+    }
+
+//    protected var isInternalEdit= false
     protected var isInternalEdit= false
-    protected var isDataListInternalEdit= false
     /**
      * List data yang akan dipake untuk ditampilkan
      */
     var dataList: ArrayList<D>?= null
         set(v){
             field= v
-            if(!isDataListInternalEdit)
+            if(!isInternalEdit)
                 dataListFull= v
 
-            updateData_int(v, isDataListInternalEdit)
+            updateData_int(v, isInternalEdit)
 
             val copiedList=
                 if(dataList != null) ArrayList(dataList!!)
@@ -45,7 +50,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     var dataListFull: ArrayList<D>?= null
         protected set(v){
             field= v
-            if(isDataListInternalEdit){
+            if(isInternalEdit){
                 dataList= v
 //                updateData_int(containerView)
             }
@@ -58,7 +63,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     open val searchFilterFun: (c: Context, data: D, keyword: String) -> Boolean= { _, _, _ -> true}
     open val selectFilterFun: ((dataFromList: D, dataFromInput: D, posFromList: Int) -> Boolean) ?= null
     init{
-        this.dataList= dataList
+//        this.dataList= dataList
         setOnLayoutCompletedListener { state ->
             iterateOnLayoutCompletedQueue(state)
         }
@@ -409,16 +414,16 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     protected open fun updateData_int(dataList: ArrayList<D>?, isInternalEdit: Boolean) {}
 
     fun resetDataToInitial(){
-        setDataListSetFromInternal {
+        internalEdit {
             dataList= dataListFull
         }
     }
 
-    protected inline fun setDataListSetFromInternal(func: () -> Unit){
-        val isDataListSetFromInternal_init= isDataListInternalEdit
-        isDataListInternalEdit= true
+    protected inline fun internalEdit(func: () -> Unit){
+        val isInternalEdit_init= isInternalEdit
+        isInternalEdit= true
         func()
-        isDataListInternalEdit= isDataListSetFromInternal_init
+        isInternalEdit= isInternalEdit_init
     }
 
     open fun deleteItemAt(pos: Int): D?{
@@ -428,7 +433,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         return e
     }
     fun clearData(){
-        setDataListSetFromInternal {
+        internalEdit {
             dataListFull= null
         }
     }
@@ -443,7 +448,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
                         dataMatch.add(data)
                 }
                 if(dataList!!.size != dataMatch.size)
-                    setDataListSetFromInternal{
+                    internalEdit{
                         dataList= dataMatch
                     }
             }
@@ -605,5 +610,5 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
 
     @PublishedApi
     internal fun `access$setDataListSetFromInternal`(func: () -> Unit) =
-        setDataListSetFromInternal(func)
+        internalEdit(func)
 }

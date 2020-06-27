@@ -7,6 +7,7 @@ import androidx.annotation.CallSuper
 import androidx.core.view.get
 import androidx.core.view.isNotEmpty
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
@@ -19,12 +20,14 @@ import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
-interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
+interface ViewPagerBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _Config.LAYOUT_VP
+
+    override val _sideBase_view: View
+    override val _sideBase_fm: FragmentManager
 
     var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
 
@@ -134,7 +137,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
             ) {}
             override fun onPageSelected(position: Int) {
                 attachActBarTitle(position)
-                vpFragList[position].onActive(_sideBase_view, this@ViewPagerActBase, position)
+                vpFragList[position].onActive(_sideBase_view, this@ViewPagerBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
             }
         })
@@ -201,7 +204,7 @@ interface ViewPagerActBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                     try{ act.setActBarTitle(vpFragList.first().fragTitle) }
                     catch (e: Exception){}
                 }
-            this.asNotNull { act: MultipleActBarViewPagerActBase<*> ->
+            this.asNotNull { act: MultipleActBarViewPagerBase<*> ->
                 act.actBarViewList.clear()
                 act.attachActBarView(0)
             }

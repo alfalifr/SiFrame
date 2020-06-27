@@ -1,5 +1,7 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -17,6 +19,10 @@ import sidev.lib.universal.tool.util.ReflexUtil
 interface SingleFragActBase: ComplexLifecycleSideBase{
     override val layoutId: Int
         get() = _Config.LAYOUT_ACT_SINGLE_FRAG //.LAYOUT_ACT_SIMPLE
+
+    override val _sideBase_view: View
+    override val _sideBase_intent: Intent
+    override val _sideBase_ctx: Context
 
     var fragment: Fragment
     val fragContainerId: Int

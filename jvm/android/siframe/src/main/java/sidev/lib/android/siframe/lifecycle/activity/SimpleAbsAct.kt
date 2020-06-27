@@ -11,16 +11,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnActBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
-import sidev.lib.android.siframe.presenter.Presenter
-import sidev.lib.android.siframe.presenter.PresenterCallback
+import sidev.lib.android.siframe.repository.Repository
+import sidev.lib.android.siframe.repository.RepositoryCallback
+import sidev.lib.android.siframe.tool.ActLifecycleObs
+//import sidev.lib.android.siframe.presenter.Repository
+//import sidev.lib.android.siframe.presenter.RepositoryCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
@@ -32,8 +35,11 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
  */
 abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
     SimpleAbsActFragBase,
-    PresenterCallback,
-    BackBtnActBase {
+    ViewModelBase,
+    RepositoryCallback, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
+    BackBtnBase {
+    final override var isExpired: Boolean= false
+        private set
 
     override var isInherited: Boolean= false
     override fun _configInheritable(){}
@@ -66,8 +72,12 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
     override lateinit var layoutView: View
     open val isViewInitFirst= true
 
-    override var presenter: Presenter?= null
-    override var callbackCtx: Context?= this
+    override lateinit var _vmProvider: ViewModelProvider
+    //    override val vmStoreOwner: ViewModelStoreOwner= this
+//    override val lifecycleOwner: LifecycleOwner= this
+
+    override var repository: Repository?= null
+//    override var callbackCtx: Context?= this
 
 
     //    private val onDestroyListenerQueue= RunQueue<Any?, Unit_>()
@@ -78,6 +88,8 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
         setStyle(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
+
+//        lifecycle.addObserver(this)
 //        Log.e("SimpleAbsAct", "onCreate isViewInitFirst= $isViewInitFirst name= ${this::class.java.simpleName}")
 //        val v=  findViewById<View>(android.R.id.content).rootView
 //        layoutView= v
@@ -95,11 +107,50 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
  */
     }
 
-    override fun ___initRootBase(vararg args: Any) {
-        presenter= initPresenter()
-        super.___initRootBase(*args)
+    @CallSuper
+    override fun onDestroy() {
+        super.onDestroy()
+        isExpired= true
+        repository= null
+//        onDestroyListenerQueue.iterateRunQueue(null)
+        Log.e("SimpleAbsAct", "Activity ${this::class.java.simpleName} is destroyed!!!")
     }
 
+    private var frag: Fragment?= null
+    private var isActBarAttached= false //agar attachActBarView() inisial dilakukan sekali
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        frag= fragment
+        if(this is MultipleActBarViewPagerBase<*>
+            && isActBarViewFromFragment && !isActBarAttached){
+            attachActBarView(0)
+            attachActBarTitle(0)
+            isActBarAttached= true
+        }
+    }
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        if(this !is ViewPagerBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
+            && frag != null && frag is SimpleAbsFrag){
+            loge("onResumeFragments() onActive() caller")
+            (frag as SimpleAbsFrag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
+        }
+    }
+
+
+
+    override fun ___initRootBase(vararg args: Any) {
+        repository= initRepo()
+        super<ViewModelBase>.___initRootBase(*args)
+        super<SimpleAbsActFragBase>.___initRootBase(*args)
+    }
+
+/*
+    override fun ___initSideBase() {
+        super<ViewModelBase>.___initSideBase()
+        super<BackBtnBase>.___initSideBase()
+    }
+ */
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
         return if(i != null) super.getIntentData(key, i, default)
@@ -131,6 +182,7 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
         return supportActionBar?.customView
     }
 
+
     @CallSuper
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -158,37 +210,13 @@ abstract class SimpleAbsAct : AppCompatActivity(), Inheritable,
             _AppUtil.toHomeScreen(this)
     }
 
-    @CallSuper
-    override fun onDestroy() {
-        super.onDestroy()
-//        onDestroyListenerQueue.iterateRunQueue(null)
-        Log.e("SimpleAbsAct", "Activity ${this::class.java.simpleName} is destroyed!!!")
-    }
+
+    override fun onRepoSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
+    override fun onRepoFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 
 
-    private var frag: Fragment?= null
-    private var isActBarAttached= false //agar attachActBarView() inisial dilakukan sekali
-    override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
-        frag= fragment
-        if(this is MultipleActBarViewPagerActBase<*>
-            && isActBarViewFromFragment && !isActBarAttached){
-            attachActBarView(0)
-            attachActBarTitle(0)
-            isActBarAttached= true
-        }
-    }
-    override fun onResumeFragments() {
-        super.onResumeFragments()
-        if(this !is ViewPagerActBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
-            && frag != null && frag is SimpleAbsFrag){
-            loge("onResumeFragments() onActive() caller")
-            (frag as SimpleAbsFrag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
-        }
-    }
-
-    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
-    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
+    //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
+//    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 
     /*
     private val onBackPressedListenerList= ArrayList<OnBackPressedListener>()

@@ -34,7 +34,7 @@ open class LiveVal<T>(var ctx: Context){
     private fun invokeListener(){
         ctx.runOnUiThread{
             listener?.invoke(value, msg)
-            loge("setVal() v= $value msg= $msg")
+//            loge("setVal() v= $value msg= $msg")
             msg= DEFAULT
         }
     }

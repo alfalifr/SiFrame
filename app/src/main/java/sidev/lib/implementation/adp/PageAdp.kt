@@ -17,7 +17,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutMana
     override val itemLayoutId: Int
         get() = R.layout.comp_page_row
 
-    val sqlite= PageSqlite(c)
+    val sqlite= PageSqlite()
 
     override fun bindVH(vh: SimpleViewHolder, pos: Int, data: Page) {
         vh.itemView.tv_id.text= data.id
@@ -27,6 +27,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutMana
         loge("data.id= ${data.id} data.content?.getFkId(0)= ${data.content?.getFkId(0)} data.no= ${data.no}")
 
         var rowExists= false
+        sqlite.ifExists()
         sqlite.ifExists(data).observe { map ->
             map.notNull { map ->
                 val exists= map.values.first()

@@ -1,21 +1,15 @@
 package sidev.lib.implementation.frag
 
 import android.view.View
-import kotlinx.android.synthetic.main.comp_act_bar.view.*
-import kotlinx.android.synthetic.main.frag_txt.view.*
 import kotlinx.android.synthetic.main.frag_txt.view.tv
-import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.notNull
 
 class ActBarFrag2 : SimpleActBarFrag(){
     override val layoutId: Int
@@ -35,9 +29,9 @@ class ActBarFrag2 : SimpleActBarFrag(){
         actBarView.tv.text= fragTitle
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
+    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
         actSimple.asNotNull { act: DrawerActBase ->
-            act.setDrawerView(DrawerActBase.Type.DRAWER_END, null)
+            act.setDrawerView(DrawerBase.Type.DRAWER_END, null)
             _ViewUtil.setBgColor(act.startDrawerContainer, R.color.biruLaut)
         }
     }

@@ -21,10 +21,20 @@ abstract class SingleFragDrawerAct_BarContentNav: SingleFragAct_BarContentNav(),
     override lateinit var startDrawerContainer: ViewGroup
     override lateinit var endDrawerContainer: ViewGroup
 
+    //<27 Juni 2020> => __initDrawer(rootView) gak jadi di __initViewFlow(). Error dapat terjadi
+    //                      karena saat __initDrawer(rootView) pada kelas SingleFragDrawerAct_BarContentNav_Simple
+    //                      terdapat pemanggilan fragment yg blum diinit karena __initFrag() dilakukan di ___initSideBase()
     override fun __initViewFlow(rootView: View) {
         super.__initViewFlow(rootView)
         __initDrawer(rootView)
     }
+/*
+    override fun ___initSideBase() {
+        super<SingleFragAct_BarContentNav>.___initSideBase()
+//        super<SingleFragDrawerActBase>.___initSideBase()
+        __initDrawer(layoutView.rootView)
+    }
+ */
 
     /**
      * Gak usah karena view kontennya ada di dalam fragment

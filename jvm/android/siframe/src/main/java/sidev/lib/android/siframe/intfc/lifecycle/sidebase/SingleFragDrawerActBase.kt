@@ -2,9 +2,6 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout
-import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 
 /**
  * Interface yg digunakan untuk menggabungkan fungsionalitas SingleFragActBase dan DrawerActBase.
@@ -15,6 +12,7 @@ interface SingleFragDrawerActBase : SingleFragActBase, DrawerActBase{
         get() = super<DrawerActBase>.layoutId
     override val contentLayoutId: Int
         get() = super<SingleFragActBase>.layoutId
+
 
 /*
     override fun __initDrawer(rootView: View) {

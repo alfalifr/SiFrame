@@ -14,6 +14,13 @@ inline fun <T1, reified T2> T1?.asNotNull(f: (T2) -> Unit): T1? {
         f(this)
     return this
 }
+/**
+ * Lawan dari asNotNull(), yaitu fungsi dijalankan saat T1 bkn merupakan T2.
+ */
+inline fun <T1, reified T2> T1?.asntNotNull(f: () -> Unit): T1? {
+    if(this !is T2 && this != null) f()
+    return this
+}
 
 /**
  * Mirip dg notNull() namun terdapat cast untuk input lambda.
@@ -21,6 +28,13 @@ inline fun <T1, reified T2> T1?.asNotNull(f: (T2) -> Unit): T1? {
  */
 inline fun <T1, reified T2, O> T1?.asNotNullTo(f: (T2) -> O): O? {
     return if(this is T2) f(this)
+    else null
+}
+/**
+ * Lawan dari asNotNullTo(), yaitu fungsi dijalankan saat T1 bkn merupakan T2.
+ */
+inline fun <T1, reified T2, O> T1?.asntNotNullTo(f: () -> O): O? {
+    return if(this !is T2 && this != null) f()
     else null
 }
 

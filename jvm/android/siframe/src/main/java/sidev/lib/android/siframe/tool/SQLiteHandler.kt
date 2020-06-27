@@ -11,6 +11,8 @@ import android.widget.Toast
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.listener.LiveVal
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
+import sidev.lib.android.siframe.lifecycle.app.App
+import sidev.lib.android.siframe.lifecycle.viewmodel.LifeData
 import sidev.lib.android.siframe.model.DataWithId
 import sidev.lib.android.siframe.model.intfc.Fk
 import sidev.lib.android.siframe.model.intfc.ModelId
@@ -40,8 +42,11 @@ import java.lang.reflect.Modifier
  *        <1, 15 Juni 2020>!!! Fk tidak dianggap sbg data yg dicatat karena secara logis beda tabel.
  *        <2, 15 Juni 2020> Declared field dg nama berawalan _ dianggap sbg private dan tidak dicatat.
  *        <3, 15 Juni 2020> Hanya mencatat field primitive, bkn obj.
+ *        <4, 27 Juni 2020> Kelas ini menggunakan LiveVal sbg future karena jika menggunakan LifeData, maka akan
+ *                           kesulitan untuk mendapatkan LifecycleOwnernya.
  */
-abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
+abstract class SQLiteHandler<M: DataWithId>(){
+    val ctx: Context= App.ctx
 //    : SQLiteOpenHelper(konteks, BuildConfig.DB_NAMA, null, BuildConfig.DB_VERSI){
 
     companion object{
@@ -143,7 +148,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
             val attrib= attribs[i]
             defAcces= attrib.isAccessible
             attrib.isAccessible= true
-            loge("labeliAtribut() atributAsli= ${attrib.name} tipe= ${attrib.type}")
+//            loge("labeliAtribut() atributAsli= ${attrib.name} tipe= ${attrib.type}")
             valMap[attrib.name]=
                     when(attrib.type){
                         Int::class.java -> valueCursor.getInt(i)
@@ -219,11 +224,12 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
     protected open fun readAttribFromModel(){
         val attribs= modelClass.declaredFields
         val attribCount= attribs.size
-
+/*
         loge("modelClass.simpleName= ${modelClass.simpleName} attribs.size= ${attribs.size}")
         for((i, att) in attribs.withIndex()){
             loge("i= $i att.name= ${att.name}")
         }
+ */
 /*
         val anotasiKelas= modelClass.annotations
         for(perAnotasi in anotasiKelas)
@@ -246,7 +252,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
 
             val field= attribs[i]
             val attName= field.name
-            loge("attName= $attName pub= $pub pro= $pro priv= $priv isAc= $isAc")
+//            loge("attName= $attName pub= $pub pro= $pro priv= $priv isAc= $isAc")
 
             if(!attName.startsWith("_")){
                 var type= when(field.type){
@@ -268,7 +274,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
                         type
                     }
                 }
-                loge("i= $i type= $type")
+//                loge("i= $i type= $type")
                 if(type != TYPE_NULL){
                     attribFieldList.add(field)
                     attribNameList.add(StringUtil.snakeCase(attName, true))
@@ -284,7 +290,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
                     attribTypeList.add(type)
 
                     val i= attribNameList.lastIndex
-                    loge("attribFieldList[$i] = ${attribFieldList[i]} attribNameList[$i] = ${attribNameList[i]} attribTypeList[$i] = ${attribTypeList[i]}")
+//                    loge("attribFieldList[$i] = ${attribFieldList[i]} attribNameList[$i] = ${attribNameList[i]} attribTypeList[$i] = ${attribTypeList[i]}")
                 }
 /*
             else{
@@ -308,7 +314,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context){
         attribType= attribTypeList.toTypedArray()
 
         for((i, name) in attribName.withIndex()){
-            loge("i= $i attribName= $name attribType= ${attribType[i]}")
+//            loge("i= $i attribName= $name attribType= ${attribType[i]}")
         }
 
 /*
@@ -369,7 +375,7 @@ Koneksi
                     }
                     queryPembuatanTabel += ");"
 
-                    loge("queryPembuatanTabel= $queryPembuatanTabel")
+//                    loge("queryPembuatanTabel= $queryPembuatanTabel")
                     db?.execSQL(queryPembuatanTabel)
                 }
 
@@ -399,7 +405,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 
     fun insert(vararg model: M): LiveVal<Map<String, Boolean>>{
         progressListener?.total(if(totalFix > 0) totalFix else model.size, "save")
-
+/*
         loge("simpan data LUAR JML_MODEL= ${model.size}")
         loge("simpan data LUAR JML_MODEL= ${model.size}")
         loge("simpan data LUAR JML_MODEL= ${model.size}")
@@ -407,6 +413,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             loge("simpan data LUAR JML_MODEL= ${perModel.id}")
             loge("simpan data LUAR JML_MODEL= ${perModel.id}")
         }
+ */
 
         checkConn()
 
@@ -414,8 +421,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         ThreadUtil.Pool.submit {
             try{
                 val db= sqliteHelper.writableDatabase
-                LogApp.e("SQLITE", "simpan data DALAM JML_MODEL= ${model.size}")
-                LogApp.e("SQLITE", "simpan data DALAM JML_MODEL= ${model.size}")
+//                LogApp.e("SQLITE", "simpan data DALAM JML_MODEL= ${model.size}")
+//                LogApp.e("SQLITE", "simpan data DALAM JML_MODEL= ${model.size}")
 
                 val resList= HashMap<String, Boolean>()
                 for(perModel in model){
@@ -424,13 +431,13 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         val nilai= extractVal(perModel)
                         val hasil= db.insert(tableName, null, nilai)
 
-                        LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
-                        LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
+//                        LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
+//                        LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
 
                         if(hasil >= 0){
                             resList[id]= true
                             progressListener?.progresSucc(perModel)
-                            LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
+//                            LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
                         }
                         else{
                             resList[id]= false
@@ -451,7 +458,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 null
             }
         }
-        LogApp.e("SQLITE", "simpan data JALAN!!!!!")
+//        LogApp.e("SQLITE", "simpan data JALAN!!!!!")
         return liveVal
     }
 
@@ -481,7 +488,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 val kursor= db.rawQuery(strKueri, null)
                 progressListener?.total(if(totalFix > 0) totalFix else kursor.count, "readAllData")
 
-                LogApp.e("SQLITE", "bacaSemuaData kursor.count= ${kursor.count}")
+//                LogApp.e("SQLITE", "bacaSemuaData kursor.count= ${kursor.count}")
 
                 if(kursor.moveToFirst()){
                     val resList= ArrayList<M>()
@@ -568,11 +575,13 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         null, null, null, null)
 
                 progressListener?.total(if(totalFix > 0) totalFix else kursor.count, "read")
+/*
                 LogApp.e("SQLITE", "bacaData===========LUAR METHOD=============== jmlKursor= ${kursor.count} kursor.moveToFirst()= ${kursor.moveToFirst()} ${progressListener == null}")
 
                 LogApp.e("SQLITE", "bacaData kondisi= $kondisi")
                 for(perArgumen in argumen)
                     LogApp.e("SQLITE", "bacaData argumen= $perArgumen")
+ */
                 if(kursor.moveToFirst()){
                     val resList= ArrayList<M>()
                     do{
@@ -618,11 +627,13 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         null, null, null, null)
 
                 progressListener?.total(if(totalFix > 0) totalFix else kursor.count, "read")
+/*
                 LogApp.e("SQLITE", "bacaData===========LUAR METHOD=============== jmlKursor= ${kursor.count} kursor.moveToFirst()= ${kursor.moveToFirst()} ${progressListener == null}")
 
                 LogApp.e("SQLITE", "bacaData kondisi= $condition")
                 for(perArgumen in arg)
                     LogApp.e("SQLITE", "bacaData argumen= $perArgumen")
+ */
                 if(kursor.moveToFirst()){
                     do{
                         if(kursor.count > 0){
@@ -654,21 +665,21 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         checkConn()
 
         val liveVal= LiveVal<Map<String, Boolean>>(ctx)
-        loge("ifExists() MELBU AWAL!!!")
+//        loge("ifExists() MELBU AWAL!!!")
         val future= ThreadUtil.Pool.submit {
             val db= sqliteHelper.writableDatabase
-            loge("ifExists() ThreadUtil.Pool.submit")
+//            loge("ifExists() ThreadUtil.Pool.submit")
             try{
-                loge("ifExists() try outer MELBU")
+//                loge("ifExists() try outer MELBU")
                 val resList= HashMap<String, Boolean>()
                 var i= -1
                 for(perModel in model){
                     val id= perModel.id
                     resList[id]= false
                     i++
-                    loge("ifExists() for i= $i i $id")
+//                    loge("ifExists() for i= $i i $id")
                     try{
-                        loge("ifExists() TRY!!!")
+//                        loge("ifExists() TRY!!!")
                         val strCondition= getConditionString(perModel)
 //                    val hasil= db.query(tableName, attribName, strCondition, null)//db.update(tableName, values, strCondition, null)
                         val kursor  = db.query(
@@ -678,9 +689,9 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             null, null, null, null)
 
                         if(kursor.moveToFirst()){
-                            loge("ifExists() if(kursor.moveToFirst())")
+//                            loge("ifExists() if(kursor.moveToFirst())")
                             do{
-                                loge("ifExists() kursor.count= ${kursor.count}")
+//                                loge("ifExists() kursor.count= ${kursor.count}")
                                 if(kursor.count > 0){
 //                                val model= createModel(mapValue(kursor))
                                     resList[id]= true
@@ -689,7 +700,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                                 } else
                                     progressListener?.progresDone()
                             } while(kursor.moveToNext())
-                            loge("ifExists() while CLOSE")
+//                            loge("ifExists() while CLOSE")
                             kursor.close()
                         }
                     } catch (e: Exception){
@@ -706,10 +717,12 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 null
             }
         }
+/*
         val isDone= future.isDone
         val isCancel= future.isCancelled
         val value= future.get()
-        loge("isDone= $isDone isCancel= $isCancel value= $value")
+//        loge("isDone= $isDone isCancel= $isCancel value= $value")
+ */
         return liveVal
     }
 
@@ -764,25 +777,25 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     }
 
     fun delete(vararg model: M): LiveVal<Map<String, Boolean>>{
-        loge("delete() MASUK")
+//        loge("delete() MASUK")
         checkConn()
 
         val liveVal= LiveVal<Map<String, Boolean>>(ctx)
         ThreadUtil.Pool.submit {
             progressListener?.total(if(totalFix > 0) totalFix else model.size, "delete")
-            loge("delete() submit")
+//            loge("delete() submit")
             try{
-                loge("delete() TRY!!!")
+//                loge("delete() TRY!!!")
                 val db= sqliteHelper.writableDatabase
                 val resList= HashMap<String, Boolean>()
                 for(perModel in model){
                     val id= perModel.id
-                    loge("delete() for id= $id")
+//                    loge("delete() for id= $id")
 
                     try{
-                        loge("delete() TRY dalem !!!")
+//                        loge("delete() TRY dalem !!!")
                         val hasil= db.delete(tableName, "$primaryKey = ?", arrayOf(id))
-                        loge("delete() hasil= $hasil")
+//                        loge("delete() hasil= $hasil")
                         if(hasil > 0){
                             resList[id]= true
                             progressListener?.progresSucc(perModel)
@@ -885,7 +898,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             res += "$name = $value AND "
         }
         res= res.removeSuffix("AND ")
-        loge("getConditionString() res= $res")
+//        loge("getConditionString() res= $res")
         return res
     }
 

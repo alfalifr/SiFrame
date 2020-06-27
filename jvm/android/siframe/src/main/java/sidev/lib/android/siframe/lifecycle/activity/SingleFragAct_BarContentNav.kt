@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 
 //import sidev.kuliah.agradia.R
@@ -78,7 +77,7 @@ abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleF
                         frag._initActBar(actBar)
 //                        loge("attachFragActBar() asNotNull frag: ActBarFragBase")
                     }
-                }.asNotNull { frag: MultipleActBarViewPagerActBase<*> ->
+                }.asNotNull { frag: MultipleActBarViewPagerBase<*> ->
 //                    loge("attachFragActBar() asNotNull frag: MultipleActBarViewPagerActBase")
                     frag.isActBarViewFromFragment= isActBarViewFromFragment
                     frag.attachActBarView(frag.vp.currentItem)

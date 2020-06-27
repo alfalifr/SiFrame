@@ -1,13 +1,23 @@
 package sidev.lib.android.siframe.lifecycle.app
 
 import android.app.Application
+import android.content.Context
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.tool.util._ResUtil
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
 import kotlin.system.exitProcess
 
-open class BaseApp: Application(){
+open class App: Application(){
+    companion object{
+        /**
+         * Harusnya aman jika menaruh contex app sbg static karena semua proses di app pastinya
+         * didahului oleh instansiasi kelas Application.
+         */
+        lateinit var ctx: Context
+            private set
+    }
     lateinit var logHpError: LogHP
 /*
     var currentAct: SimpleAbsAct?= null
@@ -30,11 +40,13 @@ open class BaseApp: Application(){
 
     override fun onCreate() {
         super.onCreate()
+        ctx= this
 //        LogApp.log= BuildConfig.MODE_LOG
 
         if(_Config.LOG){
             logHpError= LogHP(this)
             logHpError.letakFolder("Error")
+//            loge("logHpError.alamatFile= ${logHpError.alamatFile}")
 
             if(_Config.DEBUG){
                 Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->

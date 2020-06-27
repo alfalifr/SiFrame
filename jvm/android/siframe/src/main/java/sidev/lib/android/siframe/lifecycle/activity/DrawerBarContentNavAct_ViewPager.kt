@@ -1,15 +1,14 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 
 abstract class DrawerBarContentNavAct_ViewPager<F: SimpleAbsFrag>
-    : SimpleAbsBarContentNavAct_ViewPager<F>(), DrawerActBase{
+    : SimpleAbsBarContentNavAct_ViewPager<F>(), DrawerActBase {
     override val isViewInitFirst: Boolean
         get() = false
     override val isContentLayoutInflatedFirst: Boolean

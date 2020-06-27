@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.customizable._init
 
+import android.app.Activity
 import sidev.lib.android.siframe.customizable.R
 
 /**
@@ -105,4 +106,7 @@ object _Config {
     var FORMAT_TIMESTAMP= "$FORMAT_DATE $FORMAT_TIME"
 
     var ENDPOINT_ROOT= ""
+
+    var RES_OK= Activity.RESULT_OK
+    var RES_NOT_OK= -2
 }

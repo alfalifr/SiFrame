@@ -79,6 +79,7 @@ fun Fragment.getRootView(): View?{
  * Menemukan first occurrence
  */
 inline fun <reified T: View> View.findViewByType(): T? {
+    if(this is T) return this
     var stop= false
     var childRes: T?= null
     this.iterateChildWithStop { child ->
@@ -160,7 +161,7 @@ fun View.setChildPadding(childIndex: Int= 0, left: Int= this.paddingLeft, top: I
 
 
 fun <D> Intent.getIntentData(key: String, default: D?= null): D? {
-    return this.extras?.get(key) as D? ?: default
+    return this.extras?.get(key) as? D ?: default
 }
 
 

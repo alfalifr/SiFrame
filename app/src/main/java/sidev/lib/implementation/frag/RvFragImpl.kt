@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.StrAdp
 
-class RvFrag : RvFrag<StrAdp>(), TopMiddleBottomBase{
+class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
     override var topContainer: View?= null
     override var middleContainer: View?= null
     override var bottomContainer: View?= null

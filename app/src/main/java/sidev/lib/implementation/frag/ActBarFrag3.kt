@@ -3,11 +3,10 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import org.jetbrains.anko.textColorResource
-import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
@@ -33,7 +32,7 @@ class ActBarFrag3 : SimpleActBarFrag(){
         actBarView.tv.text= fragTitle
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleBase?, pos: Int) {
+    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
         actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
             act.setMenu(R.menu.menu_1)
             act.setActBarTitle("$fragTitle onActive()")
@@ -43,7 +42,7 @@ class ActBarFrag3 : SimpleActBarFrag(){
                 v.tv.textColorResource= R.color.putih
                 _ViewUtil.setBgColor(v, R.color.hitam)
                 _ViewUtil.setBgColor(act.endDrawerContainer, R.color.unguTua)
-                act.setDrawerView(DrawerActBase.Type.DRAWER_END, v)
+                act.setDrawerView(DrawerBase.Type.DRAWER_END, v)
             }
             _ViewUtil.setBgColor(act.startDrawerContainer, R.color.hitam)
         }

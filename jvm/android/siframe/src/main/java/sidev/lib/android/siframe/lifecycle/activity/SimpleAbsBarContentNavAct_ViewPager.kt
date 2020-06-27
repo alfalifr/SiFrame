@@ -9,16 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.adapter.VpFragAdp
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerActBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
 abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
-    : SimpleAbsBarContentNavAct(), MultipleActBarViewPagerActBase<F> { //ViewPagerActBase<F>
+    : SimpleAbsBarContentNavAct(), MultipleActBarViewPagerBase<F> { //ViewPagerActBase<F>
     override val _sideBase_act: AppCompatActivity
         get() = this
     override val _sideBase_view: View
@@ -38,7 +36,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
     override val layoutId: Int
         get() = super<SimpleAbsBarContentNavAct>.layoutId
     override val contentLayoutId: Int
-        get() = super<MultipleActBarViewPagerActBase>.layoutId
+        get() = super<MultipleActBarViewPagerBase>.layoutId
 /*
     /**
      * top-middle-bottom container terletak pada SimpleAbsBarContentNavAct.contentViewContainer
@@ -80,7 +78,7 @@ abstract class SimpleAbsBarContentNavAct_ViewPager<F: SimpleAbsFrag>
 
 
     override fun ___initSideBase() {
-        super<MultipleActBarViewPagerActBase>.___initSideBase()
+        super<MultipleActBarViewPagerBase>.___initSideBase()
         addOnBackBtnListener {
             if(isVpBackOnBackPressed)
                 pageBackward()

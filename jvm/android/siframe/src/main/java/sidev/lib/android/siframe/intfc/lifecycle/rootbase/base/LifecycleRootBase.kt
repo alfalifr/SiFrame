@@ -1,7 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase.base
 
-import androidx.annotation.CallSuper
-import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 
 /**
  * <8 Juni 2020> => Sementara hanya sbg penanda (marker)
@@ -9,6 +8,6 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
  *
  * Base Root untuk lifecycle. Inheritor hanya boleh mewarisi maks. 1 interface ini.
  */
-interface LifecycleRootBase: LifecycleBase{
+interface LifecycleRootBase: LifecycleViewBase{
     fun ___initRootBase(vararg args: Any)
 }

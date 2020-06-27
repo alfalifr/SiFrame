@@ -6,7 +6,7 @@ import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 
 /**
- * Kelas yg properti abstraknya dapat di-lateinit
+ * Kelas yg properti abstraknya dapat di-lateinit.
  */
 open class SimpleAbsBarContentNavAct_ViewPager_Simple
     : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(){

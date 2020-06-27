@@ -29,9 +29,9 @@ class SingleFragImplAct : SingleFragDrawerAct(){
 }
  */
 
-class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
-    override var startDrawerLayoutId: Int= R.layout.comp_drawer_start
-    override var endDrawerLayoutId: Int= _Config.INT_EMPTY
+class SingleFragImplAct : SingleFragAct_BarContentNav_Simple(){
+//    override var startDrawerLayoutId: Int= R.layout.comp_drawer_start
+//    override var endDrawerLayoutId: Int= _Config.INT_EMPTY
 
 
     override fun _initActBar(actBarView: View) {
@@ -44,7 +44,7 @@ class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
         }
     }
     override fun _initNavBar(navBarView: BottomNavigationView) {}
-
+/*
     override fun _initStartDrawerView(startDrawerView: View) {
         startDrawerView.tv.text= "Ini teks sebenarnya dari StartDrawer SingleFragImplAct"
         startDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
@@ -53,4 +53,5 @@ class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
         endDrawerView.tv.text= "Ini teks sebenarnya dari EndDrawer SingleFragImplAct"
         endDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
     }
+ */
 }

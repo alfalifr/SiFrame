@@ -1,14 +1,12 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
-import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.intfc.prop.ActProp
 import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 
 interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, ActProp {
@@ -26,8 +24,8 @@ interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, 
                 (_sideBase_act as SimpleAbsBarContentNavAct).setActBarView(actBar)
                 true
             }
-            is MultipleActBarViewPagerActBase<*> ->
-                (_sideBase_act as MultipleActBarViewPagerActBase<in SimpleAbsFrag>).setActBarView(this as SimpleAbsFrag, actBar)
+            is MultipleActBarViewPagerBase<*> ->
+                (_sideBase_act as MultipleActBarViewPagerBase<in SimpleAbsFrag>).setActBarView(this as SimpleAbsFrag, actBar)
             else -> false
         }
     }

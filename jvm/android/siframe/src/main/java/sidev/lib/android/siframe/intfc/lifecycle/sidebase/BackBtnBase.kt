@@ -1,12 +1,14 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 
-interface BackBtnActBase: ComplexLifecycleSideBase {
-//    val actBackBtn: Activity
+interface BackBtnBase: ComplexLifecycleSideBase {
+    //    val actBackBtn: Activity
+    override val _sideBase_act: AppCompatActivity
     var backBtnViewList: ArrayList<View>
     var onBackPressedListenerList: ArrayList<OnBackPressedListener>
 

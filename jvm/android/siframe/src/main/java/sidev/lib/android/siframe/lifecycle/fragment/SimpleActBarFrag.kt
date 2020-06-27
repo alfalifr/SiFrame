@@ -19,4 +19,9 @@ abstract class SimpleActBarFrag : SimpleAbsFrag(), ActBarFragBase{
         }
     override val _sideBase_act: AppCompatActivity?
         get() = actSimple
+
+    override fun ___initSideBase() {
+        super<SimpleAbsFrag>.___initSideBase()
+        super<ActBarFragBase>.___initSideBase()
+    }
 }
