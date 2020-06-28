@@ -92,17 +92,17 @@ fun <T: String> Array<T>.indexOf(e: T, ignoreCase: Boolean= false): Int {
 
 
 
-inline fun <T> Iterable<T>.filter(func: (element: T, pos: Int) -> Boolean): List<T> {
+inline fun <T> Iterable<T>.filter(func: (pos: Int, element: T) -> Boolean): List<T> {
     val filteredList= ArrayList<T>()
     for((i, e) in this.withIndex())
-        if(func(e, i))
+        if(func(i, e))
             filteredList.add(e)
     return filteredList
 }
-inline fun <T> Array<out T>.filter(func: (element: T, pos: Int) -> Boolean): List<T> {
+inline fun <T> Array<out T>.filter(func: (pos: Int, element: T) -> Boolean): List<T> {
     val filteredList= ArrayList<T>()
     for((i, e) in this.withIndex())
-        if(func(e, i))
+        if(func(i, e))
             filteredList.add(e)
     return filteredList
 }

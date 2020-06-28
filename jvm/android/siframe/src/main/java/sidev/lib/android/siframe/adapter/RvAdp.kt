@@ -478,11 +478,11 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     fun filter(func: (pos: Int, data: D) -> Boolean){
-        dataListFull?.filter { el, pos ->
+        dataListFull?.filter { pos, el ->
             func(pos, el)
         }.notNull { list ->
             `access$setDataListSetFromInternal` {
-                dataList= ArrayList(list)
+                dataList= list as ArrayList //ArrayList(list)
             }
         }
     }
