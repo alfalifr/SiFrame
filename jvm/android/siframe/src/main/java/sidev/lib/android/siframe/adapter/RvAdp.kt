@@ -2,20 +2,29 @@ package sidev.lib.android.siframe.adapter
 
 import android.content.Context
 import android.util.Log
+import android.util.SparseArray
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.CallSuper
+import androidx.core.util.isNotEmpty
+import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.filter
+import sidev.lib.universal.`fun`.isNotNullAndEmpty
+import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
+import java.lang.IndexOutOfBoundsException
+import kotlin.math.abs
 
 //!!!!!!@@ 18 Jan 2020
 abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
@@ -37,16 +46,61 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         set(v){
             field= v
             if(!isInternalEdit)
-                dataListFull= v
-
+                resetDataToInitial()
+//                dataListFull= v
             updateData_int(v, isInternalEdit)
 
             val copiedList=
                 if(dataList != null) ArrayList(dataList!!)
                 else ArrayList()
             onUpdateDataListener?.onUpdateData(copiedList, -1, DataUpdateKind.SET)
-            notifyDataSetChanged_()
+
+//            notifyDataSetChanged_()
         }
+/*
+    protected enum class IndexMapping{
+        SORT, FILTER
+    }
+    /**
+     * Karena proses mapping dapat dilakukan berkali-kali scr berurutan.
+     */
+    protected var lastMapping: IndexMapping= IndexMapping.SORT
+ */
+/*
+    /**
+     * Penanda jika true maka adpPosMap akan dilakukan penyesuaian.
+     */
+    protected var isMappingChanged= true
+ */
+
+    /**
+     * Berisi mapping dari posisi adapter ke indeks sortedIndMap.
+     * Hal tersebut dikarenakan layar Sort tidak disesuaikan setelah dilakukan filter di mana filter
+     * dapat menyebabkan ukuran data yg ditampilkan lebih sedikit dari ukuran sortedIndMap, sehingga
+     * kemungkinan IndexOutBound dapat terjadi.
+     */
+    protected var adpPosMap= Array(0){-1} //SparseIntArray()
+        private set
+    /**
+     * Berisi mapping dari layar {@link #filteredIndMap} dg {@link #dataList} yg berguna sbg layar pengurut.
+     * Layar yg berfungsi untuk mengubah urutan indeks 1 layar di depannya.
+     * Ukuran layar ini harus sama dg 1 layar di depannya.
+     *
+     * <29 Juni 2020> => Berisi mapping indeks dari posisi adapter ke layar Filter.
+     */
+    protected var sortedIndMap= SparseIntArray()
+        private set
+    /**
+     * Berisi mapping dari yg menentukan mana dari mapping ind yg ada di layar {@link #sortedIndMap} yg akan ditampilkan.
+     * Layar yg berfungsi untuk memangkas indeks 1 layar di depannya.
+     * Indeks yg ada di dalam layar ini dapat acak dan gak harus urut.
+     *
+     * <29 Juni 2020> => Berisi mapping indeks dari layar Sort ke dataList.
+     */
+    protected var filteredIndMap= SparseIntArray()
+        private set
+
+/*
     var dataListFull: ArrayList<D>?= null
         protected set(v){
             field= v
@@ -55,12 +109,13 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
 //                updateData_int(containerView)
             }
         }
+ */
     /**
      * Kenapa menggunakan lambda? Karena lebih fleksibel
      * saat mengganti kondisi search, yaitu dengan mengganti dg lambda lainnya pada
      * file constants
      */
-    open val searchFilterFun: (c: Context, data: D, keyword: String) -> Boolean= { _, _, _ -> true}
+    open val searchFilterFun: (data: D, keyword: String) -> Boolean= { _, _ -> true }
     open val selectFilterFun: ((dataFromList: D, dataFromInput: D, posFromList: Int) -> Boolean) ?= null
     init{
 //        this.dataList= dataList
@@ -146,23 +201,37 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     override fun getItemCount(): Int {
+        //<28 Juni 2020> => Definisi baru.
+        return filteredIndMap.size() //karena hanya layar Filter yg dapat mengubah ukuran data yg ditampilkan
+                    //baik itu sama maupun kurang dari dataList.size.
+/*
+        return when(lastMapping){
+            IndexMapping.FILTER -> filteredIndMap.size()
+            IndexMapping.SORT -> sortedIndMap.size()
+        }
+ */
+/*
+        <28 Juni 2020> => Definisi lama.
         return when(dataList){
             null -> 0
             else -> dataList!!.size
         }
+ */
     }
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        Log.e("SImpleAbsRVA", "bindVh() position= $position name= ${this::class.java.simpleName}")
+        val dataInd= getShownIndex(position)
+        val data= dataList!![dataInd]
+        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
         holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
             ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE
             else View.GONE
-        __bindVH(holder, position, dataList!![position])
-        bindVH(holder, position, dataList!![position])
+        __bindVH(holder, position, data)
+        bindVH(holder, position, data)
         holder.itemView.setOnClickListener { v ->
             selectItem(position)
-            onItemClickListener?.onClickItem(v, holder.adapterPosition, dataList!![position])
+            onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
         }
     }
 
@@ -206,8 +275,28 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     /**
+     * @param itemPos merupakan index itemView yg ditampilkan di adapter, bkn index dari {@link #dataList}.
+     */
+    fun getShownIndex(itemPos: Int): Int{
+        try{
+            return filteredIndMap[sortedIndMap[adpPosMap[itemPos]]]
+            //return sortedIndMap[filteredIndMap[itemPos]]
+/*
+            return when(lastMapping){
+                IndexMapping.FILTER -> sortedIndMap[filteredIndMap[itemPos]]
+                IndexMapping.SORT -> filteredIndMap[sortedIndMap[itemPos]]
+            }
+ */
+        } catch (e: IndexOutOfBoundsException){
+            throw IndexOutOfBoundsException("itemPos ($itemPos) melebihi itemCount ($itemCount)")
+        }
+    }
+
+    /**
      * Dg anggapan bahwa elemen di dalam
      * @param list tidak boleh null
+     *
+     * <28 Juni 2020> => Fungsi hanya untuk data yg terlihat karena erat kaitannya dg view.
      */
     open fun selectItem(list: Collection<D>?){
         if(list == null)
@@ -238,6 +327,9 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
             }
         }
     }
+    /**
+     * <28 Juni 2020> => Fungsi hanya untuk data yg terlihat karena erat kaitannya dg view.
+     */
     open fun selectItem(data: D?): Int{
         var pos= -1
         if(selectFilterFun != null && data != null){
@@ -252,6 +344,9 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         selectItem(pos)
         return pos
     }
+    /**
+     * <28 Juni 2020> => Fungsi hanya untuk data yg terlihat karena erat kaitannya dg view.
+     */
     open fun selectItem(pos: Int, v: View?= null){
         if(!isMultiSelectionEnabled){
             val isSelectedBefore= selectedItemPos_single >= 0
@@ -366,7 +461,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     /**
-     * Mengembalikan data dari dataset
+     * Mengembalikan data dari dataset scr keseluruhan.
+     * Jika pos IndexOutOfBound, maka return pos.
      */
     override fun getItem(pos: Int): Any{
         return try{ dataList!![pos]!! }
@@ -374,16 +470,17 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     /**
-     * Bentuk spesifik untuk mendapat itemView
+     * Bentuk spesifik untuk mendapat itemView.
+     * <28 Juni 2020> => Hanya untuk view yg terlihat, bkn semuanya.
      */
     override fun getView(pos: Int): View?{
         return rv?.layoutManager?.findViewByPosition(pos)
     }
 
 
-    fun getDataAt(pos: Int): D?{
+    fun getDataAt(pos: Int, onlyShownItem: Boolean= true): D?{
         return if(pos in 0 until (dataList?.size ?: 0))
-            dataList?.get(pos)
+            dataList?.get(if(!onlyShownItem) pos else getShownIndex(pos))
         else
             null
     }
@@ -413,11 +510,6 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
 
     protected open fun updateData_int(dataList: ArrayList<D>?, isInternalEdit: Boolean) {}
 
-    fun resetDataToInitial(){
-        internalEdit {
-            dataList= dataListFull
-        }
-    }
 
     protected inline fun internalEdit(func: () -> Unit){
         val isInternalEdit_init= isInternalEdit
@@ -426,49 +518,38 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         isInternalEdit= isInternalEdit_init
     }
 
-    open fun deleteItemAt(pos: Int): D?{
-        val e= dataListFull?.removeAt(pos)
-        dataList?.remove(e)
+    open fun deleteItemAt(pos: Int, onlyShownItem: Boolean= true): D?{
+        val ind = if(onlyShownItem) getShownIndex(pos)
+            else pos //dataListFull?.removeAt(pos)
+        val e= dataList?.removeAt(ind)
         notifyDataSetChanged_()
         return e
     }
     fun clearData(){
+        dataList= null
+/*
+        <28 Juni 2020> => Definisi lama.
         internalEdit {
             dataListFull= null
         }
+ */
     }
 
-    @CallSuper
-    open fun searchItem(keyword: String){
-        if(keyword.isNotEmpty()){
-            dataListFull.notNull { list ->
-                val dataMatch= ArrayList<D>()
-                list.forEach { data ->
-                    if(searchFilterFun(ctx, data, keyword))
-                        dataMatch.add(data)
-                }
-                if(dataList!!.size != dataMatch.size)
-                    internalEdit{
-                        dataList= dataMatch
-                    }
-            }
-        } else
-            resetDataToInitial()
-    }
-
-    fun modifyDataAt(ind: Int, func: (data: D) -> D){
+    fun modifyDataAt(ind: Int, onlyShownItem: Boolean= true, func: (data: D) -> D){
         dataList.notNull { list ->
+            val ind= if(!onlyShownItem) ind
+                else getShownIndex(ind)
             val data= list.getOrNull(ind)
             if(data != null){
-                val indInFull= dataListFull!!.indexOf(data)
+//                val indInFull= dataList!!.indexOf(data)
                 val dataNew= func(data)
                 dataList!![ind]= dataNew
-                dataListFull!![indInFull]= dataNew
+//                dataListFull!![indInFull]= dataNew
                 onUpdateDataListener?.onUpdateData(dataList, ind, DataUpdateKind.EDIT)
             }
         }
     }
-
+/*
     fun modifyDataInnerVarAt(ind: Int, func: (data: D) -> Unit){
         dataList.notNull { list ->
             val data= list.getOrNull(ind)
@@ -476,7 +557,186 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
                 func(data)
         }
     }
+ */
 
+    //<28 Juni 2020> => Definisi baru.
+    /**
+     * Memfilter index yg ada di dalam layar di depannya. //sortedIndMap.
+     * Memungkinkan jika hasil filter kosong.
+     *
+     * @param resetFirst true jika filter dilakukan dari awal, bkn dari hasil filter yg telah dilakukan.
+     *                    Ada bbrp skenario:
+     *                      1. resetFirst == false && lastMapping == IndexMapping.FILTER
+     *                          Filter dapat berjalan normal, filter dimulai dari hasil filter seblumnya
+     *                      2. resetFirst == true && lastMapping == IndexMapping.FILTER
+     *                          Filter dapat berjalan normal, filter dimulai dari awal.
+     *                      3. resetFirst == false && lastMapping == IndexMapping.SORT
+     *                          Filter dapat berjalan normal, namun perlu melakukan mapping terhadap sortedIndMap.
+     *                          Proses filter tidak jauh beda dg skenario #1 karena pada dasarnya sort hanya
+     *                          mengubah urutan.
+     *                      4. resetFirst == true && lastMapping == IndexMapping.SORT
+     *                          Filter dapat berjalan normal, namun kemungkinan hasil sort sblumnya dihilangkan.
+     *
+     * <29 Juni 2020> => Fungsi ini tidak terbatas pada sortedIndMap.
+     *                   Pada definisi ini, filteredIndMap memiliki value yg urut namun bisa bolong-bolong.
+     *
+     */
+    //<29 Juni 2020> => Definisi baru: 3.
+    fun filter(resetFirst: Boolean= false, func: (pos: Int, data: D) -> Boolean){
+
+        if(dataList.isNullOrEmpty()) return
+
+        loge("filter() MULAI")
+
+        var u= -1
+        if(resetFirst){
+            filteredIndMap.clear()
+            //Pake sortedIndMap karena sortedIndMap ukurannya sama dg dataList dan dg urutan yg benar.
+//            val copySort= sortedIndMap.clone()
+            for((i, data) in dataList!!.withIndex()){
+                if(func(i, data)){
+                    filteredIndMap[++u]= i
+//                    loge("filter() u= $u i= $i")
+                }
+            }
+        } else{
+            //Menghasilkan filteredIndMap yg lebih kecil atau sama dengan awal.
+            for((key, value) in filteredIndMap){
+                if(func(key, dataList!![value])){
+                    filteredIndMap[++u]= value
+//                    loge("filter() u= $u value= $value")
+                }
+            }
+            //Jika filteredIndMap yg dihasilkan lebih kecil dari awal (i akhir dari loop di atas < size()),
+            // maka hilangi sisa di ekornya.
+            for(i in u+1 until filteredIndMap.size())
+                filteredIndMap.removeAt(i)
+        }
+        adjustMapping()
+//        isMappingChanged= true
+        notifyDataSetChanged()
+
+        loge("filter() SELESAI")
+    }
+/*
+    //<29 Juni 2020> => Definisi baru: 4
+    fun filter(resetFirst: Boolean= false, func: (pos: Int, data: D) -> Boolean){
+        if(dataList.isNullOrEmpty()) return
+
+        loge("filter() MULAI")
+
+        var u= -1
+        if(resetFirst){
+            filteredIndMap.clear()
+            //Pake sortedIndMap karena sortedIndMap ukurannya sama dg dataList dan dg urutan yg benar.
+//            val copySort= sortedIndMap.clone()
+            for((key, sortVal) in sortedIndMap){
+                if(lastMapping == IndexMapping.SORT)
+                    sortedIndMap[key]= filteredIndMap[sortVal] //re-mapping sortedIndMap menjadi langsung ke dataList.
+                if(func(key, dataList!![sortVal])){
+                    filteredIndMap[++u]= key
+                    loge("filter() u= $u key= $key")
+                }
+            }
+        } else{
+            //re-mapping sortedIndMap menjadi langsung ke dataList.
+            if(lastMapping == IndexMapping.SORT)
+                for((key, sortVal) in sortedIndMap){
+                    val filterVal= filteredIndMap[sortVal]
+                    if(filterVal >= 0)
+                        sortedIndMap[key]= filterVal
+                }
+
+            //Menghasilkan filteredIndMap yg lebih kecil atau sama dengan awal.
+            for((key, filterVal) in filteredIndMap){
+                if(func(key, dataList!![sortedIndMap[filterVal]])){
+                    filteredIndMap[++u]= filterVal
+                    loge("filter() u= $u filterVal= $filterVal")
+                }
+            }
+            //Jika filteredIndMap yg dihasilkan lebih kecil dari awal (i akhir dari loop di atas < size()),
+            // maka hilangi sisa di ekornya.
+            for(i in u+1 until filteredIndMap.size())
+                filteredIndMap.removeAt(i)
+        }
+//        adjustMapping()
+
+        if(lastMapping == IndexMapping.SORT)
+            lastMapping= IndexMapping.FILTER
+//        isMappingChanged= true
+        notifyDataSetChanged()
+
+        loge("filter() SELESAI")
+    }
+ */
+/*
+    <29 Juni 2020> => Definisi baru: 2
+    fun filter(resetFirst: Boolean= false, func: (pos: Int, data: D) -> Boolean){
+//        val newFilter= SparseIntArray()
+        if(dataList.isNullOrEmpty()) return
+
+        var i= -1
+        if(lastMapping == IndexMapping.FILTER){
+            if(resetFirst){
+                filteredIndMap.clear()
+                for((key, value) in sortedIndMap){
+                    if(func(key, dataList!![value]))
+                        filteredIndMap[++i]= key //newFilter[++i]= key
+                }
+            } else{
+                //Menghasilkan filteredIndMap yg lebih kecil atau sama dengan awal.
+                for((key, value) in filteredIndMap){
+                    if(func(key, dataList!![sortedIndMap[value]]))
+                        filteredIndMap[++i]= value //newFilter[++i]= key
+                }
+                //Jika filteredIndMap yg dihasilkan lebih kecil dari awal (i akhir dari loop di atas < size()),
+                // maka hilangi sisa di ekornya.
+                for(u in i+1 until filteredIndMap.size())
+                    filteredIndMap.removeAt(u)
+            }
+        } else{
+            if(!resetFirst){
+                //1. Ubah yg sebelumnya mapping dilakukan scr perantara dari sortedIndMap ke filteredIndMap
+                //    menjadi langsung ke dataList.
+                // Berarti value pada filteredIndMap menuju ke dataList.
+                // Proses re-mapping pada sortedIndMap dilakukan scr bersamaan dg proses filter agar
+                //   tidak melibatkan loop kedua.
+                val newFilter= SparseIntArray() //Untuk tempat menyimpan filter yg baru karena filteredIndMap
+                        //tidak dapat dirubah selama loop agar tidak menyebabkan error atau sederhananya hasilnya gak sesuai harapan.
+//                var u= -1
+                //Knp kok iterasi menggunakan sortedIndMap? Karena tujuannya adalah re-mapping sortedIndMap.
+                for(u in 0 until sortedIndMap.size()){
+                    val sortVal= sortedIndMap[u]
+                    val dataPos= filteredIndMap[sortVal]
+                    sortedIndMap[u]= dataPos //value //re-mapping indek sortedIndMap langsung ke dataList.
+                    if(func(u, dataList!![dataPos]))
+                        newFilter[++i]= u
+                }
+                filteredIndMap= newFilter
+            } else{
+                //1. Filter sprti biasa terhadap datalist.
+                filteredIndMap.clear()
+                for((u, data) in dataList!!.withIndex()){
+                    if(func(u, data))
+                        filteredIndMap[++i]= u
+                }
+                //2. <28 Juni 2020> => Sort sblumnya dihilangkan karena msh susah untuk mempertahankannya untuk smtra ini.
+                sortedIndMap.clear()
+                for(u in 0 until filteredIndMap.size()){
+                    sortedIndMap[u]= u
+                }
+            }
+            lastMapping= IndexMapping.FILTER
+        }
+        notifyDataSetChanged_()
+/*
+        if(newFilter.isNotEmpty())
+            filteredIndMap= newFilter
+ */
+    }
+ */
+/*
+    <28 Juni 2020> => Diubah menjadi dengan definisi baru.
     fun filter(func: (pos: Int, data: D) -> Boolean){
         dataListFull?.filter { pos, el ->
             func(pos, el)
@@ -485,6 +745,156 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
                 dataList= list as ArrayList //ArrayList(list)
             }
         }
+    }
+ */
+    /**
+     * Menggunakan metode Selection Sorting.
+     * @param func return true jika urutan sudah benar,
+     *          false jika urutan salah dan perlu dilakukan penukaran tempat.
+     *          Penukaran tempat tidak dilakukan langsung ke data, namun ke {@link #sortedIndMap}.
+     *        Indeks dari data1 selalu < indeks data2.
+     *
+     * <28 Juni 2020> => Fungsi ini tidak memiliki param resetFirst karena sort dilakukan hanya
+     *                     pada data yg ditampilkan atau dg kata lain yg sebelumnya pernah di filter.
+     *
+     * <29 Juni 2020> => Fungsi ini hanya digunakan untuk sort dataList scr keseluruhan.
+     *                   Fungsi ini tidak terbatas oleh ukuran filteredIndMap.
+     *                   Untuk masalah integrasi data, fungsi getShownInd() mengurus masalah itu.
+     *                   Pada definisi ini, sortedIndMap selalu berukuran sama dg dataList.
+     *
+     */
+    fun sort(func: (pos1: Int, data1: D, pos2: Int, data2: D) -> Boolean){
+        if(dataList.isNullOrEmpty()) return
+
+        loge("sort() MULAI")
+
+        //Reset sortedIndMap sehingga menyamai indeks filteredIndMap
+        sortedIndMap.clear()
+        for(i in 0 until filteredIndMap.size())
+            sortedIndMap[i]= i
+
+        for(i in dataList!!.indices)
+            for(u in i+1 until dataList!!.size)
+                if(!func(i, dataList!![sortedIndMap[i]], u, dataList!![sortedIndMap[u]])){
+                    val temp= sortedIndMap[i]
+                    sortedIndMap[i]= sortedIndMap[u]
+                    sortedIndMap[u]= temp
+//                    loge("sort() TUKAR i= $i u= $u \n sortedIndMap[i]= ${sortedIndMap[i]} sortedIndMap[u]= ${sortedIndMap[u]}")
+                }
+        notifyDataSetChanged()
+    }
+/*
+    fun sort(func: (pos1: Int, data1: D, pos2: Int, data2: D) -> Boolean){
+        if(dataList.isNullOrEmpty()) return
+
+        //1. Jika mapping trahir adalah Filter, maka re-mapping dulu indeks pada mapping langsung ke dataList.
+        if(lastMapping == IndexMapping.FILTER){
+            for(i in 0 until filteredIndMap.size()){
+                val filterVal= filteredIndMap[i]
+                val dataPos= sortedIndMap[filterVal]
+                filteredIndMap[i]= dataPos
+            }
+            lastMapping= IndexMapping.SORT
+        }
+        //2. Kemudian lakukan pengurutan.
+        //Reset sortedIndMap sehingga menyamai indeks filteredIndMap
+        sortedIndMap.clear()
+        for(i in 0 until filteredIndMap.size())
+            sortedIndMap[i]= i
+
+        for(i in 0 until filteredIndMap.size())
+            for(u in i+1 until filteredIndMap.size())
+                if(!func(i, dataList!![filteredIndMap[sortedIndMap[i]]],
+                        u, dataList!![filteredIndMap[sortedIndMap[u]]])
+                ){
+                    sortedIndMap[i]= u
+                    sortedIndMap[u]= i
+                }
+/*
+        else{
+/*
+            //Reset sortedIndMap sehingga menyamai indeks dataList
+            sortedIndMap.clear()
+            for(i in dataList!!.indices)
+                sortedIndMap[i]= i
+
+            for(i in dataList!!.indices)
+                for(u in i+1 until dataList!!.size)
+                    if(!func(i, dataList!![sortedIndMap[i]], u, dataList!![sortedIndMap[u]])){
+                        sortedIndMap[i]= u
+                        sortedIndMap[u]= i
+                    }
+ */
+        }
+ */
+        notifyDataSetChanged_()
+    }
+ */
+
+    /**
+     * Untuk menyesuaikan adpPosMap agar fungsi getShownIndex() gak error.
+     * Fungsi ini dipanggil hanya oleh filter()
+     */
+    private fun adjustMapping(){
+        var diff= 0
+        adpPosMap= Array(itemCount){
+            while(filteredIndMap.get(
+                    sortedIndMap.get(it +diff, -1),
+                    -1
+                ) < 0)
+                diff++
+
+            it +diff
+        }
+    }
+
+
+    /**
+     * Fungsi yg memiliki prinsip sama dg filter, yaitu menyaring data yg sudah diurutkan.
+     * Data yg disaring dapat berupa data secara utuh maupun data yg sblumnya sudah disaring menggunakan filter().
+     *
+     * @param onlyShownItem true jika pencarian hanya dilakukan terhadap item yg telah dimapping.
+     */
+    @CallSuper
+    open fun searchItem(keyword: String, onlyShownItem: Boolean= true){
+        if(keyword.isNotEmpty()){
+            dataList.notNull { list ->
+//                val dataMatch= ArrayList<D>() //<28 Juni 2020> => Definisi lama.
+                val newFilter= SparseIntArray() //<28 Juni 2020> => Definisi baru.
+                val searchSize=
+                    if(onlyShownItem) itemCount
+                    else sortedIndMap.size() // => Lebih cocok menggunakan sortedIndMap.size()
+                                            // karena berhubungan langsung dg sortedIndMap
+                                           // dataList!!.size
+
+                var filterInd= -1
+                for(i in 0 until searchSize){
+                    val ind=
+                        if(onlyShownItem) getShownIndex(i)
+                        else sortedIndMap[i]
+                    if(searchFilterFun(dataList!![ind], keyword)) //!!!
+                        newFilter[++filterInd]=
+                            if(onlyShownItem) filteredIndMap[i]
+                            else i // => Lebih tepatnya i, karena i merupakan indeks dari sortedIndMap.
+                                  // Jika pakai sortedIndMap[i], maka data tidak terurut.
+//                        dataMatch.add(dataList!![ind]) //<28 Juni 2020> => Definisi lama.
+                }
+                filteredIndMap= newFilter
+                notifyDataSetChanged_()
+/*
+                <28 Juni 2020> => Definisi lama.
+                list.forEach { data ->
+                    if(searchFilterFun(ctx, data, keyword))
+                        dataMatch.add(data)
+                }
+                if(dataList!!.size != dataMatch.size)
+                    internalEdit{
+                        dataList= dataMatch
+                    }
+ */
+            }
+        } else
+            resetDataToInitial()
     }
 
     fun showOnlySelectedData(isShown: Boolean= true){
@@ -495,6 +905,46 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         else
             resetDataToInitial()
     }
+
+
+    fun resetDataToInitial(){
+        //<28 Juni 2020> => Definisi baru.
+        sortedIndMap.clear() //= SparseIntArray()
+        filteredIndMap.clear() //= SparseIntArray()
+
+        if(dataList != null)
+            for(i in dataList!!.indices){
+                sortedIndMap[i]= i
+                filteredIndMap[i]= i
+            }
+        adpPosMap= Array(itemCount){ it }
+        notifyDataSetChanged_()
+/*
+        <28 Juni 2020> => Definisi lama.
+        internalEdit {
+            dataList= dataListFull
+        }
+ */
+    }
+
+    fun resetSortedInd(){
+        sortedIndMap.clear() //= SparseIntArray()
+
+        if(dataList != null)
+            for(i in dataList!!.indices)
+                sortedIndMap[i]= i
+        notifyDataSetChanged_()
+    }
+    fun resetFilteredInd(){
+        filteredIndMap.clear() //= SparseIntArray()
+
+        if(dataList != null)
+            for(i in dataList!!.indices)
+                filteredIndMap[i]= i
+        adpPosMap= Array(itemCount){ it }
+        notifyDataSetChanged_()
+    }
+
 
 
     enum class DataUpdateKind{
@@ -586,6 +1036,11 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     open fun createEmptyData(): D?{
         return null
     }
+
+    /**
+     * <28 Juni 2020> => Data yg dimasukkan tidak akan terlihat scr default.
+     *                   Data yg dimasukkan juga tidak terdaftar pada mapping indeks yg ada.
+     */
     @CallSuper
     open fun addEmptyData(pos: Int= dataList?.size ?: 0, initValFun: ((initData: D) -> D) ?= null): D?{
         var emptyData= createEmptyData()
@@ -600,12 +1055,16 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
             null
         }
     }
+    /**
+     * <28 Juni 2020> => Data yg dimasukkan tidak akan terlihat scr default.
+     *                   Data yg dimasukkan juga tidak terdaftar pada mapping indeks yg ada.
+     */
     fun addData(data: D, pos: Int= dataList?.size ?: 0){
         val dataListInt= if(dataList != null) dataList!!
             else ArrayList()
 
         dataListInt.add(pos, data)
-        dataList= dataListInt
+        internalEdit { dataList= dataListInt }
     }
 
     @PublishedApi

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+
+    <RelativeLayout
+            android:id="@+id/ll_container_right"
+            android:layout_below="@id/tv_title"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <LinearLayout
+                android:id="@+id/upper_container_right"
+            android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:id="@+id/tv_title_right"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Menunggu konfirmasi"
+                    android:textSize="@dimen/txt_normal_sm"
+                    android:textColor="@color/hitam"
+                    android:textStyle="bold"
+                    android:gravity="right"/>
+            <ImageView
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/iv_indicator_right"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"/>
+        </LinearLayout>
+        <ImageView
+                android:id="@+id/right_border"
+                android:layout_toRightOf="@id/tv_desc_right_1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+        <TextView
+                android:id="@+id/tv_desc_right_1"
+                android:layout_below="@id/upper_container_right"
+            android:layout_alignParentRight="true"
+                android:layout_marginTop="7dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/template_msg_desc"
+                android:textSize="@dimen/txt_sm"
+                android:textColor="@color/hitam"
+                android:gravity="right"/>
+    </RelativeLayout>
+
+    <TextView
+            android:id="@+id/tv_title"
+            android:layout_marginLeft="7dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/template_msg_desc"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:textStyle="bold"/>
+
+    <RelativeLayout
+            android:id="@+id/rl_text_container"
+            android:layout_below="@id/tv_title"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/tv_desc_1"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="7dp"
+                android:layout_height="wrap_content"
+                android:text="@string/template_msg_desc"
+                android:textSize="@dimen/txt_sm"
+                android:textColor="@color/hitam"/>
+        <TextView
+                android:id="@+id/tv_desc_2"
+                android:layout_below="@id/tv_desc_1"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:text="@string/template_msg_desc"
+                android:textSize="@dimen/txt_sm"
+                android:textColor="@color/hitam"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

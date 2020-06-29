@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/popup_sort"
+        android:title="Sort"/>
+    <item
+        android:id="@+id/popup_filter"
+        android:title="Filter"/>
+    <item
+        android:id="@+id/popup_reset_sort"
+        android:title="Reset Sort"/>
+    <item
+        android:id="@+id/popup_reset_filter"
+        android:title="Reset Filter"/>
+    <item
+        android:id="@+id/popup_reset"
+        android:title="Reset"/>
+
+</menu>

@@ -130,6 +130,12 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
         return this
     }
 
+    fun setOnItemClickListener(func: ((v: View?, pos: Int, data: StringId) -> Unit)?){
+        adp.setOnItemClickListener { v, pos, data ->
+            func?.invoke(v, pos, data)
+        }
+    }
+
 
     fun selectItem(pos: Int): DialogListView {
         adp.selectItem(pos)
