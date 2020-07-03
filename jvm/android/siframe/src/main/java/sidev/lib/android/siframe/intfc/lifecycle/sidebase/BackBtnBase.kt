@@ -8,7 +8,7 @@ import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 
 interface BackBtnBase: ComplexLifecycleSideBase {
     //    val actBackBtn: Activity
-    override val _sideBase_act: AppCompatActivity
+    override val _prop_act: AppCompatActivity
     var backBtnViewList: ArrayList<View>
     var onBackPressedListenerList: ArrayList<OnBackPressedListener>
 
@@ -21,7 +21,7 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         backBtnViewList= registerBackBtnView()
         for(backBtn in backBtnViewList){
             backBtn.setOnClickListener{
-                _sideBase_act.onBackPressed()
+                _prop_act.onBackPressed()
             }
         }
     }
@@ -33,7 +33,7 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         if(!backBtnViewList.contains(v)){
             backBtnViewList.add(v)
             v.setOnClickListener {
-                _sideBase_act.onBackPressed()
+                _prop_act.onBackPressed()
             }
         }
     }

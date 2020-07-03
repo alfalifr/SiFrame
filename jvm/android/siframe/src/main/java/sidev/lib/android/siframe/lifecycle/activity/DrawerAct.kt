@@ -4,9 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 
-abstract class DrawerAct: SimpleAbsAct(), DrawerActBase {
+abstract class DrawerAct: Act(), DrawerActBase {
     override lateinit var rootDrawerLayout: DrawerLayout
     override lateinit var contentViewContainer: ViewGroup
     override lateinit var startDrawerContainer: ViewGroup

@@ -341,7 +341,7 @@ object StringUtil{
    Pola Huruf Kapital
    ==============================
    */
-    fun snakeCase(strCamelCase: String, kecilSemua: Boolean= false): String{
+    fun toSnakeCase(strCamelCase: String, kecilSemua: Boolean= false): String{
         var strHasil= strCamelCase
         var i= -1
         while(++i < strHasil.length)
@@ -353,7 +353,7 @@ object StringUtil{
             }
         return strHasil
     }
-    fun camelCase(strSnakeCase: String): String{
+    fun toCamelCase(strSnakeCase: String): String{
         var strHasil= strSnakeCase
         var i= -1
         while(++i < strHasil.length-1)

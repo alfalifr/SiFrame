@@ -8,12 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.universal.`fun`.asNotNullTo
 
-abstract class DrawerFrag : SimpleAbsFrag(), DrawerFragBase {
-    override val _sideBase_act: AppCompatActivity?
+abstract class DrawerFrag : Frag(), DrawerFragBase {
+    override val _prop_act: AppCompatActivity?
         get() = activity as AppCompatActivity
     override val _sideBase_view: View
         get() = layoutView
@@ -39,7 +38,7 @@ abstract class DrawerFrag : SimpleAbsFrag(), DrawerFragBase {
 
 
     override fun __initViewFlow(rootView: View) {
-        if(_sideBase_act is DrawerActBase)
+        if(_prop_act is DrawerActBase)
             super.__initViewFlow(rootView)
         else
             __initDrawer(rootView)

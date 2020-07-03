@@ -150,6 +150,16 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/txt_normal_sm"
             android:textColor="@color/hitam"
+            android:text="To ContentMviFrag"
+            android:onClick="toContentMviFrag"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
             android:text="To DrawerVpImplFrag"
             android:onClick="toDrawerVpImplFrag"/>
 
@@ -172,6 +182,16 @@
             android:textColor="@color/hitam"
             android:text="==EDC== To TransacFrag"
             android:onClick="_simul_edc_toTransaction"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="==EDC== To TransacFrag_Old"
+            android:onClick="_simul_edc_toTransaction_Old"/>
 
     </LinearLayout>
 

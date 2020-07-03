@@ -4,18 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
 
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragActBase
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.classSimpleName
 
-abstract class SingleFragAct: SimpleAbsAct(), SingleFragActBase {
-    override val _sideBase_act: AppCompatActivity
+abstract class SingleFragAct: Act(), SingleFragActBase {
+    override val _prop_act: AppCompatActivity
         get() = this
     override val _sideBase_view: View
         get() = layoutView
@@ -33,9 +32,9 @@ abstract class SingleFragAct: SimpleAbsAct(), SingleFragActBase {
     override var isTitleFragBased: Boolean= false
         set(v){
             field= v
-            this.asNotNull { act: SimpleAbsBarContentNavAct ->
+            this.asNotNull { act: BarContentNavAct ->
                 val title=
-                    if(v) fragment.asNotNullTo { frag: SimpleAbsFrag -> frag.fragTitle }
+                    if(v) fragment.asNotNullTo { frag: Frag -> frag.fragTitle }
                         ?: fragment.classSimpleName()
                     else fragment.classSimpleName()
                 try{ act.setActBarTitle(title) }

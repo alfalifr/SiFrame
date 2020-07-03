@@ -4,15 +4,15 @@ import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNull
 
-class Frag3 : SimpleAbsFrag(){
+class Frag3 : Frag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
 
@@ -29,10 +29,10 @@ class Frag3 : SimpleAbsFrag(){
                 loge("Frag3 onActive() i= $i stack= ${stack.methodName}")
             }
         }
-        actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
+        actSimple.asNotNull { act: BarContentNavAct ->
             act.setActBarTitle("Frag 3 bro!!")
         }
-        actSimple.asNotNull { act: ViewPagerBase<SimpleAbsFrag> ->
+        actSimple.asNotNull { act: ViewPagerBase<Frag> ->
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
 //            loge("Frag3 act.vp == act.lateVp => ${act.vp == act.lateVp}")
         }

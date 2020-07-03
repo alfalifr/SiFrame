@@ -9,12 +9,12 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.customizable.view.intfc.ModView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct_ViewPager
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
 
-class VpDrawerAct : DrawerBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMiddleBottomBase{
-    override var vpFragList: Array<SimpleAbsFrag> =
+class VpDrawerAct : DrawerBarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase{
+    override var vpFragList: Array<Frag> =
         arrayOf(
             Frag1(),
             Frag2(),

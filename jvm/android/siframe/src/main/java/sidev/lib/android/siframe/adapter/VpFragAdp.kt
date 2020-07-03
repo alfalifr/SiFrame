@@ -1,17 +1,11 @@
 package sidev.lib.android.siframe.adapter
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
 import sidev.lib.android.siframe.intfc.adp.Adp
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.addView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import java.lang.Exception
 /*
 //class ViewPagerFragAdp (var fm: FragmentManager, vararg items: SimpleAbsFrag): PagerAdapter(){
@@ -63,8 +57,8 @@ class ViewPagerFragAdp (val c: Context, vararg items: SimpleAbsFrag): PagerAdapt
 /**
  * Hanya sekali pake. Jika ingin update adapter, maka instantiate lagi kelas ini.
  */
-class VpFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : FragmentStatePagerAdapter(fm), Adp {
-    val items: ArrayList<SimpleAbsFrag> = ArrayList()
+class VpFragAdp(fm: FragmentManager, vararg items: Frag) : FragmentStatePagerAdapter(fm), Adp {
+    val items: ArrayList<Frag> = ArrayList()
 /*
     var items: ArrayList<SimpleAbsFrag>?= null// = ArrayList()
         set(v){
@@ -78,7 +72,7 @@ class VpFragAdp(fm: FragmentManager, vararg items: SimpleAbsFrag) : FragmentStat
             this.items.add(element)
     }
 
-    constructor(fm: FragmentManager, items: ArrayList<out SimpleAbsFrag>) : this(fm) {
+    constructor(fm: FragmentManager, items: ArrayList<out Frag>) : this(fm) {
         for(element in items)
             this.items.add(element)
     }

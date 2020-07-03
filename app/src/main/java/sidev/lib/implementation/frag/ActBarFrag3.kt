@@ -6,15 +6,15 @@ import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleActBarFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNull
 
-class ActBarFrag3 : SimpleActBarFrag(){
+class ActBarFrag3 : ActBarFrag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
     override val actBarId: Int
@@ -33,7 +33,7 @@ class ActBarFrag3 : SimpleActBarFrag(){
     }
 
     override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
-        actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
+        actSimple.asNotNull { act: BarContentNavAct ->
             act.setMenu(R.menu.menu_1)
             act.setActBarTitle("$fragTitle onActive()")
         }

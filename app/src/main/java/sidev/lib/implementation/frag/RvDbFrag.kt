@@ -2,7 +2,6 @@ package sidev.lib.implementation.frag
 
 import android.view.View
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
 import sidev.lib.implementation._cob.pageList
 import sidev.lib.implementation.adp.PageAdp
 import sidev.lib.universal.`fun`.toArrayList

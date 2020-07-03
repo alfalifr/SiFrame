@@ -4,12 +4,12 @@ import android.view.View
 import kotlinx.android.synthetic.main.comp_act_bar.view.*
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleActBarFrag
+import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 
-class ActBarFrag : SimpleActBarFrag(){
+class ActBarFrag : ActBarFrag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
     override val actBarId: Int

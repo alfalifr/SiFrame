@@ -6,12 +6,12 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleActBarFrag
+import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 
-class ActBarFrag2 : SimpleActBarFrag(){
+class ActBarFrag2 : ActBarFrag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
     override val actBarId: Int

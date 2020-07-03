@@ -2,15 +2,16 @@ package sidev.lib.implementation.act
 
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edc.frag.TransacFrag
+import sidev.lib.implementation._simulation.edc.frag.TransacFrag_Old
 import sidev.lib.implementation.frag.*
 
-class MainAct : SimpleAbsBarContentNavAct() {
+class MainAct : BarContentNavAct() {
     override val contentLayoutId: Int
         get() = R.layout.act_main
 
@@ -48,9 +49,13 @@ class MainAct : SimpleAbsBarContentNavAct() {
     fun toRvFragDbPage(v: View)= startSingleFragAct_config<RvDbFrag>()
     fun toRadioFrag(v: View)= startSingleFragAct_config<RadioFrag>()
     fun toContentVmFrag(v: View)= startSingleFragAct_config<ContentVmFrag>()
+    fun toContentMviFrag(v: View)= startSingleFragAct_config<ContentMviFrag>()
     fun toDrawerVpImplFrag(v: View)= startSingleFragAct_config<DrawerVpImplFrag>()
     fun toDrawerImplFrag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
     fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
+//    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
+
     fun _simul_edc_toTransaction(v: View)= startSingleFragAct_config<TransacFrag>()
+    fun _simul_edc_toTransaction_Old(v: View)= startSingleFragAct_config<TransacFrag_Old>()
 }

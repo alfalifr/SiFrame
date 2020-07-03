@@ -7,17 +7,16 @@ import android.view.ViewGroup
 import androidx.core.util.set
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.Exception
 
-interface MultipleActBarViewPagerBase<F: SimpleAbsFrag> : ViewPagerBase<F>, ActBarFromFragBase{
+interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFragBase{
     val actBarViewList: SparseArray<View>
     /**
      * Child pada ViewGroup ini harus 1.
@@ -102,7 +101,7 @@ interface MultipleActBarViewPagerBase<F: SimpleAbsFrag> : ViewPagerBase<F>, ActB
                 is Activity -> this
                 is Fragment -> this.activity
                 else -> null
-            }.asNotNull { act: SimpleAbsBarContentNavAct ->
+            }.asNotNull { act: BarContentNavAct ->
                 val title= vpFragList[pos].fragTitle
                 try{ act.setActBarTitle(title) }
                 catch (e: Exception){

@@ -6,18 +6,18 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.universal.`fun`.*
 
 //import sidev.kuliah.agradia.R
 
-abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleFragActBase, ActBarFromFragBase{
+abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBase, ActBarFromFragBase{
     override val layoutId: Int
-        get() = super<SimpleAbsBarContentNavAct>.layoutId
+        get() = super<BarContentNavAct>.layoutId
     override val contentLayoutId: Int
         get() = super<SingleFragActBase>.layoutId
 
-    override val _sideBase_act: AppCompatActivity
+    override val _prop_act: AppCompatActivity
         get() = this
     override val _sideBase_view: View
         get() = contentViewContainer
@@ -34,9 +34,9 @@ abstract class SingleFragAct_BarContentNav: SimpleAbsBarContentNavAct(), SingleF
     override var isTitleFragBased: Boolean= false
         set(v){
             field= v
-            this.asNotNull { act: SimpleAbsBarContentNavAct ->
+            this.asNotNull { act: BarContentNavAct ->
                 val title=
-                    if(v) fragment.asNotNullTo { frag: SimpleAbsFrag -> frag.fragTitle }
+                    if(v) fragment.asNotNullTo { frag: Frag -> frag.fragTitle }
                         ?: fragment.classSimpleName()
                     else fragment.classSimpleName()
                 try{ act.setActBarTitle(title) }

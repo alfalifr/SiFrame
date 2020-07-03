@@ -6,24 +6,22 @@ import kotlinx.android.synthetic.main.comp_drawer_start_iv.view.*
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import org.jetbrains.anko.imageResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.DrawerVpFrag
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
-import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 
-class DrawerVpImplFrag : DrawerVpFrag<SimpleAbsFrag>(), TopMiddleBottomBase{
+class DrawerVpImplFrag : DrawerVpFrag<Frag>(), TopMiddleBottomBase{
     override val startDrawerLayoutId: Int
         get() = R.layout.comp_drawer_start_iv
     override val endDrawerLayoutId: Int
         get() = R.layout.comp_drawer_start_iv
 
     //    override var isVpTitleFragBased: Boolean= true
-    override var vpFragList: Array<SimpleAbsFrag> =
+    override var vpFragList: Array<Frag> =
         arrayOf(
             ActBarFrag(),
             ActBarFrag2(),

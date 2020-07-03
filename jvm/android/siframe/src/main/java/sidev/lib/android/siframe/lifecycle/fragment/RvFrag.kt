@@ -7,7 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.customizable._init._Config
 
-abstract class RvFrag<R: RvAdp<*, *>> : SimpleAbsFrag(){
+abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
     override val layoutId: Int
         get() = _Config.LAYOUT_RV //R.layout.content_abs_rv
 

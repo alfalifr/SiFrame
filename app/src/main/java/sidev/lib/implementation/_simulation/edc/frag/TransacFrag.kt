@@ -4,12 +4,13 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.PopupMenu
+import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
 import kotlinx.android.synthetic.main.comp_performance_bar.view.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.lifecycle.viewmodel.LifeData
+import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -18,7 +19,6 @@ import sidev.lib.implementation.R
 import sidev.lib.implementation._cob.dum_transaction
 import sidev.lib.implementation._simulation.edc.adp.TransacAdp
 import sidev.lib.implementation._simulation.edc.model.Transaction
-import sidev.lib.implementation._simulation.edc.util.Edc_Config
 import sidev.lib.implementation._simulation.edc.util.Edc_Const
 import sidev.lib.universal.`fun`.*
 
@@ -39,6 +39,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
 
     lateinit var dialogSort: DialogListView
     lateinit var dialogFilter: DialogListView
+    lateinit var dialogDuplicate: DialogConfirmationView
     var sortFun: ((Int, Transaction, Int, Transaction) -> Boolean)?= null
     var filterFun: ((Int, Transaction) -> Boolean)?= null
 
@@ -55,6 +56,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
         StringId("4", "Ditolak")
     )
 
+    var duplicateData= ArrayList<Transaction>()
 
 
     override fun initRvAdp(): TransacAdp {
@@ -63,7 +65,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
 
     override fun _initView(layoutView: View) {
         __initTopMiddleBottomView(layoutView)
-        activity.asNotNull { act: SimpleAbsBarContentNavAct ->
+        activity.asNotNull { act: BarContentNavAct ->
             act.actBarViewContainer.findViewById<ImageView>(R.id.iv_action).notNull { iv ->
                 initDialog()
                 iv.setImageResource(R.drawable.ic_dot_3_vertical)
@@ -77,6 +79,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
                         R.id.popup_reset -> rvAdp.resetDataToInitial()
                         R.id.popup_reset_sort -> rvAdp.resetSortedInd()
                         R.id.popup_reset_filter -> rvAdp.resetFilteredInd()
+                        R.id.duplicate -> dialogDuplicate.show() //rvAdp.resetFilteredInd()
                     }
                     true
                 }
@@ -185,5 +188,21 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
         dialogFilter.showtBtnAction()
         dialogFilter.setRightBtnString("Ok")
         dialogFilter.setLeftBtnString("Batal")
+
+        dialogDuplicate= DialogConfirmationView(context!!)
+        dialogDuplicate.showTitle(false)
+        dialogDuplicate.setMessage("Duplikasi data?")
+        dialogDuplicate.setBtnRightMsg("Iya")
+        dialogDuplicate.setBtnLeftMsg("Batal")
+        dialogDuplicate.setOnClickListener(DialogConfirmationView.ButtonKind.RIGHT){
+            duplicateData= ArrayList()
+            try{
+                for((i, data) in rvAdp.dataList!!.withIndex()){
+                    loge("dialogDuplicate() i= $i")
+                    duplicateData.add(data)
+                }
+            } catch (e: Exception){}
+            duplicateData.growTimely(5)
+        }
     }
 }

@@ -7,8 +7,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.asNotNull
@@ -85,8 +85,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     fun __attachFrag(){
         _sideBase_ctx.commitFrag(fragContainerId, fragment)
         if(isTitleFragBased)
-            this.asNotNull { act: SimpleAbsBarContentNavAct ->
-                fragment.asNotNull { frag: SimpleAbsFrag ->
+            this.asNotNull { act: BarContentNavAct ->
+                fragment.asNotNull { frag: Frag ->
                     try{ act.setActBarTitle(frag.fragTitle) }
                     catch (e: Exception){
                         /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()

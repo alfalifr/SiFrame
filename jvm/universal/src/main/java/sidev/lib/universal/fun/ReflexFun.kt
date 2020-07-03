@@ -5,6 +5,8 @@ import android.util.Log
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 
+const val CLASS_BASE_NAME= "Object"
+
 
 inline fun <reified T> Any.getGenericType(order: Int= 0){
     val stringListField = this::class.java.getDeclaredField("stringList");
@@ -18,6 +20,12 @@ fun Any.className(): String {
 }
 fun Any.classSimpleName(): String {
     return this::class.java.simpleName
+}
+fun Any.className_k(): String? {
+    return this::class.qualifiedName
+}
+fun Any.classSimpleName_k(): String? {
+    return this::class.simpleName
 }
 
 
@@ -47,16 +55,45 @@ fun Field.isGenericSame(name: String): Boolean {
 }
 
 
-inline fun <reified T> Any.getField(): Field? {
+inline fun <reified T> Any.getField(name: String= ""): Field? {
     val fields= this::class.java.declaredFields
     val supposedType= T::class.java.name
 
     for(field in fields){
-        if(field.type.name == supposedType)
+        if(field.type.name == supposedType
+            && (name.isBlank() || field.name == name))
             return field
     }
     return null
 }
+
+/**
+ * [includeInherited] true jika termasuk field cuperClass.
+ * [justPublic] true jika hanya mengambil yang public.
+ */
+fun Any.getAllFields(includeInherited: Boolean= true, justPublic: Boolean= true)
+        : List<Field>? {
+    val list= ArrayList<Field>()
+    var clazz: Class<*>? = this::class.java
+    do{
+        Log.e("getAllFields", "getAllFields() ${clazz?.simpleName}")
+        val fields= if(justPublic) clazz!!.fields
+            else clazz!!.declaredFields
+//        val supposedType= T::class.java.name
+
+        for(field in fields){
+//            Log.e("getAllFields", "getAllFields() field.name= ${field.name}")
+            list.add(field)
+        }
+
+        clazz= clazz.superclass //as Class<*>?
+    } while(includeInherited
+        && clazz != null && clazz.simpleName != CLASS_BASE_NAME)
+
+    return if(list.isNotEmpty()) list
+    else null
+}
+
 inline fun <reified F, reified G> Any.getFieldAndGeneric(): Field? {
     val fields= this::class.java.declaredFields
     val genName= G::class.java.name

@@ -15,14 +15,14 @@ import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import java.lang.Exception
 
-interface ViewPagerBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
+interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _Config.LAYOUT_VP
 
@@ -200,7 +200,7 @@ interface ViewPagerBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
             vp.adapter= vpAdp
 
             if(isVpTitleFragBased && vpFragList.isNotEmpty())
-                this.asNotNull { act: SimpleAbsBarContentNavAct ->
+                this.asNotNull { act: BarContentNavAct ->
                     try{ act.setActBarTitle(vpFragList.first().fragTitle) }
                     catch (e: Exception){}
                 }
@@ -229,7 +229,7 @@ interface ViewPagerBase<F: SimpleAbsFrag>: ComplexLifecycleSideBase {
                 is Activity -> this
                 is Fragment -> this.activity
                 else -> null
-            }.asNotNull { act: SimpleAbsBarContentNavAct ->
+            }.asNotNull { act: BarContentNavAct ->
                 try{ act.setActBarTitle(vpFragList[pos].fragTitle) }
                 catch (e: Exception){
                     /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()

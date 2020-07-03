@@ -4,9 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 
-abstract class DrawerBarContentNavAct : SimpleAbsBarContentNavAct(), DrawerActBase {
+abstract class DrawerBarContentNavAct : BarContentNavAct(), DrawerActBase {
     override val isViewInitFirst: Boolean
         get() = false
     override val isContentLayoutInflatedFirst: Boolean

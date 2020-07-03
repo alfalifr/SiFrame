@@ -3,13 +3,13 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
 import sidev.lib.implementation.R
 
-class VpImpl2Frag : VpFrag<SimpleAbsFrag>(), TopMiddleBottomBase{
+class VpImpl2Frag : VpFrag<Frag>(), TopMiddleBottomBase{
 //    override var isVpTitleFragBased: Boolean= true
-    override var vpFragList: Array<SimpleAbsFrag> =
+    override var vpFragList: Array<Frag> =
         arrayOf(
             ActBarFrag(),
             ActBarFrag2(),

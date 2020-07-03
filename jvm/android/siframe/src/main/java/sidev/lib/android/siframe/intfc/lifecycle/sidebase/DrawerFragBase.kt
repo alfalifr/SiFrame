@@ -12,7 +12,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 
 interface DrawerFragBase : DrawerBase{
     override val layoutId: Int
-        get() = if(_sideBase_act !is DrawerActBase) super.layoutId
+        get() = if(_prop_act !is DrawerActBase) super.layoutId
                 else contentLayoutId
 
     override var rootDrawerLayout: DrawerLayout?
@@ -21,7 +21,7 @@ interface DrawerFragBase : DrawerBase{
     override var endDrawerContainer: ViewGroup?
 
     override fun __initDrawer(rootView: View) {
-        if(_sideBase_act !is DrawerActBase){ //Jika activity bkn DrawerActBase, brarti Fragment ini boleh meng-inflate Drawer pada layar.
+        if(_prop_act !is DrawerActBase){ //Jika activity bkn DrawerActBase, brarti Fragment ini boleh meng-inflate Drawer pada layar.
 
 //        contentLayoutId= _sideBase_intent.getExtra(_SIF_Constant.DRAWER_START_LAYOUT_ID, contentLayoutId)!!
             contentViewContainer= rootView.findViewById(contentContainerId)
@@ -29,7 +29,7 @@ interface DrawerFragBase : DrawerBase{
             endDrawerContainer= rootView.findViewById(endDrawerContainerId)
 
             val drawerWidthPercent= _ResUtil.getDimen(_sideBase_ctx!!, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
-            val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_sideBase_act!!, drawerWidthPercent)
+            val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_prop_act!!, drawerWidthPercent)
 
             val lpStart= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
             lpStart.gravity= Gravity.START

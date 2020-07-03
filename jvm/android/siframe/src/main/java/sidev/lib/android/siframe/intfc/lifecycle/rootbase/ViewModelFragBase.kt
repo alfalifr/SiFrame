@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
-import sidev.lib.android.siframe.lifecycle.viewmodel.FiewModel
+import sidev.lib.android.siframe.arch.viewmodel.FiewModel
 
 /**
  * Sama dg ViewModelBase, namun khusus untuk Fragment.

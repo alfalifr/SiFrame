@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import sidev.lib.android.siframe.customizable._init._Config
 
-open class TxtCenterFrag : SimpleAbsFrag(){
+open class TxtCenterFrag : Frag(){
     override val layoutId: Int
         get() = _Config.LAYOUT_TXT_CENTER //R.layout._t_frag_txt_center
 

@@ -1,11 +1,11 @@
 package sidev.lib.implementation.frag
 
 import android.view.View
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
 
-class VpImplFrag : VpFrag<SimpleAbsFrag>(){
-    override var vpFragList: Array<SimpleAbsFrag> =
+class VpImplFrag : VpFrag<Frag>(){
+    override var vpFragList: Array<Frag> =
         arrayOf(
             Frag2(),
             Frag4(),

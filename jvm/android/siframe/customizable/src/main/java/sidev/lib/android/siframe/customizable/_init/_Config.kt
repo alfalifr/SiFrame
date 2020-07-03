@@ -79,6 +79,7 @@ object _Config {
     var ID_RL_BTN_CONTAINER= R.id.rl_btn_container
     var ID_RL_TOP_CONTAINER= R.id.rl_top_container
     var ID_RL_BOTTOM_CONTAINER= R.id.rl_bottom_container
+    var ID_RL_BOTTOM_CONTAINER_OUTSIDE= R.id.rl_bottom_container_outside
     var ID_RL_MIDDLE_CONTAINER= R.id.rl_middle_container
 
     var ID_VG_START_DRAWER_CONTAINER= R.id.vg_start_drawer_container

@@ -13,13 +13,13 @@ import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
 import java.lang.Exception
 
-abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPagerBase<F>{
-    override val _sideBase_act: AppCompatActivity
+abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
+    override val _prop_act: AppCompatActivity
         get() = act as AppCompatActivity
     override val _sideBase_view: View
         get() = layoutView
@@ -36,7 +36,7 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPag
         get(){
             val actName= try{actSimple!!::class.java.simpleName} catch (e: Exception){null}
             loge("actBarContainer_vp actName= $actName")
-            return actSimple.asNotNullTo { act: SimpleAbsBarContentNavAct ->
+            return actSimple.asNotNullTo { act: BarContentNavAct ->
                 loge("act.actBarViewContainer != null => ${act.actBarViewContainer != null}")
                 act.actBarViewContainer
             }
@@ -68,11 +68,11 @@ abstract class VpFrag<F: SimpleAbsFrag> : SimpleAbsFrag(), MultipleActBarViewPag
  */
 
     override fun ___initSideBase() {
-        super<SimpleAbsFrag>.___initSideBase()
+        super<Frag>.___initSideBase()
         super<MultipleActBarViewPagerBase>.___initSideBase()
 
-        if(_sideBase_act is BackBtnBase){
-            (_sideBase_act as BackBtnBase).addOnBackBtnListener{
+        if(_prop_act is BackBtnBase){
+            (_prop_act as BackBtnBase).addOnBackBtnListener{
                 if(isVpBackOnBackPressed)
                     pageBackward()
                 else false

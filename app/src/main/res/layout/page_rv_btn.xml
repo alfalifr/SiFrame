@@ -12,6 +12,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl"
         android:layout_below="@id/rl_top_container"
+        android:layout_above="@id/rl_bottom_container_outside"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ScrollView
@@ -45,6 +46,12 @@
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_bottom_container_outside"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <ProgressBar
         android:visibility="gone"
         android:id="@+id/pb"
@@ -60,5 +67,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         layout="@layout/_sif_comp_btn_action_sm"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_no_data"
+        android:layout_below="@id/rl_top_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/template_msg_no_data"
+        android:textSize="@dimen/txt_med_normal"
+        android:textStyle="bold|italic"
+        android:textColor="@color/abuTeks"/>
 
 </RelativeLayout>

@@ -16,5 +16,8 @@
     <item
         android:id="@+id/popup_reset"
         android:title="Reset"/>
+    <item
+        android:id="@+id/duplicate"
+        android:title="Duplikasi Data"/>
 
 </menu>

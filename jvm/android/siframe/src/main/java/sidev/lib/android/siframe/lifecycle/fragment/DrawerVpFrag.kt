@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.universal.`fun`.asNotNullTo
 
-abstract class DrawerVpFrag<F: SimpleAbsFrag> : VpFrag<F>(), DrawerFragBase{
+abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
     override val layoutId: Int
         get() = super<DrawerFragBase>.layoutId
     override val contentLayoutId: Int
@@ -28,7 +28,7 @@ abstract class DrawerVpFrag<F: SimpleAbsFrag> : VpFrag<F>(), DrawerFragBase{
 
 
     override fun __initViewFlow(rootView: View) {
-        if(_sideBase_act is DrawerActBase)
+        if(_prop_act is DrawerActBase)
             super.__initViewFlow(rootView)
         else
             __initDrawer(rootView)

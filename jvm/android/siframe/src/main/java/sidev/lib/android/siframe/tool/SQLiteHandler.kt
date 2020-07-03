@@ -12,18 +12,12 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.listener.LiveVal
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
 import sidev.lib.android.siframe.lifecycle.app.App
-import sidev.lib.android.siframe.lifecycle.viewmodel.LifeData
 import sidev.lib.android.siframe.model.DataWithId
-import sidev.lib.android.siframe.model.intfc.Fk
 import sidev.lib.android.siframe.model.intfc.ModelId
 import sidev.lib.android.siframe.model.intfc.StorageKind
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.ToastApp
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.ifExists
-import sidev.lib.universal.`fun`.iff
 import sidev.lib.universal.tool.util.StringUtil
 import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.reflect.Field
@@ -166,7 +160,7 @@ abstract class SQLiteHandler<M: DataWithId>(){
 
     open fun createTableName(): String{
         var namaTabel= modelClass.simpleName
-        return StringUtil.snakeCase(namaTabel)
+        return StringUtil.toSnakeCase(namaTabel)
     }
 
     fun tableExists(tableName: String= this.tableName): Boolean{
@@ -277,7 +271,7 @@ abstract class SQLiteHandler<M: DataWithId>(){
 //                loge("i= $i type= $type")
                 if(type != TYPE_NULL){
                     attribFieldList.add(field)
-                    attribNameList.add(StringUtil.snakeCase(attName, true))
+                    attribNameList.add(StringUtil.toSnakeCase(attName, true))
 
                     for(annot in field.annotations)
                         if(annot is ModelId
@@ -304,7 +298,7 @@ abstract class SQLiteHandler<M: DataWithId>(){
         if(primaryKey.isEmpty()){
             val idField= DataWithId::class.java.declaredFields.first()
             attribFieldList.add(0, idField)
-            attribNameList.add(0, StringUtil.snakeCase(idField.name, true))
+            attribNameList.add(0, StringUtil.toSnakeCase(idField.name, true))
             attribTypeList.add(0, "STRING PRIMARY KEY")
             primaryKey= attribNameList[0]
         }

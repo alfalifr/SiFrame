@@ -8,7 +8,7 @@ import android.view.View
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsAct
+import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
@@ -75,7 +75,7 @@ interface SimpleAbsActFragBase: LifecycleRootBase,
 
     private fun registerActiveAct(){
         try{
-            if(this is SimpleAbsAct){
+            if(this is Act){
                 _SIF_Constant.REG_ACT_FUN_REGISTERER_NAME= ThreadUtil.getCurrentFunName()
                 ActManager.process(ActManager.REGISTER_ACT_TO_STACK, this)
 //                val app= application as BaseApp

@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 //import kotlinx.android.synthetic.main._sif_page_rv.view.*
 //import kotlinx.android.synthetic.main._sif_page_rv.view.*
-import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp
@@ -15,7 +14,7 @@ import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.viewmodel.ContentVm
 import sidev.lib.universal.`fun`.notNull
 
-class ContentVmFrag : SimpleAbsFrag(){
+class ContentVmFrag : Frag(){
     override val layoutId: Int
         get() = R.layout.page_rv_btn
 

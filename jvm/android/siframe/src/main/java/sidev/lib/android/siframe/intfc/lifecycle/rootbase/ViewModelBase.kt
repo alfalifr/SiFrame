@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
-import sidev.lib.android.siframe.lifecycle.viewmodel.FiewModel
-import sidev.lib.android.siframe.lifecycle.viewmodel.VmFactory
+import sidev.lib.android.siframe.arch.viewmodel.FiewModel
+import sidev.lib.android.siframe.arch.viewmodel.VmFactory
 
 //var dg awalan _ brarti udah diinit scr internal, atau lateinit
 interface ViewModelBase : LifecycleRootBase, ExpirableBase, LifecycleOwner, ViewModelStoreOwner{

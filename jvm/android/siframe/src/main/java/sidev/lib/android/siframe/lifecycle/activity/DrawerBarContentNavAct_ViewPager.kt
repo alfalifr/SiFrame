@@ -4,11 +4,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 
-abstract class DrawerBarContentNavAct_ViewPager<F: SimpleAbsFrag>
-    : SimpleAbsBarContentNavAct_ViewPager<F>(), DrawerActBase {
+abstract class DrawerBarContentNavAct_ViewPager<F: Frag>
+    : BarContentNavAct_ViewPager<F>(), DrawerActBase {
     override val isViewInitFirst: Boolean
         get() = false
     override val isContentLayoutInflatedFirst: Boolean

@@ -7,14 +7,14 @@ import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragDrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 
-class Frag4 : SimpleAbsFrag(){
+class Frag4 : Frag(){
     override val layoutId: Int
         get() = R.layout.frag_txt
 
@@ -36,7 +36,7 @@ class Frag4 : SimpleAbsFrag(){
             act.isVpTitleFragBased= true
             loge("onActive() act.isVpTitleFragBased= true")
         }
-        actSimple.asNotNull { act: SimpleAbsBarContentNavAct ->
+        actSimple.asNotNull { act: BarContentNavAct ->
             act.setActBarTitle("Frag 4 bro!!")
         }
     }

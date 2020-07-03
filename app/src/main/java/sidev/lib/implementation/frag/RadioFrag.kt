@@ -3,12 +3,12 @@ package sidev.lib.implementation.frag
 import android.view.View
 import android.widget.RadioGroup
 import kotlinx.android.synthetic.main.comp_rb.view.*
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.notNull
 
-class RadioFrag : SimpleAbsFrag(){
+class RadioFrag : Frag(){
     override val layoutId: Int
         get() = R.layout.page_rg
 

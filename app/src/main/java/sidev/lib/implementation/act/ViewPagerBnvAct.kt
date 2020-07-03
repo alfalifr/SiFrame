@@ -5,13 +5,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 //import sidev.lib.android.siframe.intfc.customview.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
-import sidev.lib.android.siframe.lifecycle.activity.SimpleAbsBarContentNavAct_ViewPager
-import sidev.lib.android.siframe.lifecycle.fragment.SimpleAbsFrag
+import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
 
-class ViewPagerBnvAct : SimpleAbsBarContentNavAct_ViewPager<SimpleAbsFrag>(), TopMiddleBottomBase {
-    override var vpFragList: Array<SimpleAbsFrag> =
+class ViewPagerBnvAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
+    override var vpFragList: Array<Frag> =
         arrayOf(
             Frag1(),
             Frag2(),

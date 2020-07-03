@@ -17,7 +17,7 @@ interface ComplexLifecycleSideBase: LifecycleSideBase, ActProp {
      * Untuk menginit inheritor dari interface lifecyle.Base.
      * Harus dipanggil agar object keinit.
      */
-    override val _sideBase_act: AppCompatActivity?
+    override val _prop_act: AppCompatActivity?
     val _sideBase_view: View?
     val _sideBase_intent: Intent?
     val _sideBase_ctx: Context?

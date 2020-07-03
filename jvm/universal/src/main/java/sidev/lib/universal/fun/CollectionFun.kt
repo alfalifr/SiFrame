@@ -33,6 +33,31 @@ fun <T> Array<T>.toArrayList(): ArrayList<T>{
 
 /*
 ===============
+findElement()
+===============
+ */
+inline fun <reified E> Array<out Any?>.findElementByType(): E?{
+    return this.findElement { it is E } as? E
+}
+inline fun <reified E> Collection<Any?>.findElementByType(): E?{
+    return this.findElement { it is E } as? E
+}
+
+fun <C> Array<C>.findElement(iterator: (C) -> Boolean): C?{
+    for(e in this)
+        if(iterator(e))
+            return e
+    return null
+}
+fun <C> Collection<C>.findElement(iterator: (C) -> Boolean): C?{
+    for(e in this)
+        if(iterator(e))
+            return e
+    return null
+}
+
+/*
+===============
 Fungsi lain
 ===============
  */
@@ -314,6 +339,10 @@ inline fun <reified T> Array<T>.toSimpleString(): String{
     str= str.removeSuffix(", ")
     str += ")"
     return str
+}
+
+fun <K, V> MutableMap<K, V>.add(pair: Pair<K, V>){
+    this[pair.first]= pair.second
 }
 
 /*
