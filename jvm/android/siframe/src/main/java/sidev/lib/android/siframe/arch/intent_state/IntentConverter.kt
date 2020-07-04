@@ -22,10 +22,10 @@ import java.lang.reflect.Field
  * maka scr default object [IntentConverter] yg ada pada [MviView] akan di-instantiate
  * menggunakan definisi default kelas ini.
  */
-open class IntentConverter<I: ViewIntent>(var view: ExpirableBase?, var presenter: Presenter?)
+open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var presenter: Presenter?)
     : ExpirableLinkBase {
     override val expirable: ExpirableBase?
-        get() = view
+        get() = expirableView
 
     /**
      * Berguna jika [presenter] bkn merupakan tipe data [MviPresenter], terutama saat preState.
@@ -108,9 +108,9 @@ open class IntentConverter<I: ViewIntent>(var view: ExpirableBase?, var presente
             presenter?.postRequest(reqCode, map)
         }.isNull {
             val clsName= this.classSimpleName()
-            val viewName= view?.classSimpleName()
+            val viewName= expirableView?.classSimpleName()
             loge("$clsName.postRequest() view= $viewName.isExpired == TRUE")
-            view= null
+            expirableView= null
         }
     }
 }

@@ -31,10 +31,11 @@ class ContentVm(vmBase: ViewModelBase) : FiewModel(vmBase){
                 loge("onRepoRes() CONTENT val == null => ${va == null}")
 
                 liveData.value= va
-
+/*
                 ThreadUtil.delayRun(3000){
                     liveData.value= null
                 }
+ */
             }
             LOGIN -> {
                 loge("onRepoRes() LOGIN")

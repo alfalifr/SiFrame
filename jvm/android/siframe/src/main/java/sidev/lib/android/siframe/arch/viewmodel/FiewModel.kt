@@ -1,12 +1,10 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.*
 import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
-import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependent
 import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependentCommon
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
@@ -17,11 +15,7 @@ import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.classSimpleName
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.notNullTo
-import java.lang.RuntimeException
+import sidev.lib.universal.`fun`.*
 
 /**
  * <27 Juni 2020> => Ditujukan untuk penyimpanan data dari view.
@@ -43,12 +37,18 @@ import java.lang.RuntimeException
  * Contoh: Kasus login:
  *           Programmer dapat mengisi true ke dalam LifeData pada fungsi onRepoRes sbg tanda login berhasil
  *           dan false untuk sebaliknya.
+ *
+ * [vmBase] merupakan pemilik utamanya. Dalam konteks ini adalah Activity.
  */
 abstract class FiewModel(val vmBase: ViewModelBase)
     : ViewModel(), ArchViewModel, Mvvm,
     InteractivePresenterDependentCommon<Presenter>,
     InterruptableLinkBase,
     PresenterCallbackCommon {
+/*
+    var vmBase: ViewModelBase= vmBase
+        internal set
+ */
 
     final override var isExpired: Boolean= false
         private set
@@ -58,6 +58,7 @@ abstract class FiewModel(val vmBase: ViewModelBase)
     final override val interruptable: InterruptableBase?
         get() = vmBase
     final override var isBusy: Boolean= false
+
     override val isInterruptable: Boolean
         get() = vmBase.isInterruptable
 
@@ -79,6 +80,18 @@ abstract class FiewModel(val vmBase: ViewModelBase)
                     field= v
         }
  */
+    /**
+     * Untuk menyimpan data owner. Karena kelas [FiewModel] ini dipakai oleh banyak LifecycleOwner.
+     */
+    private var mOwner= HashMap<String, LifecycleOwner>()
+    /**
+     * Untuk menyimpan data apakah tiap owner sedang menjalankan proses request atau tidak.
+     *
+     * Knp kok harus disimpan difield ini? Knp kok gak langsung disimpen di [mOwner] saja?
+     * Karena ada kemungkinan [mOwner] di-recreate sehingga data [ViewModelBase.isBusy]
+     * ke nilai awal sehingga tidak akurat.
+     */
+    private var mOwnerIsOnPreLoad= HashMap<String, Boolean>()
     /**
      * Untuk menyimpan data yg dipakai di view atau hasil request.
      */
@@ -180,8 +193,10 @@ abstract class FiewModel(val vmBase: ViewModelBase)
      * @param forceReload false jika data sudah ada di {@link #mData} sehingga tidak direload dari repo.
      *                      true jika data sudah ada namun tetap direload dari repo.
      */
-    override fun <T> observe(reqCode: String, vararg params: Pair<String, Any>,
+    override fun <T> observe(owner: LifecycleOwner,
+                    reqCode: String, vararg params: Pair<String, Any>,
                     /*safeValue: Boolean= true*/
+                     //= null,
                     loadLater: Boolean/*= false*/, forceReload: Boolean/*= false*/,
                     onPreLoad: (() -> Unit)?/*= null*/, //fungsi saat LifeData msh loading
                     onObserve: (T) -> Unit): LifeData<T>?{
@@ -210,7 +225,9 @@ abstract class FiewModel(val vmBase: ViewModelBase)
             }
             loge("mData != null => ${mData != null} isDataNotAvailable= $isDataNotAvailable loadLater= $loadLater forceReload $forceReload")
 //            Log.e("FiewModel", "isDataNotAvailable= $isDataNotAvailable loadLater= $loadLater forceReload $forceReload")
-            data!!.observe(vmBase, onPreLoad, onObserve)
+            data!!.observe(owner, onPreLoad, onObserve)
+            mOwner[reqCode]= owner //Ditaruh luar karena kemungkinan owner-nya bisa berubah.
+            configOwner(reqCode, data, owner)
 
             if(isDataNotAvailable && !loadLater || forceReload)
                 reload(reqCode, *params)
@@ -238,10 +255,13 @@ abstract class FiewModel(val vmBase: ViewModelBase)
                 mParam[reqCode]= params
             val sentParams= mParam[reqCode] ?: params
 
-            lifeData.onPreLoad(vmBase)
+            val owner= mOwner[reqCode]!!
+            lifeData.onPreLoad(owner)
 
-            if(vmBase is ArchView)
-                vmBase.isBusy= true
+            owner.asNotNull { view: ArchView ->
+                view.isBusy= true
+                mOwnerIsOnPreLoad[reqCode]= true
+            }
 
             sendRequest(reqCode, *sentParams)
             isBusy= true
@@ -259,6 +279,19 @@ abstract class FiewModel(val vmBase: ViewModelBase)
     }
  */
 
+    private fun configOwner(reqCode: String, lifeData: LifeData<*>, owner: LifecycleOwner){
+        owner.asNotNull { innerOwner: ViewModelBase ->
+            mOwnerIsOnPreLoad[reqCode].notNull { isOnPreLoad ->
+                loge("configOwner() reqCode= $reqCode isOnPreLoad= $isOnPreLoad")
+                if(isOnPreLoad){
+                    if(innerOwner is ArchView)
+                        innerOwner.isBusy= true
+                    lifeData.onPreLoad(innerOwner)
+                }
+            }
+        }
+    }
+
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {
@@ -269,8 +302,10 @@ abstract class FiewModel(val vmBase: ViewModelBase)
             throw RuntimeExc(detailMsg = "reqCode: \"$reqCode\" tidak memiliki lifeData atau sama dg null")
         }
 
-        if(vmBase is ArchView)
-            vmBase.isBusy= false
+        mOwner[reqCode]!!.asNotNull { view: ArchView ->
+            view.isBusy= false
+            mOwnerIsOnPreLoad[reqCode]= false
+        }
 
         onRepoRes(reqCode, resCode, data, liveData)
         isBusy= false
@@ -283,11 +318,14 @@ abstract class FiewModel(val vmBase: ViewModelBase)
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
 //        if(vmBase.lifecycle.currentState == Lifecycle.State.DESTROYED) return
-        if(vmBase is ArchView)
-            vmBase.isBusy= false
+        val owner= mOwner[reqCode]!!
+        owner.asNotNull { view: ArchView ->
+            view.isBusy= false
+            mOwnerIsOnPreLoad[reqCode]= false
+        }
 
         mData[reqCode].notNull { data ->
-            data.postOnFail(vmBase, resCode, msg, e)
+            data.postOnFail(owner, resCode, msg, e)
 /*
             if(mIsDataTemporary[reqCode] == true)
                 mData.remove(reqCode)

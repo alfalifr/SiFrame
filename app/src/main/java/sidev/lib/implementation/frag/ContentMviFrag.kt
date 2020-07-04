@@ -29,7 +29,7 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 
     lateinit var rvAdp: ContentAdp
 
-    override fun initPresenter(): Presenter? = MviContentPresenter(null)
+    override fun initPresenter(): Presenter? = ContentPresenter(null)
     override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>?
             = ContentFragStatePros(this)
 /*
@@ -43,6 +43,9 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
         (layoutView.btn as Button).text= "Login"
         layoutView.btn.setOnClickListener { sendRequest(ContentFragIntent.Login("kinap oy")) }
         layoutView.srl.setOnRefreshListener { sendRequest(ContentFragIntent.DownloadData) }
+    }
+
+    override fun onNoCurrentState() {
         sendRequest(ContentFragIntent.DownloadData)
     }
 

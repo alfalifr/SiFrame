@@ -4,14 +4,19 @@ import androidx.annotation.RestrictTo
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.listener.OnFailLifecycleBoundListener
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 
 //Nullable karena kemungkinan user pingin ada kondisi saat value == null
-open class LifeData<T> : MutableLiveData<T>(), ExpirableBase{
+open class LifeData<T> : MutableLiveData<T>(), ExpirableBase {
     private val onFailListeners= HashMap<LifecycleOwner, OnFailLifecycleBoundListener>()
     private val onPreLoadListeners= HashMap<LifecycleOwner, () -> Unit>()
-    private var lastEnteredLifecycleOwner: LifecycleOwner?= null //Digunakan untuk memasukan onFailListener ke list
+    private var lastEnteredLifecycleOwner: LifecycleOwner?= null //Digunakan untuk chaining pemasukan onFailListener ke list
 
     //    private val lifecycleOwners= ArrayList<LifecycleOwner>()
 //    var observeWhenValNull= true
@@ -24,14 +29,23 @@ open class LifeData<T> : MutableLiveData<T>(), ExpirableBase{
         if(onPreLoad != null)
             onPreLoadListeners[owner]= onPreLoad
 
-//        lifecycleOwners.add(owner)
-        super.observe(owner, Observer {
-//            loge("observe() LifeData it == null => ${it == null}")
-            try{ onObserve(it) }
+        val innerOnObserve= { it: T? ->
+            try{ onObserve(it!!) }
             catch (e: java.lang.IllegalArgumentException){
 //                loge("observe() LifeData it == null => TRUE")
                 //Jika ternyata value yg dipass ke LifeData == null, maka abaikan oberver()
             }
+        }
+//        lifecycleOwners.add(owner)
+        super.observe(owner, Observer {
+            loge("observe() LifeData it == null => ${it == null} it= $it")
+            if(owner is ArchView){
+                if(!owner.isBusy)
+                    innerOnObserve(it)
+                else
+                    onPreLoad?.invoke()
+            } else
+                innerOnObserve(it)
         })
         lastEnteredLifecycleOwner= owner
 /*

@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.page_rv_btn.view.*
 //import kotlinx.android.synthetic.main._sif_page_rv.view.*
 //import kotlinx.android.synthetic.main._sif_page_rv.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp
@@ -46,7 +47,8 @@ class ContentVmFrag : Frag(){
 
     fun initVm(){
         //Untuk donwload content list
-        getViewModel(ContentVm::class.java).observe(ContentVm.CONTENT,
+        getViewModel(ContentVm::class.java).observe(this,
+            ContentVm.CONTENT,
             onPreLoad = { showPb() } )
         { content: ArrayList<Content>? ->
             showPb(false)
@@ -56,9 +58,11 @@ class ContentVmFrag : Frag(){
         }!!.onFail { resCode, msg, e ->
             toast("Terjadi kesalahan saat load data")
         }
+//        loge("this === vm.vmBase -> ${this === vm.vmBase}")
 
         //Untuk login
-        getViewModel(ContentVm::class.java).observe(ContentVm.LOGIN,
+        getViewModel(ContentVm::class.java).observe(this,
+            ContentVm.LOGIN,
             ContentPresenter.DATA_UNAME to "uname",
             loadLater = true, //request login hanya dilakukan saat tombol ditekan, bkn saat ini juga.
             onPreLoad = { showPbLogin() } )

@@ -1,13 +1,13 @@
 package sidev.lib.android.siframe.arch.view
 
-import android.util.Log
+import android.app.Activity
+import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.arch._obj.MviFiewModel
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependentCommon
 import sidev.lib.android.siframe.arch.presenter.MviInteractivePresenterDependent
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.type.Mvi
@@ -20,9 +20,12 @@ import java.lang.Exception
 interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
     MviInteractivePresenterDependent<Presenter, I>, ExpirableBase {
     companion object{
-        val KEY_VM_MVI_STATE= "_internal_vm_mvi_state"
-        val KEY_VM_MVI_STATE_STATUS= "_internal_vm_mvi_state_status"
+//        val KEY_VM_MVI_STATE_PROS= "_internal_vm_mvi_state_pros" -> StateProcessor disimpan pada referensi presenter.
+        val KEY_VM_MVI_STATE_PRESENTER= "_internal_vm_mvi_state_presenter"
+//        val KEY_VM_MVI_STATE= "_internal_vm_mvi_state"
+//        val KEY_VM_MVI_STATE_STATUS= "_internal_vm_mvi_state_status"
     }
+    var currentState: S?
     override var intentConverter: IntentConverter<I>?
     override fun initPresenter(): Presenter?
     fun initStateProcessor(): StateProcessor<S, I>?
@@ -34,20 +37,34 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
     fun initIntentCoverter(presenter: Presenter): IntentConverter<I>? = null
 
     fun __initMviPresenter(): Presenter?{
-        return initPresenter().notNullTo { presenter ->
+        return getVmData()
+            ?: initPresenter().notNullTo { presenter ->
             initStateProcessor().notNull { stateProcessor ->
                 stateProcessor.view= this
                 presenter.callback= stateProcessor
 
                 initIntentCoverter(presenter).notNull { intentConverter ->
                     this.intentConverter= intentConverter
-                    intentConverter.view= this
+                    intentConverter.expirableView= this
                     intentConverter.presenter= presenter
                     intentConverter.stateProcessor= stateProcessor
 //                    stateProcessor.intentConverter= intentConverter
                 }
 
-                this.asNotNullTo { view: ViewModelBase ->
+                //<5 Juli 2020> => Yg disimpan adalah Presenternya karena sudah mencakup
+                // referensi ke StateProcessor.
+                // Prioritas Activity dulu. Jika ternyata null, baru Fragment.
+                (this.asNotNullTo { act: Activity -> act }
+                    ?: this.asNotNullTo { frag: Fragment -> frag.activity ?: frag })
+                    .asNotNullTo { view: ViewModelBase ->
+                        view.getViewModel(MviFiewModel::class.java)
+                    }.notNull { vm ->
+                        vm.addValue(KEY_VM_MVI_STATE_PRESENTER, presenter)
+                    }
+/*
+
+                //Yg diambil adalah ViewModel milik Activity.
+                act.asNotNullTo { view: ViewModelBase ->
                     view.getViewModel(MviFiewModel::class.java)
                 }.notNull { vm ->
                     //Jika kelas ini merupakan ViewModelBase, maka ambil dulu StateProcessor
@@ -56,6 +73,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                     // Agar dapat StateProcessor.restoreCurrentState() dapat dipanggil
                     // walau View di-recreate.
                     // <3 Juli 2020> => Yg disimpan di VM adalah State dan State Status (isPreState), bkn StateProcessor.
+                    // <5 Juli 2020> => Yg disimpan adalah Presenternya karena sudah mencakup referensi ke StateProcessor.
                     loge("MviView.__initMviPresenter() > act is ViewModelBase")
                     vm.get<S>(KEY_VM_MVI_STATE) //.observe<StateProcessor<S>?>(KEY_MVI_VM){}
                         .notNull { stateLifeData ->
@@ -88,27 +106,57 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                         }
 //                    loge("MviView.__initMviPresenter() > act is ViewModelBase vm.get<Boolean>($KEY_VM_MVI_STATE_STATUS) SELESAI")
                 }
+ */
             }
             presenter
         }
     }
 
+    private fun getVmData(): Presenter?{
+        // Prioritas Activity dulu. Jika ternyata null, baru Fragment.
+        return (this.asNotNullTo { act: Activity -> act }
+            ?: this.asNotNullTo { frag: Fragment -> frag.activity ?: frag})
+            .asNotNullTo { view: ViewModelBase ->
+                view.getViewModel(MviFiewModel::class.java)
+            }.notNullTo { vm ->
+                vm.get<Presenter>(KEY_VM_MVI_STATE_PRESENTER)
+                    .notNullTo { presenter ->
+                        presenter.value?.callback.asNotNull { sp: StateProcessor<S, I> -> sp.view= this }
+                        presenter.value
+                    }
+    //                    presenter.value?.callback= stateProcessor -> gak perlu karena yg di-recreate adalah view-nya saja.
+            }
+    }
+
     /**
+     * Sesuai namanya, fungsi ini berfungsi untuk mengembalikan interface [MviView] ini
+     * ke state yg ada.
+     *
+     * Fungsi ini berguna saat interface [MviView] di-recreate sehingga harus mengembalikan state
+     * sebelumnya yg aktif.
+     *
      * @return true jika berhasil me-revert ke state sebelumnya.
      *          Jika berhasil, maka harus memenuhi bbrp kondisi:
      *              1. Presenter harus merupakan MviPresenter<S>
      *              2. View ini memiliki current state pada MviPresenter<S>
+     *
+     * @param [isInit] true jika fungsi [restoreCurrentState] ini dipanggil pertama kali saat
+     * interface [MviView] ini di-create.
      */
-    fun restoreCurrentState(): Boolean{
+    fun restoreCurrentState(isInit: Boolean= false): Boolean{
         loge("restoreCurrentState() MULAI AWAL")
-        val isSuccess= presenter.asNotNullTo { pres: MviPresenter<S> ->
-            try{
-                (pres.callback as StateProcessor<S, *>).restoreCurrentState()
-                true
-            } catch (e: Exception){
-                false
-            }
-        } ?: false
+        val isSuccess=
+            presenter?.callback.asNotNullTo { stateProcessor: StateProcessor<S, I> ->
+                try{
+                    stateProcessor.restoreCurrentState()
+                    true
+                } catch (e: Exception){
+                    false
+                }
+            } ?: false
+
+        if(isInit && currentState == null)
+            onNoCurrentState()
 
         loge("restoreCurrentState() isSuccess= $isSuccess")
         return isSuccess
@@ -120,7 +168,14 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
      */
     fun __render(state: S/*, isPreState: Boolean*/){
         isBusy= state.isPreState
+        loge("state.isPreState= ${state.isPreState}")
         render(state)
+        currentState= state
     }
     fun render(state: S/*, isPreState: Boolean*/)
+
+    /**
+     * Dipanggil saat interface [MviView] ini tidak punya [currentState].
+     */
+    fun onNoCurrentState()
 }

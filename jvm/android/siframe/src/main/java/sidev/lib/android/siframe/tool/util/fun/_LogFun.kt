@@ -10,8 +10,8 @@ fun Any.loge(txt: String){
             tag= tag.substring(0, 23)
         Log.e(tag, txt)
 
-        val isLoggable= Log.isLoggable(tag, Log.ERROR)
-        Log.e("LOG_UTIL", "isLoggable= $isLoggable")
+//        val isLoggable= Log.isLoggable(tag, Log.ERROR)
+//        Log.e("LOG_UTIL", "isLoggable= $isLoggable")
     }
 }
 
@@ -23,7 +23,7 @@ fun Any.loge(any: Any, name: String?= null){
             tag= tag.substring(0, 23)
         Log.e(tag, "$name ==> $any")
 
-        val isLoggable= Log.isLoggable(tag, Log.ERROR)
-        Log.e("LOG_UTIL", "isLoggable= $isLoggable")
+//        val isLoggable= Log.isLoggable(tag, Log.ERROR)
+//        Log.e("LOG_UTIL", "isLoggable= $isLoggable")
     }
 }

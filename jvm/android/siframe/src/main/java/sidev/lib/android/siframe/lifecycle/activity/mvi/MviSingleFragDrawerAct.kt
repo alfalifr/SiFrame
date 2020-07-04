@@ -10,6 +10,7 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragDrawerAct
 
 abstract class MviSingleFragDrawerAct<S: ViewState, I: ViewIntent>
     : SingleFragDrawerAct(), MviView<S, I>{
+    override var currentState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

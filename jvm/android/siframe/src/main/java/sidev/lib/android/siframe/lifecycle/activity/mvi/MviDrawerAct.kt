@@ -9,6 +9,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.activity.DrawerAct
 
 abstract class MviDrawerAct<S: ViewState, I: ViewIntent>: DrawerAct(), MviView<S, I> {
+    override var currentState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

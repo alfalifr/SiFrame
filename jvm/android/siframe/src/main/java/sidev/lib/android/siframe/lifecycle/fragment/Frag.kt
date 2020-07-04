@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe.customizable._init._Config
@@ -19,14 +20,10 @@ import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
-import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.arch.viewmodel.FiewModel
 import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.presenter.PresenterCallback
-import sidev.lib.android.siframe.arch.presenter.PresenterDependent
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
-import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
@@ -42,7 +39,7 @@ import sidev.lib.universal.`fun`.asNotNullTo
  */
 abstract class Frag : Fragment(),
     SimpleAbsActFragBase,
-    ViewModelFragBase,
+    ViewModelBase,
     PresenterDependentCommon<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     LifecycleSideBase // Hanya sbg cetaka agar kelas ini dapat memanggil ___initSideBase()
     { //RepositoryCallback {
@@ -159,16 +156,17 @@ abstract class Frag : Fragment(),
         isExpired= true
         presenter= null
     }
-
+/*
     override fun ___initRootBase(vararg args: Any) {
-        super<ViewModelFragBase>.___initRootBase(*args)
+        super<ViewModelBase>.___initRootBase(*args)
         loge("presenter ___initRootBase SELESAI")
         super<SimpleAbsActFragBase>.___initRootBase(*args)
         loge("___initRootBase SELESAI")
     }
-/*
+ */
+///*
     override fun ___initRootBase(vararg args: Any) {
-        super<ViewModelFragBase>.___initRootBase(*args)
+        super<ViewModelBase>.___initRootBase(*args)
         presenter= if(this is MviView<*, *>) __initMviPresenter()
             else initPresenter()
         loge("presenter ___initRootBase SELESAI")
@@ -176,13 +174,13 @@ abstract class Frag : Fragment(),
 
         loge("presenter ___initRootBase RESTORE MULAI")
         if(this is MviView<*, *>)
-            restoreCurrentState()
+            restoreCurrentState(true)
         loge("presenter ___initRootBase RESTORE SELESAI")
     }
- */
+// */
 
     override fun ___initSideBase() {}
-///*
+/*
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)
     presenter= if(this is MviView<*, *>) __initMviPresenter()
@@ -193,12 +191,22 @@ abstract class Frag : Fragment(),
         restoreCurrentState()
     loge("presenter ___initRootBase RESTORE SELESAI")
     }
-// */
+ */
 
-
+    /**
+     * Fungsi ini mengembalikan instance [ViewModel] dari activity.
+     * Jika activity == null, maka instance yg dikembalikan adalah instance [ViewModel]
+     * dari fragment ini.
+     */
+    override fun <T : FiewModel> getViewModel(cls: Class<T>): T {
+        return activity.asNotNullTo { act: ViewModelBase -> act.getViewModel(cls) }
+            ?: _vmProvider[cls]
+    }
+/*
     override fun <T : FiewModel> getViewModelFromAct(cls: Class<T>): T? {
         return activity.asNotNullTo { act: ViewModelBase -> act.getViewModel(cls) }
     }
+ */
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
         return if(i != null) super.getIntentData(key, i, default)

@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
+import androidx.lifecycle.LifecycleOwner
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.universal.`fun`.notNullTo
 
@@ -31,7 +32,8 @@ interface ArchViewModel: ExpirableBase{
      * @param forceReload false jika data sudah ada di {@link #mData} sehingga tidak direload dari repo.
      *                      true jika data sudah ada namun tetap direload dari repo.
      */
-    fun <T> observe(reqCode: String, vararg params: Pair<String, Any>,
+    fun <T> observe(owner: LifecycleOwner,
+                    reqCode: String, vararg params: Pair<String, Any>,
                     /*safeValue: Boolean= true, */
                     loadLater: Boolean= false, forceReload: Boolean= false,
                     onPreLoad: (() -> Unit)?= null, //fungsi saat LifeData msh loading

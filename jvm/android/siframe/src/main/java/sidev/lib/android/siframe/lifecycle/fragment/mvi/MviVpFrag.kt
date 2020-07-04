@@ -10,6 +10,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
 
 abstract class MviVpFrag<F: Frag, S: ViewState, I: ViewIntent> : VpFrag<F>(), MviView<S, I>{
+    override var currentState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

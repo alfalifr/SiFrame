@@ -11,6 +11,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct
 
 abstract class MviSingleFragAct<S: ViewState, I: ViewIntent>: SingleFragAct(), MviView<S, I>{
+    override var currentState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

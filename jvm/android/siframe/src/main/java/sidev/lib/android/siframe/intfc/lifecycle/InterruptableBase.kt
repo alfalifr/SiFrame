@@ -9,7 +9,8 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
  */
 interface InterruptableBase {
     /**
-     * Sbg flag jika interface ini sedang sibuk atau tidak.
+     * Flag apakah turunan interface ini sedang sibuk atau tidak.
+     * Flag ini mempengaruhi [InterruptableBase.doWhenNotBusy].
      */
     val isBusy: Boolean
 

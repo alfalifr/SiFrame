@@ -20,12 +20,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.presenter.PresenterDependent
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
-//import sidev.lib.android.siframe.presenter.Repository
-//import sidev.lib.android.siframe.presenter.RepositoryCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
@@ -162,7 +159,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
         super<SimpleAbsActFragBase>.___initRootBase(*args)
 
         if(this is MviView<*, *>)
-            restoreCurrentState()
+            restoreCurrentState(true)
     }
 
 /*

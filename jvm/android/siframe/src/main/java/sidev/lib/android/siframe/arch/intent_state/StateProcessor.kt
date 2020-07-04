@@ -12,12 +12,26 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import kotlin.reflect.KParameter
 
-abstract class StateProcessor<S: ViewState, I: ViewIntent>(var view: MviView<S, I>):
+abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
 //    PresenterDependent<MviPresenter<S>>,
     PresenterCallbackCommon {
-    internal var currentState= LifeData<S>() //?= null
-    internal var currentStateIsPreState= LifeData<Boolean>() // false
+    var view: MviView<S, I> = view
+        internal set(v){
+            field= v
+            intentConverter?.expirableView= v
+        }
+    internal var currentState: S?= null
+        set(v){
+            field= v
+            loge("dari statePros currentState= $currentState currentState.isPreState= ${currentState?.isPreState}")
+        }
+
+//    internal var currentStateIsPreState= false
     internal var intentConverter: IntentConverter<I>?= null //Untuk dapat mendapatkan pemetaan
+        set(v){
+            field= v
+            v?.expirableView= view
+        }
                 //antara ViewIntent dan reqCode.
     protected var intentEquivReqCodeGetter: IntentEquivReqCodeGetter?= null
 //        internal set
@@ -70,6 +84,8 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(var view: MviView<S, 
         processPreState(reqCode, data)
             .notNull { state ->
                 state.isPreState= true
+                loge("dari statePros postPreResult")
+//                currentStateIsPreState= true
                 postState(state)
             }.isNull {
                 loge("StateProcessor.postPreResult() -> state == NULL")
@@ -80,6 +96,8 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(var view: MviView<S, 
         processState(reqCode, resCode, data, isError, exc, errorMsg)
             .notNull { state ->
                 state.isPreState= false
+                loge("dari statePros postResult")
+//                currentStateIsPreState= false
                 postState(state)
             }.isNull {
                 loge("StateProcessor.processState() -> state == NULL")
@@ -91,6 +109,7 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(var view: MviView<S, 
      *   di dalam [state]. Tujuannya adalah agar lebih intuitif.
      */
     protected fun postState(state: S/*, isPreState: Boolean*/){
+        currentState= state
         try{
             if(!view.isExpired)
                 /*App.ctx*/
@@ -105,19 +124,19 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(var view: MviView<S, 
         } catch (e: Exception){
             loge("postState() -> Terjadi kesalahan saat render state \n Error= ${e::class.java.simpleName} \n Msg= ${e.message} Cause= ${e.cause}")
         }
-        currentState.value= state
-        currentStateIsPreState.value= state.isPreState
+        loge("dari statePros state.isPreState= ${state.isPreState}")
+//        currentStateIsPreState= state.isPreState
     }
     fun restoreCurrentState(){
         try{
-            currentState.value!!.isPreState= currentStateIsPreState.value!!
-            postState(currentState.value!!)
+//            currentState!!.isPreState= currentStateIsPreState
+            postState(currentState!!)
         } catch (e: KotlinNullPointerException){
             throw RuntimeExc(commonMsg = "StateProcessor.restoreCurrentState()",
                 detailMsg = "Tidak bisa mengembalikan state ke semula karena currentState == NULL")
         }
         val viewName= view::class.simpleName
-        loge("$viewName berhasil di-revert ke state sebelumnya.")
+        loge("$viewName berhasil di-restore ke state sebelumnya.")
         loge("previousState= $currentState")
     }
 /*
