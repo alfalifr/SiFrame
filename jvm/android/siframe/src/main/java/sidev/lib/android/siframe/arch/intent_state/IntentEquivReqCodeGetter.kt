@@ -4,6 +4,13 @@ import sidev.lib.universal.`fun`.getSealedClassName
 import sidev.lib.universal.`fun`.new
 import kotlin.reflect.KParameter
 
+/**
+ * Sesuai namanya, kelas ini berfungsi untuk mendapatkan [ViewIntent.equivalentReqCode]
+ * tanpa membutuhkan instance [ViewIntent].
+ *
+ * Kelas ini merupakan versi ringan dari [IntentDataCollector] karena tidak menyimpan
+ * field dari kelas [ViewIntent].
+ */
 class IntentEquivReqCodeGetter {
     private var intentObj: HashMap<String, ViewIntent>?= null
 

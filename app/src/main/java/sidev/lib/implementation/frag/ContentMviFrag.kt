@@ -18,6 +18,7 @@ import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.intent_state.ContentFragState
 import sidev.lib.implementation.intent_state.processor.ContentFragIntentConverter
 import sidev.lib.implementation.intent_state.processor.ContentFragStatePros
+import sidev.lib.implementation.presenter.MviContentPresenter
 
 class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 //    override val vmBase: ViewModelBase= this
@@ -28,7 +29,7 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 
     lateinit var rvAdp: ContentAdp
 
-    override fun initPresenter(): Presenter? = ContentPresenter(null)
+    override fun initPresenter(): Presenter? = MviContentPresenter(null)
     override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>?
             = ContentFragStatePros(this)
 /*

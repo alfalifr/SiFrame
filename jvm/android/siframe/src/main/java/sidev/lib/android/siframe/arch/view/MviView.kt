@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.arch.view
 
+import android.util.Log
 import sidev.lib.android.siframe.arch._obj.MviFiewModel
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
@@ -46,8 +47,8 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
 //                    stateProcessor.intentConverter= intentConverter
                 }
 
-                this.asNotNullTo { act: ViewModelBase ->
-                    act.getViewModel(MviFiewModel::class.java)
+                this.asNotNullTo { view: ViewModelBase ->
+                    view.getViewModel(MviFiewModel::class.java)
                 }.notNull { vm ->
                     //Jika kelas ini merupakan ViewModelBase, maka ambil dulu StateProcessor
                     // yg telah disimpan di dalam MviFiewModel.
@@ -100,7 +101,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
      */
     fun restoreCurrentState(): Boolean{
         loge("restoreCurrentState() MULAI AWAL")
-        return presenter.asNotNullTo { pres: MviPresenter<S> ->
+        val isSuccess= presenter.asNotNullTo { pres: MviPresenter<S> ->
             try{
                 (pres.callback as StateProcessor<S, *>).restoreCurrentState()
                 true
@@ -108,6 +109,9 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                 false
             }
         } ?: false
+
+        loge("restoreCurrentState() isSuccess= $isSuccess")
+        return isSuccess
     }
 
     /**

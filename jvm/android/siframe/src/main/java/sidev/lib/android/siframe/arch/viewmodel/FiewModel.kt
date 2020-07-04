@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.*
@@ -207,6 +208,8 @@ abstract class FiewModel(val vmBase: ViewModelBase)
                 //operasi pengambilan data scr async.
 //                reload(reqCode, *params)
             }
+            loge("mData != null => ${mData != null} isDataNotAvailable= $isDataNotAvailable loadLater= $loadLater forceReload $forceReload")
+//            Log.e("FiewModel", "isDataNotAvailable= $isDataNotAvailable loadLater= $loadLater forceReload $forceReload")
             data!!.observe(vmBase, onPreLoad, onObserve)
 
             if(isDataNotAvailable && !loadLater || forceReload)

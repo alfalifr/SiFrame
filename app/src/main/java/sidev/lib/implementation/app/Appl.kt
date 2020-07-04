@@ -12,7 +12,8 @@ import sidev.lib.implementation.act.SingleFragImplAct
 class Appl : App(){
     init{
         _SIF_Config.CLASS_SINGLE_FRAG_ACT= SingleFragImplAct::class.java
-        _Config.DEBUG= false
+//        _Config.DEBUG= false
+        _Config.LOG_ON_FILE= false
         _ColorRes.COLOR_PRIMARY= R.color.colorPrimaryDark
         _Config.TEMPLATE_VIEW_ACT_BAR_TYPE= _Constant.TEMPLATE_VIEW_TYPE_ACT_BAR_SQUARE
 
