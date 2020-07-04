@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.lifecycle.activity.mvp
 
+import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.view.MvpView
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager_Simple
 
@@ -8,6 +9,7 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager_S
  */
 open class MvpBarContentNavAct_ViewPager_Simple
     : BarContentNavAct_ViewPager_Simple(), MvpView{
+    override fun initPresenter(): Presenter?= null
     override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
     override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 }
