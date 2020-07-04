@@ -13,10 +13,32 @@ object _Config {
         val ID_CONTENT= android.R.id.content
     }
 
+    /**
+     * Flag apakah mode debug diijinkan dalam app ini.
+     */
     var DEBUG= true
+
+    /**
+     * Flag apakah proses log diijinkan dalam app ini.
+     *
+     * Jika [LOG] di-assign true tapi [DEBUG] false, maka hasil akhirnya [LOG] false.
+     * Artinya, [LOG] diijinkan jika [DEBUG] juga diijinkan.
+     */
     var LOG= DEBUG
+        get()= field && DEBUG
+
+    /**
+     * Flag apakah proses log yg disimpan pada file diijinkan dalam app ini.
+     *
+     * Jika [LOG_ON_FILE] di-assign true tapi [LOG] false, maka hasil akhirnya [LOG_ON_FILE] false.
+     * Artinya, [LOG_ON_FILE] diijinkan jika [LOG] juga diijinkan.
+     */
+    var LOG_ON_FILE= DEBUG
+        get()= field && LOG
+
 
     var INT_EMPTY= 0
+
 
     var DB_NAME= "DEFAULT"
     var DB_VERSION= 1

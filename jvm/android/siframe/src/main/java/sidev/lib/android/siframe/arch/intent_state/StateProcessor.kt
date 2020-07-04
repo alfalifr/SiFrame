@@ -30,6 +30,12 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(var view: MviView<S, 
     override val _prop_ctx: Context?
         get() = view._prop_ctx
 
+    /**
+     * Fungsi yg memetakan dari hasil request menjadi (pre)state.
+     * Fungsi ini dapat mengembalikan null jika programmer ingin mengabaikan hasil
+     * request yg didapat, walaupun hal tersebut sangat tidak disarankan pada
+     * arsitektur MVI demi reaktivitas app.
+     */
     abstract fun processPreState(reqCode: String, data: Map<String, Any>?): S?
     abstract fun processState(reqCode: String, resCode: Int, data: Map<String, Any>?,
                               isError: Boolean, exc: Exception?, errorMsg: String?): S?

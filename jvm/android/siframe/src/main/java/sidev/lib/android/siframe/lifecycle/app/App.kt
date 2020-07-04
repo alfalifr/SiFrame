@@ -43,24 +43,24 @@ open class App: Application(){
         ctx= this
 //        LogApp.log= BuildConfig.MODE_LOG
 
-        if(_Config.LOG){
+        if(_Config.LOG_ON_FILE){
             logHpError= LogHP(this)
             logHpError.letakFolder("Error")
 //            loge("logHpError.alamatFile= ${logHpError.alamatFile}")
 
-            if(_Config.DEBUG){
-                Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-                    LogApp.e(throwable::class.java.simpleName, throwable.message, throwable)
-                    try{
-                        logHpError.printError(thread, throwable)
-                        throwable.printStackTrace()
-                    } catch(error: Exception){
-                        LogApp.e(error::class.java.simpleName, error.message, error)
-                        error.printStackTrace()
-                    }
-                    exitProcess(0)
+//            if(_Config.DEBUG){ -> tidak perlu semenjak _Config.LOG_ON_FILE juga membutuhkan _Config.DEBUG
+            Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+                LogApp.e(throwable::class.java.simpleName, throwable.message, throwable)
+                try{
+                    logHpError.printError(thread, throwable)
+                    throwable.printStackTrace()
+                } catch(error: Exception){
+                    LogApp.e(error::class.java.simpleName, error.message, error)
+                    error.printStackTrace()
                 }
+                exitProcess(1)
             }
+//            }
         }
     }
 /*
