@@ -39,8 +39,8 @@ import java.lang.reflect.Modifier
  *        <4, 27 Juni 2020> Kelas ini menggunakan LiveVal sbg future karena jika menggunakan LifeData, maka akan
  *                           kesulitan untuk mendapatkan LifecycleOwnernya.
  */
-abstract class SQLiteHandler<M: DataWithId>(){
-    val ctx: Context= App.ctx
+abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
+//    val ctx: Context= App.ctx
 //    : SQLiteOpenHelper(konteks, BuildConfig.DB_NAMA, null, BuildConfig.DB_VERSI){
 
     companion object{

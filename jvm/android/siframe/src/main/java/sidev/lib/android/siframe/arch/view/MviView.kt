@@ -23,7 +23,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         val KEY_VM_MVI_STATE_STATUS= "_internal_vm_mvi_state_status"
     }
     override var intentConverter: IntentConverter<I>?
-    val vmBase: ViewModelBase
+    override fun initPresenter(): Presenter?
     fun initStateProcessor(): StateProcessor<S, I>?
 
     /**
@@ -43,7 +43,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                     intentConverter.view= this
                     intentConverter.presenter= presenter
                     intentConverter.stateProcessor= stateProcessor
-                    stateProcessor.intentConverter= intentConverter
+//                    stateProcessor.intentConverter= intentConverter
                 }
 
                 this.asNotNullTo { act: ViewModelBase ->
@@ -102,15 +102,21 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         loge("restoreCurrentState() MULAI AWAL")
         return presenter.asNotNullTo { pres: MviPresenter<S> ->
             try{
-                loge("restoreCurrentState() MULAI")
                 (pres.callback as StateProcessor<S, *>).restoreCurrentState()
-                loge("restoreCurrentState() SELESAI")
                 true
             } catch (e: Exception){
-                loge("restoreCurrentState() CATCH")
                 false
             }
         } ?: false
     }
-    fun render(state: S, isPreState: Boolean)
+
+    /**
+     * <4 Juli 2020> => parameter isPreState dihilangkan. Sbg gantinya, isPreState disimpan
+     *   di dalam [state]. Tujuannya adalah agar lebih intuitif.
+     */
+    fun __render(state: S/*, isPreState: Boolean*/){
+        isBusy= state.isPreState
+        render(state)
+    }
+    fun render(state: S/*, isPreState: Boolean*/)
 }

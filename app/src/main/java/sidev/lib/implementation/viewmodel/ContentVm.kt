@@ -26,7 +26,7 @@ class ContentVm(vmBase: ViewModelBase) : FiewModel(vmBase){
         when(reqCode){
             CONTENT -> {
                 loge("onRepoRes() CONTENT")
-                val va= data!![Const.DATA_CONTENT]
+                val va= data?.get(Const.DATA_CONTENT)
 
                 loge("onRepoRes() CONTENT val == null => ${va == null}")
 

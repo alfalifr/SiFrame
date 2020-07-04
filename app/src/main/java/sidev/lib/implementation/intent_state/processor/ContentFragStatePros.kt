@@ -29,7 +29,8 @@ class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
                 state
             }
             getEquivReqCode<ContentFragIntent.Login>() -> {
-                val state= ContentFragState.Login(isError = isError, errorMsg = errorMsg ?: "Error login bro")
+                val state= ContentFragState.Login(isSucces = resCode == Const.RES_OK,
+                    isError = isError, errorMsg = errorMsg ?: "Error login bro")
                 if(!isError)
                     state.toastMsg= "Berhasil Login bro!!!"
                 state

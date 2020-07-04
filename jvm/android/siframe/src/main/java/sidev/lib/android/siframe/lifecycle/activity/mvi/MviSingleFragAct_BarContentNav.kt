@@ -12,8 +12,6 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_BarContentNav
 
 abstract class MviSingleFragAct_BarContentNav<S: ViewState, I: ViewIntent>
     : SingleFragAct_BarContentNav(), MviView<S, I>{
-    override val vmBase: ViewModelBase
-        get() = this
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

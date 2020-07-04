@@ -10,6 +10,7 @@ import java.lang.reflect.Field
 
 class ContentFragIntentConverter(view: ExpirableBase?, presenter: Presenter?)
     : IntentConverter<ContentFragIntent>(view, presenter){
+
     override fun getIntentDataPair(intent: ContentFragIntent, field: Field): Pair<String, Any>? {
         loge("field.name= ${field.name}")
         return if(intent is ContentFragIntent.Login && field.name == "uname") {

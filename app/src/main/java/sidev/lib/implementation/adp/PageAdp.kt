@@ -17,7 +17,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutMana
     override val itemLayoutId: Int
         get() = R.layout.comp_page_row
 
-    val sqlite= PageSqlite()
+    val sqlite= PageSqlite(c)
 
     override fun bindVH(vh: SimpleViewHolder, pos: Int, data: Page) {
         vh.itemView.tv_id.text= data.id

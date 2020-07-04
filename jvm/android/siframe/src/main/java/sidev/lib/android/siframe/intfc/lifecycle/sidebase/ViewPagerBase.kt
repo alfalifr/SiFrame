@@ -26,13 +26,13 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _Config.LAYOUT_VP
 
-    override val _sideBase_view: View
-    override val _sideBase_fm: FragmentManager
+    override val _prop_view: View
+    override val _prop_fm: FragmentManager
 
     var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
 
     val vp: ViewPager
-        get()= _sideBase_view.findViewById(_Config.ID_VP)
+        get()= _prop_view.findViewById(_Config.ID_VP)
 //    var lateVp: ViewPager
 /*
         get(){
@@ -137,8 +137,8 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
             ) {}
             override fun onPageSelected(position: Int) {
                 attachActBarTitle(position)
-                vpFragList[position].onActive(_sideBase_view, this@ViewPagerBase, position)
-                onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
+                vpFragList[position].onActive(_prop_view, this@ViewPagerBase, position)
+                onPageFragActiveListener[position]?.onPageFragActive(_prop_view, position) //
             }
         })
         if(vpFragList.isNotEmpty())
@@ -195,7 +195,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         if(list != null){
             vpFragList= list
             size= vpFragList.size
-            vpAdp= VpFragAdp(_sideBase_fm, *list)
+            vpAdp= VpFragAdp(_prop_fm, *list)
 //            vp.removeAllViews()
             vp.adapter= vpAdp
 
@@ -216,7 +216,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         setFragListMark(initFragListMark())
 
         if(list != null)
-            vpFragList.firstOrNull()?.onActive(_sideBase_view, this, 0)
+            vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
     }
 
     fun getFragPos(frag: F): Int{

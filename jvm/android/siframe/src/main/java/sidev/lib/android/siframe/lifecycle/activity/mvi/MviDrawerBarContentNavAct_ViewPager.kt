@@ -11,8 +11,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 
 abstract class MviDrawerBarContentNavAct_ViewPager<F: Frag, S: ViewState, I: ViewIntent>
     : DrawerBarContentNavAct_ViewPager<F>(), MviView<S, I> {
-    override val vmBase: ViewModelBase
-        get() = this
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

@@ -50,9 +50,10 @@ class MainAct : BarContentNavAct() {
     fun toRadioFrag(v: View)= startSingleFragAct_config<RadioFrag>()
     fun toContentVmFrag(v: View)= startSingleFragAct_config<ContentVmFrag>()
     fun toContentMviFrag(v: View)= startSingleFragAct_config<ContentMviFrag>()
+    fun toContentMvpFrag(v: View)= startSingleFragAct_config<ContentMvpFrag>()
     fun toDrawerVpImplFrag(v: View)= startSingleFragAct_config<DrawerVpImplFrag>()
     fun toDrawerImplFrag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
-    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
+//    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 

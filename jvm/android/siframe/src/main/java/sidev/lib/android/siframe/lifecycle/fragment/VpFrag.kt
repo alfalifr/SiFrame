@@ -21,15 +21,16 @@ import java.lang.Exception
 abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
     override val _prop_act: AppCompatActivity
         get() = act as AppCompatActivity
-    override val _sideBase_view: View
+    override val _prop_view: View
         get() = layoutView
-    override val _sideBase_intent: Intent
+    override val _prop_intent: Intent
         get() = act.intent
+    override val _prop_fm: FragmentManager
+        get() = act.supportFragmentManager
+/*
     override val _sideBase_ctx: Context
         get() = act
-    override val _sideBase_fm: FragmentManager
-        get() = act.supportFragmentManager
-
+ */
 
     override val actBarViewList: SparseArray<View> = SparseArray()
     override val actBarContainer_vp: ViewGroup?

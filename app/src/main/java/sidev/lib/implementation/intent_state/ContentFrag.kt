@@ -6,7 +6,7 @@ import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.presenter.ContentPresenter
 
 sealed class ContentFragState: ViewState(){
-    abstract val isError: Boolean
+    abstract override var isError: Boolean
     abstract val errorMsg: String?
 
     data class DownloadData(
@@ -19,6 +19,7 @@ sealed class ContentFragState: ViewState(){
     data class Login(
         var isLoading: Boolean= false,
         var toastMsg: String?= null,
+        var isSucces: Boolean= false,
         override var isError: Boolean= false,
         override var errorMsg: String?= null
     ) : ContentFragState()

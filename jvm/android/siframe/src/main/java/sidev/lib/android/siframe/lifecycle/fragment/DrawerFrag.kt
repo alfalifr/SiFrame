@@ -14,14 +14,16 @@ import sidev.lib.universal.`fun`.asNotNullTo
 abstract class DrawerFrag : Frag(), DrawerFragBase {
     override val _prop_act: AppCompatActivity?
         get() = activity as AppCompatActivity
-    override val _sideBase_view: View
+    override val _prop_view: View
         get() = layoutView
-    override val _sideBase_intent: Intent?
+    override val _prop_intent: Intent?
         get() = activity?.intent
+    override val _prop_fm: FragmentManager?
+        get() = fragmentManager
+/*
     override val _sideBase_ctx: Context?
         get() = context
-    override val _sideBase_fm: FragmentManager?
-        get() = fragmentManager
+ */
 
     override var rootDrawerLayout: DrawerLayout?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.rootDrawerLayout }

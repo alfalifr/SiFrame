@@ -23,25 +23,33 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 //    override val vmBase: ViewModelBase= this
     override val layoutId: Int
         get() = R.layout.page_rv_btn
+    override val isInterruptable: Boolean
+        get() = false
 
     lateinit var rvAdp: ContentAdp
 
     override fun initPresenter(): Presenter? = ContentPresenter(null)
     override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>?
             = ContentFragStatePros(this)
+/*
     override fun initIntentCoverter(presenter: Presenter): IntentConverter<ContentFragIntent>?
-        = ContentFragIntentConverter(null, null)
+        = null //ContentFragIntentConverter(null, null)
+ */
 
     override fun _initView(layoutView: View) {
         rvAdp= ContentAdp(context!!)
         rvAdp.rv= layoutView.rv
         (layoutView.btn as Button).text= "Login"
-        layoutView.btn.setOnClickListener { sendRequest(ContentFragIntent.Login("kinap bro")) }
+        layoutView.btn.setOnClickListener { sendRequest(ContentFragIntent.Login("kinap oy")) }
         layoutView.srl.setOnRefreshListener { sendRequest(ContentFragIntent.DownloadData) }
         sendRequest(ContentFragIntent.DownloadData)
     }
 
-    override fun render(state: ContentFragState, isPreState: Boolean) {
+    override fun onInterruptedWhenBusy() {
+        toast("Harap tunggu hingga proses pada layar selesai.")
+    }
+
+    override fun render(state: ContentFragState) {
         when(state){
             is ContentFragState.DownloadData -> {
                 layoutView.rv.visibility= if(state.isLoading) View.GONE
@@ -55,7 +63,7 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
                 layoutView.srl.isRefreshing= state.isLoading
                         && !state.isError
 
-                if(!isPreState){
+                if(!state.isPreState){
                     layoutView.tv_no_data.visibility=
                         if(state.rvDataList.isNullOrEmpty()) View.VISIBLE
                         else View.GONE
@@ -64,16 +72,20 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
                 }
             }
             is ContentFragState.Login -> {
-                loge("render() isPreState= $isPreState state.isError= ${state.isError}")
+                loge("render() isPreState= ${state.isPreState} state.isError= ${state.isError}")
                 layoutView.srl.isRefreshing= state.isLoading
                         && !state.isError
-                if(!isPreState && !state.isError){
+                if(!state.isPreState && !state.isError){
                     loge("render() !!isPreState TOAST state.toastMsg!!= ${state.toastMsg!!}")
-                    toast(state.toastMsg!!)
+                    if(!state.isSucces)
+                        toast(state.toastMsg!!)
+                    else
+                        toast("Apapun alasannya, yg penting login berhasil")
                 }
             }
         }
         if(state.isError)
             toast(state.errorMsg!!)
+//        state.isPreState= false
     }
 }

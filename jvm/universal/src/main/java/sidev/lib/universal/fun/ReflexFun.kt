@@ -68,8 +68,15 @@ inline fun <reified T> Any.getField(name: String= ""): Field? {
 }
 
 /**
+ * Digunakan untuk mengambil semua field yg ada pada sebuah kelas, termasuk super class
+ * dan private field. Pengaturan ttg cakupan field yg diambil ada di parameter.
+ * Fungsi ini menggunakan Java Reflection, bkn Kotlin.
+ * jika [includeInherited] true, maka field super class yg diambil tidak sampai kelas [Object].
+ *
  * [includeInherited] true jika termasuk field cuperClass.
  * [justPublic] true jika hanya mengambil yang public.
+ *
+ * @return null jika field yg didapat 0.
  */
 fun Any.getAllFields(includeInherited: Boolean= true, justPublic: Boolean= true)
         : List<Field>? {

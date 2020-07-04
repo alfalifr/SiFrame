@@ -7,9 +7,12 @@ import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
 import sidev.lib.android.siframe.arch.viewmodel.FiewModel
 import sidev.lib.android.siframe.arch.viewmodel.VmFactory
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
+import sidev.lib.android.siframe.intfc.prop.CtxProp
 
 //var dg awalan _ brarti udah diinit scr internal, atau lateinit
-interface ViewModelBase : LifecycleRootBase, ExpirableBase, LifecycleOwner, ViewModelStoreOwner{
+interface ViewModelBase : LifecycleRootBase, ExpirableBase, InterruptableBase,
+    LifecycleOwner, ViewModelStoreOwner, CtxProp{
     var _vmProvider: ViewModelProvider
 //    val vmStoreOwner: ViewModelStoreOwner
 //    val lifecycleOwner: LifecycleOwner

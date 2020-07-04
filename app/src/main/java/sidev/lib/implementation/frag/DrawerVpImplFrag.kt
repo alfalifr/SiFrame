@@ -64,8 +64,8 @@ class DrawerVpImplFrag : DrawerVpFrag<Frag>(), TopMiddleBottomBase{
     override fun _initView(layoutView: View) {
         contentLayoutId == R.layout._sif_page_vp
         loge("_initView() contentLayoutId == R.layout._sif_page_vp => ${contentLayoutId == R.layout._sif_page_vp}")
-        loge("_sideBase_view.findViewById<View>(_Config.ID_VP) == null => ${_sideBase_view.findViewById<View>(R.id.vp) == null}")
-        loge("_sideBase_view.findViewByType<ViewPager>() == null => ${_sideBase_view.findViewByType<ViewPager>() == null}")
+        loge("_sideBase_view.findViewById<View>(_Config.ID_VP) == null => ${_prop_view.findViewById<View>(R.id.vp) == null}")
+        loge("_sideBase_view.findViewByType<ViewPager>() == null => ${_prop_view.findViewByType<ViewPager>() == null}")
         __initTopMiddleBottomView(layoutView)
     }
 }

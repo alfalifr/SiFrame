@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
+import android.content.Context
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.*
@@ -9,7 +10,11 @@ import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependentCom
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.arch.type.Mvvm
+import sidev.lib.android.siframe.arch.view.ArchView
+import sidev.lib.android.siframe.exception.RuntimeExc
 import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.classSimpleName
 import sidev.lib.universal.`fun`.isNull
@@ -41,10 +46,25 @@ import java.lang.RuntimeException
 abstract class FiewModel(val vmBase: ViewModelBase)
     : ViewModel(), ArchViewModel, Mvvm,
     InteractivePresenterDependentCommon<Presenter>,
+    InterruptableLinkBase,
     PresenterCallbackCommon {
 
     final override var isExpired: Boolean= false
         private set
+    final override val _prop_ctx: Context?
+        get() = vmBase._prop_ctx
+
+    final override val interruptable: InterruptableBase?
+        get() = vmBase
+    final override var isBusy: Boolean= false
+    override val isInterruptable: Boolean
+        get() = vmBase.isInterruptable
+
+    /*
+    override var callbackCtx: Context
+        get() = TODO("Not yet implemented")
+        set(value) {}
+ */
 
     //    protected abstract val repo: R
 /*
@@ -58,8 +78,20 @@ abstract class FiewModel(val vmBase: ViewModelBase)
                     field= v
         }
  */
-    private var mData= HashMap<String, LifeData<Any>>() //Nullable karena kemungkinan user pingin ada kondisi saat value == null
-    private var mIsDataTemporary= HashMap<String, Boolean>()
+    /**
+     * Untuk menyimpan data yg dipakai di view atau hasil request.
+     */
+    private var mData= HashMap<String, LifeData<Any>>() //Nullable karena kemungkinan programmer pingin ada kondisi saat value == null
+
+    /**
+     * Parameter yg digunakan saat pemanggilan fungsi [observe].
+     * Parameter disimpan agar selanjutnya jika fungsi [reload] dipanggil, programmer tidak perlu
+     * memasukan lagi parameter yg sama. Namun, programmer juga dapat memasukan parameter dg nilai
+     * yg beda pada fungsi reload.
+     */
+    private var mParam= HashMap<String, Array<out Pair<String, Any>>>()
+//    private var mIsDataTemporary= HashMap<String, Boolean>() //Mode temprary ditiadakan karena dapat menyebabkan runtime error
+                //jika terdapat banyak proses async yg berjalan yg melibatkan mData yg sama.
 /*
     /**
      * Berisi pemetaan Key dari LiveData dg ReqCode ke repo.
@@ -148,7 +180,8 @@ abstract class FiewModel(val vmBase: ViewModelBase)
      *                      true jika data sudah ada namun tetap direload dari repo.
      */
     override fun <T> observe(reqCode: String, vararg params: Pair<String, Any>,
-                    safeValue: Boolean/*= true*/, forceReload: Boolean/*= false*/,
+                    /*safeValue: Boolean= true*/
+                    loadLater: Boolean/*= false*/, forceReload: Boolean/*= false*/,
                     onPreLoad: (() -> Unit)?/*= null*/, //fungsi saat LifeData msh loading
                     onObserve: (T) -> Unit): LifeData<T>?{
         return doWhenNotExpired {
@@ -159,16 +192,24 @@ abstract class FiewModel(val vmBase: ViewModelBase)
 //                loge("observe() data == null")
 
                 //Masukan dulu LifeData ke list agar dapat dilakukan reload()
-                mIsDataTemporary[reqCode]= !safeValue
+//                mIsDataTemporary[reqCode]= !safeValue
                 mData[reqCode]= data as LifeData<Any>
+                /**
+                 * Assign nilai ke [mParam] dilakukan di sini jika fungsi [observe] dipanggil
+                 * untuk pertaman kali dan programmer nge-pass nilai true untuk param [loadLater]
+                 * sehingga fungsi [reload] tidak dipanggil dan menyebabkan [params] tidak disimpan
+                 * di fungsi [reload].
+                 */
+                if(params.isNotEmpty())
+                    mParam[reqCode]= params
 
                 //Gak perlu dilakukan di luar MainThread karena nanti Repo otomatis melakukan
                 //operasi pengambilan data scr async.
-                reload(reqCode, *params)
+//                reload(reqCode, *params)
             }
             data!!.observe(vmBase, onPreLoad, onObserve)
 
-            if(isDataNotAvailable || forceReload)
+            if(isDataNotAvailable && !loadLater || forceReload)
                 reload(reqCode, *params)
 
             data
@@ -177,15 +218,31 @@ abstract class FiewModel(val vmBase: ViewModelBase)
 
     /**
      * Untuk mereload data dari repo. Fungsi ini berguna bagi data yg sudah ada di {@link #mData}.
-     * Fungsi ini juga digunakan scr internal untuk melakukan sendRequest() yg didahului dg LifeData.onPreLoad()
+     * Fungsi ini juga digunakan scr internal untuk melakukan sendRequest() yg didahului dg LifeData.onPreLoad().
+     *
+     * Fungsi ini menyimpan [params] pada [mParam] dan mengambilnya untuk [reqCode] yg sama.
+     * Untuk pemanggilan [reqCode] yg sama, fungsi ini akan mengambil param yg tersimpan pada [mParam]
+     * jika programmer tidak nge-pass [params] ke fungsi ini atau [params.size] == 0.
+     * [params] tidak akan disimpan pada [mParam] jika [params.size] == 0.
+     *
      * @return true jika data sudah ada di {@link #mData}.
      *          false jika data belum ada di {@link #mData} sehingga
      *          tidak dilakukan sendRequest(reqCode, *params) ke repo.
      */
     override fun reload(reqCode: String, vararg params: Pair<String, Any>): Boolean{
         return mData[reqCode].notNullTo { lifeData ->
+            if(params.isNotEmpty())
+                mParam[reqCode]= params
+            val sentParams= mParam[reqCode] ?: params
+
             lifeData.onPreLoad(vmBase)
-            sendRequest(reqCode, *params)
+
+            if(vmBase is ArchView)
+                vmBase.isBusy= true
+
+            sendRequest(reqCode, *sentParams)
+            isBusy= true
+
             true
         } ?: false
     }
@@ -204,19 +261,40 @@ abstract class FiewModel(val vmBase: ViewModelBase)
     override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {
 //        val key= mReqKeyMap[reqCode]
         val liveData= mData[reqCode]
-        try{
-            onRepoRes(reqCode, resCode, data, liveData!!)
+        try{ liveData!! }
+        catch (e: KotlinNullPointerException){
+            throw RuntimeExc(detailMsg = "reqCode: \"$reqCode\" tidak memiliki lifeData atau sama dg null")
+        }
+
+        if(vmBase is ArchView)
+            vmBase.isBusy= false
+
+        onRepoRes(reqCode, resCode, data, liveData)
+        isBusy= false
+/*
             if(mIsDataTemporary[reqCode] == true)
                 mData.remove(reqCode)
-        } catch (e: Exception){ throw RuntimeException("reqCode: \"$reqCode\" tidak memiliki atau sama dg null") }
+ */
     }
+
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
 //        if(vmBase.lifecycle.currentState == Lifecycle.State.DESTROYED) return
+        if(vmBase is ArchView)
+            vmBase.isBusy= false
+
         mData[reqCode].notNull { data ->
             data.postOnFail(vmBase, resCode, msg, e)
+/*
             if(mIsDataTemporary[reqCode] == true)
                 mData.remove(reqCode)
+ */
         }
+        isBusy= false
+    }
+
+
+    override fun onInterruptedWhenBusy() {
+        interruptable?.onInterruptedWhenBusy()
     }
 }

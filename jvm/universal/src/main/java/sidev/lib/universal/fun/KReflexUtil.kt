@@ -98,7 +98,16 @@ fun Any.getSealedClassName(isQualifiedName: Boolean= true): String?{
     }
 }
 
-
+/**
+ * Digunakan untuk meng-instatiate instance baru menggunakan Kotlin Reflection.
+ *
+ * [defParamValFunc] dipanggil jika nilai default dari [defParamValFunc.param] dg tipe [KParameter]
+ * tidak dapat diperoleh.
+ *
+ * Nilai default suatu [KParameter] tidak diperoleh dari fungsi di dalam
+ * framework ini disebabkan karena [KParameter] bkn merupakan tipe primitif atau
+ * tidak terdefinisi pada fungsi [defaultPrimitiveValue].
+ */
 inline fun <reified T> new(noinline defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
     //1. Cari constructor dg parameter tersedikit.
     val constrs= T::class.constructors
@@ -111,24 +120,34 @@ inline fun <reified T> new(noinline defParamValFunc: ((param: KParameter) -> Any
         }
     }
 
-    var params=  constr!!.parameters //: List<KParameter>?= null
+    val params=  constr!!.parameters //: List<KParameter>?= null
     val defParamVal= ArrayList<Any?>()
-    if(defParamValFunc == null){
-        for(param in params){
-            val type= param.type //.classifier!!//as KClass<*>
-            val typeClass= type.classifier as KClass<*>
-            val paramVal= try{ defaultPrimitiveValue(typeClass) } catch (e: Exception) { null }
-//            param.
-            Log.e("newInstance()", "paramName= ${param.name} paramVal= $paramVal")
-            if(paramVal != null){
-                defParamVal.add(paramVal)
-            } else{
-                if(type.isMarkedNullable)
-                    defParamVal.add(null)
-                else
-                    return null //Karena class udah gak bisa di-instantiate.
+
+    for(param in params){
+        val type= param.type //.classifier!!//as KClass<*>
+        val typeClass= type.classifier as KClass<*>
+        val paramVal=
+            try{ defaultPrimitiveValue(typeClass) }
+            catch (e: Exception) {
+                try{ defParamValFunc!!(param) }
+                catch (e: Exception){
+                    Log.e("newInstance()", "paramName= ${param.name} nilai param tidak terdefinisi!")
+                    null
+                }
             }
+//        Log.e("newInstance()", "paramName= ${param.name} paramVal= $paramVal")
+        if(paramVal != null){
+            defParamVal.add(paramVal)
+        } else{
+            if(type.isMarkedNullable)
+                defParamVal.add(null)
+            else
+                return null //Karena class udah gak bisa di-instantiate.
         }
+    }
+/*
+    if(defParamValFunc == null){
+        /* implementasi lama di atas */
     }else{
         for(param in params){
             val paramVal= defParamValFunc(param)
@@ -142,37 +161,50 @@ inline fun <reified T> new(noinline defParamValFunc: ((param: KParameter) -> Any
             }
         }
     }
-
+ */
     return constr.call(*defParamVal.toTypedArray())
 }
 
+/**
+ * Digunakan untuk mendapatkan nilai default dari suatu tipe data yg ada pada [clazz].
+ * Nilai default dapat diperoleh jika tipe data pada [clazz] merupakan tipe primitif
+ * sesuai definisi yg ada.
+ */
 fun <T: Any> defaultPrimitiveValue(clazz: KClass<T>): T?{
 //    Log.e("defaultPrimitiveValue()", "clazz.simpleName= ${clazz.simpleName} String.classSimpleName_k()= ${String::class.classSimpleName()}")
     val res= when (clazz.simpleName) {
 //        null -> intent.putExtra(it.first, null as Serializable?)
+//        CharSequence.classSimpleName() -> ""
         Int::class.simpleName -> 0
         Long::class.simpleName -> 0
-//        CharSequence.classSimpleName() -> ""
         String::class.simpleName -> ""
         Float::class.simpleName -> 0f
         Double::class.simpleName -> 0.0
         Char::class.simpleName -> '_'
         Short::class.simpleName -> 0.toShort()
         Boolean::class.simpleName -> true
+        Byte::class.simpleName -> 0.toByte()
+
+        Serializable::class.simpleName -> 0
+
+        IntArray::class.simpleName -> IntArray(0)
+        LongArray::class.simpleName -> LongArray(0)
+        FloatArray::class.simpleName -> FloatArray(0)
+        DoubleArray::class.simpleName -> DoubleArray(0)
+        CharArray::class.simpleName -> CharArray(0)
+        ShortArray::class.simpleName -> ShortArray(0)
+        BooleanArray::class.simpleName -> BooleanArray(0)
+        ByteArray::class.simpleName -> ByteArray(0)
+
 //        is Serializable -> intent.putExtra(it.first, value)
 //        is Bundle -> intent.putExtra(it.first, value)
 //        is Parcelable -> intent.putExtra(it.first, value)
 //        Array(0){it as T}.classSimpleName_k() -> Array(0){ it as T }
-/*
-        IntArray.classSimpleName() -> intent.putExtra(it.first, value)
-        is LongArray -> intent.putExtra(it.first, value)
-        is FloatArray -> intent.putExtra(it.first, value)
-        is DoubleArray -> intent.putExtra(it.first, value)
-        is CharArray -> intent.putExtra(it.first, value)
-        is ShortArray -> intent.putExtra(it.first, value)
-        is BooleanArray -> intent.putExtra(it.first, value)
- */
-        else -> null //throw Exception("Tipe data \"${clazz.simpleName}\" bukan nilai primitif.")
+
+        else -> {
+            Log.e("defaultPrimitiveValue()", "Kelas: ${clazz.simpleName} bkn merupakan primitif. Hasil akhir == NULL")
+            null
+        } //throw Exception("Tipe data \"${clazz.simpleName}\" bukan nilai primitif.")
     }
     return res as? T
 }

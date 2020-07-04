@@ -3,6 +3,7 @@ package sidev.lib.android.siframe.arch.presenter
 import android.content.Context
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
+import sidev.lib.android.siframe.arch.type.Mvp
 import sidev.lib.android.siframe.exception.DataIntegrityExc
 import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -33,6 +34,11 @@ import java.lang.Exception
                      akan ada kelas perantara yg menghubungkan antara Presenter biasa dg MviPresenter.
                      Kelas perantara tersebut terletak di dalam MviPresenter dan opsional.
 
+ */
+/**
+ * Kelas dasar semua presenter yg ada pada framework ini.
+ * Kelas [Presenter] tidak meng-extend interface [Mvp] karena kelas ini dapat
+ * digunakan pada berbagai arsitektur.
  */
 abstract class Presenter(
     @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: PresenterCallback<String>?

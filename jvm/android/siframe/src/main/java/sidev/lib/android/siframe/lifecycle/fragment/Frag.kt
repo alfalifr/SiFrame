@@ -26,7 +26,9 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterCallback
 import sidev.lib.android.siframe.arch.presenter.PresenterDependent
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
+import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.arch.view.MviView
+import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
@@ -35,6 +37,8 @@ import sidev.lib.universal.`fun`.asNotNullTo
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].
+ * Scr default semua fragment pada framework ini menggunakan arsitektur MVVM,
+ * namun tidak meng-extend interface [MvvmView].
  */
 abstract class Frag : Fragment(),
     SimpleAbsActFragBase,
@@ -45,16 +49,21 @@ abstract class Frag : Fragment(),
 
     final override var isExpired: Boolean= false
         private set
+    final override var isBusy: Boolean= false
 
+    override val _prop_ctx: Context
+        get() = context!!
     val actSimple
-        get() = activity as Act?
+        get() = activity as? Act
 //    val actBarContentNavAct
 //        get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
         get() = _Config.STYLE_APP
     override lateinit var layoutView: View
+/*
     override val lifecycleCtx: Context
         get() = context!!
+ */
 /*
     lateinit var ctx: Context
         private set

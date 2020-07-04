@@ -1,14 +1,16 @@
 package sidev.lib.android.siframe.arch.presenter
 
+import android.content.Context
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
+import sidev.lib.android.siframe.intfc.prop.CtxProp
 
 /**
  * Interface yg dapat dipanggil oleh ArchPresenter pada framework ini.
  * Parameter <T> merupakan tipe data reqCode.
  */
-interface PresenterCallback<T>: ExpirableBase {
-//    var callbackCtx: Context?
+interface PresenterCallback<T>: ExpirableBase, CtxProp {
+//    var callbackCtx: Context
 //    val presenter: P?
 
     /**

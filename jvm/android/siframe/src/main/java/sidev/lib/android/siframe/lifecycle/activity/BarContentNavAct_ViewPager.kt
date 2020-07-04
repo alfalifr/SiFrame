@@ -19,14 +19,17 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
     : BarContentNavAct(), MultipleActBarViewPagerBase<F> { //ViewPagerActBase<F>
     override val _prop_act: AppCompatActivity
         get() = this
-    override val _sideBase_view: View
+    override val _prop_view: View
         get() = contentViewContainer
-    override val _sideBase_intent: Intent
+    override val _prop_intent: Intent
         get() = intent
-    override val _sideBase_ctx: Context
-        get() = this
-    override val _sideBase_fm: FragmentManager
+    override val _prop_fm: FragmentManager
         get() = supportFragmentManager
+
+/*
+    override val _prop_ctx: Context
+        get() = this
+ */
 
 //    override lateinit var lateVp: ViewPager
 

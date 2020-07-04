@@ -6,8 +6,10 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
+import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
+import sidev.lib.android.siframe.intfc.prop.CtxProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
@@ -18,12 +20,13 @@ import sidev.lib.universal.tool.util.ThreadUtil
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
  */
-interface SimpleAbsActFragBase: LifecycleRootBase,
-    InitViewFun {
+interface SimpleAbsActFragBase: LifecycleRootBase, ArchView,
+    InitViewFun, CtxProp {
 //    val layoutId: Int
 //    val styleId: Int
     var layoutView: View
-    val lifecycleCtx: Context
+    override val _prop_ctx: Context
+    //    val lifecycleCtx: Context
 
     /**
      * @param args berjumlah 1 yaitu:
@@ -38,7 +41,7 @@ interface SimpleAbsActFragBase: LifecycleRootBase,
         val registerKey= this::class.java.name +"@" +this.hashCode() +_SIF_Constant.PROP_STACK
         doOnce(registerKey){
             registerActiveAct()
-            _AppUtil.checkAppValidity(lifecycleCtx)
+            _AppUtil.checkAppValidity(_prop_ctx)
         }
         _initDataFromIntent(act.intent)
         __initViewFlow(layoutView)

@@ -9,8 +9,6 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
 
 abstract class MviAct<S: ViewState, I: ViewIntent>: Act(), MviView<S, I>{
-    override val vmBase: ViewModelBase
-        get() = this
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter? //Knp kok di kelas ini di-abstract padahal sblumnya tidak?
                 //agar Programmer dituntut untuk meng-init presenter.

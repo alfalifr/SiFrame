@@ -9,7 +9,6 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.asntNotNull
 
 /**
@@ -42,8 +41,8 @@ open class SingleFragDrawerAct_BarContentNav_Simple: SingleFragDrawerAct_BarCont
             __initDrawer(layoutView.rootView) //Ini init kedua setelah sblumnya suda diinit namun fragment msh blum diinit.
             loge("___initSideBase() fragment as DrawerFragBase")
         }.asntNotNull<Fragment, DrawerFragBase> {
-            startDrawerLayoutId= _sideBase_intent.getExtra(_SIF_Constant.DRAWER_START_LAYOUT_ID, startDrawerLayoutId)!!
-            endDrawerLayoutId= _sideBase_intent.getExtra(_SIF_Constant.DRAWER_END_LAYOUT_ID, endDrawerLayoutId)!!
+            startDrawerLayoutId= _prop_intent.getExtra(_SIF_Constant.DRAWER_START_LAYOUT_ID, startDrawerLayoutId)!!
+            endDrawerLayoutId= _prop_intent.getExtra(_SIF_Constant.DRAWER_END_LAYOUT_ID, endDrawerLayoutId)!!
             __initDrawer(layoutView.rootView) //Ini init kedua setelah sblumnya suda diinit namun fragment msh blum diinit.
             loge("___initSideBase() fragment as NOT DrawerFragBase")
         }

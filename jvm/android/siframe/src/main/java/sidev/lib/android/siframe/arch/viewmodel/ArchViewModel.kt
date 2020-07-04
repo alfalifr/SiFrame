@@ -32,7 +32,8 @@ interface ArchViewModel: ExpirableBase{
      *                      true jika data sudah ada namun tetap direload dari repo.
      */
     fun <T> observe(reqCode: String, vararg params: Pair<String, Any>,
-                    safeValue: Boolean= true, forceReload: Boolean= false,
+                    /*safeValue: Boolean= true, */
+                    loadLater: Boolean= false, forceReload: Boolean= false,
                     onPreLoad: (() -> Unit)?= null, //fungsi saat LifeData msh loading
                     onObserve: (T) -> Unit): LifeData<T>?
 

@@ -5,7 +5,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.fkmId
 import sidev.lib.android.siframe.tool.SQLiteHandler
 import sidev.lib.implementation.model.Page
 
-class PageSqlite : SQLiteHandler<Page>(){
+class PageSqlite(c: Context) : SQLiteHandler<Page>(c){
     override val modelClass: Class<Page>
         get() = Page::class.java
 

@@ -24,11 +24,18 @@ fun <T> Array<T>?.isNotNullAndEmpty(): Boolean{
 Convert
 ===============
  */
+//<4 Juli 2020> => Definisi baru
+fun <T> Array<T>.toArrayList(): ArrayList<T>{
+    return this.toList() as ArrayList<T>
+}
+/*
+<4 Juli 2020> => Definisi lama.
 fun <T> Array<T>.toArrayList(): ArrayList<T>{
     val list= ArrayList<T>()
     this.forEach { list.add(it) }
     return list
 }
+ */
 
 
 /*

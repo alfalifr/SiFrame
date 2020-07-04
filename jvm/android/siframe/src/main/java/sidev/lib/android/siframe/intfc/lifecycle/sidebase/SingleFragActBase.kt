@@ -20,9 +20,9 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     override val layoutId: Int
         get() = _Config.LAYOUT_ACT_SINGLE_FRAG //.LAYOUT_ACT_SIMPLE
 
-    override val _sideBase_view: View
-    override val _sideBase_intent: Intent
-    override val _sideBase_ctx: Context
+    override val _prop_view: View
+    override val _prop_intent: Intent
+    override val _prop_ctx: Context
 
     var fragment: Fragment
     val fragContainerId: Int
@@ -50,7 +50,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
          * Karena jika fragment langsung dipasang ke container, maka data pada fragment gak bisa direload.
          * Jadi inisiasi fragment harus setelah data didownload.
          */
-        isDataAsync= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)!! //getIntentData(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)
+        isDataAsync= _prop_intent.getExtra(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)!! //getIntentData(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)
         if(!isDataAsync)
             __attachFrag()
     }
@@ -66,10 +66,10 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
      */
     fun __initFrag(){
 //        if(isFragLate) {
-            _sideBase_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
+            _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->
                     fragment= ReflexUtil.newInstance(fragName)
-                    _sideBase_view.findViewById<View>(fragContainerId)!!
+                    _prop_view.findViewById<View>(fragContainerId)!!
                     Log.e("SingleFragActBase", "__initFrag MULAI")
                     __attachFrag()
                     Log.e("SingleFragActBase", "__initFrag AKHIR")
@@ -83,7 +83,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     }
 
     fun __attachFrag(){
-        _sideBase_ctx.commitFrag(fragContainerId, fragment)
+        _prop_ctx.commitFrag(fragContainerId, fragment)
         if(isTitleFragBased)
             this.asNotNull { act: BarContentNavAct ->
                 fragment.asNotNull { frag: Frag ->

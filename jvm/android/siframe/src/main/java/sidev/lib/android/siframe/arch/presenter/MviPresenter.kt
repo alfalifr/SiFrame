@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.arch.presenter
 
-import androidx.annotation.RestrictTo
+import sidev.lib.android.siframe.arch.intent_state.IntentEquivReqCodeGetter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
@@ -8,10 +8,23 @@ import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.classSimpleName
 import sidev.lib.universal.`fun`.isNull
-import java.lang.Exception
+import kotlin.reflect.KParameter
+
 abstract class MviPresenter<S: ViewState>(
     callback: StateProcessor<S, *>? //PresenterCallback<I>?): Presenter(){
-): Presenter(callback){
+): Presenter(callback), Mvi {
+
+    protected var intentEquivReqCodeGetter: IntentEquivReqCodeGetter?= null
+        private set
+
+
+    inline fun <reified I: ViewIntent> getEquivReqCode(
+        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    ): String{
+        if(`access$intentEquivReqCodeGetter` == null)
+            `access$intentEquivReqCodeGetter`= IntentEquivReqCodeGetter()
+        return `access$intentEquivReqCodeGetter`!!.getEquivReqCode<I>(defParamValFunc)
+    }
 
     final override fun postRequest(reqCode: String, data: Map<String, Any>?) {
         loge("MviPresenter.postRequest() MULAI")
@@ -22,7 +35,7 @@ abstract class MviPresenter<S: ViewState>(
     }
 
     fun onPreRequest(reqCode: String, data: Map<String, Any>?){
-        doWhenExpNotExpired {
+        doWhenLinkNotExpired {
             (callback as? StateProcessor<S, *>)?.postPreResult(reqCode, data)
         }.isNull {
             val clsName= this.classSimpleName()
@@ -31,6 +44,13 @@ abstract class MviPresenter<S: ViewState>(
             callback= null
         }
     }
+
+    @PublishedApi
+    internal var `access$intentEquivReqCodeGetter`: IntentEquivReqCodeGetter?
+        get() = intentEquivReqCodeGetter
+        set(v){
+            intentEquivReqCodeGetter= v
+        }
 }
 
 /*

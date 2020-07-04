@@ -10,8 +10,6 @@ import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct
 
 abstract class MviDrawerBarContentNavAct<S: ViewState, I: ViewIntent>
     : DrawerBarContentNavAct(), MviView<S, I> {
-    override val vmBase: ViewModelBase
-        get() = this
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

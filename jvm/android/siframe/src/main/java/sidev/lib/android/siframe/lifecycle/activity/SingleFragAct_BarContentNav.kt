@@ -19,14 +19,16 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
 
     override val _prop_act: AppCompatActivity
         get() = this
-    override val _sideBase_view: View
+    override val _prop_view: View
         get() = contentViewContainer
-    override val _sideBase_intent: Intent
+    override val _prop_intent: Intent
         get() = intent
+    override val _prop_fm: FragmentManager
+        get() = supportFragmentManager
+/*
     override val _sideBase_ctx: Context
         get() = this
-    override val _sideBase_fm: FragmentManager
-        get() = supportFragmentManager
+ */
 
 //    override lateinit var fragment: Fragment
 //    override var isFragLate: Boolean= false

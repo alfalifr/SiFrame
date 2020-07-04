@@ -23,6 +23,7 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterDependent
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
+import sidev.lib.android.siframe.arch.view.MvvmView
 //import sidev.lib.android.siframe.presenter.Repository
 //import sidev.lib.android.siframe.presenter.RepositoryCallback
 import sidev.lib.android.siframe.tool.util._AppUtil
@@ -33,6 +34,8 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
  * sbg pengganti dari [AppCompatActivity].
+ * Scr default semua kelas turunan Activity pada framework ini
+ * menggunakan arsitektur MVVM, namun tidak meng-extend interface [MvvmView].
  */
 abstract class Act : AppCompatActivity(), Inheritable,
     SimpleAbsActFragBase,
@@ -44,24 +47,31 @@ abstract class Act : AppCompatActivity(), Inheritable,
 //    MviView<State>,
 //    PresenterCallback<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     BackBtnBase {
+
     final override var isExpired: Boolean= false
         private set
+    final override var isBusy: Boolean= false
 
     override var isInherited: Boolean= false
     override fun _configInheritable(){}
-
+/*
     override val lifecycleCtx: Context
         get() = this
+    override val _prop_ctx: Context
+        get() = this
+    override val _sideBase_ctx: Context
+        get() = lifecycleCtx
+ */
 
     override val _prop_act: AppCompatActivity
         get() = this
-    override val _sideBase_view: View
+    override val _prop_ctx: Context
+        get()= this
+    override val _prop_view: View
         get() = layoutView
-    override val _sideBase_intent: Intent
+    override val _prop_intent: Intent
         get() = intent
-    override val _sideBase_ctx: Context
-        get() = lifecycleCtx
-    override val _sideBase_fm: FragmentManager
+    override val _prop_fm: FragmentManager
         get() = supportFragmentManager
 
     abstract override val layoutId: Int

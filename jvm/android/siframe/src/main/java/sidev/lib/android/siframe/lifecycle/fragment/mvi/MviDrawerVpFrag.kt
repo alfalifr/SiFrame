@@ -10,8 +10,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.DrawerVpFrag
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 
 abstract class MviDrawerVpFrag<F: Frag, S: ViewState, I: ViewIntent> : DrawerVpFrag<F>(), MviView<S, I>{
-    override val vmBase: ViewModelBase
-        get() = this
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

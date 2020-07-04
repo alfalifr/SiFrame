@@ -1,15 +1,29 @@
 package sidev.lib.android.siframe.arch.intent_state
 
+import sidev.lib.android.siframe.arch.presenter.MviInteractivePresenterDependent
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.arch.presenter.Presenter
+import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import java.lang.reflect.Field
 
+/**
+ * Kelas yg digunakan untuk mengkoversi object [ViewIntent] yg digunakan sbg parameter saat
+ * memanggil fungsi [downloadData], [uploadData], dan [sendRequest] yg ada pada
+ * interface [MviInteractivePresenterDependent] menjadi bentuk String.
+ * Hal tersebut dikarenakan [MviPresenter] pada dasarnya adalah Presenter yg [reqCode]-nya
+ * memakai String.
+ *
+ * Kelas ini opsional pada arsitektur MVI pada framework ini. Jika programmer memutuskan untuk
+ * menggunakan [ViewIntent] sbg parameter dan belum meng-override fungsi [MviView.initIntentCoverter],
+ * maka scr default object [IntentConverter] yg ada pada [MviView] akan di-instantiate
+ * menggunakan definisi default kelas ini.
+ */
 open class IntentConverter<I: ViewIntent>(var view: ExpirableBase?, var presenter: Presenter?)
-    : ExpirableLinkBase{
+    : ExpirableLinkBase {
     override val expirable: ExpirableBase?
         get() = view
 
@@ -17,6 +31,12 @@ open class IntentConverter<I: ViewIntent>(var view: ExpirableBase?, var presente
      * Berguna jika [presenter] bkn merupakan tipe data [MviPresenter], terutama saat preState.
      */
     var stateProcessor: StateProcessor<*, I>?= null
+        set(v){
+            if(field != null)
+                field!!.intentConverter= null
+            field= v
+            v?.intentConverter= this
+        }
 
     /**
      * Key-nya adalah nama dari kelas <code><I: ViewIntent></code>.
@@ -62,7 +82,7 @@ open class IntentConverter<I: ViewIntent>(var view: ExpirableBase?, var presente
 
     fun postRequest(intent: I /*, vararg data: Pair<String, Any>*/){
         loge("postRequest() MULAI")
-        doWhenExpNotExpired {
+        doWhenLinkNotExpired {
             loge("postRequest() doWhenExpNotExpired MULAI")
             val sealedName= intent.getSealedClassName(true)!!
             var reqCode= equivReqCodeMap[sealedName]

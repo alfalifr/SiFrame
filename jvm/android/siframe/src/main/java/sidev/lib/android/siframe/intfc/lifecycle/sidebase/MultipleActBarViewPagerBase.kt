@@ -47,8 +47,8 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
             override fun onPageSelected(position: Int) {
                 attachActBarView(position)
                 attachActBarTitle(position)
-                vpFragList[position].onActive(_sideBase_view, this@MultipleActBarViewPagerBase, position)
-                onPageFragActiveListener[position]?.onPageFragActive(_sideBase_view, position) //
+                vpFragList[position].onActive(_prop_view, this@MultipleActBarViewPagerBase, position)
+                onPageFragActiveListener[position]?.onPageFragActive(_prop_view, position) //
             }
         })
         if(vpFragList.isNotEmpty()){

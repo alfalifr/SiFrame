@@ -10,5 +10,5 @@ import sidev.lib.universal.tool.util.StringUtil
 open class ViewIntent{
     open val equivalentReqCode: String
         = StringUtil.toSnakeCase(this.classSimpleName(), true) //this.getSealedClassName(true)!!
-    fun getReqCode()= equivalentReqCode
+//    fun getReqCode()= equivalentReqCode
 }

@@ -16,7 +16,7 @@ class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
     companion object{
         val REQ_GET_CONTENT= "get_content"
         val REQ_LOGIN= "login"
-        val DATA_UNAME= "data_uname"
+        val DATA_UNAME= "uname"
     }
 
     override fun checkDataIntegrity(
@@ -41,7 +41,7 @@ class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
     fun login(uname: String){
         ThreadUtil.delayRun(3000){
             if(uname == "uname")
-                postSucc(Const.RES_NOT_OK, null)
+                postSucc(Const.RES_OK, null)
             else
                 postFail(0, "Uname != uname :( uname= $uname")
         }

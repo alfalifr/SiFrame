@@ -10,8 +10,6 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 
 abstract class MviRvFrag<R: RvAdp<*, *>, S: ViewState, I: ViewIntent> : RvFrag<R>(), MviView<S, I>{
-    override val vmBase: ViewModelBase
-        get() = this
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

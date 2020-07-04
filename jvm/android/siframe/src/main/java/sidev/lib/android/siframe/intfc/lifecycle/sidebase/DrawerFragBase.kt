@@ -28,7 +28,7 @@ interface DrawerFragBase : DrawerBase{
             startDrawerContainer= rootView.findViewById(startDrawerContainerId)
             endDrawerContainer= rootView.findViewById(endDrawerContainerId)
 
-            val drawerWidthPercent= _ResUtil.getDimen(_sideBase_ctx!!, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
+            val drawerWidthPercent= _ResUtil.getDimen(_prop_ctx!!, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
             val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_prop_act!!, drawerWidthPercent)
 
             val lpStart= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)

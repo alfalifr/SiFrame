@@ -14,7 +14,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 
 interface DrawerActBase : DrawerBase{
     override val _prop_act: AppCompatActivity
-    override val _sideBase_ctx: Context
+    override val _prop_ctx: Context
 
     override var rootDrawerLayout: DrawerLayout
     override var contentViewContainer: ViewGroup
@@ -27,7 +27,7 @@ interface DrawerActBase : DrawerBase{
         startDrawerContainer= rootView.findViewById(startDrawerContainerId)
         endDrawerContainer= rootView.findViewById(endDrawerContainerId)
 
-        val drawerWidthPercent= _ResUtil.getDimen(_sideBase_ctx, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
+        val drawerWidthPercent= _ResUtil.getDimen(_prop_ctx, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
         val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_prop_act, drawerWidthPercent)
 
         val lpStart= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
