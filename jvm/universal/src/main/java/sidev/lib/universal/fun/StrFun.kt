@@ -55,3 +55,21 @@ fun CharSequence.nextNonWhitespaceChar(startInd: Int= 0): Char? {
     }
     return null
 }
+
+
+fun String.shorten(maxLen: Int, strInMid: String= " ... "): String{
+    if(this.length <= maxLen) return this
+
+//    val strInMid= " ... "
+
+    val strInMidIndex= this.length /2
+    val strLenDiff= this.length -maxLen
+
+    val lenOfEachSideIsCut= (strLenDiff + strInMid.length) /2
+    val lenOfEachSide= strInMidIndex -lenOfEachSideIsCut
+
+    val strPrefix= this.substring(0, lenOfEachSide)
+    val strSuffix= this.substring(this.lastIndex -lenOfEachSide)
+
+    return strPrefix +strInMid +strSuffix
+}

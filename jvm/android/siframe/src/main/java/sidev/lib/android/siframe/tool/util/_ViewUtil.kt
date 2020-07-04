@@ -312,13 +312,13 @@ object  _ViewUtil{
                     iv.setImageBitmap(img.bm)
                     true
                 }
-                img.dir != null -> loadImageToImageView(iv, img.dir)
+                img.dir != null -> loadImageToIv(iv, img.dir)
                 else -> false
             }
         } else false
     }
 
-    fun loadImageToImageView(iv: ImageView, /*ivSizeType: Int, */url: String?): Boolean{
+    fun loadImageToIv(iv: ImageView, /*ivSizeType: Int, */url: String?): Boolean{
         val isDirLocal= try{ FileUtil.isDirLocal(url!!) }
         catch(e: Exception){ false }
 
