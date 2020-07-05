@@ -29,9 +29,12 @@ sealed class ContentFragIntent: ViewIntent(){
     object DownloadData: ContentFragIntent(){
         override val equivalentReqCode: String
             get() = ContentPresenter.REQ_GET_CONTENT
+        override val isResultTemporary: Boolean
+            get() = false
     }
     data class Login(var uname: String): ContentFragIntent(){
         override val equivalentReqCode: String
             get() = ContentPresenter.REQ_LOGIN
+        override val isResultTemporary: Boolean = true
     }
 }

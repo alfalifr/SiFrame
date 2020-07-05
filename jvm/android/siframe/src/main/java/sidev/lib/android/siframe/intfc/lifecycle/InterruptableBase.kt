@@ -8,6 +8,10 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
  * Interface ini tidak dapat digunakan untuk manajemen antrian Thread.
  */
 interface InterruptableBase {
+    companion object{
+        @JvmStatic
+        val DEFAULT_BUSY_OF_WHAT= "<null>"
+    }
     /**
      * Flag apakah turunan interface ini sedang sibuk atau tidak.
      * Flag ini mempengaruhi [InterruptableBase.doWhenNotBusy].
@@ -19,11 +23,20 @@ interface InterruptableBase {
      */
     val isInterruptable: Boolean
 
-    fun doWhenNotBusy(func: () -> Unit){
-        if(isInterruptable || !isBusy)
+    /**
+     * Sebuah tag untuk menandakan bahwa interface [InterruptableBase] ini
+     * sedang sibuk mengerjakan sesuai yg ada pada tag [busyOfWhat].
+     */
+    val busyOfWhat: String
+        get()= DEFAULT_BUSY_OF_WHAT
+
+    fun <T> doWhenNotBusy(func: () -> T): T?{
+        return if(isInterruptable || !isBusy)
             func()
-        else
+        else{
             onInterruptedWhenBusy()
+            null
+        }
     }
     fun onInterruptedWhenBusy(){
         loge("InterruptableBase.onInterruptedWhenBusy() -> proses ditahan karena masih sibuk")

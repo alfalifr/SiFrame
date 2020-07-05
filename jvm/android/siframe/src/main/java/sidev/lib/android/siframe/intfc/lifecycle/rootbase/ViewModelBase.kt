@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
@@ -25,7 +26,7 @@ interface ViewModelBase : LifecycleRootBase, ExpirableBase, InterruptableBase,
         _vmProvider= ViewModelProvider(this, VmFactory(this))
     }
 
-    fun <T: FiewModel> getViewModel(cls: Class<T>): T {
+    fun <T: ViewModel> getViewModel(cls: Class<T>): T {
         return _vmProvider[cls]
     }
 

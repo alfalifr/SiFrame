@@ -31,7 +31,7 @@ interface InteractivePresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterC
     }
     @CallSuper
     fun sendRequest(reqCode: R, vararg data: Pair<String, Any>) {
-        loge("isBusy= $isBusy")
+        loge("InteractivePresenterDependent isBusy= $isBusy")
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)

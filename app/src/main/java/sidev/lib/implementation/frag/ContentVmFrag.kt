@@ -17,6 +17,7 @@ import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.viewmodel.ContentVm
 import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.tool.util.ThreadUtil
 
 class ContentVmFrag : Frag(){
     override val layoutId: Int
@@ -51,6 +52,8 @@ class ContentVmFrag : Frag(){
             ContentVm.CONTENT,
             onPreLoad = { showPb() } )
         { content: ArrayList<Content>? ->
+            loge("content == null => ${content == null}")
+
             showPb(false)
             rvAdp.dataList= content
             layoutView.tv_no_data.visibility= if(content.isNullOrEmpty()) View.VISIBLE
@@ -64,6 +67,7 @@ class ContentVmFrag : Frag(){
         getViewModel(ContentVm::class.java).observe(this,
             ContentVm.LOGIN,
             ContentPresenter.DATA_UNAME to "uname",
+            isValueTemporary = true,
             loadLater = true, //request login hanya dilakukan saat tombol ditekan, bkn saat ini juga.
             onPreLoad = { showPbLogin() } )
         { isLoginSucc: Boolean ->
@@ -80,18 +84,22 @@ class ContentVmFrag : Frag(){
     }
 
     fun showPb(show: Boolean= true){
+        ThreadUtil.getCurrentCallerFunName()
         layoutView.findViewById<View>(R.id.pb)?.visibility= if(show) View.VISIBLE
             else View.GONE
         layoutView.tv_no_data.visibility= if(!show) View.VISIBLE
             else View.GONE
         rv.visibility= if(!show) View.VISIBLE
             else View.GONE
+        loge("showPb(show) => show= $show")
         layoutView.findViewById<SwipeRefreshLayout>(R.id.srl)?.isRefreshing= show
     }
 
     fun showPbLogin(show: Boolean= true){
+/*
         layoutView.findViewById<View>(R.id.pb)?.visibility= if(show) View.VISIBLE
         else View.GONE
+ */
         layoutView.findViewById<SwipeRefreshLayout>(R.id.srl)?.isRefreshing= show
     }
 }

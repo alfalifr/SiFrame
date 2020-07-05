@@ -48,6 +48,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                     intentConverter.expirableView= this
                     intentConverter.presenter= presenter
                     intentConverter.stateProcessor= stateProcessor
+                    loge("statePros is changed MviView")
 //                    stateProcessor.intentConverter= intentConverter
                 }
 
@@ -121,7 +122,10 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
             }.notNullTo { vm ->
                 vm.get<Presenter>(KEY_VM_MVI_STATE_PRESENTER)
                     .notNullTo { presenter ->
-                        presenter.value?.callback.asNotNull { sp: StateProcessor<S, I> -> sp.view= this }
+                        presenter.value?.callback.asNotNull { sp: StateProcessor<S, I> ->
+                            sp.view= this
+                            intentConverter= sp.intentConverter
+                        }
                         presenter.value
                     }
     //                    presenter.value?.callback= stateProcessor -> gak perlu karena yg di-recreate adalah view-nya saja.

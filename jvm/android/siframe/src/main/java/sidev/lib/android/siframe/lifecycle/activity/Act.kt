@@ -23,6 +23,7 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
@@ -48,6 +49,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
     final override var isExpired: Boolean= false
         private set
     final override var isBusy: Boolean= false
+    final override var busyOfWhat: String= InterruptableBase.DEFAULT_BUSY_OF_WHAT
 
     override var isInherited: Boolean= false
     override fun _configInheritable(){}

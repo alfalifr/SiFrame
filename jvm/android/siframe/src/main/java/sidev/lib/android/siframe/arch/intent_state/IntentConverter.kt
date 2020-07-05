@@ -8,6 +8,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.reflect.Field
 
 /**
@@ -68,43 +69,51 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
         val map= HashMap<String, Any>()
         intent.getAllFields(justPublic = false).notNull { fields ->
             for(field in fields){
-                getIntentDataPair(intent, field).notNull { map.add(it) }
+                loge("getIntentDataMap() intent= ${intent.equivalentReqCode} field.name= ${field.name}")
+                //Field yg gak boleh dimodifikasi definisi pair datanya adalah
+                // dua field yg namanya ada di dalam konstanta di bawah.
+                if(field.name != INTENT_EQUIVALENT_REQ_CODE
+                    && field.name != INTENT_IS_RESULT_TEMPORARY)
+                    getIntentDataPair(intent, field).notNull { map.add(it) }
+                else
+                    getDefaultIntentDataPair(intent, field).notNull { map.add(it) }
             }
         }
         return if(map.isNotEmpty()) map
         else null
     }
 
-    open fun getIntentDataPair(intent: I, field: Field): Pair<String, Any>?{
+    fun getDefaultIntentDataPair(intent: I, field: Field): Pair<String, Any>?{
         return try{ Pair(field.name, field.getV(intent)!!) } //Dg anggapan pengambilan nilai dapat dilakukan lewat refleksi.
         catch (e: Exception){ null } //Jika ternyata refleksi dilarang oleh sistem.
     }
 
+    /**
+     * Programmer dapat mengubah definisi pair data pada sebuah [ViewIntent].
+     * Namun, ada bbrp definisi yg sudah pakem dan programmer gak boleh mengubah definisi
+     * default yg terdapat pada fungsi [getDefaultIntentDataPair].
+     * Definisi pair data yg sudah pakem tidak di-pass ke sini oleh framework ini.
+     */
+    open fun getIntentDataPair(intent: I, field: Field): Pair<String, Any>?{
+        return getDefaultIntentDataPair(intent, field)
+    }
+
     fun postRequest(intent: I /*, vararg data: Pair<String, Any>*/){
-        loge("postRequest() MULAI")
         doWhenLinkNotExpired {
-            loge("postRequest() doWhenExpNotExpired MULAI")
             val sealedName= intent.getSealedClassName(true)!!
             var reqCode= equivReqCodeMap[sealedName]
             if(reqCode == null){
-                loge("postRequest() doWhenExpNotExpired reqCode == null")
                 reqCode= getEquivReqCode(intent, getDefaultEquivReqCode(intent))
                 equivReqCodeMap[sealedName]= reqCode
             }
 
-            loge("postRequest() map MULAI")
             val map= getIntentDataMap(intent)
-            loge("postRequest() map SELESAI")
 
             if(presenter !is MviPresenter<*>){
-                loge("postRequest() presenter !is MviPresenter<*> MULAI")
-                stateProcessor?.postPreResult(reqCode, map)
-                loge("postRequest() presenter !is MviPresenter<*> SELESAI")
+                stateProcessor?.postPreResult(reqCode, map, intent.isResultTemporary)
+                loge("postRequest() presenter !is MviPresenter<*> SELESAI \n reqCode= $reqCode isResultTemproray= ${intent.isResultTemporary}")
             }
-/*
-        val map= if(data.isEmpty()) null
-            else mapOf(*data)
- */
+
             presenter?.postRequest(reqCode, map)
         }.isNull {
             val clsName= this.classSimpleName()

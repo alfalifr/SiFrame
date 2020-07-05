@@ -29,12 +29,12 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 
     lateinit var rvAdp: ContentAdp
 
-    override fun initPresenter(): Presenter? = ContentPresenter(null)
+    override fun initPresenter(): Presenter? = MviContentPresenter(null)
     override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>?
             = ContentFragStatePros(this)
 /*
     override fun initIntentCoverter(presenter: Presenter): IntentConverter<ContentFragIntent>?
-        = null //ContentFragIntentConverter(null, null)
+        = ContentFragIntentConverter(null, null)
  */
 
     override fun _initView(layoutView: View) {

@@ -73,15 +73,19 @@ inline fun <reified T> Any.getField(name: String= ""): Field? {
  * Fungsi ini menggunakan Java Reflection, bkn Kotlin.
  * jika [includeInherited] true, maka field super class yg diambil tidak sampai kelas [Object].
  *
- * [includeInherited] true jika termasuk field cuperClass.
- * [justPublic] true jika hanya mengambil yang public.
+ * @param includeInherited true jika termasuk field cuperClass.
+ * @param justPublic true jika hanya mengambil yang public.
+ * @param justOverriden true jika field yg diambil hanya field paling bawah milik child-class.
+ *   false jika field yg diambil adalah delkarasi dasar milik superclass.
+ *
  *
  * @return null jika field yg didapat 0.
  */
-fun Any.getAllFields(includeInherited: Boolean= true, justPublic: Boolean= true)
+fun Any.getAllFields(includeInherited: Boolean= true, justPublic: Boolean= true, justOverriden: Boolean= true)
         : List<Field>? {
     val list= ArrayList<Field>()
     var clazz: Class<*>? = this::class.java
+    val fieldNameSet= LinkedHashSet<String>()
     do{
         Log.e("getAllFields", "getAllFields() ${clazz?.simpleName}")
         val fields= if(justPublic) clazz!!.fields
@@ -89,8 +93,15 @@ fun Any.getAllFields(includeInherited: Boolean= true, justPublic: Boolean= true)
 //        val supposedType= T::class.java.name
 
         for(field in fields){
-//            Log.e("getAllFields", "getAllFields() field.name= ${field.name}")
-            list.add(field)
+            if(justOverriden){
+                if(!fieldNameSet.contains(field.name)){
+                    fieldNameSet.add(field.name)
+                    list.add(field)
+                }
+            } else{
+                list.add(field)
+                Log.e("getAllFields", "getAllFields() added field.name= ${field.name}")
+            }
         }
 
         clazz= clazz.superclass //as Class<*>?

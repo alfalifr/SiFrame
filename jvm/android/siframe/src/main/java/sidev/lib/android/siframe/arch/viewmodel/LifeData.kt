@@ -1,6 +1,8 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
+import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -10,56 +12,105 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.listener.OnFailLifecycleBoundListener
+import sidev.lib.android.siframe.intfc.prop.TagProp
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import java.lang.NullPointerException
 
 //Nullable karena kemungkinan user pingin ada kondisi saat value == null
-open class LifeData<T> : MutableLiveData<T>(), ExpirableBase {
-    private val onFailListeners= HashMap<LifecycleOwner, OnFailLifecycleBoundListener>()
-    private val onPreLoadListeners= HashMap<LifecycleOwner, () -> Unit>()
-    private var lastEnteredLifecycleOwner: LifecycleOwner?= null //Digunakan untuk chaining pemasukan onFailListener ke list
-
-    //    private val lifecycleOwners= ArrayList<LifecycleOwner>()
-//    var observeWhenValNull= true
+open class LifeData<T> : MutableLiveData<T>(), ExpirableBase, TagProp {
     final override val isExpired: Boolean
         get() = !hasObservers()
 
+    /**
+     * Dalam konteks [LifeData] ini, [tag] berfungsi untuk menandai
+     * request khusus yg diberikan oleh [FiewModel].
+     */
+    final override var tag: String?= null
+
+
+    private val onFailListeners= HashMap<LifecycleOwner, OnFailLifecycleBoundListener>()
+    private val onPreLoadListeners= HashMap<LifecycleOwner, () -> Unit>()
+    /**
+     * Digunakan untuk chaining pemasukan onFailListener ke list.
+     */
+    private var lastEnteredLifecycleOwner: LifecycleOwner?= null
+    /**
+     * Jika true, maka observer yg terdaftar tidak akan di-notify terhadap perubahan nilai [mData].
+     */
+    protected var isObserverNotified= true
+        private set
+
+
+    fun setValue(value: T?, notifyObserver: Boolean){
+        val initVal= isObserverNotified
+        isObserverNotified= notifyObserver
+        super.setValue(value)
+        isObserverNotified= initVal
+    }
 
     fun observe(owner: LifecycleOwner, onPreLoad: (() -> Unit)?= null, onObserve: (T) -> Unit) {
-//        loge("observe() LifeData")
         if(onPreLoad != null)
             onPreLoadListeners[owner]= onPreLoad
 
-        val innerOnObserve= { it: T? ->
-            try{ onObserve(it!!) }
-            catch (e: java.lang.IllegalArgumentException){
-//                loge("observe() LifeData it == null => TRUE")
-                //Jika ternyata value yg dipass ke LifeData == null, maka abaikan oberver()
-            }
-        }
-//        lifecycleOwners.add(owner)
         super.observe(owner, Observer {
-            loge("observe() LifeData it == null => ${it == null} it= $it")
-            if(owner is ArchView){
-                if(!owner.isBusy)
-                    innerOnObserve(it)
+//            loge("observe() LifeData it == null => ${it == null} isObserverNotified= $isObserverNotified it= $it")
+//            loge("observe() LifeData owner !is InterruptableBase => ${owner !is InterruptableBase} !owner.isBusy => ${(owner as? InterruptableBase)?.isBusy?.not()} \n owner.busyOfWhat => ${(owner as? InterruptableBase)?.busyOfWhat} tag= $tag")
+            //Jika [owner] sedang sibuk, maka cek sibuk atas hal apa [owner] tersebut.
+            //  Jika ternyat sibuk akan hal lain, maka jangan tampilkan layar buffer (onPreLoad).
+            if(isObserverNotified){
+                if(owner !is InterruptableBase
+                    || !owner.isBusy
+                    || owner.busyOfWhat != tag){
+                    //[onObserve] tidak diletakkan di dalam try-catch karena pngecekan hanya
+                    //  sebatas apakah tipe [it] sesuai dengan kriteria tipe paramater [onObsrve].
+                    //Jika [onObsrve] diletakkan di dalam try-catch, kemungkinan error di dalam
+                    //  [onObsrve] akan diabaikan. Hal tersebut tidaklah diinginkan.
+                    val checkFun= {_: T -> }
+                    val safeToPass=
+                        try{ checkFun(it); true }
+                        catch (e: IllegalArgumentException){ false }
+                        catch (e: NullPointerException){ false }
+
+                    //Jika ternyata value yg dipass ke LifeData == null, maka abaikan oberver.
+                    if(safeToPass) onObserve(it)
+                }
                 else
                     onPreLoad?.invoke()
-            } else
-                innerOnObserve(it)
+            }
         })
         lastEnteredLifecycleOwner= owner
-/*
-        val onFail= object : OnFailLifecycleBoundListener(owner){}
-        onFailListeners[owner]= onFail
-        return onFail
- */
     }
+
+    /**
+     * Agar [isObserverNotified] memiliki efek di fungsi ini.
+     */
+    @CallSuper
+    override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
+        super.observe(owner, Observer {
+            if(isObserverNotified)
+                observer.onChanged(it)
+        })
+    }
+    /**
+     * Agar [isObserverNotified] memiliki efek di fungsi ini.
+     */
+    @CallSuper
+    override fun observeForever(observer: Observer<in T>) {
+        super.observeForever{
+            if(isObserverNotified)
+                observer.onChanged(it)
+        }
+    }
+
 
     /**
      * Untuk memanggil fungsi onPreLoad
      */
     fun onPreLoad(owner: LifecycleOwner){
-        onPreLoadListeners[owner]?.invoke()
+        if(owner.lifecycle.currentState != Lifecycle.State.DESTROYED)
+            onPreLoadListeners[owner]?.invoke()
+        else
+            onPreLoadListeners.remove(owner)
     }
 
     fun onFail(func: (resCode: Int, msg: String?, e: Exception?) -> Unit){
@@ -72,9 +123,12 @@ open class LifeData<T> : MutableLiveData<T>(), ExpirableBase {
     /**
      * Untuk memanggil fungsi onFail
      */
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
+//    @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun postOnFail(owner: LifecycleOwner, resCode: Int, msg: String?, e: Exception?){
-        onFailListeners[owner]?.onFail(resCode, msg, e)
+        if(owner.lifecycle.currentState != Lifecycle.State.DESTROYED)
+            onFailListeners[owner]?.onFail(resCode, msg, e)
+        else
+            onFailListeners.remove(owner)
     }
 /*
     /**

@@ -26,6 +26,7 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
+import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
@@ -42,11 +43,12 @@ abstract class Frag : Fragment(),
     ViewModelBase,
     PresenterDependentCommon<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     LifecycleSideBase // Hanya sbg cetaka agar kelas ini dapat memanggil ___initSideBase()
-    { //RepositoryCallback {
+{ //RepositoryCallback {
 
     final override var isExpired: Boolean= false
         private set
     final override var isBusy: Boolean= false
+    final override var busyOfWhat: String= InterruptableBase.DEFAULT_BUSY_OF_WHAT
 
     override val _prop_ctx: Context
         get() = context!!
@@ -167,15 +169,14 @@ abstract class Frag : Fragment(),
 ///*
     override fun ___initRootBase(vararg args: Any) {
         super<ViewModelBase>.___initRootBase(*args)
+
         presenter= if(this is MviView<*, *>) __initMviPresenter()
             else initPresenter()
-        loge("presenter ___initRootBase SELESAI")
+
         super<SimpleAbsActFragBase>.___initRootBase(*args)
 
-        loge("presenter ___initRootBase RESTORE MULAI")
         if(this is MviView<*, *>)
             restoreCurrentState(true)
-        loge("presenter ___initRootBase RESTORE SELESAI")
     }
 // */
 
@@ -198,7 +199,7 @@ abstract class Frag : Fragment(),
      * Jika activity == null, maka instance yg dikembalikan adalah instance [ViewModel]
      * dari fragment ini.
      */
-    override fun <T : FiewModel> getViewModel(cls: Class<T>): T {
+    override fun <T : ViewModel> getViewModel(cls: Class<T>): T {
         return activity.asNotNullTo { act: ViewModelBase -> act.getViewModel(cls) }
             ?: _vmProvider[cls]
     }

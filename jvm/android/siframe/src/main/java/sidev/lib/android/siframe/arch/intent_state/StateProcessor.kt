@@ -2,12 +2,9 @@ package sidev.lib.android.siframe.arch.intent_state
 
 import android.content.Context
 import org.jetbrains.anko.runOnUiThread
-import sidev.lib.android.siframe.arch.presenter.PresenterCallback
 import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
 import sidev.lib.android.siframe.arch.view.MviView
-import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.exception.RuntimeExc
-import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import kotlin.reflect.KParameter
@@ -20,20 +17,20 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
             field= v
             intentConverter?.expirableView= v
         }
-    internal var currentState: S?= null
-        set(v){
-            field= v
-            loge("dari statePros currentState= $currentState currentState.isPreState= ${currentState?.isPreState}")
-        }
+    internal var currentState: HashMap<String, S>?= null
+    internal var currentStateOrder: LinkedHashSet<String>?= null
+    private var currentStateIsTemporary: HashMap<String, Boolean>?= null
 
 //    internal var currentStateIsPreState= false
     internal var intentConverter: IntentConverter<I>?= null //Untuk dapat mendapatkan pemetaan
+/*
         set(v){
             field= v
             v?.expirableView= view
         }
+ */
                 //antara ViewIntent dan reqCode.
-    protected var intentEquivReqCodeGetter: IntentEquivReqCodeGetter?= null
+    protected var intentPropGetter: IntentPropGetter?= null
 //        internal set
 //    protected var intentObj: HashMap<String, ViewIntent>?= null
 
@@ -56,7 +53,7 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
 
 
     /**
-     * @return null jika nama gak ketemu dalam instance [intentConverter.equivReqCodeMap]
+     * @return null jika nama gak ketemu dalam instance [IntentConverter.equivReqCodeMap]
      */
     fun getEquivViewIntentName(reqCode: String): String?{
         return intentConverter.notNullTo {
@@ -74,19 +71,30 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
     inline fun <reified I: ViewIntent> getEquivReqCode(
         noinline defParamValFunc: ((KParameter) -> Any?)?= null
     ): String{
-        if(`access$intentEquivReqCodeGetter` == null)
-            `access$intentEquivReqCodeGetter`= IntentEquivReqCodeGetter()
-        return `access$intentEquivReqCodeGetter`!!.getEquivReqCode<I>(defParamValFunc)
+        if(`access$intentPropGetter` == null)
+            `access$intentPropGetter`= IntentPropGetter()
+        return `access$intentPropGetter`!!.getEquivReqCode<I>(defParamValFunc)
     }
 
 
-    fun postPreResult(reqCode: String, data: Map<String, Any>?){
+    /**
+     * Fungsi dipanggil segera setelah sebuah [ViewIntent] dg kode [reqCode] dikirim
+     * namun hasil dari request belum didapat, sehingga dapat disebut fungsi ini berfungsi
+     * sbg buffer selagi menunggu hasil request datang.
+     *
+     * @param isStateTemporary true jika state yg akan datang baik dari fungsi [postPreResult]
+     *   atau [postResult] dg kode [reqCode] tidak akan disimpan pada [currentState].
+     */
+    fun postPreResult(reqCode: String, data: Map<String, Any>?, isStateTemporary: Boolean){
+        if(currentStateIsTemporary == null)
+            currentStateIsTemporary= HashMap()
+        currentStateIsTemporary!![reqCode]= isStateTemporary
+
         processPreState(reqCode, data)
             .notNull { state ->
                 state.isPreState= true
-                loge("dari statePros postPreResult")
 //                currentStateIsPreState= true
-                postState(state)
+                postState(reqCode, state)
             }.isNull {
                 loge("StateProcessor.postPreResult() -> state == NULL")
             }
@@ -96,9 +104,8 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         processState(reqCode, resCode, data, isError, exc, errorMsg)
             .notNull { state ->
                 state.isPreState= false
-                loge("dari statePros postResult")
 //                currentStateIsPreState= false
-                postState(state)
+                postState(reqCode, state)
             }.isNull {
                 loge("StateProcessor.processState() -> state == NULL")
             }
@@ -108,8 +115,9 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
      * <4 Juli 2020> => parameter isPreState dihilangkan. Sbg gantinya, isPreState disimpan
      *   di dalam [state]. Tujuannya adalah agar lebih intuitif.
      */
-    protected fun postState(state: S/*, isPreState: Boolean*/){
-        currentState= state
+    protected fun postState(reqCode: String, state: S, isRestoreMode: Boolean= false){
+        if(!isRestoreMode)
+            saveCurrentState(reqCode, state)
         try{
             if(!view.isExpired)
                 /*App.ctx*/
@@ -124,13 +132,44 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         } catch (e: Exception){
             loge("postState() -> Terjadi kesalahan saat render state \n Error= ${e::class.java.simpleName} \n Msg= ${e.message} Cause= ${e.cause}")
         }
-        loge("dari statePros state.isPreState= ${state.isPreState}")
 //        currentStateIsPreState= state.isPreState
     }
+
+    protected fun saveCurrentState(reqCode: String, state: S){
+        //Jika temporary, gak usah disimpan.
+        // Kecuali jika state merupakan preState, maka tetap disimpan agar saat restore
+        // saat screen rotation, layar buffer tetap muncul.
+        if(state.isPreState
+            || !currentStateIsTemporary!!
+                    [reqCode]!!){
+            if(currentState == null){
+                currentState= HashMap()
+                currentStateOrder= LinkedHashSet()
+            }
+            if(currentStateOrder!!.contains(reqCode)){
+                currentStateOrder!!.remove(reqCode)
+            }
+            currentStateOrder!!.add(reqCode)
+            currentState!![reqCode]= state
+        }
+        //Cabang ini berfungsi untuk menghilangkan preState yg [ViewState]-nya
+        // bersifat sementara agar saat di-restore layar buffer tidak muncul
+        // padahal hasil request udah didapatkan.
+        else if(!state.isPreState
+            && currentStateIsTemporary!!
+                    [reqCode]!!){
+            currentState?.remove(reqCode)
+            currentStateOrder?.remove(reqCode)
+        }
+    }
+
     fun restoreCurrentState(){
         try{
+            for(reqCode in currentStateOrder!!){
+                val state= currentState!![reqCode]!!
+                postState(reqCode, state, true)
+            }
 //            currentState!!.isPreState= currentStateIsPreState
-            postState(currentState!!)
         } catch (e: KotlinNullPointerException){
             throw RuntimeExc(commonMsg = "StateProcessor.restoreCurrentState()",
                 detailMsg = "Tidak bisa mengembalikan state ke semula karena currentState == NULL")
@@ -153,9 +192,9 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
     }
 
     @PublishedApi
-    internal var `access$intentEquivReqCodeGetter`: IntentEquivReqCodeGetter?
-        get() = intentEquivReqCodeGetter
+    internal var `access$intentPropGetter`: IntentPropGetter?
+        get() = intentPropGetter
         set(v){
-            intentEquivReqCodeGetter= v
+            intentPropGetter= v
         }
 }

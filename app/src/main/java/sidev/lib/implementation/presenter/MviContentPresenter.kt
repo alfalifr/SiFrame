@@ -11,6 +11,7 @@ import sidev.lib.implementation._cob.contentList
 import sidev.lib.implementation.intent_state.ContentFragIntent
 import sidev.lib.implementation.intent_state.ContentFragState
 import sidev.lib.implementation.util.Const
+import sidev.lib.universal.`fun`.copyGrowTimely
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
@@ -18,7 +19,7 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
     companion object{
         val REQ_GET_CONTENT= "get_content"
         val REQ_LOGIN= "login"
-        val DATA_UNAME= "uname"
+        val DATA_UNAME= "data_uname"
     }
 
     override fun checkDataIntegrity(
@@ -56,12 +57,14 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
         loge("getContent()")
         ThreadUtil.delayRun(3000){
             loge("getContent() ThreadUtil.delayRun(3000)")
-            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList()))
+            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(35)))
         }
+/*
         ThreadUtil.delayRun(5000){
             loge("getContent() ThreadUtil.delayRun(3000)")
             postSucc(Const.RES_OK, null)
         }
+ */
 /*
         ThreadUtil.delayRun(5000){
             loge("getContent() ThreadUtil.delayRun(5000)")

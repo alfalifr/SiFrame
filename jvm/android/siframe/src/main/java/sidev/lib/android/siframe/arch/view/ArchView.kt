@@ -17,7 +17,17 @@ interface ArchView: InterruptableBase, CtxProp{
      * karena field ini sering dipakai pada framework ini.
      */
     override var isBusy: Boolean
-//        get() = false
+
+    /**
+     * Sebuah tag untuk menandakan bahwa interface [InterruptableBase] ini
+     * sedang sibuk mengerjakan sesuai yg ada pada tag [busyOfWhat].
+     *
+     * Hati-hati dalam memodifikasi nilai flag ini pada turunan [ArchView]
+     * karena field ini sering dipakai pada framework ini.
+     */
+    override var busyOfWhat: String
+
+    //        get() = false
     override val isInterruptable: Boolean
         get() = true
 }

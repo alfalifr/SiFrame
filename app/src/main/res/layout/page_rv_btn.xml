@@ -15,10 +15,11 @@
         android:layout_above="@id/rl_bottom_container_outside"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/sv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbars="vertical"
             android:fillViewport="true">
             <RelativeLayout
                 android:id="@+id/rl_middle_container"
@@ -43,7 +44,7 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
             </RelativeLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <RelativeLayout

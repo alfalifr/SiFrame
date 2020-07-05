@@ -4,12 +4,13 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.arch.viewmodel.FiewModel
 import sidev.lib.android.siframe.arch.presenter.Presenter
+import sidev.lib.android.siframe.arch.viewmodel.ObsFiewModel
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.util.Const
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class ContentVm(vmBase: ViewModelBase) : FiewModel(vmBase){
+class ContentVm(vmBase: ViewModelBase) : ObsFiewModel(vmBase){
     companion object{
         val CONTENT= ContentPresenter.REQ_GET_CONTENT
         val LOGIN= ContentPresenter.REQ_LOGIN

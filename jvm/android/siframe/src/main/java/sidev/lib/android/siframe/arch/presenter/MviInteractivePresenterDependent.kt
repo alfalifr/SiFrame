@@ -2,12 +2,16 @@ package sidev.lib.android.siframe.arch.presenter
 
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
+import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.exception.RuntimeExc
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.classSimpleName
+import sidev.lib.universal.`fun`.isNull
 
 /**
  * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
@@ -79,9 +83,22 @@ interface MviInteractivePresenterDependent<P: Presenter, I: ViewIntent>
     }
 
     private fun initIntentConverter(){
-        intentConverter= IntentConverter(this, presenter)
-        if(this is MviView<*, I>)
-            intentConverter!!.stateProcessor= initStateProcessor()
+        loge("statePros awalnya NULL di MviInteractivePresenterDependent")
+        //Cek dulu apakah callback presenternya berupa StateProcessor.
+        // Jika iya, maka ambil intentConverter-nya.
+        presenter?.callback.asNotNullTo { sp: StateProcessor<*, I> ->
+            intentConverter= sp.intentConverter
+            intentConverter
+        }
+        //Jika tidak, maka init saja intentConverter-nya.
+        // Jika callback merupakan StateProcessor tapi tidak punya intentConverter,
+        // maka init saja intentConverter-nya.
+        .isNull {
+            intentConverter= IntentConverter(this, presenter)
+            presenter?.callback.asNotNull { sp: StateProcessor<*, I> ->
+                intentConverter!!.stateProcessor= sp
+            }
+        }
     }
 /*
     @CallSuper

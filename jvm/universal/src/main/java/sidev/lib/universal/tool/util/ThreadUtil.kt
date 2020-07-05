@@ -49,6 +49,13 @@ object ThreadUtil{
         val stack= stackTrace[ind]
         val funName= stack.methodName
         val className= stack.className
+
+        for(stack in stackTrace){
+            val funName= stack.methodName
+            val className= stack.className
+            Log.e("ThreadUtil", "$className.$funName")
+        }
+
         return "$className.$funName()"
     }
 

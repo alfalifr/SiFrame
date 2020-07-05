@@ -11,7 +11,7 @@ import kotlin.reflect.KParameter
  * Kelas ini merupakan versi ringan dari [IntentDataCollector] karena tidak menyimpan
  * field dari kelas [ViewIntent].
  */
-class IntentEquivReqCodeGetter {
+class IntentPropGetter {
     private var intentObj: HashMap<String, ViewIntent>?= null
 
     inline fun <reified I: ViewIntent> getEquivReqCode(
@@ -26,6 +26,20 @@ class IntentEquivReqCodeGetter {
             `access$intentObj`!![key]= viewIntentObj
         }
         return viewIntentObj.equivalentReqCode
+    }
+
+    inline fun <reified I: ViewIntent> getResultIsTemporary(
+        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    ): Boolean{
+        if(`access$intentObj` == null)
+            `access$intentObj` = HashMap()
+        val key= I::class.getSealedClassName()!!
+        var viewIntentObj= `access$intentObj`!![key]
+        if(viewIntentObj == null){
+            viewIntentObj= new<I>(defParamValFunc)!!
+            `access$intentObj`!![key]= viewIntentObj
+        }
+        return viewIntentObj.isResultTemporary
     }
 
     @PublishedApi

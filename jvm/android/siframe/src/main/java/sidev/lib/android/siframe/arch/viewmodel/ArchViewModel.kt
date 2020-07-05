@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.universal.`fun`.notNullTo
 
@@ -21,13 +22,13 @@ interface ArchViewModel: ExpirableBase{
      *            -ArchViewModel ini sudah kadaluwarsa.
      *            -
      */
-    fun <T> addLifeData(key: String, lifeData: T, replaceExisting: Boolean= true): Boolean
+    fun <T: LifeData<Any>> addLifeData(key: String, lifeData: T, replaceExisting: Boolean= true): Boolean
 
     /**
      * @return null jika FiewModel ini expired atau data sebelumnya belum ada.
      */
     fun <T> get(key: String): LifeData<T>?
-
+/*
     /**
      * @param forceReload false jika data sudah ada di {@link #mData} sehingga tidak direload dari repo.
      *                      true jika data sudah ada namun tetap direload dari repo.
@@ -47,4 +48,5 @@ interface ArchViewModel: ExpirableBase{
      *          tidak dilakukan sendRequest(reqCode, *params) ke repo.
      */
     fun reload(reqCode: String, vararg params: Pair<String, Any>): Boolean
+ */
 }
