@@ -14,7 +14,7 @@ class LinearLayoutManagerResp(c: Context) : LinearLayoutManager(c), LayoutManage
     @CallSuper
     override fun onLayoutCompleted(state: RecyclerView.State?) {
         super.onLayoutCompleted(state)
-        Log.e("LinearLayoutManagerResp", "onLayoutCompletedListener == null = ${onLayoutCompletedListener == null} state= ${state.toString()}")
+//        Log.e("LinearLayoutManagerResp", "onLayoutCompletedListener == null = ${onLayoutCompletedListener == null} state= ${state.toString()}")
         onLayoutCompletedListener?.onLayoutCompletedResp(state)
     }
 }

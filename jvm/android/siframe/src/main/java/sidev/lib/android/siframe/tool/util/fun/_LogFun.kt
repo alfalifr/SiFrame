@@ -2,13 +2,18 @@ package sidev.lib.android.siframe.tool.util.`fun`
 
 import android.util.Log
 import sidev.lib.android.siframe.customizable._init._Config
+import java.lang.Exception
 
-fun Any.loge(txt: String){
+fun Any.loge(txt: String, throwable: Throwable?= null){
     if(_Config.LOG){
         var tag= this::class.java.simpleName
         if(tag.length > 23)
             tag= tag.substring(0, 23)
-        Log.e(tag, txt)
+
+        if(throwable == null)
+            Log.e(tag, txt)
+        else
+            Log.e(tag, txt, throwable)
 
 //        val isLoggable= Log.isLoggable(tag, Log.ERROR)
 //        Log.e("LOG_UTIL", "isLoggable= $isLoggable")

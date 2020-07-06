@@ -326,7 +326,6 @@ object  _ViewUtil{
             if (isDirLocal) url
             else _Config.ENDPOINT_ROOT + url
 
-//        Log.e("SERVER_UTIL", "isDirLocal= $isDirLocal url= $url dir= $dir")
 
         return if(!isDirLocal){
             var dim = 500
@@ -594,7 +593,7 @@ object  _ViewUtil{
             getDefView(compView, getBtn).notNull { btn -> setBtnSolid(btn) }
         }
         fun setBtnSolid(btn: Button){
-            btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_SQUARE_ROUND) //R.drawable.shape_solid_square_round_edge_fill
+            btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_RECT_ROUND_EDGE) //R.drawable.shape_solid_square_round_edge_fill
             setBgColor(btn, _ColorRes.COLOR_PRIMARY_DARK)
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.TEXT_LIGHT))
         }
@@ -730,9 +729,7 @@ object  _ViewUtil{
                     }
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                        Log.e("VIEW_UTIL", "BEFORE----EARLIEST==== newlyInputedTxt= $newlyInputedTxt s= $s start= $start count= $count")
                         if(!isTextEdited){
-//                            Log.e("VIEW_UTIL", "BEFORE==== newlyInputedTxt= $newlyInputedTxt s= $s start= $start count= $count")
                             newlyInputedTxt=
                                 if(start > 0 || count == 1) {
                                     val str= s?.toString()?.substring(start, start +count) ?: newlyInputedTxt
@@ -743,7 +740,6 @@ object  _ViewUtil{
                                     if(s?.isNotEmpty() == true) s.toString().last().toString()
                                     else ""
                                 }
-                            Log.e("VIEW_UTIL", "newlyInputedTxt= $newlyInputedTxt s= $s start= $start count= $count")
                         }
                     }
                 })

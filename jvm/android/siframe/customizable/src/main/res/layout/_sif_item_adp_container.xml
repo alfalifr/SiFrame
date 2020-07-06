@@ -17,8 +17,10 @@
         <ImageView
             android:visibility="gone"
             android:id="@+id/iv_check"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -35,6 +37,7 @@
     <View
         android:id="@+id/v_border_right"
         android:layout_toRightOf="@id/rl_outer_container"
+        android:layout_toEndOf="@id/rl_outer_container"
         android:layout_width="0dp"
         android:layout_height="0dp"/>
 
@@ -43,6 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toLeftOf="@id/v_border_right"
+        android:layout_toStartOf="@id/v_border_right"
         android:layout_above="@id/v_border_bottom"/>
 
 </RelativeLayout>

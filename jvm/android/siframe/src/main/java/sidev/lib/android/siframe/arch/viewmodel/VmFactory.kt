@@ -14,7 +14,7 @@ class VmFactory(val vmBase: ViewModelBase) : ViewModelProvider.Factory{
                 arrayOf(ViewModelBase::class.java),
                 arrayOf(vmBase)
             )
-        } catch (e: Exception){
+        } catch (e: NoSuchMethodException){
             //Jika ternyata T bkn subclass dari ObsFiewModel, maka dilakukan instantiate ViewModel dg param konstruktor kosongan
             ReflexUtil.newInstance(modelClass.name)
         }

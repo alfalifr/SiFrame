@@ -10,7 +10,7 @@
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/corner_med">
+        app:cardCornerRadius="@dimen/corner_med_1">
         <LinearLayout
             android:padding="20dp"
             android:layout_width="wrap_content"

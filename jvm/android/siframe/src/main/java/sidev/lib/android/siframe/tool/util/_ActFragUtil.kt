@@ -78,7 +78,7 @@ object _ActFragUtil: ResetableUtil {
             overlay.tag= _SIF_Constant.BLOCK_VIEW_TAG
             overlay.setOnClickListener {}
 
-            Log.e("_ActFragUtil", "blockLayout BERHASIL!!!")
+//            Log.e("_ActFragUtil", "blockLayout BERHASIL!!!")
 
             overlay
         } else null

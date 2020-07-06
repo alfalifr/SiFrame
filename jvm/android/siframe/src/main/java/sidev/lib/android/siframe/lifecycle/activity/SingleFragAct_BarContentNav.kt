@@ -16,15 +16,16 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
         get() = super<BarContentNavAct>.layoutId
     override val contentLayoutId: Int
         get() = super<SingleFragActBase>.layoutId
-
+/*
     override val _prop_act: AppCompatActivity
         get() = this
-    override val _prop_view: View
-        get() = contentViewContainer
     override val _prop_intent: Intent
         get() = intent
     override val _prop_fm: FragmentManager
         get() = supportFragmentManager
+ */
+    override val _prop_view: View
+        get() = contentViewContainer
 /*
     override val _sideBase_ctx: Context
         get() = this

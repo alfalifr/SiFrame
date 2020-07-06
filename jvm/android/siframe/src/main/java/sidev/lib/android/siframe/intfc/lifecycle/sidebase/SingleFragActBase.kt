@@ -2,7 +2,6 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.customizable._init._Config
@@ -41,7 +40,6 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
 
 
     override fun ___initSideBase() {
-        Log.e("SingleFragActBase", "___initSideBase")
 //        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         __initFrag()
         giveFrag()
@@ -69,10 +67,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
             _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->
                     fragment= ReflexUtil.newInstance(fragName)
-                    _prop_view.findViewById<View>(fragContainerId)!!
-                    Log.e("SingleFragActBase", "__initFrag MULAI")
+//                    _prop_view.findViewById<View>(fragContainerId)!!
                     __attachFrag()
-                    Log.e("SingleFragActBase", "__initFrag AKHIR")
                 }
 /*
             val fragTrans= _sideBase_fm.beginTransaction()
@@ -98,10 +94,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     }
 
     fun waitForFrag(func: (Fragment) -> Unit){
-        Log.e("SingleFragActBase", "waitForFrag")
         try{
             func(fragment)
-            Log.e("SingleFragActBase", "waitForFrag TRY BERHASIL")
         } catch (e: Exception){
             getStatic<ArrayList<(Fragment) -> Unit>>(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER)
                 .notNull { listener -> listener.add(func) }
@@ -110,14 +104,11 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
                     listener.add(func)
                     setStatic(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER, listener)
                 }
-            Log.e("SingleFragActBase", "waitForFrag CATCH")
         }
     }
     private fun giveFrag(){
-        Log.e("SingleFragActBase", "giveFrag")
         getStatic<ArrayList<(Fragment) -> Unit>>(_SIF_Constant.STATIC_SINGLE_FRAG_LISTENER)
             .notNull { listener ->
-                Log.e("SingleFragActBase", "giveFrag listener NOT NULL")
                 listener.forEach { func ->
                     func(fragment)
                 }

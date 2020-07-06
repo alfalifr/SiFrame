@@ -19,7 +19,7 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
     companion object{
         val REQ_GET_CONTENT= "get_content"
         val REQ_LOGIN= "login"
-        val DATA_UNAME= "data_uname"
+        val DATA_UNAME= "uname"
     }
 
     override fun checkDataIntegrity(
@@ -57,7 +57,7 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
         loge("getContent()")
         ThreadUtil.delayRun(3000){
             loge("getContent() ThreadUtil.delayRun(3000)")
-            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(35)))
+            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(10)))
         }
 /*
         ThreadUtil.delayRun(5000){

@@ -8,17 +8,17 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 
 abstract class DrawerBarContentNavAct_ViewPager<F: Frag>
     : BarContentNavAct_ViewPager<F>(), DrawerActBase {
-    override val isViewInitFirst: Boolean
+    final override val isViewInitFirst: Boolean
         get() = false
-    override val isContentLayoutInflatedFirst: Boolean
+    final override val isContentLayoutInflatedFirst: Boolean
         get() = false
 
-    override lateinit var contentViewContainer: ViewGroup
-    override lateinit var rootDrawerLayout: DrawerLayout
-    override lateinit var startDrawerContainer: ViewGroup
-    override lateinit var endDrawerContainer: ViewGroup
+//    override lateinit var contentViewContainer: ViewGroup
+    final override lateinit var rootDrawerLayout: DrawerLayout
+    final override lateinit var startDrawerContainer: ViewGroup
+    final override lateinit var endDrawerContainer: ViewGroup
 
-    override val layoutId: Int
+    final override val layoutId: Int
         get() = super<DrawerActBase>.layoutId
 
     override fun __initViewFlow(rootView: View) {

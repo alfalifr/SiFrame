@@ -14,10 +14,10 @@ abstract class SingleFragDrawerAct: SingleFragAct(), SingleFragDrawerActBase{
 //    abstract override var startDrawerLayoutId: Int
 //    abstract override var endDrawerLayoutId: Int
 
-    override lateinit var rootDrawerLayout: DrawerLayout
-    override lateinit var contentViewContainer: ViewGroup
-    override lateinit var startDrawerContainer: ViewGroup
-    override lateinit var endDrawerContainer: ViewGroup
+    final override lateinit var rootDrawerLayout: DrawerLayout
+    final override lateinit var contentViewContainer: ViewGroup
+    final override lateinit var startDrawerContainer: ViewGroup
+    final override lateinit var endDrawerContainer: ViewGroup
 
     //<27 Juni 2020> => __initDrawer(rootView) gak jadi di __initViewFlow(). Error dapat terjadi
     //                      karena saat __initDrawer(rootView) pada kelas SingleFragDrawerAct_BarContentNav_Simple

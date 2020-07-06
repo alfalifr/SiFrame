@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.arch.intent_state
 
+import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.universal.`fun`.getSealedClassName
 import sidev.lib.universal.`fun`.new
 import kotlin.reflect.KParameter
@@ -11,7 +12,7 @@ import kotlin.reflect.KParameter
  * Kelas ini merupakan versi ringan dari [IntentDataCollector] karena tidak menyimpan
  * field dari kelas [ViewIntent].
  */
-class IntentPropGetter {
+class IntentPropGetter: Mvi {
     private var intentObj: HashMap<String, ViewIntent>?= null
 
     inline fun <reified I: ViewIntent> getEquivReqCode(

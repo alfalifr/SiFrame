@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
  * Kelas yg properti abstraknya dapat di-lateinit
  */
 open class SingleFragAct_Simple: SingleFragAct(){
-    override lateinit var fragment: Fragment
+    final override lateinit var fragment: Fragment
     override fun _initView(layoutView: View) {}
 }
 

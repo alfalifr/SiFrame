@@ -29,7 +29,7 @@ class SingleFragImplAct : SingleFragDrawerAct(){
 }
  */
 
-class SingleFragImplAct : SingleFragAct_BarContentNav_Simple(){
+class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
 //    override var startDrawerLayoutId: Int= R.layout.comp_drawer_start
 //    override var endDrawerLayoutId: Int= _Config.INT_EMPTY
 

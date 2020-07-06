@@ -306,10 +306,11 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
         attribField= attribFieldList.toTypedArray()
         attribName= attribNameList.toTypedArray()
         attribType= attribTypeList.toTypedArray()
-
+/*
         for((i, name) in attribName.withIndex()){
 //            loge("i= $i attribName= $name attribType= ${attribType[i]}")
         }
+ */
 
 /*
         for((i, perNamaAtrib) in namaAtribut.withIndex())
@@ -698,14 +699,14 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             kursor.close()
                         }
                     } catch (e: Exception){
-                        loge("ifExists() EXC")
+//                        loge("ifExists() EXC")
                         progressListener?.progresDone()
                     }
                 }
                 liveVal.value= resList
                 liveVal
             } catch (e: Exception){
-                loge("ifExists() EXC outer")
+//                loge("ifExists() EXC outer")
                 liveVal.setVal(null, ERROR)
                 progressListener?.sendError(e, true)
                 null

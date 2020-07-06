@@ -1,13 +1,18 @@
 package sidev.lib.android.siframe.arch.intent_state
 
+import androidx.annotation.Keep
+import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.universal.`fun`.classSimpleName
 import sidev.lib.universal.`fun`.getSealedClassName
 import sidev.lib.universal.tool.util.StringUtil
 
 /**
  * <2 Juli 2020> => Sementara hanya sebagai penanda kelas turunan ini sbg Intent dalam arsitektur MVI.
+ *
+ *
  */
-abstract class ViewIntent{
+//@Keep -> Dari proguard-rules.pro aja biar bisa nambah opsi ,allowoptimization,allowshrinking
+abstract class ViewIntent: Mvi{
     open val equivalentReqCode: String
         = StringUtil.toSnakeCase(this.classSimpleName(), true) //this.getSealedClassName(true)!!
 

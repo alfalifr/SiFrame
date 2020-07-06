@@ -56,7 +56,7 @@ class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
         loge("getContent()")
         ThreadUtil.delayRun(3000){
             loge("getContent() ThreadUtil.delayRun(3000)")
-            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(15)))
+            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(8)))
         }
 /*
         ThreadUtil.delayRun(5000){

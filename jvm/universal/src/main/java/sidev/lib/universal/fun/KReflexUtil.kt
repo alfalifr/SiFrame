@@ -9,6 +9,9 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KDeclarationContainer
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.defaultType
+import kotlin.reflect.full.starProjectedType
 
 const val K_CLASS_BASE_NAME= "KClassImpl"
 /*
@@ -209,3 +212,8 @@ fun <T: Any> defaultPrimitiveValue(clazz: KClass<T>): T?{
     return res as? T
 }
 
+/*
+fun <T: Any> checkTypeSafety(any: T): Boolean{
+
+}
+ */

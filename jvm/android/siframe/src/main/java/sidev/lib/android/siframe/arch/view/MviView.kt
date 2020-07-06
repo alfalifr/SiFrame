@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.arch._obj.MviFiewModel
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
-import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
@@ -13,7 +12,6 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import java.lang.Exception
 
@@ -48,7 +46,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                     intentConverter.expirableView= this
                     intentConverter.presenter= presenter
                     intentConverter.stateProcessor= stateProcessor
-                    loge("statePros is changed MviView")
+//                    loge("statePros is changed MviView")
 //                    stateProcessor.intentConverter= intentConverter
                 }
 
@@ -148,7 +146,6 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
      * interface [MviView] ini di-create.
      */
     fun restoreCurrentState(isInit: Boolean= false): Boolean{
-        loge("restoreCurrentState() MULAI AWAL")
         val isSuccess=
             presenter?.callback.asNotNullTo { stateProcessor: StateProcessor<S, I> ->
                 try{
@@ -162,7 +159,6 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         if(isInit && currentState == null)
             onNoCurrentState()
 
-        loge("restoreCurrentState() isSuccess= $isSuccess")
         return isSuccess
     }
 
@@ -172,7 +168,6 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
      */
     fun __render(state: S/*, isPreState: Boolean*/){
         isBusy= state.isPreState
-        loge("state.isPreState= ${state.isPreState}")
         render(state)
         currentState= state
     }

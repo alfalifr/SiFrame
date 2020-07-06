@@ -4,9 +4,6 @@ import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.view.MviView
-import sidev.lib.android.siframe.exception.RuntimeExc
-import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.asNotNullTo
@@ -83,7 +80,7 @@ interface MviInteractivePresenterDependent<P: Presenter, I: ViewIntent>
     }
 
     private fun initIntentConverter(){
-        loge("statePros awalnya NULL di MviInteractivePresenterDependent")
+        loge("IntentConverter == NULL, meng-init IntentConverter")
         //Cek dulu apakah callback presenternya berupa StateProcessor.
         // Jika iya, maka ambil intentConverter-nya.
         presenter?.callback.asNotNullTo { sp: StateProcessor<*, I> ->

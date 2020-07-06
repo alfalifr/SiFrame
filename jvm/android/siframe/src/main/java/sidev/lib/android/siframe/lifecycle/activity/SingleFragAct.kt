@@ -14,14 +14,16 @@ import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.classSimpleName
 
 abstract class SingleFragAct: Act(), SingleFragActBase {
+/*
     override val _prop_act: AppCompatActivity
         get() = this
-    override val _prop_view: View
-        get() = layoutView
     override val _prop_intent: Intent
         get() = intent
     override val _prop_fm: FragmentManager
         get() = supportFragmentManager
+ */
+    override val _prop_view: View
+        get() = layoutView
 /*
     override val _sideBase_ctx: Context
         get() = this

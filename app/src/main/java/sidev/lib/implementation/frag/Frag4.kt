@@ -4,31 +4,57 @@ import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.customizable._init._ColorRes
+import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragDrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.android.siframe.lifecycle.fragment.DrawerFrag
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 
-class Frag4 : Frag(){
+class Frag4 : DrawerFrag(){
+///*
+    override val contentLayoutId: Int
+        get() = R.layout.frag_txt
+    override val startDrawerLayoutId: Int
+        get() = R.layout.comp_drawer_start_iv
+    override val endDrawerLayoutId: Int
+        get() = DrawerBase.DRAWER_LAYOUT_SAME_AS_EXISTING //_Config.INT_EMPTY
+
+    override fun _initStartDrawerView(startDrawerView: View) {
+        startDrawerView.tv.text= "Ini teks sebenarnya StartDrawer dari Frag4"
+        startDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
+        _ViewUtil.setBgColor(startDrawerView.parent as View, R.color.ijo)
+    }
+
+    override fun _initEndDrawerView(endDrawerView: View) {
+        endDrawerView.tv.text= "Ini teks sebenarnya EndDrawer dari Frag4"
+        endDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
+        _ViewUtil.setBgColor(endDrawerView.parent as View, R.color.merah)
+    }
+// */
+/*
     override val layoutId: Int
         get() = R.layout.frag_txt
+// */
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag4"
         _ViewUtil.setBgColor(layoutView, R.color.kuningMuda)
-
+/*
         if(actSimple is SingleFragDrawerActBase){
-            (actSimple as SingleFragDrawerActBase)._reinitStartDrawerView { drawer, startDrawer ->
+            (actSimple as SingleFragDrawerActBase)._reinitEndDrawerView { drawer, startDrawer ->
                 startDrawer.tv.text= "Ini teks sebenarnya StartDrawer dari Frag4"
                 startDrawer.tv.textColorResource= _ColorRes.TEXT_LIGHT
                 _ViewUtil.setBgColor(startDrawer.parent as View, R.color.ijo)
             }
         }
+// */
     }
 
     override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {

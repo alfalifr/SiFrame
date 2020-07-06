@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
@@ -32,7 +31,7 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
 
     override fun ___initSideBase() {
         val thisName= this::class.java.simpleName
-        loge("thisName= $thisName ___initSideBase()")
+//        loge("thisName= $thisName ___initSideBase()")
 //        super.___initSideBase()
         if(defaultActBarView == null && actBarContainer_vp != null && actBarContainer_vp!!.childCount > 0){
             defaultActBarView= actBarContainer_vp!!.getChildAt(0)

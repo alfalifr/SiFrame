@@ -17,14 +17,16 @@ import java.lang.Exception
 
 abstract class BarContentNavAct_ViewPager<F: Frag>
     : BarContentNavAct(), MultipleActBarViewPagerBase<F> { //ViewPagerActBase<F>
+/*
     override val _prop_act: AppCompatActivity
         get() = this
-    override val _prop_view: View
-        get() = contentViewContainer
     override val _prop_intent: Intent
         get() = intent
     override val _prop_fm: FragmentManager
         get() = supportFragmentManager
+ */
+    final override val _prop_view: View
+        get() = contentViewContainer
 
 /*
     override val _prop_ctx: Context
@@ -33,12 +35,12 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
 
 //    override lateinit var lateVp: ViewPager
 
-    override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
+    final override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
         = SparseArray()
 
     override val layoutId: Int
         get() = super<BarContentNavAct>.layoutId
-    override val contentLayoutId: Int
+    final override val contentLayoutId: Int
         get() = super<MultipleActBarViewPagerBase>.layoutId
 /*
     /**
@@ -53,20 +55,20 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
     override val viewPagerActViewView: View
         get() = contentViewContainer
  */
-    override val actBarViewList: SparseArray<View> = SparseArray()
+    final override val actBarViewList: SparseArray<View> = SparseArray()
     override var isActBarViewFromFragment: Boolean= false
         set(v){
             field= v
             if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
-    override val actBarContainer_vp: ViewGroup
+    final override val actBarContainer_vp: ViewGroup
         get() = actBarViewContainer
-    override var defaultActBarView: View?= null
+    final override var defaultActBarView: View?= null
 
     //<2 Juli 2020> => Programmer gak perlu mendefinisikan scr langsung.
     override var vpFragListStartMark: Array<Int> = arrayOf()
-    override lateinit var vpAdp: VpFragAdp
-    override lateinit var vpFragListMark: Array<Int>
+    final override lateinit var vpAdp: VpFragAdp
+    final override lateinit var vpFragListMark: Array<Int>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
     override var isVpTitleFragBased: Boolean= false
@@ -78,7 +80,7 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
         }
     override var isVpBackOnBackPressed: Boolean= true
 
-    override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
+    final override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
 
 
     override fun ___initSideBase() {

@@ -12,6 +12,7 @@ import java.util.Set;
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent;
 import sidev.lib.implementation.intent_state.ContentFragIntent;
 import sidev.lib.implementation.intent_state.ContentFragState;
+import sidev.lib.implementation.viewmodel.ContentVm;
 
 public class Cob {
     public static void main(String[] args) {
@@ -50,6 +51,8 @@ public class Cob {
         for(int i= 0; i< set.size(); i++){
             System.out.println("set= " +aset[i]);
         }
+
+        ContentVm vm= new ContentVm(null);
     }
 }
 

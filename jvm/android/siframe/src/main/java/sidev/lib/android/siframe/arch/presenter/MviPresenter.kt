@@ -35,11 +35,8 @@ abstract class MviPresenter<S: ViewState>(
 
 
     final override fun postRequest(reqCode: String, data: Map<String, Any>?) {
-//        loge("MviPresenter.postRequest() MULAI")
         onPreRequest(reqCode, data)
-//        loge("MviPresenter.postRequest() onPreRequest SELESAI")
         super.postRequest(reqCode, data)
-//        loge("MviPresenter.postRequest() SELESAI")
     }
 
     fun onPreRequest(reqCode: String, data: Map<String, Any>?){
@@ -50,10 +47,7 @@ abstract class MviPresenter<S: ViewState>(
                 // bersifat sementara atau tidak.
                 val isStateTemporary=
                     try{ data!![INTENT_IS_RESULT_TEMPORARY] as Boolean }
-                    catch (e: Exception){
-                        loge("reqCode= $reqCode isStateTemporary tidak ditemukan!")
-                        false
-                    }
+                    catch (e: Exception){ false }
                 sp.postPreResult(reqCode, data, isStateTemporary)
             }
             //(callback as? StateProcessor<S, *>)?.postPreResult(reqCode, data, )

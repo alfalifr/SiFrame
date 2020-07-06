@@ -1,16 +1,31 @@
 package sidev.lib.android.siframe.lifecycle.fragment
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.customizable._init._Config
 
 abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
-    override val layoutId: Int
+    final override val layoutId: Int
         get() = _Config.LAYOUT_RV //R.layout.content_abs_rv
 
+    /**
+     * Jika true, maka [fullScrollIv] akan ditampilkan jika user
+     * melakukan scroll ke bawah.
+     *
+     * Nilai ini akan sia-sia jika [NestedScrollView.mOnScrollChangeListener]
+     * pada [scrollView] dimodifikasi.
+     */
+    open val isFullScrollIvShown= true
+
+    lateinit var fullScrollIv: ImageView
+        protected set
+    lateinit var scrollView: NestedScrollView
+        protected set
     lateinit var rv: RecyclerView
         protected set
     lateinit var rvAdp: R //RvAdp<*, *>
@@ -25,12 +40,26 @@ abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)
         rv= layoutView.findViewById(_Config.ID_RV) //.rv
+        scrollView= layoutView.findViewById(_Config.ID_SV) //.rv
+        pb= layoutView.findViewById(_Config.ID_PB)
         layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL).setOnRefreshListener {
             onRefreshListener?.invoke()
         }
         rvAdp= initRvAdp()
         rvAdp.rv= rv
-        pb= layoutView.findViewById(_Config.ID_PB)
+        fullScrollIv= layoutView.findViewById(_Config.ID_IV_ARROW) //.rv
+        fullScrollIv.setOnClickListener { fullScroll(View.FOCUS_UP) }
+
+        scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if(isFullScrollIvShown){
+                if(scrollY > 0)
+                    showFullScrollIv()
+                else
+                    showFullScrollIv(false)
+            }
+        }
+
+        showFullScrollIv(false)
     }
 
     fun showLoading(show: Boolean= true){
@@ -41,5 +70,33 @@ abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
     fun showRefresh(show: Boolean= true){
         layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL)
             .isRefreshing= show
+    }
+
+    /**
+     * Hanya digunakan secara vertikal. Hal tersebut dikarenakan RecyclerView pada
+     * halaman ini berada di dalam NestedScrollView.
+     *
+     * Fungsi ini memanggil fungsi [NestedScrollView.scrollTo],
+     * bkn [RecyclerView.scrollToPosition].
+     */
+    fun scrollToPosition(pos: Int, smoothScroll: Boolean= false){
+        val y= rv.y + rv.getChildAt(pos).y
+        if(!smoothScroll)
+            scrollView.scrollTo(0, y.toInt())
+        else
+            scrollView.smoothScrollTo(0, y.toInt())
+    }
+
+    /**
+     * @param direction [View.FOCUS_UP] jika ingin scroll-to-top.
+     *   [View.FOCUS_DOWN] jika ingin scroll-to-bottom.
+     */
+    fun fullScroll(direction: Int){
+        scrollView.fullScroll(direction)
+    }
+
+    fun showFullScrollIv(show: Boolean= true){
+        fullScrollIv.visibility= if(show) View.VISIBLE
+            else View.GONE
     }
 }

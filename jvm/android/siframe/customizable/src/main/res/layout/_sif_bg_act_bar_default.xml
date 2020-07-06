@@ -3,4 +3,5 @@
     android:id="@+id/fl_act_bar_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/act_bar_height"
-    android:src="@drawable/bg_menu_up"/>
+    android:src="@drawable/shape_solid_rect_round_edge_bottom_med"
+    android:tint="@color/colorPrimaryDark"/>

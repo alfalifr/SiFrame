@@ -5,20 +5,27 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
-import sidev.lib.android.siframe.customizable._init._ColorRes
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.tool.util._ResUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 
 interface DrawerBase: ComplexLifecycleSideBase,
     InitViewFun {
+    companion object{
+        /**
+         * Flag agar layout drawer yg sudah ada tidak dirubah walau [Context.inflate]
+         * akan menghasilkan error. Scr default, [DrawerBase] ini akan menghilangkan (tidak tampil)
+         * layout drawer jika [Context.inflate] menghasilkan error saat meng-inflate id layout yg salah.
+         *
+         * Flag ini berguna saat programmer menggunakan fragment yg berupa [DrawerFragBase]
+         * pada [SingleFragActBase] namun tidak ingin mengubah tampilan drawer yg sudah ada.
+         */
+        @JvmStatic
+        val DRAWER_LAYOUT_SAME_AS_EXISTING= -10
+    }
     enum class Type{
         DRAWER_START, DRAWER_END
     }
@@ -72,33 +79,41 @@ interface DrawerBase: ComplexLifecycleSideBase,
 //        if(contentViewContainer?.childCount == 0){
         c.inflate(contentLayoutId, contentViewContainer)
             .notNull {
-//              contentViewContainer!!.removeAllViews()
+                contentViewContainer!!.removeAllViews()
+                    //<6 Juli 2020> => Dihapus dulu agar view lama yg ketumpuk hilang
+                    //  Karena gakda gunanya jika gak dihilangkan tapi gak tampil.
                 contentViewContainer!!.addView(it)
                 _initView(it)
             }
 //        }
-        c.inflate(startDrawerLayoutId, startDrawerContainer)
-            .notNull {
-                startDrawerContainer!!.visibility= View.VISIBLE
-                startDrawerContainer!!.removeAllViews()
-                startDrawerContainer!!.addView(it)
-                rootDrawerLayout!!.closeDrawer(startDrawerContainer!!)
-                _initStartDrawerView(it)
-            }.isNull {
-                setDrawerGone(Type.DRAWER_START)
+
+        if(startDrawerLayoutId != DRAWER_LAYOUT_SAME_AS_EXISTING){
+            c.inflate(startDrawerLayoutId, startDrawerContainer)
+                .notNull {
+                    startDrawerContainer!!.visibility= View.VISIBLE
+                    startDrawerContainer!!.removeAllViews()
+                    startDrawerContainer!!.addView(it)
+                    rootDrawerLayout!!.closeDrawer(startDrawerContainer!!)
+                    _initStartDrawerView(it)
+                }.isNull {
+                    setDrawerGone(Type.DRAWER_START)
 //                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, startDrawerContainer)
-            }
-        c.inflate(endDrawerLayoutId, endDrawerContainer)
-            .notNull {
-                endDrawerContainer!!.visibility= View.VISIBLE
-                endDrawerContainer!!.removeAllViews()
-                endDrawerContainer!!.addView(it)
-                rootDrawerLayout!!.closeDrawer(endDrawerContainer!!)
-                _initEndDrawerView(it)
-            }.isNull {
-                setDrawerGone(Type.DRAWER_END)
+                }
+        }
+
+        if(endDrawerLayoutId != DRAWER_LAYOUT_SAME_AS_EXISTING){
+            c.inflate(endDrawerLayoutId, endDrawerContainer)
+                .notNull {
+                    endDrawerContainer!!.visibility= View.VISIBLE
+                    endDrawerContainer!!.removeAllViews()
+                    endDrawerContainer!!.addView(it)
+                    rootDrawerLayout!!.closeDrawer(endDrawerContainer!!)
+                    _initEndDrawerView(it)
+                }.isNull {
+                    setDrawerGone(Type.DRAWER_END)
 //                rootDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, endDrawerContainer)
-            }
+                }
+        }
 /*
         inflate(bottomDrawerLayoutId, contentViewContainer)
             .notNull { _initBottomDrawerView(it) }
@@ -107,17 +122,22 @@ interface DrawerBase: ComplexLifecycleSideBase,
  */
     }
 
+    /**
+     * Fungsi ini mengganti isi view dari [startDrawerContainer] maupun [endDrawerContainer].
+     * Fungsi ini memanggil [ViewGroup.removeAllViews] terlebih dahulu sebelum memanggil
+     * [ViewGroup.addView], sehingga tidak dapat menumpuk view isi.
+     */
     fun setDrawerView(type: Type, v: View?){
-        val drawer= when(type){
+        when(type){
             Type.DRAWER_START -> startDrawerContainer
             Type.DRAWER_END -> endDrawerContainer
+        }.notNull { drawer ->
+            val isGone= v == null
+            setDrawerGone(type, isGone)
+            drawer.removeAllViews()
+            if(!isGone)
+                drawer.addView(v)
         }
-        val isGone= v == null
-        setDrawerGone(type, isGone)
-        if(!isGone)
-            drawer?.addView(v)
-        else
-            drawer?.removeAllViews()
     }
 
     fun slideDrawer(type: Type, toOpen: Boolean= true){
@@ -132,6 +152,15 @@ interface DrawerBase: ComplexLifecycleSideBase,
         }
     }
 
+    /**
+     * Fungsi untuk menampilkan atau menghilangkan [startDrawerContainer] maupun [endDrawerContainer]
+     * dari layar dengan mengubah nilai [View.setVisibility] dan [DrawerLayout.LayoutParams.gravity].
+     *
+     * Fungsi ini tidak menghilangkan isi view dari [startDrawerContainer] maupun [endDrawerContainer]
+     * karena jika isi sudah dihilangkan, maka tidak dapat ditampilkan lagi.
+     * Untuk menghilangkan semua isi pada [startDrawerContainer] maupun [endDrawerContainer],
+     * gunakan fungsi [setDrawerView] dg paramater [v: View] = null.
+     */
     private fun setDrawerGone(type: Type, gone: Boolean= true){
         when(type){
             Type.DRAWER_START -> startDrawerContainer

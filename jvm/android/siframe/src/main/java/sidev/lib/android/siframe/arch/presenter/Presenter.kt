@@ -1,13 +1,8 @@
 package sidev.lib.android.siframe.arch.presenter
 
-import android.content.Context
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.type.Mvp
-import sidev.lib.android.siframe.exception.DataIntegrityExc
-import sidev.lib.android.siframe.lifecycle.app.App
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
 /*

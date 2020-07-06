@@ -1,20 +1,16 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
 import androidx.annotation.CallSuper
-import androidx.annotation.RestrictTo
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
-import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
-import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.listener.OnFailLifecycleBoundListener
 import sidev.lib.android.siframe.intfc.prop.TagProp
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import java.lang.NullPointerException
+import sidev.lib.universal.`fun`.runWithParamTypeSafety
 
 //Nullable karena kemungkinan user pingin ada kondisi saat value == null
 open class LifeData<T> : MutableLiveData<T>(), ExpirableBase, TagProp {
@@ -61,18 +57,24 @@ open class LifeData<T> : MutableLiveData<T>(), ExpirableBase, TagProp {
                 if(owner !is InterruptableBase
                     || !owner.isBusy
                     || owner.busyOfWhat != tag){
+                    runWithParamTypeSafety(this::class.java, onObserve, it){
+                        loge("Data di ${this::class.simpleName} dg tag= \"$tag\" == NULL dan tidak dapat di-pass ke onObserve", it)
+                    }
+/*
                     //[onObserve] tidak diletakkan di dalam try-catch karena pngecekan hanya
                     //  sebatas apakah tipe [it] sesuai dengan kriteria tipe paramater [onObsrve].
                     //Jika [onObsrve] diletakkan di dalam try-catch, kemungkinan error di dalam
                     //  [onObsrve] akan diabaikan. Hal tersebut tidaklah diinginkan.
-                    val checkFun= {_: T -> }
+                    val checkFun= {it: T -> loge("${this::class.simpleName} checFun it= ${it.toString()}") }
                     val safeToPass=
                         try{ checkFun(it); true }
                         catch (e: IllegalArgumentException){ false }
                         catch (e: NullPointerException){ false }
-
+loge("safeToPass= $safeToPass")
                     //Jika ternyata value yg dipass ke LifeData == null, maka abaikan oberver.
-                    if(safeToPass) onObserve(it)
+                    if(safeToPass) onObserve(it) //Ternyata Kotlin 1.3.72 msh blum bisa melakukan
+                            //cek nullability bagi var dg tipe yg tidak dapat disimpulkan lewat refleksi (bkn reified).
+ */
                 }
                 else
                     onPreLoad?.invoke()

@@ -8,21 +8,21 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.universal.`fun`.asNotNullTo
 
 abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
-    override val layoutId: Int
+    final override val layoutId: Int
         get() = super<DrawerFragBase>.layoutId
-    override val contentLayoutId: Int
+    final override val contentLayoutId: Int
         get() = super<VpFrag>.layoutId
 
-    override var rootDrawerLayout: DrawerLayout?= null
+    final override var rootDrawerLayout: DrawerLayout?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.rootDrawerLayout }
             ?: field
-    override var contentViewContainer: ViewGroup?= null
+    final override var contentViewContainer: ViewGroup?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.contentViewContainer }
             ?: field
-    override var startDrawerContainer: ViewGroup?= null
+    final override var startDrawerContainer: ViewGroup?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.startDrawerContainer }
             ?: field
-    override var endDrawerContainer: ViewGroup?= null
+    final override var endDrawerContainer: ViewGroup?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.endDrawerContainer }
             ?: field
 

@@ -3,7 +3,6 @@ package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.view.ArchView
@@ -15,6 +14,7 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.tool.util.ThreadUtil
 
 /**
@@ -59,11 +59,11 @@ interface SimpleAbsActFragBase: LifecycleRootBase, ArchView,
     fun _initDataFromIntent(intent: Intent){}
 
     fun _initView(){
-        Log.e("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName}) initView() di panggil")
+//        loge("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName}) initView() di panggil")
         if(layoutView != null)
             _initView(layoutView)
         else
-            Log.e("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName} belum diinit)")
+            loge("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName} belum diinit)")
     }
     override fun _initView(layoutView: View)
     @CallSuper

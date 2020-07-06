@@ -12,29 +12,33 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.universal.`fun`.asNotNullTo
 
 abstract class DrawerFrag : Frag(), DrawerFragBase {
-    override val _prop_act: AppCompatActivity?
+    final override val _prop_act: AppCompatActivity?
         get() = activity as AppCompatActivity
-    override val _prop_view: View
+    final override val _prop_view: View
         get() = layoutView
-    override val _prop_intent: Intent?
+    final override val _prop_intent: Intent?
         get() = activity?.intent
-    override val _prop_fm: FragmentManager?
+    final override val _prop_fm: FragmentManager?
         get() = fragmentManager
+
+    //<6 Juli 2020> => Di-final karena jika diubah di level turunan, maka dapat menyebabkan error.
+    final override val layoutId: Int
+        get() = super.layoutId
 /*
     override val _sideBase_ctx: Context?
         get() = context
  */
 
-    override var rootDrawerLayout: DrawerLayout?= null
+    final override var rootDrawerLayout: DrawerLayout?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.rootDrawerLayout }
             ?: field
-    override var contentViewContainer: ViewGroup?= null
+    final override var contentViewContainer: ViewGroup?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.contentViewContainer }
             ?: field
-    override var startDrawerContainer: ViewGroup?= null
+    final override var startDrawerContainer: ViewGroup?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.startDrawerContainer }
             ?: field
-    override var endDrawerContainer: ViewGroup?= null
+    final override var endDrawerContainer: ViewGroup?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.endDrawerContainer }
             ?: field
 

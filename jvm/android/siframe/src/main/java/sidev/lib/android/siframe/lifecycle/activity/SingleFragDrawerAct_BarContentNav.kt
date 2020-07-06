@@ -6,21 +6,21 @@ import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragDrawerActBase
 
 abstract class SingleFragDrawerAct_BarContentNav: SingleFragAct_BarContentNav(), SingleFragDrawerActBase{ //SingleFragAct(), DrawerActBase{
-    override val isViewInitFirst: Boolean
+    final override val isViewInitFirst: Boolean
         get() = false
-    override val isContentLayoutInflatedFirst: Boolean
+    final override val isContentLayoutInflatedFirst: Boolean
         get() = false
 
-    override val layoutId: Int
+    final override val layoutId: Int
         get() = super<SingleFragDrawerActBase>.layoutId
-    override val contentLayoutId: Int
+    final override val contentLayoutId: Int
         get() = super<SingleFragDrawerActBase>.contentLayoutId
 
-    override lateinit var contentViewContainer: ViewGroup
-    override lateinit var rootDrawerLayout: DrawerLayout
-    override lateinit var startDrawerContainer: ViewGroup
-    override lateinit var endDrawerContainer: ViewGroup
-
+//    override lateinit var contentViewContainer: ViewGroup
+    final override lateinit var rootDrawerLayout: DrawerLayout
+    final override lateinit var startDrawerContainer: ViewGroup
+    final override lateinit var endDrawerContainer: ViewGroup
+/*
     //<27 Juni 2020> => __initDrawer(rootView) gak jadi di __initViewFlow(). Error dapat terjadi
     //                      karena saat __initDrawer(rootView) pada kelas SingleFragDrawerAct_BarContentNav_Simple
     //                      terdapat pemanggilan fragment yg blum diinit karena __initFrag() dilakukan di ___initSideBase()
@@ -28,13 +28,15 @@ abstract class SingleFragDrawerAct_BarContentNav: SingleFragAct_BarContentNav(),
         super.__initViewFlow(rootView)
         __initDrawer(rootView)
     }
-/*
+ */
+
     override fun ___initSideBase() {
         super<SingleFragAct_BarContentNav>.___initSideBase()
-//        super<SingleFragDrawerActBase>.___initSideBase()
+        //super<SingleFragDrawerActBase>.___initSideBase()
+        // -> <6 Juli 2020> => dikomen karena SingleFragDrawerActBase
+        //        gak punya implementasi ___initSideBase()
         __initDrawer(layoutView.rootView)
     }
- */
 
     /**
      * Gak usah karena view kontennya ada di dalam fragment

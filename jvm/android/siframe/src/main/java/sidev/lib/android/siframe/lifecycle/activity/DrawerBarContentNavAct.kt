@@ -11,10 +11,10 @@ abstract class DrawerBarContentNavAct : BarContentNavAct(), DrawerActBase {
     override val isContentLayoutInflatedFirst: Boolean
         get() = false
 
-    override lateinit var contentViewContainer: ViewGroup
-    override lateinit var rootDrawerLayout: DrawerLayout
-    override lateinit var startDrawerContainer: ViewGroup
-    override lateinit var endDrawerContainer: ViewGroup
+//    override lateinit var contentViewContainer: ViewGroup
+    final override lateinit var rootDrawerLayout: DrawerLayout
+    final override lateinit var startDrawerContainer: ViewGroup
+    final override lateinit var endDrawerContainer: ViewGroup
 
     override val layoutId: Int
         get() = super<DrawerActBase>.layoutId

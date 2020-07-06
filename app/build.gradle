@@ -19,7 +19,17 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -72,3 +82,18 @@ dependencies {
     implementation project(path: ':jvm:android:siframe')
     implementation project(path: ':jvm:android:siframe:customizable')
 }
+/*
+release {
+    //Enable the proguard
+    minifyEnabled true
+    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), "proguard-rules.pro"
+
+    //Other parameters
+    debuggable false
+    jniDebuggable false
+    renderscriptDebuggable false
+//    signingConfig playStoreConfig //Add your own signing config
+    pseudoLocalesEnabled false
+    zipAlignEnabled true
+}
+ */

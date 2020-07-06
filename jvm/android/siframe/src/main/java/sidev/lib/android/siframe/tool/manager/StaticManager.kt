@@ -1,10 +1,10 @@
 package sidev.lib.android.siframe.tool.manager
 
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.className
 import sidev.lib.universal.`fun`.classSimpleName
 
@@ -39,7 +39,7 @@ object StaticManager: LifecycleObserver {
     }
 
     private fun registerLifecycleOwner(owner: LifecycleOwner){
-        Log.e("StaticManager", "owner: ${owner::class.java.simpleName} is registered!!!")
+        loge("owner: ${owner::class.java.simpleName} is registered!!!")
         if(lifecycleOwner == null)
             lifecycleOwner = ArrayList()
         if(!lifecycleOwner!!.contains(owner)){
@@ -50,7 +50,7 @@ object StaticManager: LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun unregisterLifecycleOwner(callingOwner: LifecycleOwner){
-        Log.e("StaticManager", "Lifecycle.Event.ON_DESTROY callingOwner::class.java.simpleName = ${callingOwner::class.java.simpleName}")
+        loge("Lifecycle.Event.ON_DESTROY callingOwner::class.java.simpleName = ${callingOwner::class.java.simpleName}")
         lifecycleOwner!!.remove(callingOwner)
         callingOwner.lifecycle.removeObserver(this)
         if(lifecycleOwner!!.isEmpty())
@@ -68,7 +68,7 @@ object StaticManager: LifecycleObserver {
         if(staticObjList == null)
             staticObjList = HashMap()
         staticObjList!![key]= obj
-        Log.e("StaticManager", "object attached obj::class.java.simpleName= ${obj::class.java.simpleName}")
+        loge("object attached obj::class.java.simpleName= ${obj::class.java.simpleName}")
     }
     fun attachObjToLifecycle(key: String, obj: Any, lifecycleOwner: LifecycleOwner){
         if(staticObjList == null)
@@ -77,7 +77,7 @@ object StaticManager: LifecycleObserver {
             key,
             lifecycleOwner.className()
         )]= obj
-        Log.e("StaticManager", "object attached obj= ${obj::class.java.simpleName} to lifecycle= ${lifecycleOwner::class.java.simpleName}")
+        loge("object attached obj= ${obj::class.java.simpleName} to lifecycle= ${lifecycleOwner::class.java.simpleName}")
         registerLifecycleOwner(
             lifecycleOwner
         )
@@ -101,14 +101,14 @@ object StaticManager: LifecycleObserver {
                     val obj= staticObjList!![key] //staticObjList!!.remove(key)
                     if(obj != null)
                         removedObjList.add(obj)
-                    Log.e("StaticManager", "obj= ${obj?.classSimpleName()} key= $key")
+                    loge("obj= ${obj?.classSimpleName()} key= $key")
                 }
             }
             for(obj in removedObjList)
                 staticObjList!!.remove(obj)
             if(staticObjList!!.isEmpty()){
                 staticObjList = null
-                Log.e("StaticManager", "staticObjList= null")
+                loge("staticObjList= null")
             }
 
         }

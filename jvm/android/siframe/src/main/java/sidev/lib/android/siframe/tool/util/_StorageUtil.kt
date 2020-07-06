@@ -13,9 +13,6 @@ object _StorageUtil{
          * @param expDuration in sec
          */
         fun set(c: Context, key: String, value: String?, expDuration: Long= 0): Boolean {
-//        val callerFun= ReflexUtil.getCurrentCallerFunName()
-//        Log.e("UTIL", "setSharedPref() callerFun= $callerFun")
-            Log.e("UTIL", "setSharedPref() key= $key value= $value expDuration= $expDuration")
             return if(value != null){
                 if(expDuration >= 1)
                     setExpDuration(c, key, expDuration)
@@ -29,10 +26,8 @@ object _StorageUtil{
 
         //untuk mendapatkan status negara pengguna
         fun get(c: Context, key: String): String? {
-//        Log.e("UTIL", "getSharedPref() key= $key")
             val prefs = c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
             val expTime= getExpTime(c, key)
-            Log.e("UTIL", "getSharedPref() key= $key expTime= $expTime")
             return if(expTime != null){
                 val timeNow= TimeUtil.timestamp()
                 val diff= TimeUtil.getTimeDiff(timeNow, expTime)
@@ -64,7 +59,6 @@ object _StorageUtil{
             val timestamp= if(duration > 0)
                 TimeUtil.timestamp(diff= duration *1000)
             else null
-            Log.e("UTIL", "timestampA= $timestampA timestamp= $timestamp")
 
             return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
                 .edit().putString(expKey, timestamp)
@@ -73,13 +67,11 @@ object _StorageUtil{
 
         fun getExpTime(c: Context, key: String): String? {
             val expKey= key + _SIF_Constant._KEY_PREF_EXP_TIME
-            Log.e("UTIL", "getSharedPrefExp() expKey= $expKey")
             return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
                 .getString(expKey, null)
         }
 
         fun removeExpTime(c: Context, key: String): Boolean{
-            Log.e("UTIL", "removeSharedPrefExp()")
             val expKey= key + _SIF_Constant._KEY_PREF_EXP_TIME
             return c.getSharedPreferences(_SIF_Constant.MAIN_REF, Context.MODE_PRIVATE)
                 .edit().remove(expKey)

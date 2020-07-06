@@ -1,16 +1,8 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.BarContentNavBase
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import java.lang.Exception
 
 /**
  * Kelas dalam framework yang digunakan sbg Activity dg:
@@ -50,10 +42,10 @@ abstract class BarContentNavAct : Act(), BarContentNavBase{ //InitActBarFun{
     /**
      * Harus dimodifikasi secara internal (private) agar tidak terjadi inkonsistensi
      */
-    override lateinit var contentViewContainer: ViewGroup
-    override lateinit var actBarViewContainer: ViewGroup
+    final override lateinit var contentViewContainer: ViewGroup
+    final override lateinit var actBarViewContainer: ViewGroup
 //        protected set
-    override lateinit var navBar: BottomNavigationView
+    final override lateinit var navBar: BottomNavigationView
 
 //    abstract override fun _initActBar(actBarView: View)
 //    abstract override fun _initNavBar(navBarView: BottomNavigationView)

@@ -105,10 +105,8 @@ object _ModelUtil {
     }
     fun <M: Any> searchToListForId(modelList: Array<M>, id: String): List<M>? {
         val res= ArrayList<M>()
-        Log.e("MODEUL_UTIL", "id= $id")
         for(model in modelList){
             val v= getId(model)!!
-            Log.e("MODEUL_UTIL", "fromId= $v")
             if(v == id)
                 res.add(model)
         }
@@ -137,8 +135,6 @@ object _ModelUtil {
         if(list.isNotEmpty()){
             val fkField= getFkField<TO>(list[0]) ?: return null
             val independentId= getId(model)
-
-//            Log.e("MODEUL_UTIL", "independentId= $independentId")
 
             val res= ArrayList<FROM>()
             for(d in list){
@@ -179,9 +175,8 @@ object _ModelUtil {
 //            Log.e("MODEUL_UTIL", "independentId= $independentId")
 
             val res= ArrayList<FROM>()
-            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName}")
+//            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName}")
             for(d in list){
-                Log.e("MODEL_UTIL", "d= $d")
                 val fk= fkField.getV<FK_M<TO>>(d)!!
                 for(toId in fk.toId){
 //                    Log.e("MODEUL_UTIL", "toId= $toId")
@@ -206,19 +201,19 @@ object _ModelUtil {
         for(field in fields){
             val fieldParamName=
                 try{
-                    Log.e("MODEL_UTIL", "field.name ${field.name} .type= ${field.type}")
+//                    Log.e("MODEL_UTIL", "field.name ${field.name} .type= ${field.type}")
                     val name= ((field.genericType as ParameterizedType)
                         .actualTypeArguments.get(0) as Class<*>).name
-                    Log.e("MODEL_UTIL", "NO ERROR name= $name")
+//                    Log.e("MODEL_UTIL", "NO ERROR name= $name")
                     name
                 } catch (e: ClassCastException){
-                    Log.e("MODEL_UTIL", "e.message= ${e.message} field.genericType= ${"..."}")
+//                    Log.e("MODEL_UTIL", "e.message= ${e.message} field.genericType= ${"..."}")
                     null
                 }
 
             if(field.type.isAssignableFrom(fkType)
                 && (fieldParamName == paramName || paramName == Any::class.java.name)) {
-                Log.e("MODEL_UTIL", "fieldName= $fieldParamName paramName= $paramName")
+//                Log.e("MODEL_UTIL", "fieldName= $fieldParamName paramName= $paramName")
                 fkField= field
                 break
             }
@@ -290,11 +285,11 @@ object _ModelUtil {
     }
     inline fun <reified FROM: Any, reified TO: Any> pairFkWithoutDb(fromDatalist: Array<FROM>, toDatalist: Array<TO>){
         if(fromDatalist.isNotEmpty() && toDatalist.isNotEmpty()){
-            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} ====AWAL====")
+//            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} ====AWAL====")
 
             var fkField= getFkField<TO>(fromDatalist[0])
 
-            Log.e("MODEL_UTIL", "fkField.name= ${fkField?.name}")
+//            Log.e("MODEL_UTIL", "fkField.name= ${fkField?.name}")
 
             for(fromData in fromDatalist){
                 (fkField?.getV<FK_M<TO>>(fromData))
@@ -306,7 +301,7 @@ object _ModelUtil {
                                 id
                             ).notNull {
                                 toObjList.add(it)
-                                Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} id= $id obj inde= $it")
+//                                Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} id= $id obj inde= $it")
                             }
                         }
                         if(toObjList.isNotEmpty())
@@ -317,11 +312,11 @@ object _ModelUtil {
     }
     inline fun <reified FROM: Any, reified TO: Any> pairFkWithoutDb(fromDatalist: Array<FROM>, toData: TO){
         if(fromDatalist.isNotEmpty()){
-            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} ====AWAL====")
+//            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} ====AWAL====")
 
             var fkField= getFkField<TO>(fromDatalist[0])
 
-            Log.e("MODEL_UTIL", "fkField.name= ${fkField?.name}")
+//            Log.e("MODEL_UTIL", "fkField.name= ${fkField?.name}")
 
             val toId= getId(toData)
 
@@ -332,7 +327,7 @@ object _ModelUtil {
                         for(id in fk.toId){
                             if(id == toId){
                                 toObjList.add(toData)
-                                Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} id= $id")
+//                                Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName} TO= ${TO::class.java.simpleName} id= $id")
                             }
                         }
                         if(toObjList.isNotEmpty())
@@ -362,7 +357,7 @@ object _ModelUtil {
         val pictField= datalist.first()!!.getField<PictModel>()!!
         for(data in datalist){
             val pict= pictField.getV<PictModel>(data!!)!!
-            Log.e("MODEL_UTIL", "AWAL====== pict.bm != null = ${pict.bm != null} pict.dir= ${pict.dir}")
+//            Log.e("MODEL_UTIL", "AWAL====== pict.bm != null = ${pict.bm != null} pict.dir= ${pict.dir}")
             if(pict.dir == null){
                 if(pict.file != null) pict.dir= pict.file!!.toUri().toString()
             }
@@ -374,7 +369,7 @@ object _ModelUtil {
                     pict.bm= _BitmapUtil.fromFile(c, dir = pict.dir)!!
                 else if(pict.file != null)
                     pict.bm= _BitmapUtil.fromFile(c, file = pict.file)!!
-                Log.e("MODEL_UTIL", "pict.bm != null = ${pict.bm != null} pict.dir= ${pict.dir}")
+//                Log.e("MODEL_UTIL", "pict.bm != null = ${pict.bm != null} pict.dir= ${pict.dir}")
             }
         }
     }

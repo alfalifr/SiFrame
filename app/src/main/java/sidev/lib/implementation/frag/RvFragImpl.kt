@@ -6,6 +6,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.StrAdp
+import sidev.lib.universal.tool.util.ThreadUtil
 
 class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
     override var topContainer: View?= null
@@ -31,10 +32,10 @@ class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
             "Bro",
             "Hoho",
 // /*
+            "Hihe 8",
             "Hihe",
-            "Hihe",
-            "Hihe",
-            "Hihe",
+            "Hihe 10",
+            "Hihe 11",
             "Hihe",
             "Hihe",
             "Hihe",
@@ -45,6 +46,12 @@ class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
 // */
         )
         rvAdp.dataList= ArrayList(data.toList())
+
+        showLoading()
+        ThreadUtil.delayRun(3000){
+            scrollToPosition(6, true)
+            showLoading(false)
+        }
     }
 
     override fun _initBottomView(bottomView: View) {

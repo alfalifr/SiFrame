@@ -1,6 +1,5 @@
 package sidev.lib.android.siframe.lifecycle.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.util.SparseArray
 import android.view.View
@@ -14,51 +13,54 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
 import java.lang.Exception
 
 abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
-    override val _prop_act: AppCompatActivity
+    final override val _prop_act: AppCompatActivity
         get() = act as AppCompatActivity
-    override val _prop_view: View
+    final override val _prop_view: View
         get() = layoutView
-    override val _prop_intent: Intent
+    final override val _prop_intent: Intent
         get() = act.intent
-    override val _prop_fm: FragmentManager
+    final override val _prop_fm: FragmentManager
         get() = act.supportFragmentManager
-/*
+
+    override val layoutId: Int
+        get() = super.layoutId
+
+    /*
     override val _sideBase_ctx: Context
         get() = act
  */
 
-    override val actBarViewList: SparseArray<View> = SparseArray()
-    override val actBarContainer_vp: ViewGroup?
+    final override val actBarViewList: SparseArray<View> = SparseArray()
+    final override val actBarContainer_vp: ViewGroup?
         get(){
-            val actName= try{actSimple!!::class.java.simpleName} catch (e: Exception){null}
-            loge("actBarContainer_vp actName= $actName")
+//            val actName= try{actSimple!!::class.java.simpleName} catch (e: Exception){null}
+//            loge("actBarContainer_vp actName= $actName")
             return actSimple.asNotNullTo { act: BarContentNavAct ->
-                loge("act.actBarViewContainer != null => ${act.actBarViewContainer != null}")
+//                loge("act.actBarViewContainer != null => ${act.actBarViewContainer != null}")
                 act.actBarViewContainer
             }
         }
-    override var defaultActBarView: View?= null
+    final override var defaultActBarView: View?= null
     override var isActBarViewFromFragment: Boolean= false
         set(v) {
             field= v
             if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
-
-
-    override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener> = SparseArray()
-    override lateinit var vpAdp: VpFragAdp
-    override lateinit var vpFragListMark: Array<Int>
+    //<2 Juli 2020> => Programmer gak perlu mendefinisikan scr langsung.
+    override var vpFragListStartMark: Array<Int> = arrayOf()
+    final override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener> = SparseArray()
+    final override lateinit var vpAdp: VpFragAdp
+    final override lateinit var vpFragListMark: Array<Int>
     override var pageStartInd: Int= 0
     override var pageEndInd: Int= try{vpFragList.size -1} catch(e: Exception){0}
     override var isVpTitleFragBased: Boolean= false
     override var isVpBackOnBackPressed: Boolean= true
 
-    override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
+    final override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
 
 //    override lateinit var lateVp: ViewPager
 /*

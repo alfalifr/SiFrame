@@ -3,6 +3,7 @@ package sidev.lib.android.siframe.arch.intent_state
 import android.content.Context
 import org.jetbrains.anko.runOnUiThread
 import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
+import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.exception.RuntimeExc
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -10,6 +11,7 @@ import sidev.lib.universal.`fun`.*
 import kotlin.reflect.KParameter
 
 abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
+    Mvi,
 //    PresenterDependent<MviPresenter<S>>,
     PresenterCallbackCommon {
     var view: MviView<S, I> = view
@@ -131,11 +133,16 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
                 }
         } catch (e: Exception){
             loge("postState() -> Terjadi kesalahan saat render state \n Error= ${e::class.java.simpleName} \n Msg= ${e.message} Cause= ${e.cause}")
+            throw e //<6 Juli 2020> => Jika terjadi kesalahan saat render, maka app akan crash.
+                //Hal tersebut bertujuan agar programmer tidak bingung saat terjadi keanehan saat render
+                // padahal error terjadi pada framework.
         }
 //        currentStateIsPreState= state.isPreState
     }
 
     protected fun saveCurrentState(reqCode: String, state: S){
+//        loge("saveCurrentState() reqCode= $reqCode state.isPreState= ${state.isPreState} !currentStateIsTemporary!![reqCode]!!= ${!currentStateIsTemporary!![reqCode]!!} \n state.isError= ${state.isError}")
+
         //Jika temporary, gak usah disimpan.
         // Kecuali jika state merupakan preState, maka tetap disimpan agar saat restore
         // saat screen rotation, layar buffer tetap muncul.

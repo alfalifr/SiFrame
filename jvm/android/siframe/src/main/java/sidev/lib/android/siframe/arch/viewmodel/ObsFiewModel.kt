@@ -13,7 +13,6 @@ import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
 import sidev.lib.android.siframe.lifecycle.app.App
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.universal.`fun`.*
 
@@ -68,10 +67,6 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
         }
 
     final override var isBusy: Boolean= false
-        set(v){
-            field= v
-            loge("FiewModel isBusy= $v")
-        }
 
     override val isInterruptable: Boolean
         get() = interruptable?.isInterruptable ?: true
@@ -228,7 +223,6 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
                              loadLater: Boolean/*= false*/, forceReload: Boolean/*= false*/,
                              onPreLoad: (() -> Unit)?/*= null*/, //fungsi saat LifeData msh loading
                              onObserve: (T) -> Unit): LifeData<T>?{
-        loge("observe() is called reqCode= $reqCode")
         return doWhenNotExpired {
             var data= mData[reqCode] as? LifeData<T>
             val isDataNotAvailable= data == null
@@ -253,10 +247,6 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
                 //operasi pengambilan data scr async.
 //                reload(reqCode, *params)
             }
-            loge("observe() is called reqCode= $reqCode data.value= ${data!!.value}")
-            loge("mData != null => ${mData != null} isDataNotAvailable= $isDataNotAvailable loadLater= $loadLater forceReload $forceReload")
-            loge("observe owner is ViewModelBase => ${owner is ViewModelBase}")
-//            Log.e("FiewModel", "isDataNotAvailable= $isDataNotAvailable loadLater= $loadLater forceReload $forceReload")
             data!!.observe(owner, onPreLoad, onObserve)
             mOwner[reqCode]= owner //Ditaruh luar karena kemungkinan owner-nya bisa berubah.
             mDataIsTemporary[reqCode]= isValueTemporary //Ditaruh luar karena kemungkinan konfigurasi temporary-nya berubah.
@@ -286,9 +276,7 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
         return mData[reqCode].notNullTo { lifeData ->
             val owner= mOwner[reqCode]!!
             var isRequestSent= owner.asNotNullTo { view: ArchView ->
-                loge("reload() owner as view: ArchView")
                 view.doWhenNotBusy {
-                    loge("reload() owner as view: ArchView and not busy")
                     innerReload(lifeData, owner, reqCode, *params)
                     true
                 } ?: false
@@ -296,7 +284,6 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
             //Jika [isRequestSent] == null, artinya owner bkn ArchView
             // sehingga kode di atas tidak dieksekusi.
             if(isRequestSent == null){
-                loge("reload() mOwnerIsOnPreLoad[$reqCode] = ${mOwnerIsOnPreLoad[reqCode]}")
                 //Knp kok gak di-assert?
                 // Karena assignment nilai pada [mOwnerIsOnPreLoad} hanya dilakukan
                 // pada fungsi [reload], [onPresenterSucc], dan [onPresenterFail].
@@ -346,7 +333,6 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
     private fun configOwner(reqCode: String, lifeData: LifeData<*>, owner: LifecycleOwner){
         owner.asNotNull { innerOwner: ViewModelBase ->
             mOwnerIsOnPreLoad[reqCode].notNull { isOnPreLoad ->
-                loge("configOwner() reqCode= $reqCode isOnPreLoad= $isOnPreLoad lifeData.value= ${lifeData.value}")
                 if(isOnPreLoad){
                     if(innerOwner is ArchView){
                         innerOwner.isBusy= true

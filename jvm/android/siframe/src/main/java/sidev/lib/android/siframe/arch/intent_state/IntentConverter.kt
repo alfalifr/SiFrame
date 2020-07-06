@@ -3,12 +3,12 @@ package sidev.lib.android.siframe.arch.intent_state
 import sidev.lib.android.siframe.arch.presenter.MviInteractivePresenterDependent
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.arch.presenter.Presenter
+import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.reflect.Field
 
 /**
@@ -24,7 +24,7 @@ import java.lang.reflect.Field
  * menggunakan definisi default kelas ini.
  */
 open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var presenter: Presenter?)
-    : ExpirableLinkBase {
+    : Mvi, ExpirableLinkBase {
     override val expirable: ExpirableBase?
         get() = expirableView
 
@@ -69,7 +69,6 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
         val map= HashMap<String, Any>()
         intent.getAllFields(justPublic = false).notNull { fields ->
             for(field in fields){
-                loge("getIntentDataMap() intent= ${intent.equivalentReqCode} field.name= ${field.name}")
                 //Field yg gak boleh dimodifikasi definisi pair datanya adalah
                 // dua field yg namanya ada di dalam konstanta di bawah.
                 if(field.name != INTENT_EQUIVALENT_REQ_CODE
@@ -111,7 +110,7 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
 
             if(presenter !is MviPresenter<*>){
                 stateProcessor?.postPreResult(reqCode, map, intent.isResultTemporary)
-                loge("postRequest() presenter !is MviPresenter<*> SELESAI \n reqCode= $reqCode isResultTemproray= ${intent.isResultTemporary}")
+                loge("postRequest() presenter !is MviPresenter<*> \n reqCode= $reqCode isResultTemproray= ${intent.isResultTemporary}")
             }
 
             presenter?.postRequest(reqCode, map)

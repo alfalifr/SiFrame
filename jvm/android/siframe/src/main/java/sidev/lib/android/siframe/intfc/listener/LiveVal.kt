@@ -2,7 +2,6 @@ package sidev.lib.android.siframe.intfc.listener
 
 import android.content.Context
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 
 open class LiveVal<T>(var ctx: Context){
     companion object{

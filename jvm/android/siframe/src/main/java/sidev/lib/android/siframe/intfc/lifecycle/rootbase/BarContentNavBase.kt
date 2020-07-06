@@ -1,15 +1,11 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
-import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
-import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.intfc.prop.ActProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
@@ -139,13 +135,12 @@ interface BarContentNavBase: SimpleAbsActFragBase, InitActBarFun, ActProp {
     }
 
     fun setActBarTitle(title: String){
-        loge("setActBarTitle() title= $title")
         try{
             actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
         } catch (e: Exception){
             _ViewUtil.Comp.setTvTitleTxt(actBarViewContainer, title)
         } catch (e: Exception){
-            loge("actBarViewContainer belum diinit!")
+            loge("setActBarTitle() -> actBarViewContainer belum diinit!")
         }
 /*
         if(::actBarViewContainer.isInitialized){
@@ -172,7 +167,6 @@ interface BarContentNavBase: SimpleAbsActFragBase, InitActBarFun, ActProp {
         val prevView= actBarViewContainer.getChildAt(0)
         actBarViewContainer.removeView(prevView)
         actBarViewContainer.addView(v)
-        loge("setActBarView()")
         return prevView
     }
 }

@@ -18,7 +18,6 @@ import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import java.lang.Exception
 
@@ -73,6 +72,10 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         val PAGE_MARK_CONT= 1
     }
 
+    /**
+     * Digunakan untuk menyimpan [ViewPager.OnPageChangeListener]
+     * yg terhubung dg [BottomNavigationView].
+     */
     var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?
 
 
@@ -160,7 +163,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
      */
     fun setFragListMark(mark: Array<Int>){
         val markListInt= Array(vpFragList.size){ PAGE_MARK_CONT }
-        loge("setFragListMark() vpFragList.size= ${vpFragList.size} markListInt.size= ${markListInt.size}")
+//        loge("setFragListMark() vpFragList.size= ${vpFragList.size} markListInt.size= ${markListInt.size}")
         if(markListInt.isNotEmpty()){
             markListInt[0]= PAGE_MARK_START
             val limit= if(mark.size <= vpFragList.size) mark.size

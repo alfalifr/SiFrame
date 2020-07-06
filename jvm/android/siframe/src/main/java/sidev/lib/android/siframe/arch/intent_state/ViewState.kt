@@ -1,5 +1,8 @@
 package sidev.lib.android.siframe.arch.intent_state
 
+import androidx.annotation.Keep
+import sidev.lib.android.siframe.arch.type.Mvi
+
 /**
  * <2 Juli 2020> => Sementara hanya sebagai penanda kelas turunan ini sbg State dalam arsitektur MVI.
  *
@@ -9,7 +12,8 @@ package sidev.lib.android.siframe.arch.intent_state
  *      atau dengan kata lain berada pada status buffering atau loading.
  * [isError] scr umum semua state memiliki ini agar lebih intuitif.
  */
-abstract class ViewState{
+//@Keep -> Dari proguard-rules.pro aja biar bisa nambah opsi ,allowoptimization,allowshrinking
+abstract class ViewState: Mvi{
     /**
      * true jika kelas [ViewState] ini berada pada state sebelum hasil sesungguhnya keluar,
      *      atau dengan kata lain berada pada status buffering atau loading.

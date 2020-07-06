@@ -1,11 +1,11 @@
 package sidev.lib.android.siframe.tool.manager
 
 import android.app.Activity
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.exception.IllegalAccessExc
 import sidev.lib.android.siframe.tool.ActLifecycleObs
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.className
 import sidev.lib.universal.`fun`.copy
 import sidev.lib.universal.tool.util.ThreadUtil
@@ -22,7 +22,7 @@ object ActManager {
 
     fun process(request: String, vararg params: Any){
         val callerFunName= ThreadUtil.getCurrentCallerFunName()
-        Log.e("ActManager", "callerFunName= $callerFunName")
+        loge("callerFunName= $callerFunName")
 
         if(callerFunName == _SIF_Constant.REG_ACT_FUN_REGISTERER_NAME
             || callerFunName == _SIF_Constant.REG_FRAG_FUN_REGISTERER_NAME){
@@ -49,7 +49,7 @@ object ActManager {
             obs.onDestroyFun[KEY_ACT_MANAGER]= { key, lifecycle -> popStack(lifecycle as AppCompatActivity) }
             actStack.push(act)
         } catch (castExc: ClassCastException){
-            Log.e("ACT_MANAGER", "act tidak memiliki lifecycle sehingga tidak dapat diregister")
+            loge("act tidak memiliki lifecycle sehingga tidak dapat diregister")
         }
     }
 

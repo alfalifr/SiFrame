@@ -6,10 +6,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 
 abstract class DrawerAct: Act(), DrawerActBase {
-    override lateinit var rootDrawerLayout: DrawerLayout
-    override lateinit var contentViewContainer: ViewGroup
-    override lateinit var startDrawerContainer: ViewGroup
-    override lateinit var endDrawerContainer: ViewGroup
+    final override lateinit var rootDrawerLayout: DrawerLayout
+    final override lateinit var contentViewContainer: ViewGroup
+    final override lateinit var startDrawerContainer: ViewGroup
+    final override lateinit var endDrawerContainer: ViewGroup
 
     override fun __initViewFlow(rootView: View) {
         __initDrawer(rootView)

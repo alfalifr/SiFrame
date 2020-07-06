@@ -82,10 +82,12 @@ object _Config {
     var ID_TV= R.id.tv
     var ID_PB= R.id.pb
     var ID_VP= R.id.vp
+    var ID_SV= R.id.sv
     //Specific ID
     var ID_FR_CONTAINER= R.id.fr_container
     var ID_IV_ICON= R.id.iv_icon
     var ID_IV_BACK= R.id.iv_back
+    var ID_IV_ARROW= R.id.iv_arrow
     var ID_IV_ACTION= R.id.iv_action
     var ID_IV_CHECK= R.id.iv_check
     var ID_IV_OVERLAY= R.id.iv_overlay
@@ -117,7 +119,8 @@ object _Config {
     var DRAW_IC_WARNING= R.drawable.ic_warning
     var DRAW_SHAPE_BORDER_ROUND= R.drawable.shape_border_round
     var DRAW_SHAPE_BORDER_ROUND_BG= R.drawable.shape_border_round_bg
-    var DRAW_SHAPE_SOLID_SQUARE_ROUND= R.drawable.shape_solid_square_round
+//    var DRAW_SHAPE_SOLID_SQUARE_ROUND= R.drawable.shape_solid_square_round
+    var DRAW_SHAPE_SOLID_RECT_ROUND_EDGE= R.drawable.shape_solid_rect_round_edge
     var DRAW_PSWD_SHOWN= R.drawable.ic_eye_yes
     var DRAW_PSWD_HIDDEN= R.drawable.ic_eye_no
 

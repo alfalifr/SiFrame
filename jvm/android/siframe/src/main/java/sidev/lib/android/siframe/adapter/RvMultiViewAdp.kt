@@ -45,7 +45,6 @@ abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context, d
     }
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        Log.e("SImpleAbsRVA", "bindVh() position= $position name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
         holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
             ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE

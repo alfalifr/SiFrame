@@ -3,7 +3,6 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
@@ -62,36 +61,36 @@ abstract class Act : AppCompatActivity(), Inheritable,
         get() = lifecycleCtx
  */
 
-    override val _prop_act: AppCompatActivity
+    final override val _prop_act: AppCompatActivity
         get() = this
-    override val _prop_ctx: Context
+    final override val _prop_ctx: Context
         get()= this
+    final override val _prop_intent: Intent
+        get() = intent
+    final override val _prop_fm: FragmentManager
+        get() = supportFragmentManager
     override val _prop_view: View
         get() = layoutView
-    override val _prop_intent: Intent
-        get() = intent
-    override val _prop_fm: FragmentManager
-        get() = supportFragmentManager
 
     abstract override val layoutId: Int
 /*
     override val actBackBtn: Activity
         get() = this
  */
-    override var backBtnViewList= ArrayList<View>()
-    override var onBackPressedListenerList: ArrayList<OnBackPressedListener>
+    final override var backBtnViewList= ArrayList<View>()
+    final override var onBackPressedListenerList: ArrayList<OnBackPressedListener>
         = ArrayList()
 
     override val styleId: Int
         get() = _Config.STYLE_APP
-    override lateinit var layoutView: View
+    final override lateinit var layoutView: View
     open val isViewInitFirst= true
 
-    override lateinit var _vmProvider: ViewModelProvider
+    final override lateinit var _vmProvider: ViewModelProvider
     //    override val vmStoreOwner: ViewModelStoreOwner= this
 //    override val lifecycleOwner: LifecycleOwner= this
 
-    override var presenter: Presenter?= null
+    final override var presenter: Presenter?= null
 //    override var callbackCtx: Context?= this
 
 
@@ -128,7 +127,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
         isExpired= true
         presenter= null
 //        onDestroyListenerQueue.iterateRunQueue(null)
-        Log.e("SimpleAbsAct", "Activity ${this::class.java.simpleName} is destroyed!!!")
+        loge("Activity ${this::class.java.simpleName} is destroyed!!!")
     }
 
     private var frag: Fragment?= null
@@ -147,7 +146,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
         super.onResumeFragments()
         if(this !is ViewPagerBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
             && frag != null && frag is Frag){
-            loge("onResumeFragments() onActive() caller")
+//            loge("onResumeFragments() onActive() caller")
             (frag as Frag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
         }
     }

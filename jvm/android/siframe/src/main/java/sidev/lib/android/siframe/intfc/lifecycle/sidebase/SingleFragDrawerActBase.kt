@@ -2,6 +2,7 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout
+import sidev.lib.android.siframe.exception.RuntimeExc
 
 /**
  * Interface yg digunakan untuk menggabungkan fungsionalitas SingleFragActBase dan DrawerActBase.
@@ -26,11 +27,27 @@ interface SingleFragDrawerActBase : SingleFragActBase, DrawerActBase{
 
     /**
      * Dapat dipanggil oleh fragment yg dilakukan tidak di awal.
+     * Fungsi ini akan error jika [SingleFragActBase] ini tidak memiliki
+     * view di dalam [startDrawerContainer].
      */
     fun _reinitStartDrawerView(func: (drawer: DrawerLayout, startDrawerView: View) -> Unit){
-        func(rootDrawerLayout, startDrawerContainer.getChildAt(0))
+        try{
+            val startDrawer= startDrawerContainer.getChildAt(0)!!
+            func(rootDrawerLayout, startDrawer)
+        } catch (e: KotlinNullPointerException){
+            //Jika ternyata Activity induk tidak punya startDrawer, maka throw RuntimeExc.
+            throw RuntimeExc(commonMsg = "_reinitStartDrawerView() oleh Fragment: \"${fragment::class.java.simpleName}\"",
+                detailMsg = "Activity: \"${this::class.java.simpleName}\" tidak punya startDrawer")
+        }
     }
     fun _reinitEndDrawerView(func: (drawer: DrawerLayout, endDrawerView: View) -> Unit){
-        func(rootDrawerLayout, endDrawerContainer.getChildAt(0))
+        try{
+            val endDrawer= endDrawerContainer.getChildAt(0)!!
+            func(rootDrawerLayout, endDrawer)
+        } catch (e: KotlinNullPointerException){
+            //Jika ternyata Activity induk tidak punya startDrawer, maka throw RuntimeExc.
+            throw RuntimeExc(commonMsg = "_reinitStartDrawerView() oleh Fragment: \"${fragment::class.java.simpleName}\"",
+                detailMsg = "Activity: \"${this::class.java.simpleName}\" tidak punya endDrawer")
+        }
     }
 }

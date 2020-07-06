@@ -9,7 +9,7 @@
         android:paddingBottom="@dimen/padding_btn_vertical"
         android:paddingLeft="@dimen/padding_btn_horizontal"
         android:paddingRight="@dimen/padding_btn_horizontal"
-        android:background="@drawable/shape_solid_square_round"
+        android:background="@drawable/shape_solid_rect_round_edge"
         android:text="@string/template_msg_btn"
         android:textSize="@dimen/txt_med_normal"
         android:textColor="#FFFFFF"/>

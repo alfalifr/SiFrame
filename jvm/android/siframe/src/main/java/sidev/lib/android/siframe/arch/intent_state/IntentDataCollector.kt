@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.arch.intent_state
 
+import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.universal.`fun`.getAllFields
 import sidev.lib.universal.`fun`.getSealedClassName
 import sidev.lib.universal.`fun`.new
@@ -13,7 +14,7 @@ import kotlin.reflect.KParameter
  * yg dijalankan dapat berat. Oleh karena itu, nilai sementara disimpan agar
  * tidak membebani operasi.
  */
-class IntentDataCollector<I: ViewIntent>(var intentConverter: IntentConverter<I>){
+class IntentDataCollector<I: ViewIntent>(var intentConverter: IntentConverter<I>): Mvi{
     private var intentObj: HashMap<String, ViewIntent>?= null
 
     /**

@@ -26,21 +26,52 @@
     <dimen name="auth_padding_horizontal_sides">15dp</dimen>
     <dimen name="auth_form_margin_top">230dp</dimen>
 
+    <!-- Untuk penggunaan universal -->
+    <dimen name="bg_extra">36sp</dimen>
+    <dimen name="bg">32sp</dimen>
+    <dimen name="bg_med">28sp</dimen>
+    <dimen name="med">24sp</dimen>
+    <dimen name="med_normal">20sp</dimen>
+    <dimen name="normal">18sp</dimen>
+    <dimen name="normal_sm">16sp</dimen>
+    <dimen name="sm">12sp</dimen>
+    <dimen name="sm_extra">10sp</dimen>
+    <dimen name="def">14sp</dimen>
+
     <!-- this is for text -->
-    <dimen name="txt_bg">36sp</dimen>
+    <dimen name="txt_bg_extra">36sp</dimen>
+    <dimen name="txt_bg">32sp</dimen>
+    <dimen name="txt_bg_med">28sp</dimen>
     <dimen name="txt_med">24sp</dimen>
     <dimen name="txt_med_normal">20sp</dimen>
     <dimen name="txt_normal">18sp</dimen>
     <dimen name="txt_normal_sm">16sp</dimen>
     <dimen name="txt_sm">12sp</dimen>
+    <dimen name="txt_sm_extra">9sp</dimen>
     <dimen name="txt_default">14sp</dimen>
 
-    <dimen name="corner_sm_extra">1dp</dimen>
-    <dimen name="corner_sm">5dp</dimen>
-    <dimen name="corner_default">10dp</dimen>
-    <dimen name="corner_normal">15dp</dimen>
-    <dimen name="corner_med">20dp</dimen>
+    <dimen name="corner_bg_extra">50sp</dimen>
+    <dimen name="corner_bg">40sp</dimen>
+    <dimen name="corner_bg_med">32sp</dimen>
+    <dimen name="corner_med_3">28sp</dimen>
+    <dimen name="corner_med_2">24sp</dimen>
+    <dimen name="corner_med_1">20sp</dimen>
+    <dimen name="corner_med_normal">16sp</dimen>
+    <dimen name="corner_normal">12sp</dimen>
+    <dimen name="corner_normal_sm">8sp</dimen>
+    <dimen name="corner_sm">4sp</dimen>
+    <dimen name="corner_sm_extra">1sp</dimen>
+    <dimen name="corner_def">14sp</dimen>
+
+<!--
     <dimen name="corner_bg">50dp</dimen>
+    <dimen name="corner_med">20dp</dimen>
+    <dimen name="corner_sm_extra">1dp</dimen>
+    <dimen name="corner_sm">4dp</dimen>
+    <dimen name="corner_normal_sm">6dp</dimen>
+    <dimen name="corner_normal">15dp</dimen>
+    <dimen name="corner_default">10dp</dimen>
+-->
 
     <dimen name="box_menu_dimen">35dp</dimen>
 

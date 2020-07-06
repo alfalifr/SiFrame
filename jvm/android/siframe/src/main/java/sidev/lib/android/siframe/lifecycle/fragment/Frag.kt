@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -21,17 +19,13 @@ import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.arch.viewmodel.FiewModel
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
-
-//import sidev.lib.android.siframe.presenter.RepositoryCallback
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].
@@ -58,7 +52,7 @@ abstract class Frag : Fragment(),
 //        get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
         get() = _Config.STYLE_APP
-    override lateinit var layoutView: View
+    final override lateinit var layoutView: View
 /*
     override val lifecycleCtx: Context
         get() = context!!
@@ -79,11 +73,11 @@ abstract class Frag : Fragment(),
             field= v ?: context
         }
  */
-    override lateinit var _vmProvider: ViewModelProvider
+    final override lateinit var _vmProvider: ViewModelProvider
     //    override val vmStoreOwner: ViewModelStoreOwner= this
 //    override val lifecycleOwner: LifecycleOwner= this
 
-    override var presenter: Presenter?= null
+    final override var presenter: Presenter?= null
 
     /**
      * Dipakai untuk judul pada TabLayout yang dipasang pada ViewPager
@@ -114,19 +108,19 @@ abstract class Frag : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
 //        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} onCreateView!!!")
-        loge("layoutId == _Config.LAYOUT_DL => ${layoutId == _Config.LAYOUT_DL}")
         return inflater.inflate(layoutId, container, false)
     }
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} onViewCreated!!!")
-//        if(!isContextInit) callbackCtx= context!!
+        loge("Fragment ${this::class.java.simpleName} onViewCreated!!!")
+/*
+        if(!isContextInit) callbackCtx= context!!
         val drawer= view.findViewByType<DrawerLayout>()
         val isDrawer= view is DrawerLayout
 
         loge("drawer == null => ${drawer == null} isDrawer= $isDrawer")
-
+ */
         ___initRootBase(act, view)
         ___initSideBase()
 /*
@@ -140,17 +134,17 @@ abstract class Frag : Fragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is attached to context!!!")
+        loge("Fragment ${this::class.java.simpleName} is attached to context!!!")
     }
     override fun onAttach(act: Activity) {
         super.onAttach(act)
-        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is attached to activity!!!")
+        loge("Fragment ${this::class.java.simpleName} is attached to activity!!!")
     }
 
     @CallSuper
     override fun onDetach() {
         super.onDetach()
-        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} is detached!!!")
+        loge("Fragment ${this::class.java.simpleName} is detached!!!")
     }
 
     override fun onDestroy() {

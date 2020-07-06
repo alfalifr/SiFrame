@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.CallSuper
-import androidx.core.util.isNotEmpty
 import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
@@ -18,13 +17,9 @@ import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.filter
-import sidev.lib.universal.`fun`.isNotNullAndEmpty
 import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 import java.lang.IndexOutOfBoundsException
-import kotlin.math.abs
 
 //!!!!!!@@ 18 Jan 2020
 abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
@@ -222,7 +217,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         val dataInd= getShownIndex(position)
         val data= dataList!![dataInd]
-        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
+//        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
         holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
             ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE
@@ -583,10 +578,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     //<29 Juni 2020> => Definisi baru: 3.
     fun filter(resetFirst: Boolean= false, func: (pos: Int, data: D) -> Boolean){
-
         if(dataList.isNullOrEmpty()) return
-
-        loge("filter() MULAI")
 
         var u= -1
         if(resetFirst){
@@ -615,8 +607,6 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
         adjustMapping()
 //        isMappingChanged= true
         notifyDataSetChanged()
-
-        loge("filter() SELESAI")
     }
 /*
     //<29 Juni 2020> => Definisi baru: 4
@@ -765,8 +755,6 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     fun sort(func: (pos1: Int, data1: D, pos2: Int, data2: D) -> Boolean){
         if(dataList.isNullOrEmpty()) return
-
-        loge("sort() MULAI")
 
         //Reset sortedIndMap sehingga menyamai indeks filteredIndMap
         sortedIndMap.clear()
