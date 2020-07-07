@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import sidev.lib.android.siframe.customizable._init._Config;
+import sidev.lib.android.siframe._customizable._Config;
 import sidev.lib.android.siframe.tool.util._EnvUtil;
 import sidev.lib.universal.tool.util.TimeUtil;
 

@@ -1,8 +1,7 @@
 package sidev.lib.android.siframe.tool.util.`fun`
 
 import android.util.Log
-import sidev.lib.android.siframe.customizable._init._Config
-import java.lang.Exception
+import sidev.lib.android.siframe._customizable._Config
 
 fun Any.loge(txt: String, throwable: Throwable?= null){
     if(_Config.LOG){

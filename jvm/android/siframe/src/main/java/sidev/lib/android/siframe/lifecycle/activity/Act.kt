@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 //import kotlinx.android.synthetic.main._sif_comp_item_txt_desc.view.*
 //import kotlinx.android.synthetic.main._sif_comp_item_txt_desc.view.*
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.implementation.R
 
 class StrAdp(c: Context, data: ArrayList<String>?) : RvAdp<String, LinearLayoutManager>(c, data){

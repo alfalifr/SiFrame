@@ -5,11 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.util.ResetableUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager

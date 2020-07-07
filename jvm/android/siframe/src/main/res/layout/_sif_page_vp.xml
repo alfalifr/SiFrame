@@ -14,7 +14,7 @@
         android:layout_above="@id/rl_bottom_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <sidev.lib.android.siframe.customizable.view.ModVp
+        <sidev.lib.android.siframe.view.ModVp
             android:id="@+id/vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

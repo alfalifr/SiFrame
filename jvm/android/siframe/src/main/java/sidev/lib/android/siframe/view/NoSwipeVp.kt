@@ -1,7 +1,8 @@
-package sidev.lib.android.siframe.customizable.view
+package sidev.lib.android.siframe.view
 
 import android.content.Context
 import android.util.AttributeSet
+//import sidev.lib.android.siframe.customizable.view.ModVp
 
 class NoSwipeVp : ModVp {
     override var isTouchable: Boolean

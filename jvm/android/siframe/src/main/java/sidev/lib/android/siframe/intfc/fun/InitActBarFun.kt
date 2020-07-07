@@ -1,8 +1,7 @@
 package sidev.lib.android.siframe.intfc.`fun`
 
 import android.view.View
-import android.view.ViewGroup
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 
 interface InitActBarFun {
 //    val actBarViewContainer: ViewGroup

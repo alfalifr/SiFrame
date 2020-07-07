@@ -8,10 +8,9 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.listener.LiveVal
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
-import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.model.DataWithId
 import sidev.lib.android.siframe.model.intfc.ModelId
 import sidev.lib.android.siframe.model.intfc.StorageKind

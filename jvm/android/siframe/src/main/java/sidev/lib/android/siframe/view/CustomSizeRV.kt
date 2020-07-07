@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.view
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe.customizable.view.intfc.CustomView
+import sidev.lib.android.siframe.intfc.customview.CustomView
 import sidev.lib.android.siframe.tool.util._ViewUtil
 
 open class CustomSizeRV : RecyclerView, CustomView {

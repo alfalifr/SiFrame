@@ -1,7 +1,8 @@
-package sidev.lib.android.siframe.customizable._init
+package sidev.lib.android.siframe._customizable
 
 import android.app.Activity
-import sidev.lib.android.siframe.customizable.R
+//import sidev.lib.android.siframe.customizable.R
+import sidev.lib.android.siframe.R
 
 /**
  * Isi dari kelas ini jangan diubah.
@@ -33,7 +34,7 @@ object _Config {
      * Jika [LOG_ON_FILE] di-assign true tapi [LOG] false, maka hasil akhirnya [LOG_ON_FILE] false.
      * Artinya, [LOG_ON_FILE] diijinkan jika [LOG] juga diijinkan.
      */
-    var LOG_ON_FILE= DEBUG
+    var LOG_ON_FILE= false
         get()= field && LOG
 
 
@@ -44,7 +45,8 @@ object _Config {
     var DB_VERSION= 1
 
 
-    var TEMPLATE_VIEW_ACT_BAR_TYPE= _Constant.TEMPLATE_VIEW_TYPE_ACT_BAR_DEFAULT
+    var TEMPLATE_VIEW_ACT_BAR_TYPE=
+        _Constant.TEMPLATE_VIEW_TYPE_ACT_BAR_DEFAULT
 
 
     var STRING_APP_NAME= R.string.app_name
@@ -103,6 +105,7 @@ object _Config {
     var ID_RL_BTN_CONTAINER= R.id.rl_btn_container
     var ID_RL_TOP_CONTAINER= R.id.rl_top_container
     var ID_RL_BOTTOM_CONTAINER= R.id.rl_bottom_container
+    var ID_RL_TOP_CONTAINER_OUTSIDE= R.id.rl_top_container_outside
     var ID_RL_BOTTOM_CONTAINER_OUTSIDE= R.id.rl_bottom_container_outside
     var ID_RL_MIDDLE_CONTAINER= R.id.rl_middle_container
 

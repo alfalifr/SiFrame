@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
 

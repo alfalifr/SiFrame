@@ -9,7 +9,7 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.DialogListAdp
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
 

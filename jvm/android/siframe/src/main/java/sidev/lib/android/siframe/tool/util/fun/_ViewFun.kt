@@ -4,23 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ListView
+import android.os.Build
+import android.view.*
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import org.jetbrains.anko.layoutInflater
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.intfc.adp.Adp
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 
 
@@ -43,29 +38,45 @@ fun RvAdp<*, *>.notifyDatasetChanged_ui(){
     }
 }
 
-fun View.iterateChild(func: (child: View) -> Unit){
+/**
+ * Iterasi ini menggunakan Depth-First Traversal.
+ */
+fun View.iterateChildren(func: (child: View) -> Unit){
     if(this is ViewGroup){
         for(child in this.children){
             func(child)
             if(child is ViewGroup)
-                child.iterateChild(func)
+                child.iterateChildren(func)
         }
     }
 }
-
+/**
+ * Fungsi ini melakukan iterasi terhadap [ViewParent]
+ * yg merupakan satu garis keturunan dan merupakan [ViewGroup].
+ */
+fun View.iterateParent(func: (parent: View) -> Unit){
+    var parent= this.parent
+    while(parent != null && parent is ViewGroup){
+        func(parent)
+        parent= parent.parent
+    }
+}
+/*
 /**
  * @param func return true jika berhenti
  */
-fun View.iterateChildWithStop(func: (child: View) -> Boolean){
+ <7 Juli 2020> => Dihilangkan karena stop bisa dilakukan dg return@function.
+fun View.iterateChildrenWithStop(func: (child: View) -> Boolean){
     if(this is ViewGroup){
         for(child in this.children){
             if(!func(child)){
                 if(child is ViewGroup)
-                    child.iterateChildWithStop(func)
+                    child.iterateChildrenWithStop(func)
             } else break
         }
     }
 }
+ */
 
 fun Activity.getRootView(): View{
     return this.findViewById<View>(android.R.id.content).rootView
@@ -76,19 +87,40 @@ fun Fragment.getRootView(): View?{
 }
 
 /**
- * Menemukan first occurrence
+ * Menemukan first occurrence.
+ *
+ * @param direction [_SIF_Constant.DIRECTION_DOWN] jika meng-iterate view children.
+ *   [_SIF_Constant.DIRECTION_UP] jika meng-iterate view parent.
+ * @param includeItself true jika hasil return juga mengembalikan view tempat
+ *   fungsi ini menempel.
+ *
+ * @return view dg tipe [T]. View dapat berupa child, parent, ataupun
+ *   view tempat fungsi ini menempel.
  */
-inline fun <reified T: View> View.findViewByType(): T? {
-    if(this is T) return this
-    var stop= false
-    var childRes: T?= null
-    this.iterateChildWithStop { child ->
-        stop= child is T
-        if(stop)
-            childRes= child as T
-        stop
+inline fun <reified T: View> View.findViewByType(
+    direction: Int= _SIF_Constant.DIRECTION_DOWN,
+    includeItself: Boolean= true
+): T? {
+    if(includeItself && this is T) return this
+
+    var viewRes: T?= null
+
+    if(direction == _SIF_Constant.DIRECTION_UP){
+        this.iterateParent { parent ->
+            if(parent is T){
+                viewRes= parent
+                return@iterateParent
+            }
+        }
+    } else{ //Scr default akan meng-iterate ke bawah atau ke child.
+        this.iterateChildren { child ->
+            if(child is T){
+                viewRes= child
+                return@iterateChildren
+            }
+        }
     }
-    return childRes
+    return viewRes
 }
 
 fun Fragment.changeView(vId: Int, layoutId: Int){
@@ -205,4 +237,25 @@ fun RadioGroup.getSelectedInd(): Int{
         }
     }
     return -1
+}
+
+/**
+ * Fungsi praktis untuk memasang listener pada View saat pertama kali ditampilkan pada layar.
+ *
+ * @param justOnce true jika kode di dalam lambda [l] dijalankan sekali dan listener
+ *   segera dihilangkan ([ViewTreeObserver.removeOnGlobalLayoutListener]) setelah listener dipanggil.
+ * @param l ada kode fungsi listener.
+ */
+fun View.addOnGlobalLayoutListener(justOnce: Boolean= true, l: () -> Unit): ViewTreeObserver.OnGlobalLayoutListener{
+    val innerL= object: ViewTreeObserver.OnGlobalLayoutListener{
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        override fun onGlobalLayout() {
+            l()
+            if(justOnce)
+                this@addOnGlobalLayoutListener
+                    .viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    }
+    this.viewTreeObserver.addOnGlobalLayoutListener(innerL)
+    return innerL
 }

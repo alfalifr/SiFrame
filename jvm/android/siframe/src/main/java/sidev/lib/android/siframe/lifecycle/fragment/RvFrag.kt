@@ -7,7 +7,9 @@ import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 
 abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
     final override val layoutId: Int
@@ -51,14 +53,12 @@ abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
         fullScrollIv.setOnClickListener { fullScroll(View.FOCUS_UP) }
 
         scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if(isFullScrollIvShown){
-                if(scrollY > 0)
-                    showFullScrollIv()
-                else
-                    showFullScrollIv(false)
-            }
+            if(isFullScrollIvShown)
+                showFullScrollIv(scrollY > 0)
         }
-
+        //<7 Juli 2020> => Ini sengaja dibuat dobel (satunya ada di [TopMiddleBottomBase.__initTopMiddleBottomView])
+        //  agar tampilan [NestedScrollView] menuju ke paling atas.
+        scrollView.addOnGlobalLayoutListener { fullScroll(View.FOCUS_UP) }
         showFullScrollIv(false)
     }
 
@@ -88,8 +88,8 @@ abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
     }
 
     /**
-     * @param direction [View.FOCUS_UP] jika ingin scroll-to-top.
-     *   [View.FOCUS_DOWN] jika ingin scroll-to-bottom.
+     * @param direction [View.FOCUS_UP] untuk scroll-to-top.
+     *   [View.FOCUS_DOWN] untuk scroll-to-bottom.
      */
     fun fullScroll(direction: Int){
         scrollView.fullScroll(direction)

@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra

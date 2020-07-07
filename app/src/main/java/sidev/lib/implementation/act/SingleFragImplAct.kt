@@ -2,16 +2,9 @@ package sidev.lib.implementation.act
 
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.act_drawer.view.*
-import org.jetbrains.anko.textColorResource
-import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.customizable._init._Config
 import sidev.lib.android.siframe.lifecycle.activity.*
-import sidev.lib.android.siframe.tool.util.`fun`.detachFromParent
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.implementation.R
 
 /*
 class SingleFragImplAct : SingleFragDrawerAct(){

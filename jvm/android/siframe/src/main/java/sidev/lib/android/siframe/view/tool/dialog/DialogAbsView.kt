@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 
 
 abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){

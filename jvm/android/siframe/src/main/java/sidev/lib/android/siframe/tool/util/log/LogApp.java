@@ -2,7 +2,7 @@ package sidev.lib.android.siframe.tool.util.log;
 
 import android.util.Log;
 
-import sidev.lib.android.siframe.customizable._init._Config;
+import sidev.lib.android.siframe._customizable._Config;
 
 public class LogApp {
     public static boolean log= _Config.INSTANCE.getLOG(); //true;

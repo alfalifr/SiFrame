@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe.customizable._init
+package sidev.lib.android.siframe._customizable
 
 object _Constant{
     val TEMPLATE_VIEW_TYPE_ACT_BAR_DEFAULT= 0

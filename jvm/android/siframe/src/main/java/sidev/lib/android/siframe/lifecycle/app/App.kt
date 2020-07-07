@@ -2,7 +2,7 @@ package sidev.lib.android.siframe.lifecycle.app
 
 import android.app.Application
 import android.content.Context
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
 import kotlin.system.exitProcess
@@ -16,7 +16,8 @@ open class App: Application(){
         lateinit var ctx: Context
             private set
     }
-    lateinit var logHpError: LogHP
+    var logHpError: LogHP?= null
+        internal set
 /*
     var currentAct: SimpleAbsAct?= null
         set(v){
@@ -43,14 +44,14 @@ open class App: Application(){
 
         if(_Config.LOG_ON_FILE){
             logHpError= LogHP(this)
-            logHpError.letakFolder("Error")
+            logHpError!!.letakFolder("Error")
 //            loge("logHpError.alamatFile= ${logHpError.alamatFile}")
 
 //            if(_Config.DEBUG){ -> tidak perlu semenjak _Config.LOG_ON_FILE juga membutuhkan _Config.DEBUG
             Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
                 LogApp.e(throwable::class.java.simpleName, throwable.message, throwable)
                 try{
-                    logHpError.printError(thread, throwable)
+                    logHpError!!.printError(thread, throwable)
                     throwable.printStackTrace()
                 } catch(error: Exception){
                     LogApp.e(error::class.java.simpleName, error.message, error)

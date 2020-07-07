@@ -5,8 +5,8 @@ import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.act_drawer.view.*
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
-import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.customizable.view.intfc.ModView
+import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.customview.ModView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.Frag

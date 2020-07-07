@@ -5,13 +5,13 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/rl_top_container"
+        android:id="@+id/rl_top_container_outside"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl"
-        android:layout_below="@id/rl_top_container"
+        android:layout_below="@id/rl_top_container_outside"
         android:layout_above="@id/rl_bottom_container_outside"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -26,13 +26,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/rl_top_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"
+                    android:layout_below="@id/rl_top_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>
                 <LinearLayout
-                    android:id="@+id/ll"
+                    android:id="@+id/ll_bottom"
                     android:layout_below="@id/rv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -63,7 +68,7 @@
     <TextView
         android:visibility="gone"
         android:id="@+id/tv_no_data"
-        android:layout_below="@id/rl_top_container"
+        android:layout_below="@id/rl_top_container_outside"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

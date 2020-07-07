@@ -1,8 +1,6 @@
 package sidev.lib.android.siframe.adapter
 
 import android.content.Context
-import android.util.Log
-import android.util.SparseArray
 import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +11,7 @@ import androidx.annotation.CallSuper
 import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue

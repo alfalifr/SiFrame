@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.VpFragAdp
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct

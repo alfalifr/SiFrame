@@ -1,9 +1,11 @@
-package com.sigudang.android._template.view
+package sidev.lib.android.siframe.view
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import sidev.lib.android.siframe.customizable.view.intfc.ViewRespIntfc
+import sidev.lib.android.siframe.intfc.customview.ViewRespIntfc
+
+//import sidev.lib.android.siframe.customizable.view.intfc.ViewRespIntfc
 
 open class ViewResp: View, ViewRespIntfc {
     constructor(c: Context, attrs: AttributeSet): super(c, attrs)

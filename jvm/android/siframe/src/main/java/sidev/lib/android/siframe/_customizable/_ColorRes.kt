@@ -1,6 +1,6 @@
-package sidev.lib.android.siframe.customizable._init
+package sidev.lib.android.siframe._customizable
 
-import sidev.lib.android.siframe.customizable.R
+import sidev.lib.android.siframe.R
 
 object _ColorRes{
     var COLOR_PRIMARY= R.color.colorPrimary

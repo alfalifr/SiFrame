@@ -1,21 +1,14 @@
 package sidev.lib.android.siframe.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
-import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.exception.TypeExc
-import sidev.lib.android.siframe.intfc.adp.Adp
-import sidev.lib.android.siframe.tool.RunQueue
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.filter
 import sidev.lib.universal.`fun`.notNull
 
 abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context, dataList: ArrayList<D>?)

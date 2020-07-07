@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener

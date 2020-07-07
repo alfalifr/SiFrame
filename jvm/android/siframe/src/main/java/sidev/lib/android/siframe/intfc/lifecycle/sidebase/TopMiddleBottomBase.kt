@@ -2,9 +2,16 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
-import sidev.lib.android.siframe.customizable._init._Config
+import androidx.core.widget.NestedScrollView
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
+import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
+import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNull
 
 interface TopMiddleBottomBase: LifecycleSideBase {
@@ -36,6 +43,21 @@ interface TopMiddleBottomBase: LifecycleSideBase {
             c.inflate(topLayoutId, topContainer as ViewGroup)
                 .notNull { v ->
                     (topContainer as ViewGroup).addView(v)
+// /*
+                    this.asNotNull { rvFrag: RvFrag<*> ->
+                        //Jika kelas ini [RvFrag], maka cek apakah [topContainer] berada
+                        // di dalam [NestedScrollView].
+                        topContainer!!.findViewByType<NestedScrollView>(_SIF_Constant.DIRECTION_UP)
+                            .notNull {
+                                //Jika ada di dalam [NestedScrollView], maka scroll hingga ke atas.
+                                // Hal ini dilatar-belakangi karena view pada screen menscroll
+                                // ke posisi item pertama [RecyclerView] pada [RvFrag].
+                                topContainer!!.addOnGlobalLayoutListener {
+                                    rvFrag.fullScroll(View.FOCUS_UP)
+                                }
+                            }
+                    }
+// */
                     _initTopView(v)
                 }
         }

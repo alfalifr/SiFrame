@@ -13,5 +13,21 @@
         android:text="@string/template_msg_desc"
         android:textStyle="bold" />
 
+    <include
+        android:visibility="gone"
+        android:id="@+id/btn"
+        layout="@layout/_sif_comp_btn_action_sm"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/pb"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

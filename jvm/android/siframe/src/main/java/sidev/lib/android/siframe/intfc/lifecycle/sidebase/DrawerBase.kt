@@ -5,7 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.tool.util.`fun`.inflate

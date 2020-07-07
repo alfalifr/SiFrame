@@ -4,8 +4,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
-import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._ColorRes
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType

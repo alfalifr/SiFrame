@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.intfc.prop.ActProp
 import sidev.lib.android.siframe.lifecycle.activity.Act

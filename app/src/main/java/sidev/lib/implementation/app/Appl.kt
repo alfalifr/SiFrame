@@ -1,8 +1,8 @@
 package sidev.lib.implementation.app
 
-import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.customizable._init._Config
-import sidev.lib.android.siframe.customizable._init._Constant
+import sidev.lib.android.siframe._customizable._ColorRes
+import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._customizable._Constant
 import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util._ViewUtil

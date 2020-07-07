@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._Config
 
 /**
  * <8 Juni 2020> => Sementara hanya sbg penanda (marker)

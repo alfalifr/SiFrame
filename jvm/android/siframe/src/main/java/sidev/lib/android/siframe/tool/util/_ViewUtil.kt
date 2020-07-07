@@ -17,7 +17,6 @@ import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.transition.TransitionSet
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -37,8 +36,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.textColorResource
-import sidev.lib.android.siframe.customizable._init._ColorRes
-import sidev.lib.android.siframe.customizable._init._Config
+import sidev.lib.android.siframe._customizable._ColorRes
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
@@ -74,15 +73,15 @@ object  _ViewUtil{
 
     //Untuk sementara msh berjalan scr terpisah dari Main Thread.
     fun getViewSize(v: View, l: (w: Int, h: Int) -> Unit): ViewTreeObserver.OnGlobalLayoutListener{
-        val list= object : ViewTreeObserver.OnGlobalLayoutListener{
+        val l= object : ViewTreeObserver.OnGlobalLayoutListener{
             @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
             override fun onGlobalLayout() {
                 l(v.width, v.height)
                 v.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         }
-        v.viewTreeObserver.addOnGlobalLayoutListener(list)
-        return list
+        v.viewTreeObserver.addOnGlobalLayoutListener(l)
+        return l
     }
 
 

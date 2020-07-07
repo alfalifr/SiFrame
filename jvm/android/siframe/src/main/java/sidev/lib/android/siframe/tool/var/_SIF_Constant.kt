@@ -1,11 +1,15 @@
 package sidev.lib.android.siframe.tool.`var`
 
 import android.util.Log
+import android.view.View
 
 /**
  * Untuk val yg berawalan dg _ merupakan suffix.
  */
 object _SIF_Constant{
+    val DIRECTION_UP= View.FOCUS_UP
+    val DIRECTION_DOWN= View.FOCUS_DOWN
+
     val REQ_PERMISSION= 1
     val REQ_PICK_GALLERY= 2
     val REQ_PICK_GALLERY_MULTIPLE= 3

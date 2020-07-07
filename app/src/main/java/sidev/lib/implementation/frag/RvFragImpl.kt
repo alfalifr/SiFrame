@@ -1,6 +1,7 @@
 package sidev.lib.implementation.frag
 
 import android.view.View
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -12,9 +13,15 @@ class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
     override var topContainer: View?= null
     override var middleContainer: View?= null
     override var bottomContainer: View?= null
+
     override val bottomLayoutId: Int
         get() = R.layout.comp_nav_arrow
-
+    override val topLayoutId: Int
+        get() = R.layout.comp_nav_arrow
+/*
+    override val topContainerId: Int
+        get() = _Config.ID_RL_TOP_CONTAINER_OUTSIDE
+// */
     override fun ___initSideBase() {}
     override fun _initTopView(topView: View) {}
     override fun _initMiddleView(middleView: View) {}
