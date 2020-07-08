@@ -23,7 +23,7 @@
 
 
 #-dontwarn kotlin.reflect.jvm.internal.**
--keep,allowoptimization class kotlin.reflect.jvm.internal.** { *; }
+#-keep,allowoptimization class kotlin.reflect.jvm.internal.** { *; }
 #,allowobfuscation
 #,allowoptimization
 #,allowshrinking
@@ -33,15 +33,15 @@
 #-keep class sidev.lib.universal.tool.util.** { *; }
 #-keep class sidev.lib.android.siframe.intfc.lifecycle.** { *; }
 
--keepclassmembers,allowoptimization,allowobfuscation class * extends sidev.lib.android.siframe.arch.viewmodel.ObsFiewModel {
-    public protected <init>(...);
-}
--keepclassmembers,allowoptimization,allowshrinking class * extends sidev.lib.android.siframe.arch.intent_state.ViewIntent {
+#-keepclassmembers,allowoptimization,allowobfuscation class * extends sidev.lib.android.siframe.arch.viewmodel.ObsFiewModel {
+#    public protected <init>(...);
+#}
+#-keepclassmembers,allowoptimization,allowshrinking class * extends sidev.lib.android.siframe.arch.intent_state.ViewIntent {
 #    public protected java.lang.String isResultTemporary;
 #    public protected private java.lang.String isResultTemporary;
-    *;
-}
--keepclassmembers,allowoptimization,allowshrinking class * extends sidev.lib.android.siframe.arch.intent_state.ViewState { *; }
+#    *;
+#}
+#-keepclassmembers,allowoptimization,allowshrinking class * extends sidev.lib.android.siframe.arch.intent_state.ViewState { *; }
 
 # Add *one* of the following rules to your Proguard configuration file.
 # Alternatively, you can annotate classes and class members with @androidx.annotation.Keep

@@ -21,14 +21,14 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            debuggable false
-            jniDebuggable false
-            renderscriptDebuggable false
+            //minifyEnabled true
+            //debuggable false
+            //jniDebuggable false
+            //renderscriptDebuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled true
+            //minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
