@@ -6,6 +6,8 @@ object _ColorRes{
     var COLOR_PRIMARY= R.color.colorPrimary
     var COLOR_PRIMARY_DARK= R.color.colorPrimaryDark
     var COLOR_ACCENT= R.color.colorAccent
+    var COLOR_DISABLED= R.color.colorDisabled
+    var COLOR_IMMUTABLE= R.color.colorImmutable
 
     var TEXT_DARK= R.color.hitam
     var TEXT_TRANS= R.color.abuTeks

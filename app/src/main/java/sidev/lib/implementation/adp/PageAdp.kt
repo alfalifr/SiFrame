@@ -1,12 +1,15 @@
 package sidev.lib.implementation.adp
 
 import android.content.Context
+import android.widget.NumberPicker
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.comp_page_row.view.*
 import org.jetbrains.anko.imageResource
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.view.comp.NumberPickerComp
+import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.implementation.R
 import sidev.lib.implementation.model.Page
 import sidev.lib.implementation.util.PageSqlite
@@ -18,16 +21,28 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutMana
         get() = R.layout.comp_page_row
 
     val sqlite= PageSqlite(c)
+///*
+    val numberPicker= NumberPickerComp(c)
 
+    init{
+        numberPicker.setupWithRvAdapter(this)
+    }
+// */
     override fun bindVH(vh: SimpleViewHolder, pos: Int, data: Page) {
         vh.itemView.tv_id.text= data.id
         vh.itemView.tv_content.text= data.content?.getFkId(0)
         vh.itemView.tv_no.text= data.no.toString()
+///*
+        numberPicker.setUpperNumberAt(pos, data.no +2)
+        numberPicker.setLowerNumberAt(pos, (data.no +1) %3)
+        numberPicker.setNumberAt(pos, data.no %6)
+// */
+        loge("pos= $pos supposed upperBorder= ${data.no +2} lowerBorder= ${(data.no +1) %3} number= ${data.no %6}")
 
         loge("data.id= ${data.id} data.content?.getFkId(0)= ${data.content?.getFkId(0)} data.no= ${data.no}")
 
         var rowExists= false
-        sqlite.ifExists()
+//        sqlite.ifExists()
         sqlite.ifExists(data).observe { map ->
             map.notNull { map ->
                 val exists= map.values.first()

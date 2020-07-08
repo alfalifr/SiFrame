@@ -14,17 +14,19 @@ import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.adp.Adp
-import sidev.lib.android.siframe.tool.ContentArranger
 import sidev.lib.android.siframe.tool.RunQueue
-import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 import java.lang.IndexOutOfBoundsException
 
-//<8 Juli 2020> => Definisi lama.
 //!!!!!!@@ 18 Jan 2020
-abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
-    : SimpleRvAdp<D, LM>(ctx) { //RecyclerView.Adapter<RvAdp<D, LM>.SimpleViewHolder>(), Adp{
+/**
+ * <8 Juli 2020> => Diganti menjadi versi ringan
+ */
+abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
+    val ctx: Context //, dataList: ArrayList<D>? <27 Juni 2020> => param konstruktor primer dataList jadi opsional agar menghemat waktu ngoding.
+    )
+    : RecyclerView.Adapter<SimpleRvAdp<D, LM>.SimpleViewHolder>(), Adp{
 
     //<27 Juni 2020> => konstruktor dg param dataList jadi konstruktor sekunder agar menghemat waktu ngoding.
     constructor(ctx: Context, dataList: ArrayList<D>?): this(ctx){
@@ -32,27 +34,23 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     }
 
 //    protected var isInternalEdit= false
-//    protected var isInternalEdit= false
+    protected var isInternalEdit= false
     /**
      * List data yang akan dipake untuk ditampilkan
      */
-    final override var dataList: ArrayList<D>?= null
+    open var dataList: ArrayList<D>?= null
         set(v){
             field= v
-            if(!isInternalEdit)
-                resetDataToInitial()
 //                dataListFull= v
             updateData_int(v, isInternalEdit)
-
+/*
             val copiedList=
                 if(dataList != null) ArrayList(dataList!!)
                 else ArrayList()
             onUpdateDataListener?.onUpdateData(copiedList, -1, DataUpdateKind.SET)
-
+ */
 //            notifyDataSetChanged_()
         }
-
-    private var contentArranger= RvAdpContentArranger<D>()
 /*
     protected enum class IndexMapping{
         SORT, FILTER
@@ -95,8 +93,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      */
     protected var filteredIndMap= SparseIntArray()
         private set
- */
-
+// */
 /*
     var dataListFull: ArrayList<D>?= null
         protected set(v){
@@ -106,7 +103,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 //                updateData_int(containerView)
             }
         }
- */
+ * /
+
     /**
      * Kenapa menggunakan lambda? Karena lebih fleksibel
      * saat mengganti kondisi search, yaitu dengan mengganti dg lambda lainnya pada
@@ -114,29 +112,26 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      */
     open val searchFilterFun: (data: D, keyword: String) -> Boolean= { _, _ -> true }
     open val selectFilterFun: ((dataFromList: D, dataFromInput: D, posFromList: Int) -> Boolean) ?= null
-    init{
-        contentArranger.rvAdp= this
-        contentArranger.reset()
-        setOnLayoutCompletedListener { state ->
-            iterateOnLayoutCompletedQueue(state)
-        }
-    }
-/*
+ */
+
     var rv: RecyclerView?= null
         set(v){
             field?.adapter= null
             field= v
             setupRv()
         }
- */
+    abstract val itemLayoutId: Int
+    val itemContainerLayoutId= _Config.LAYOUT_ITEM_ADP_CONTAINER //R.layout._t_item_adp_container
+/*
     var isMultiSelectionEnabled= false
     var selectedItemPos_list: ArrayList<Int>?= null
         protected set
     var selectedItemPos_single= -1
         protected set
 
-    protected var selectedDataList: ArrayList<D>?= null
-
+//    protected var selectedDataList: ArrayList<D>?= null
+ */
+/*
     /**
      * Akan menjadi krg reliable jika isMultiSelectionEnabled = true.
      * Gunakan getItem(Int) sebagai gantinya
@@ -144,8 +139,6 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     var selectedItemView: View?= null
         protected set
 
-//    abstract val itemLayoutId: Int
-//    val itemContainerLayoutId= _Config.LAYOUT_ITEM_ADP_CONTAINER //R.layout._t_item_adp_container
 
     var isCheckIndicatorShown= false
         set(v){
@@ -157,40 +150,29 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             field= v
             showOverlay(v)
         }
+ */
 
-//    override fun getItemId(position: Int): Long = super<RecyclerView.Adapter>.getItemId(position)
-//    override fun getItemViewType(position: Int): Int = super<RecyclerView.Adapter>.getItemViewType(position)
+    override fun getItemId(pos: Int): Long = super<RecyclerView.Adapter>.getItemId(pos)
+    override fun getItemViewType(pos: Int): Int = super<RecyclerView.Adapter>.getItemViewType(pos)
     //    override fun hasStableIds() = super<RecyclerView.Adapter>.hasStableIds()
 
 
-//    abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
-//    abstract fun setupLayoutManager(): LM
-    override fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D){
-        super.__bindVH(vh, pos, data)
-        val v= vh.itemView
-
-        val proceedVis= if(!isMultiSelectionEnabled) pos == selectedItemPos_single
-            else (selectedItemPos_list?.indexOf(pos) ?: -1) >= 0
-
-        if(proceedVis){
-            v.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
-                ?.visibility=
-                    if(isCheckIndicatorShown) View.VISIBLE
-                    else View.GONE
-            v.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
-                ?.visibility=
-                    if(isOverlayShown) View.VISIBLE
-                    else View.GONE
+    abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
+    abstract fun setupLayoutManager(): LM
+    @CallSuper
+    open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D){
+        if(onBindViewListener != null){
+            for(l in onBindViewListener!!)
+                l(vh, pos)
         }
     }
-/*
+
     open inner class SimpleViewHolder(v: View): RecyclerView.ViewHolder(v){
         fun isAdpPositionSameWith(bindPos: Int): Boolean{
             return adapterPosition == bindPos
         }
     }
- */
-/*
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         val v= LayoutInflater.from(ctx).inflate(itemContainerLayoutId, parent, false)
         val contentV= LayoutInflater.from(ctx).inflate(itemLayoutId, parent, false)
@@ -198,26 +180,25 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             .addView(contentV)
         return SimpleViewHolder(v)
     }
- */
-    override fun getItemCount(): Int
-        = contentArranger.resultInd.size()
 
+    override fun getItemCount(): Int {
+        return dataList?.size ?: 0
+    }
+
+//    @CallSuper
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        val dataInd= getShownIndex(position)
-        val data= dataList!![dataInd]
+        val data= dataList!![position]
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
-        holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
-            ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
-            else View.GONE
-        __bindVH(holder, dataInd, data)
-        bindVH(holder, dataInd, data)
+        __bindVH(holder, position, data)
+        bindVH(holder, position, data)
+/*
         holder.itemView.setOnClickListener { v ->
-            selectItem(dataInd)
             onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
         }
+ */
     }
-/*
+
     inline fun notifyDataSetChanged_(f: (() -> Unit)= {}){
         val lm= rv?.layoutManager as LM?
         if(lm != null){
@@ -228,45 +209,35 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             rv!!.layoutManager?.onRestoreInstanceState(recyclerViewState)
         }
     }
- */
 
-    /*
     protected open fun setupRv(){
         if(rv != null){
             rv!!.adapter= this
             val lm= setupLayoutManager()
-            if(lm is LayoutManagerResp)
-                lm.onLayoutCompletedListener= onLayoutCompletedListener
             rv!!.layoutManager= lm
-/*
-            if(lm is LinearLayoutManager)
-                rv!!.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                    val firstVisItemPos= lm.findFirstVisibleItemPosition()
-                    val lastVisItemPos= lm.findLastCompletelyVisibleItemPosition()
-                    Log.e("SimpleAbsRVA", "firstVisItemPos= $firstVisItemPos lastVisItemPos= $lastVisItemPos lastVisItemPos == itemCount -1 = ${lastVisItemPos == itemCount -1}")
-                    if(lastVisItemPos == itemCount -1){
-
-                    }
-                }
- */
+            initLayoutManager(lm)
         }
     }
+    protected open fun initLayoutManager(layoutManager: LM){}
+
     fun updateLayoutManager(func: (lm: LM) -> Unit){
         if(rv != null)
             func(rv!!.layoutManager as LM)
     }
- */
-    override fun initLayoutManager(layoutManager: LM) {
-        if(layoutManager is LayoutManagerResp)
-            layoutManager.onLayoutCompletedListener= onLayoutCompletedListener
-    }
-
+/*
     /**
      * @param itemPos merupakan index itemView yg ditampilkan di adapter, bkn index dari {@link #dataList}.
      */
     fun getShownIndex(itemPos: Int): Int{
         try{
-            return contentArranger.resultInd[itemPos]
+            return filteredIndMap[sortedIndMap[adpPosMap[itemPos]]]
+            //return sortedIndMap[filteredIndMap[itemPos]]
+/*
+            return when(lastMapping){
+                IndexMapping.FILTER -> sortedIndMap[filteredIndMap[itemPos]]
+                IndexMapping.SORT -> filteredIndMap[sortedIndMap[itemPos]]
+            }
+ */
         } catch (e: IndexOutOfBoundsException){
             throw IndexOutOfBoundsException("itemPos ($itemPos) melebihi itemCount ($itemCount)")
         }
@@ -439,7 +410,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             }
         }
     }
-
+ */
     /**
      * Mengembalikan data dari dataset scr keseluruhan.
      * Jika pos IndexOutOfBound, maka return pos.
@@ -457,14 +428,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         return rv?.layoutManager?.findViewByPosition(pos)
     }
 
-
-    override fun getDataAt(pos: Int, onlyShownItem: Boolean): D?{
-        return if(pos in 0 until (dataList?.size ?: 0))
-            dataList?.get(if(!onlyShownItem) pos else getShownIndex(pos))
-        else
-            null
+    open fun getDataAt(pos: Int, onlyShownItem: Boolean= true): D?{
+        return dataList?.get(pos)
     }
-
+/*
     fun getSelectedData(): List<D>?{
         if(dataList != null){
             if(selectedDataList != null && selectedItemPos_list!!.size == selectedDataList!!.size)
@@ -487,37 +454,34 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         }
         return null
     }
+ */
+    protected open fun updateData_int(dataList: ArrayList<D>?, isInternalEdit: Boolean) {}
 
-//    protected open fun updateData_int(dataList: ArrayList<D>?, isInternalEdit: Boolean) {}
-
-/*
     protected inline fun internalEdit(func: () -> Unit){
         val isInternalEdit_init= isInternalEdit
         isInternalEdit= true
         func()
         isInternalEdit= isInternalEdit_init
     }
- */
 
-    override fun deleteItemAt(pos: Int, onlyShownItem: Boolean): D?{
-        val ind = if(onlyShownItem) getShownIndex(pos)
-            else pos //dataListFull?.removeAt(pos)
-        val e= dataList?.removeAt(ind)
+    open fun deleteItemAt(pos: Int, onlyShownItem: Boolean= true): D?{
+        val e= dataList?.removeAt(pos)
         notifyDataSetChanged_()
         return e
     }
+    fun clearData(){
+        dataList= null
+    }
 
-    override fun modifyDataAt(ind: Int, onlyShownItem: Boolean, func: (data: D) -> D){
+    open fun modifyDataAt(ind: Int, onlyShownItem: Boolean= true, func: (data: D) -> D){
         dataList.notNull { list ->
-            val ind= if(!onlyShownItem) ind
-                else getShownIndex(ind)
             val data= list.getOrNull(ind)
             if(data != null){
 //                val indInFull= dataList!!.indexOf(data)
                 val dataNew= func(data)
                 dataList!![ind]= dataNew
 //                dataListFull!![indInFull]= dataNew
-                onUpdateDataListener?.onUpdateData(dataList, ind, DataUpdateKind.EDIT)
+//                onUpdateDataListener?.onUpdateData(dataList, ind, DataUpdateKind.EDIT)
             }
         }
     }
@@ -530,7 +494,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         }
     }
  */
-
+/*
     //<28 Juni 2020> => Definisi baru.
     /**
      * Memfilter index yg ada di dalam layar di depannya. //sortedIndMap.
@@ -555,9 +519,34 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      */
     //<29 Juni 2020> => Definisi baru: 3.
     fun filter(resetFirst: Boolean= false, func: (pos: Int, data: D) -> Boolean){
-        if(resetFirst)
-            contentArranger.reset()
-        contentArranger.filter(func)
+        if(dataList.isNullOrEmpty()) return
+
+        var u= -1
+        if(resetFirst){
+            filteredIndMap.clear()
+            //Pake sortedIndMap karena sortedIndMap ukurannya sama dg dataList dan dg urutan yg benar.
+//            val copySort= sortedIndMap.clone()
+            for((i, data) in dataList!!.withIndex()){
+                if(func(i, data)){
+                    filteredIndMap[++u]= i
+//                    loge("filter() u= $u i= $i")
+                }
+            }
+        } else{
+            //Menghasilkan filteredIndMap yg lebih kecil atau sama dengan awal.
+            for((key, value) in filteredIndMap){
+                if(func(key, dataList!![value])){
+                    filteredIndMap[++u]= value
+//                    loge("filter() u= $u value= $value")
+                }
+            }
+            //Jika filteredIndMap yg dihasilkan lebih kecil dari awal (i akhir dari loop di atas < size()),
+            // maka hilangi sisa di ekornya.
+            for(i in u+1 until filteredIndMap.size())
+                filteredIndMap.removeAt(i)
+        }
+        adjustMapping()
+//        isMappingChanged= true
         notifyDataSetChanged()
     }
 /*
@@ -705,10 +694,22 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      *                   Pada definisi ini, sortedIndMap selalu berukuran sama dg dataList.
      *
      */
-    fun sort(resetFirst: Boolean= false, func: (pos1: Int, data1: D, pos2: Int, data2: D) -> Boolean){
-        if(resetFirst)
-            contentArranger.reset()
-        contentArranger.sort(func)
+    fun sort(func: (pos1: Int, data1: D, pos2: Int, data2: D) -> Boolean){
+        if(dataList.isNullOrEmpty()) return
+
+        //Reset sortedIndMap sehingga menyamai indeks filteredIndMap
+        sortedIndMap.clear()
+        for(i in 0 until filteredIndMap.size())
+            sortedIndMap[i]= i
+
+        for(i in dataList!!.indices)
+            for(u in i+1 until dataList!!.size)
+                if(!func(i, dataList!![sortedIndMap[i]], u, dataList!![sortedIndMap[u]])){
+                    val temp= sortedIndMap[i]
+                    sortedIndMap[i]= sortedIndMap[u]
+                    sortedIndMap[u]= temp
+//                    loge("sort() TUKAR i= $i u= $u \n sortedIndMap[i]= ${sortedIndMap[i]} sortedIndMap[u]= ${sortedIndMap[u]}")
+                }
         notifyDataSetChanged()
     }
 /*
@@ -758,7 +759,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         notifyDataSetChanged_()
     }
  */
-/*
+
     /**
      * Untuk menyesuaikan adpPosMap agar fungsi getShownIndex() gak error.
      * Fungsi ini dipanggil hanya oleh filter()
@@ -777,38 +778,51 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     }
  */
 
-
+/*
     /**
      * Fungsi yg memiliki prinsip sama dg filter, yaitu menyaring data yg sudah diurutkan.
      * Data yg disaring dapat berupa data secara utuh maupun data yg sblumnya sudah disaring menggunakan filter().
      *
      * @param onlyShownItem true jika pencarian hanya dilakukan terhadap item yg telah dimapping.
      */
-    @CallSuper
     open fun searchItem(keyword: String, onlyShownItem: Boolean= true){
         if(keyword.isNotEmpty()){
             dataList.notNull { list ->
 //                val dataMatch= ArrayList<D>() //<28 Juni 2020> => Definisi lama.
                 val newFilter= SparseIntArray() //<28 Juni 2020> => Definisi baru.
-                val searchSize=
-                    if(onlyShownItem) itemCount
-                    else dataList?.size ?: 0
+                val searchSize= itemCount // => Lebih cocok menggunakan sortedIndMap.size()
+                                            // karena berhubungan langsung dg sortedIndMap
+                                           // dataList!!.size
 
                 var filterInd= -1
                 for(i in 0 until searchSize){
-                    val ind=
-                        if(onlyShownItem) getShownIndex(i)
-                        else i
+                    val ind= i
                     if(searchFilterFun(dataList!![ind], keyword)) //!!!
-                        newFilter[++filterInd]= ind
+                        newFilter[++filterInd]=
+                            if(onlyShownItem) filteredIndMap[i]
+                            else i // => Lebih tepatnya i, karena i merupakan indeks dari sortedIndMap.
+                                  // Jika pakai sortedIndMap[i], maka data tidak terurut.
+//                        dataMatch.add(dataList!![ind]) //<28 Juni 2020> => Definisi lama.
                 }
-                contentArranger.resultInd= newFilter
+                filteredIndMap= newFilter
                 notifyDataSetChanged_()
+/*
+                <28 Juni 2020> => Definisi lama.
+                list.forEach { data ->
+                    if(searchFilterFun(ctx, data, keyword))
+                        dataMatch.add(data)
+                }
+                if(dataList!!.size != dataMatch.size)
+                    internalEdit{
+                        dataList= dataMatch
+                    }
+ */
             }
         } else
             resetDataToInitial()
     }
-
+ */
+/*
     fun showOnlySelectedData(isShown: Boolean= true){
         if(!isShown)
             filter { pos, data ->
@@ -820,21 +834,46 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
 
     fun resetDataToInitial(){
-        contentArranger.reset()
+        //<28 Juni 2020> => Definisi baru.
+        sortedIndMap.clear() //= SparseIntArray()
+        filteredIndMap.clear() //= SparseIntArray()
+
+        if(dataList != null)
+            for(i in dataList!!.indices){
+                sortedIndMap[i]= i
+                filteredIndMap[i]= i
+            }
+        adpPosMap= Array(itemCount){ it }
         notifyDataSetChanged_()
+/*
+        <28 Juni 2020> => Definisi lama.
+        internalEdit {
+            dataList= dataListFull
+        }
+ */
     }
 
-    fun resetSort(){
-        contentArranger.resetSort()
+    fun resetSortedInd(){
+        sortedIndMap.clear() //= SparseIntArray()
+
+        if(dataList != null)
+            for(i in dataList!!.indices)
+                sortedIndMap[i]= i
         notifyDataSetChanged_()
     }
-    fun resetFilter(){
-        contentArranger.resetFilter()
+    fun resetFilteredInd(){
+        filteredIndMap.clear() //= SparseIntArray()
+
+        if(dataList != null)
+            for(i in dataList!!.indices)
+                filteredIndMap[i]= i
+        adpPosMap= Array(itemCount){ it }
         notifyDataSetChanged_()
     }
+ */
 
 
-
+/*
     enum class DataUpdateKind{
         SET, EDIT
     }
@@ -943,7 +982,42 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             null
         }
     }
-/*
+*/
+
+    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int) -> Unit>?= null
+    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int) -> Unit){
+        if(onBindViewListener == null)
+            onBindViewListener= ArrayList()
+        onBindViewListener!!.add(l)
+    }
+    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int) -> Unit){
+        onBindViewListener?.remove(l)
+    }
+    fun clearOnBindViewListener(){
+        onBindViewListener?.clear()
+    }
+
+//    var onViewRecycledListener: ((holder: SimpleViewHolder) -> Unit)?= null
+    private var onViewRecycledListener: ArrayList<(holder: SimpleViewHolder) -> Unit>?= null
+    @CallSuper
+    override fun onViewRecycled(holder: SimpleViewHolder) {
+        if(onViewRecycledListener != null){
+            for(l in onViewRecycledListener!!)
+                l(holder)
+        }
+    }
+    fun addOnViewRecycledListener(l: (holder: SimpleViewHolder) -> Unit){
+        if(onViewRecycledListener == null)
+            onViewRecycledListener= ArrayList()
+        onViewRecycledListener!!.add(l)
+    }
+    fun removeOnViewRecycledListener(l: (holder: SimpleViewHolder) -> Unit){
+        onViewRecycledListener?.remove(l)
+    }
+    fun clearOnViewRecycledListener(){
+        onViewRecycledListener?.clear()
+    }
+
     /**
      * <28 Juni 2020> => Data yg dimasukkan tidak akan terlihat scr default.
      *                   Data yg dimasukkan juga tidak terdaftar pada mapping indeks yg ada.
@@ -959,5 +1033,4 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     @PublishedApi
     internal fun `access$setDataListSetFromInternal`(func: () -> Unit) =
         internalEdit(func)
- */
 }

@@ -1,5 +1,9 @@
 package sidev.lib.implementation._cob;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import sidev.lib.android.siframe.adapter.RvAdp;
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent;
 import sidev.lib.implementation.intent_state.ContentFragIntent;
 import sidev.lib.implementation.intent_state.ContentFragState;
@@ -53,6 +58,39 @@ public class Cob {
         }
 
         ContentVm vm= new ContentVm(null);
+
+        RvAdp<String, LinearLayoutManager> adp= new RvAdp(null, null){
+            @Override
+            public int getItemLayoutId() {
+                return 0;
+            }
+
+            @Override
+            public void bindVH(@NotNull SimpleViewHolder vh, int pos, Object data) {
+
+            }
+
+            @NotNull
+            @Override
+            public RecyclerView.LayoutManager setupLayoutManager() {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public int getViewTypeCount() {
+                return 0;
+            }
+        };
     }
 }
 

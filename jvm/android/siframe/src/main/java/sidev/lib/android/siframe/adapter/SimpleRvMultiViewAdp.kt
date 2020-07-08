@@ -12,8 +12,8 @@ import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.notNull
 
-abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
-    : RvAdp<D, LM>(ctx), MultiViewAdp<D, SimpleRvAdp<D, LM>.SimpleViewHolder>{
+abstract class SimpleRvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
+    : SimpleRvAdp<D, LM>(ctx), MultiViewAdp<D, SimpleRvAdp<D, LM>.SimpleViewHolder>{
 
     constructor(ctx: Context, dataList: ArrayList<D>?): this(ctx){
         this.dataList= dataList
@@ -53,22 +53,21 @@ abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
     final override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
-        val dataInd= getShownIndex(position)
-        val viewType= getItemViewType(dataInd)
-        bindVhMulti(holder, dataInd, viewType, dataList!![dataInd])
+        val viewType= getItemViewType(position)
+        bindVhMulti(holder, position, viewType, dataList!![position])
 /*
-        val dataInd= getShownIndex(position)
+//        selectedItemView= holder.itemView
         holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
-            ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
+            ?.visibility= if(isCheckIndicatorShown && position == selectedItemPos_single) View.VISIBLE
         else View.GONE
 
-        val viewType= getItemViewType(dataInd)
-        __bindVH(holder, dataInd, dataList!![dataInd])
-        bindVhMulti(holder, dataInd, viewType, dataList!![dataInd])
+        val viewType= getItemViewType(position)
+        __bindVH(holder, position, dataList!![position])
+        bindVhMulti(holder, position, viewType, dataList!![position])
 
         holder.itemView.setOnClickListener { v ->
-            selectItem(dataInd)
-            onItemClickListener?.onClickItem(v, holder.adapterPosition, dataList!![dataInd])
+            selectItem(position)
+            onItemClickListener?.onClickItem(v, holder.adapterPosition, dataList!![position])
         }
  */
     }

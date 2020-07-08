@@ -7,6 +7,7 @@ import android.widget.PopupMenu
 import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
 import kotlinx.android.synthetic.main.comp_performance_bar.view.*
 import org.jetbrains.anko.support.v4.runOnUiThread
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
@@ -29,6 +30,8 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_performance_bar
+    override val bottomContainerId: Int
+        get() = _Config.ID_RL_BOTTOM_CONTAINER_OUTSIDE
 
     var timeStart= System.currentTimeMillis()
     var timeEnd: Long= 0
@@ -77,8 +80,8 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
                         R.id.popup_sort -> dialogSort.show()
                         R.id.popup_filter -> dialogFilter.show()
                         R.id.popup_reset -> rvAdp.resetDataToInitial()
-                        R.id.popup_reset_sort -> rvAdp.resetSortedInd()
-                        R.id.popup_reset_filter -> rvAdp.resetFilteredInd()
+                        R.id.popup_reset_sort -> rvAdp.resetSort()
+                        R.id.popup_reset_filter -> rvAdp.resetFilter()
                         R.id.duplicate -> dialogDuplicate.show() //rvAdp.resetFilteredInd()
                     }
                     true
@@ -86,7 +89,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
                 iv.setOnClickListener { popup.show() }
             }
         }
-        val transList= dum_transaction.copyGrowExponentially(4) //dum_transaction.toArrayList()
+        val transList= dum_transaction.copy().toArrayList() //dum_transaction.toArrayList()
         rvAdp.dataList= transList as ArrayList
         timeEnd= System.currentTimeMillis()
         timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
@@ -137,7 +140,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
             override fun onRightBtnClick(dialog: DialogListView, v: View) {
                 if(sortFun != null){
                     timeStart= System.currentTimeMillis()
-                    rvAdp.sort(sortFun!!)
+                    rvAdp.sort(func = sortFun!!)
                     timeEnd= System.currentTimeMillis()
                     timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
                     shownData.value= rvAdp.itemCount
@@ -176,7 +179,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
             override fun onRightBtnClick(dialog: DialogListView, v: View) {
                 if(filterFun != null){
                     timeStart= System.currentTimeMillis()
-                    rvAdp.filter(resetFirst = true, func= filterFun!!)
+                    rvAdp.filter(func= filterFun!!)
                     timeEnd= System.currentTimeMillis()
                     timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
                     shownData.value= rvAdp.itemCount
