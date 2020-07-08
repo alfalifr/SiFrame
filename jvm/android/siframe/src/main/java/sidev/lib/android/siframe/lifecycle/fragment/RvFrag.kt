@@ -6,12 +6,13 @@ import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import sidev.lib.android.siframe.adapter.RvAdp
+//import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+//import sidev.lib.android.siframe.tool.util.`fun`.loge
 
-abstract class RvFrag<R: RvAdp<*, *>> : Frag(){
+abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
     final override val layoutId: Int
         get() = _Config.LAYOUT_RV //R.layout.content_abs_rv
 

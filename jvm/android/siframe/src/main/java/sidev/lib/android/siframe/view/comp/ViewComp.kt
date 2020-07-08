@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.remove
 import androidx.core.util.set
-import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
@@ -25,7 +24,7 @@ import sidev.lib.universal.`fun`.notNull
  *
  * @param T adalah tipe data yg akan dimanage oleh kelas [ViewComp] ini.
  */
-abstract class ViewComp<T>(val context: Context) {
+abstract class ViewComp<T>(val ctx: Context) {
     abstract val viewLayoutId: Int
     private val mData= SparseArray<BoxedVal<T>>()
     private var mView: SparseArray<View>?= null
@@ -102,7 +101,7 @@ abstract class ViewComp<T>(val context: Context) {
      * Fungsi ini juga akan melakukan pemanggilan fungsi [onBind].
      */
     fun inflateView(position: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View{
-        val v= context.inflate(viewLayoutId, vg, attachToRoot)
+        val v= ctx.inflate(viewLayoutId, vg, attachToRoot)
             ?: throw ResourceNotFoundExc(resourceName = "viewLayoutId", msg = "Tidak dapat menginflate view")
 
         onBind(position, v)

@@ -13,7 +13,8 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.layoutInflater
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
-import sidev.lib.android.siframe.adapter.RvAdp
+//import sidev.lib.android.siframe.adapter.RvAdp
+import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.universal.`fun`.notNullTo
@@ -32,7 +33,7 @@ New
 ===============================
  */
 
-fun RvAdp<*, *>.notifyDatasetChanged_ui(){
+fun SimpleRvAdp<*, *>.notifyDatasetChanged_ui(){
     ctx.runOnUiThread{
         notifyDataSetChanged_()
     }

@@ -2,7 +2,7 @@ package sidev.lib.android.siframe.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
-
+/*
 //!!!!!!@@ 18 Jan 2020
 abstract class RvAdpWithSelection <D, LM: RecyclerView.LayoutManager> (
     ctx: Context, dataList: ArrayList<D>?
@@ -13,3 +13,4 @@ abstract class RvAdpWithSelection <D, LM: RecyclerView.LayoutManager> (
      */
     var dataListSelected= this.dataList
 }
+ */
