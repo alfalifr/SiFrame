@@ -50,6 +50,8 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     fun getDataAt(pos: Int): D?= mData[pos].value
     fun getViewAt(pos: Int): View?= mView?.get(pos)
+    fun getSavedDataCount(): Int= mData.size()
+    fun getSavedViewCount(): Int= mView?.size() ?: 0
 
     /**
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].

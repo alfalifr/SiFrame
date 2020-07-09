@@ -35,8 +35,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 //    protected var isInternalEdit= false
     /**
      * List data yang akan dipake untuk ditampilkan
+     *
+     * <9 Juli 2020> => Properti tidak jadi final agar dapat dioverride sesuai kebutuhan.
      */
-    final override var dataList: ArrayList<D>?= null
+    override var dataList: ArrayList<D>?= null
         set(v){
             field= v
             if(!isInternalEdit)
