@@ -11,6 +11,7 @@ import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 
@@ -39,7 +40,10 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     /**
      * Lambda ini digunakan untuk mengkoversi data dari [rvAdp] menjadi inputData dg tipe [I].
      */
-    protected open val rvAdpInputDataConverter: ((Any?) -> I?)?= null
+    protected open val rvAdpInputDataConverter: ((Any?) -> I?)?= {
+        try{ it as I }
+        catch (e: ClassCastException){ null }
+    }
 
 //    open val isViewDefaultEnabled= true
 
