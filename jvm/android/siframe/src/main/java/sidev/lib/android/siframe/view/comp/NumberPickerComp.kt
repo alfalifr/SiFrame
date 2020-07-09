@@ -11,6 +11,7 @@ import sidev.lib.android.siframe.R
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
@@ -38,8 +39,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                                valueBox: BoxedVal<NumberPickerData>, inputData: I?) {
         val ivMinus= v.findViewById<ImageView>(R.id.iv_minus)!!
         val ivPlus= v.findViewById<ImageView>(R.id.iv_plus)!!
-        val etNumber= v.findViewById<ModEt>(R.id.et)!!
-
+        val etNumber= v.findViewByType<ModEt>()!! //v.findViewById<ModEt>(R.id.et)!!
+                // Diganti [findViewByType] agar lebih fleksibel dg view yg beda id.
         val data= valueBox.value!!
 
         ivMinus.setOnClickListener { etNumber.setText((data.number -1).toString()) }
@@ -95,7 +96,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
 
             val ivMinus= view.findViewById<ImageView>(R.id.iv_minus)!!
             val ivPlus= view.findViewById<ImageView>(R.id.iv_plus)!!
-            val etNumber= view.findViewById<ModEt>(R.id.iv_plus)!!
+            val etNumber= view.findViewByType<EditText>()!! //.findViewById<ModEt>(R.id.iv_plus)!!
 
             _ViewUtil.setBgColor(ivMinus, colorId)
             _ViewUtil.setBgColor(ivPlus, colorId)
@@ -122,7 +123,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
             getViewAt(pos).notNull { v ->
                 //Jika view disimpan, maka assign saja [it.number] ke view
                 //  agar warna [ivMinus] dan [ivPlus] bisa menyesuaikan perubahan border.
-                v.findViewById<EditText>(R.id.et)
+                v.findViewByType<EditText>() //.findViewById<EditText>(R.id.et)
                     .notNull { et -> et.setText(it.number.toString()) }
             }
             true
@@ -140,7 +141,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
             getViewAt(pos).notNull { v ->
                 //Jika view disimpan, maka assign saja [it.number] ke view
                 //  agar warna [ivMinus] dan [ivPlus] bisa menyesuaikan perubahan border.
-                v.findViewById<EditText>(R.id.et)
+                v.findViewByType<EditText>()
                     .notNull { et ->
                         et.hint= it.lowerBorder.toString()
                         et.setText(it.number.toString())
@@ -161,7 +162,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
             getViewAt(pos).notNull { v ->
                 //Jika view disimpan, maka assign saja [it.number] ke view
                 //  agar warna [ivMinus] dan [ivPlus] bisa menyesuaikan perubahan border.
-                v.findViewById<EditText>(R.id.et)
+                v.findViewByType<EditText>()
                     .notNull { et -> et.setText(it.number.toString()) }
             }
             true
