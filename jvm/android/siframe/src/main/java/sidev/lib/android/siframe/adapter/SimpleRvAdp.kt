@@ -17,6 +17,7 @@ import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
+import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
 
 //!!!!!!@@ 18 Jan 2020
@@ -156,7 +157,6 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     override fun getItemViewType(pos: Int): Int = super<RecyclerView.Adapter>.getItemViewType(pos)
     //    override fun hasStableIds() = super<RecyclerView.Adapter>.hasStableIds()
 
-
     abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
     abstract fun setupLayoutManager(): LM
     @CallSuper
@@ -187,7 +187,8 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
 
 //    @CallSuper
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        val data= dataList!![position]
+        val data= getDataAt(position)!! //dataList!![position]
+                //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
         __bindVH(holder, position, data)
@@ -417,7 +418,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     override fun getItem(pos: Int): Any{
         return try{ dataList!![pos]!! }
-        catch (e: KotlinNullPointerException){ pos }
+        catch (e: Exception){ pos }
     }
 
     /**

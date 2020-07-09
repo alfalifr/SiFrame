@@ -2,23 +2,19 @@ package sidev.lib.android.siframe.adapter
 
 import android.content.Context
 import android.util.SparseIntArray
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.CallSuper
 import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
-import sidev.lib.android.siframe.intfc.adp.Adp
-import sidev.lib.android.siframe.tool.ContentArranger
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
+import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
 
 //<8 Juli 2020> => Definisi lama.
@@ -206,16 +202,18 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         val dataInd= getShownIndex(position)
-        val data= dataList!![dataInd]
+        val data= getDataAt(position)!! //dataList!![dataInd]
+                //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
+                // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
         holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
             ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
             else View.GONE
-        __bindVH(holder, dataInd, data)
-        bindVH(holder, dataInd, data)
+        __bindVH(holder, position, data) //dataInd
+        bindVH(holder, position, data)
         holder.itemView.setOnClickListener { v ->
-            selectItem(dataInd)
+            selectItem(dataInd, onlyShownItem = false) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
             onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
         }
     }
@@ -292,7 +290,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 //                            Log.e("SimpleAbsRVA", "i= $i posFromList= $posFromList isListAlreadyFiltered[posFromList]= ${isListAlreadyFiltered[posFromList]}")
                             if(!isListAlreadyFiltered[posFromList])
                                 if(selectFilterFun!!(dataFromList, dataFromInput, posFromList)){
-                                    selectItem(posFromList)
+                                    selectItem(posFromList, onlyShownItem = false)
                                     isListAlreadyFiltered[posFromList]= true
                                     break
                                 }
@@ -301,7 +299,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                     for(data in list){
                         val pos= dataList!!.indexOf(data)
                         if(pos >= 0)
-                            selectItem(pos)
+                            selectItem(pos, onlyShownItem = false)
                     }
                 }
             } else {
@@ -311,6 +309,9 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     }
     /**
      * <28 Juni 2020> => Fungsi hanya untuk data yg terlihat karena erat kaitannya dg view.
+     *
+     * @return indeks dari view di mana [data] ditampilkan pada layar.
+     *   Nilai yg dikembalikan bkn merupakan indeks pada [dataList] scr utuh.
      */
     open fun selectItem(data: D?): Int{
         var pos= -1
@@ -322,14 +323,27 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                 }
         } else
             pos= dataList?.indexOf(data) ?: -1
-
-        selectItem(pos)
+/*
+        var viewIndex= pos //Index dari view yg ditampilkan, bkn [dataList] scr utuh.
+        for((key, value) in contentArranger.resultInd){
+            if(value == pos)
+                viewIndex= key
+        }
+ */
+        selectItem(pos, onlyShownItem = false)
         return pos
     }
     /**
      * <28 Juni 2020> => Fungsi hanya untuk data yg terlihat karena erat kaitannya dg view.
+     *
+     * @param pos adalah indeks view yg terlihat saja, bkn indeks [dataList] scr utuh.
+     *   Namun, untuk kasus scr internal framework ini, [pos] dapat berupa indeks [dataList] scr utuh,
+     *   karena dalam fungsi ini sudah dicek untuk masalah indeks pengambilan data dari [dataList]
+     *   yg didapat dari [pos].
      */
-    open fun selectItem(pos: Int, v: View?= null){
+    open fun selectItem(pos: Int, v: View?= null, onlyShownItem: Boolean= true){
+        val dataInd= if(onlyShownItem) getShownIndex(pos)
+            else pos
         if(!isMultiSelectionEnabled){
             val isSelectedBefore= selectedItemPos_single >= 0
             var selectedItemView_before: View?= null
@@ -337,24 +351,24 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                 onItemSelectedListener?.onUnSelectItem(
                     selectedItemView,
                     selectedItemPos_single,
-                    getDataAt(selectedItemPos_single)!!
+                    getDataAt(selectedItemPos_single, false)!!
                 )
                 selectedItemView_before= selectedItemView
                 selectedItemView= null
             }
-            if(pos in 0 until (dataList?.size ?: 0)){
+            if(dataInd in 0 until (dataList?.size ?: 0)){
                 /**
                  * Anggapannya pada umumnya jika user menekan item yang sama,
                  * maka berarti bahwa user tersebut ingin me-unselect item tersebut.
                  */
-                if(selectedItemPos_single != pos){
-                    selectedItemView= v ?: getView(pos)
-                    selectedItemPos_single= pos
+                if(selectedItemPos_single != dataInd){ //pos <9 Juli 2020> => agar [selectedItemPos_single] sesuai [dataList] scr full.
+                    selectedItemView= v ?: getView(dataInd)
+                    selectedItemPos_single= dataInd
 //                    Log.e("SIMPLE_RV_ADP", "selectedItemView == null = ${selectedItemView == null}")
                     onItemSelectedListener?.onSelectItem(
                         selectedItemView,
-                        pos,
-                        getDataAt(pos)!!
+                        dataInd,
+                        getDataAt(dataInd, false)!!
                     )
                 } else{
                     selectedItemPos_single= -1
@@ -377,22 +391,22 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             if(selectedItemPos_list == null)
                 selectedItemPos_list= ArrayList()
 
-            selectedItemView= v ?: getView(pos)
+            selectedItemView= v ?: getView(dataInd)
 
-            val isPosNotExisting= selectedItemPos_list!!.indexOf(pos) < 0
+            val isPosNotExisting= selectedItemPos_list!!.indexOf(dataInd) < 0
             if(isPosNotExisting){
-                selectedItemPos_list!!.add(pos)
+                selectedItemPos_list!!.add(dataInd)
                 onItemSelectedListener?.onSelectItem(
                     selectedItemView,
-                    pos,
-                    getDataAt(pos)!!
+                    dataInd,
+                    getDataAt(dataInd, false)!!
                 )
             } else{
-                selectedItemPos_list!!.removeAt(pos)
+                selectedItemPos_list!!.removeAt(dataInd)
                 onItemSelectedListener?.onUnSelectItem(
                     selectedItemView,
-                    pos,
-                    getDataAt(pos)!!
+                    dataInd,
+                    getDataAt(dataInd, false)!!
                 )
             }
 
@@ -448,12 +462,14 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      */
     override fun getItem(pos: Int): Any{
         return try{ dataList!![pos]!! }
-        catch (e: KotlinNullPointerException){ pos }
+        catch (e: Exception){ pos }
     }
 
     /**
      * Bentuk spesifik untuk mendapat itemView.
      * <28 Juni 2020> => Hanya untuk view yg terlihat, bkn semuanya.
+     *
+     * @param pos adalah indeks view yg terlihat saja, bkn indeks [dataList] scr utuh.
      */
     override fun getView(pos: Int): View?{
         return rv?.layoutManager?.findViewByPosition(pos)

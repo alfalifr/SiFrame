@@ -32,7 +32,7 @@ abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
     abstract override fun bindVhMulti(vh: SimpleViewHolder, pos: Int, viewType: Int, data: D)
 
     final override fun getItemViewType(pos: Int): Int{
-        return getItemViewType(pos, dataList!![pos])
+        return getItemViewType(pos, getDataAt(pos)!!) //dataList!![pos]
     }
     /**
      * Ini gak dipake dalam konteks [MultiViewAdp].
@@ -53,9 +53,11 @@ abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
     final override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
-        val dataInd= getShownIndex(position)
-        val viewType= getItemViewType(dataInd)
-        bindVhMulti(holder, dataInd, viewType, dataList!![dataInd])
+//        val dataInd= getShownIndex(position)
+        val viewType= getItemViewType(position)
+        bindVhMulti(holder, position, viewType, getDataAt(position)!!) //dataList!![dataInd]
+                //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
+                // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.
 /*
         val dataInd= getShownIndex(position)
         holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
