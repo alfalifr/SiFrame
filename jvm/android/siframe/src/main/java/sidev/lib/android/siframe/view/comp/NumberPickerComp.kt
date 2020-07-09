@@ -18,7 +18,7 @@ import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.`fun`.roundClosest
 
-open class NumberPickerComp(ctx: Context): ViewComp<NumberPickerData>(ctx){
+open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
         get() = R.layout._sif_comp_number_picker
     override val isViewSaved: Boolean= true
@@ -31,10 +31,11 @@ open class NumberPickerComp(ctx: Context): ViewComp<NumberPickerData>(ctx){
     var inBorderColorId= _ColorRes.COLOR_IMMUTABLE
 
 
-    override fun initData(position: Int): NumberPickerData?
+    override fun initData(position: Int, inputData: I?): NumberPickerData?
         = NumberPickerData(defaultLowerBorder, defaultLowerBorder, defaultUpperBorder)
 
-    override fun bindComponent(position: Int, v: View, valueBox: BoxedVal<NumberPickerData>) {
+    override fun bindComponent(position: Int, v: View,
+                               valueBox: BoxedVal<NumberPickerData>, inputData: I?) {
         val ivMinus= v.findViewById<ImageView>(R.id.iv_minus)!!
         val ivPlus= v.findViewById<ImageView>(R.id.iv_plus)!!
         val etNumber= v.findViewById<ModEt>(R.id.et)!!

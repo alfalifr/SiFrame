@@ -163,7 +163,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D){
         if(onBindViewListener != null){
             for(l in onBindViewListener!!)
-                l(vh, pos)
+                l(vh, pos, data)
         }
     }
 
@@ -984,13 +984,13 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 */
 
-    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int) -> Unit>?= null
-    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int) -> Unit){
+    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int, data: D) -> Unit>?= null
+    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D) -> Unit){
         if(onBindViewListener == null)
             onBindViewListener= ArrayList()
         onBindViewListener!!.add(l)
     }
-    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int) -> Unit){
+    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D) -> Unit){
         onBindViewListener?.remove(l)
     }
     fun clearOnBindViewListener(){

@@ -22,7 +22,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutMana
 
     val sqlite= PageSqlite(c)
 ///*
-    val numberPicker= NumberPickerComp(c)
+    val numberPicker= NumberPickerComp<Any>(c)
 
     init{
         numberPicker.setupWithRvAdapter(this)

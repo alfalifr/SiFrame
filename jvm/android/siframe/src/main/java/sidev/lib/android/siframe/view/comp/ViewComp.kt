@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.remove
 import androidx.core.util.set
+import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
@@ -22,23 +23,28 @@ import sidev.lib.universal.`fun`.notNull
  * Tujuan utama dari kelas [ViewComp] ini adalah untuk memanajemen data/object yg banyak
  * yg dapat berubah scr dinamis yg biasanya terdapat pada adapter.
  *
- * @param T adalah tipe data yg akan dimanage oleh kelas [ViewComp] ini.
+ * @param D adalah tipe data yg akan dimanage oleh kelas [ViewComp] ini.
+ * @param I adalah tipe data inputan dari [RecyclerView.Adapter].
  */
-abstract class ViewComp<T>(val ctx: Context) {
+abstract class ViewComp<D, I>(val ctx: Context) {
     abstract val viewLayoutId: Int
-    private val mData= SparseArray<BoxedVal<T>>()
+    private val mData= SparseArray<BoxedVal<D>>()
     private var mView: SparseArray<View>?= null
     open val isDataRecycled= false
     open val isViewSaved= false
 
     private var rvAdp: SimpleRvAdp<*, *>?= null
-    private var onBindViewListener: ((SimpleRvAdp<*, *>.SimpleViewHolder, Int) -> Unit)?= null
+    private var onBindViewListener: ((SimpleRvAdp<*, *>.SimpleViewHolder, Int, Any?) -> Unit)?= null
     private var onViewRecycledListener: ((SimpleRvAdp<*, *>.SimpleViewHolder) -> Unit)?= null
+    /**
+     * Lambda ini digunakan untuk mengkoversi data dari [rvAdp] menjadi inputData dg tipe [I].
+     */
+    protected open val rvAdpInputDataConverter: ((Any?) -> I?)?= null
 
 //    open val isViewDefaultEnabled= true
 
 
-    fun getDataAt(pos: Int): T?= mData[pos].value
+    fun getDataAt(pos: Int): D?= mData[pos].value
     fun getViewAt(pos: Int): View?= mView?.get(pos)
 
     /**
@@ -46,8 +52,9 @@ abstract class ViewComp<T>(val ctx: Context) {
      */
     fun setupWithRvAdapter(rvAdp: SimpleRvAdp<*, *>?){
         if(rvAdp != null){
-            onBindViewListener= { holder, pos ->
-                onBind(pos, holder.itemView)
+            onBindViewListener= { holder, pos, dataInput ->
+                val dataInputRes= rvAdpInputDataConverter?.invoke(dataInput)
+                onBind(pos, holder.itemView, dataInputRes)
             }
             onViewRecycledListener= { holder ->
                 onRecycle(holder.adapterPosition, holder.itemView)
@@ -66,12 +73,12 @@ abstract class ViewComp<T>(val ctx: Context) {
     /**
      * Fungsi yg dipanggil saat sebuah [ViewComp] ditampilkan ke layar.
      */
-    fun onBind(position: Int, v: View){
+    fun onBind(position: Int, v: View, inputData: I?){
         var valueBox= mData[position]
 
         if(valueBox == null){
             valueBox= BoxedVal()
-            valueBox.value= initData(position)
+            valueBox.value= initData(position, inputData)
             mData[position]= valueBox
         }
 
@@ -80,7 +87,7 @@ abstract class ViewComp<T>(val ctx: Context) {
             mView!![position]= v
         }
 
-        bindComponent(position, v, valueBox)
+        bindComponent(position, v, valueBox, inputData)
     }
 
     /**
@@ -104,7 +111,7 @@ abstract class ViewComp<T>(val ctx: Context) {
         val v= ctx.inflate(viewLayoutId, vg, attachToRoot)
             ?: throw ResourceNotFoundExc(resourceName = "viewLayoutId", msg = "Tidak dapat menginflate view")
 
-        onBind(position, v)
+        onBind(position, v, null)
 
         return v
     }
@@ -115,12 +122,12 @@ abstract class ViewComp<T>(val ctx: Context) {
      * saat sudah terdapat data pada [mData] pada posisi [position], maka fungsi ini
      * tidak dipanggil.
      */
-    abstract fun initData(position: Int): T? //, valueBox: BoxedVal<T?>)
+    abstract fun initData(position: Int, inputData: I?): D? //, valueBox: BoxedVal<D?>)
 
     /**
      * Fungsi yg dipanggil saat [onRecycle] pada posisi [position] dipanggil.
      */
-    open fun onDataRecycled(position: Int, valueBox: BoxedVal<T>){}
+    open fun onDataRecycled(position: Int, valueBox: BoxedVal<D>){}
 
     /**
      * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
@@ -129,7 +136,7 @@ abstract class ViewComp<T>(val ctx: Context) {
      * @param valueBox adalah wadah untuk menyimpan data yg diambil dari
      *   input user pada view.
      */
-    abstract fun bindComponent(position: Int, v: View, valueBox: BoxedVal<T>)
+    abstract fun bindComponent(position: Int, v: View, valueBox: BoxedVal<D>, inputData: I?)
 
     /**
      * @return true jika komponen tidak null. Komponen didapat dari parameter [v]
