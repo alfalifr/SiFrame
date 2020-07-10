@@ -3,7 +3,9 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
@@ -25,6 +27,18 @@ interface TopMiddleBottomBase: LifecycleSideBase {
         get()= _Config.ID_RL_MIDDLE_CONTAINER
     val bottomContainerId: Int
         get()= _Config.ID_RL_BOTTOM_CONTAINER
+    val rvId: Int
+        get()= _Config.ID_RV
+
+    /**
+     * <10 Juli 2020> => Untuk sementara, [RecyclerView] yg dimaksud adalah [SimpleRvAdp].
+     */
+    val isTopContainerNestedInRv
+        get()= false
+    val isMiddleContainerNestedInRv
+        get()= false
+    val isBottomContainerNestedInRv
+        get()= false
 
     val topLayoutId: Int
         get()= _Config.INT_EMPTY

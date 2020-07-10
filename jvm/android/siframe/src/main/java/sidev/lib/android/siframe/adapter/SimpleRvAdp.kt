@@ -1,24 +1,20 @@
 package sidev.lib.android.siframe.adapter
 
 import android.content.Context
-import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.CallSuper
-import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.adp.Adp
-import sidev.lib.android.siframe.tool.RunQueue
-import sidev.lib.universal.`fun`.iterator
+import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
+import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
-import java.lang.IndexOutOfBoundsException
 
 //!!!!!!@@ 18 Jan 2020
 /**
@@ -52,6 +48,47 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
  */
 //            notifyDataSetChanged_()
         }
+
+    var headerView: View?= null
+        set(v){
+            field= v
+            notifyDataSetChanged_()
+        }
+    var footerView: View?= null
+        set(v){
+            field= v
+            notifyDataSetChanged_()
+        }
+
+    /**
+     * Hanya sbg marker bahwa pada posisi tertentu, sebuah view pada adapter ini
+     * merupakan [headerView] atau [footerView].
+     */
+    val headerViewType= 10
+    val footerViewType= 11
+
+    /**
+     * Marker bahwa pada posisi tertentu, sebuah view pada adapter ini
+     * merupakan view normal dg id layout [itemLayoutId].
+     */
+    @Deprecated("Gunakan itemLayoutId scr langsung untuk menandakan view adalah sebuah konten")
+    val contentItemType= 12
+/*
+    var hasHeader= false
+        private set
+    var hasFooter= false
+        private set
+    var headerLayoutId= _Config.INT_EMPTY
+        set(v){
+            field= v
+            hasHeader= ctx.inflate(v) != null
+        }
+    var footerLayoutId= _Config.INT_EMPTY
+        set(v){
+            field= v
+            hasFooter= ctx.inflate(v) != null
+        }
+// */
 /*
     protected enum class IndexMapping{
         SORT, FILTER
@@ -154,11 +191,62 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
  */
 
     override fun getItemId(pos: Int): Long = super<RecyclerView.Adapter>.getItemId(pos)
-    override fun getItemViewType(pos: Int): Int = super<RecyclerView.Adapter>.getItemViewType(pos)
-    //    override fun hasStableIds() = super<RecyclerView.Adapter>.hasStableIds()
 
+    /**
+     * Dalam konteks [SimpleRvAdp], implementasi fungsi ini digunakan untuk menentukan
+     * pakah sebuah view merupakan header, footer, atau konten biasa.
+     *
+     * <10 Juli 2020> => Implementasi fungsi ini di-final karena implementasi fungsi ini penting
+     *   bagi penentuan struktur scr internal. Apabila programmer ingin mengubah tampilan view
+     *   untuk tiap posisinya, maka gunakan fungsi [MultiViewAdp.getItemViewType].
+     */
+    final override fun getItemViewType(pos: Int): Int { //<10 Juli 2020> => Untuk mengakomodasi header dan footer.
+        return when{
+            pos == 0 && headerView != null -> headerViewType
+            pos == itemCount-1 && footerView != null -> footerViewType
+            else -> this.asNotNullTo { adp: MultiViewAdp<D, *> -> adp.getItemViewType(pos, getDataAt(pos)!!) }
+                ?: itemLayoutId
+        }
+    }// = super<RecyclerView.Adapter>.getItemViewType(pos) //getItemLayoutId(pos, itemLayoutId)
+/*
+    /**
+     * Fungsi internal untuk menentukan apakah jika:
+     *  -Pada [pos] 0, layout berupa [headerLayoutId]
+     *   atau [itemLayoutId] yg di-pass ke fungsi ini.
+     *  -Pada [pos] == [getItemCount]-1, layout berupa [footerLayoutId]
+     *   atau [itemLayoutId] yg di-pass ke fungsi ini.
+     */
+    protected fun getItemLayoutId(pos: Int, itemLayoutId: Int): Int{
+        return if(pos == 0 && hasHeader) headerLayoutId
+        else if(pos == itemCount-1 && hasFooter) footerLayoutId
+        else itemLayoutId
+    }
+ */
+    /**
+     * Fungsi yg digunakan untuk mengambil indeks dari [dataList]
+     * yg dipengaruhi oleh ada tidaknya (true/false) [hasHeader].
+     *
+     * Jika [hasHeader] == true, maka indeks yg dihasilkan akan
+     * bergeser / berkurang 1 dari indeks normal.
+     *
+     * @return indeks untuk [dataList].
+     *   Null jika [SimpleRvAdp] ini punya footer ([hasFooter] == true) dan [adpPos] == [getItemCount] -1.
+     */
+    fun getDataIndex(adpPos: Int): Int?{
+        return if(adpPos == itemCount-1 && footerView != null) null
+        else if(headerView != null) adpPos -1
+        else adpPos
+    }
+
+    //    override fun hasStableIds() = super<RecyclerView.Adapter>.hasStableIds()
+    /**
+     * Fungsi ini digunakan untuk bind view yg bkn merupakan header atau footer.
+     */
     abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
     abstract fun setupLayoutManager(): LM
+    /**
+     * Fungsi ini digunakan untuk bind view yg bkn merupakan header atau footer.
+     */
     @CallSuper
     open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D){
         if(onBindViewListener != null){
@@ -173,26 +261,43 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
+    /**
+     * <20 Juli 2020> => Di-final karena implementasi fungsi ini sudah dapat meng-inflate untuk
+     *   [viewType] yg berbeda.
+     */
+    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         val v= LayoutInflater.from(ctx).inflate(itemContainerLayoutId, parent, false)
-        val contentV= LayoutInflater.from(ctx).inflate(itemLayoutId, parent, false)
+        val contentV= when(viewType){ //<10 Juli 2020> => Untuk mengakomodasi header dan footer.
+            headerViewType -> headerView
+            footerViewType -> footerView
+            else -> ctx.inflate(viewType, parent)
+                ?: throw ResourceNotFoundExc(
+                    relatedClass = this::class.java,
+                    resourceName = "viewType: '$viewType' dari getItemViewType(Int, D)"
+                )
+        }!!
+//            LayoutInflater.from(ctx).inflate(itemLayoutId, parent, false)
         v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
             .addView(contentV)
         return SimpleViewHolder(v)
     }
 
     override fun getItemCount(): Int {
-        return dataList?.size ?: 0
+        var count= dataList?.size ?: 0
+        if(headerView != null) count++
+        if(footerView != null) count++
+        return count
     }
 
 //    @CallSuper
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        val data= getDataAt(position)!! //dataList!![position]
+        getDataAt(position).notNull { data ->
+            __bindVH(holder, position, data)
+            bindVH(holder, position, data)
+        } //dataList!![position]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
-        __bindVH(holder, position, data)
-        bindVH(holder, position, data)
 /*
         holder.itemView.setOnClickListener { v ->
             onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
@@ -425,13 +530,15 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      * Bentuk spesifik untuk mendapat itemView.
      * <28 Juni 2020> => Hanya untuk view yg terlihat, bkn semuanya.
      */
-    override fun getView(pos: Int): View?{
-        return rv?.layoutManager?.findViewByPosition(pos)
-    }
+    override fun getView(pos: Int): View?
+        = rv?.layoutManager?.findViewByPosition(pos)
+
 
     open fun getDataAt(pos: Int, onlyShownItem: Boolean= true): D?{
-        return dataList?.get(pos)
+        return try{ dataList?.get(getDataIndex(pos)!!) }
+        catch (e: KotlinNullPointerException){ null }
     }
+
 /*
     fun getSelectedData(): List<D>?{
         if(dataList != null){

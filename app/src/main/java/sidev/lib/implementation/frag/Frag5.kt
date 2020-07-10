@@ -25,7 +25,7 @@ class Frag5 : Frag(){
         layoutView.btn.setOnClickListener { startSingleFragAct_config<CrashFrag>() }
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         callingLifecycle.asNotNull { act: ViewPagerBase<*> ->
             act.isVpTitleFragBased= false
             loge("onActive() act.isVpTitleFragBased= false")

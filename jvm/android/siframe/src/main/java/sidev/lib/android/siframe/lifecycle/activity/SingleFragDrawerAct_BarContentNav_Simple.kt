@@ -60,6 +60,10 @@ open class SingleFragDrawerAct_BarContentNav_Simple: SingleFragDrawerAct_BarCont
 // */
     }
 
+    override fun _initStartDrawerView(startDrawerView: View) {}
+    override fun _initEndDrawerView(endDrawerView: View) {}
+
+    /*
     @CallSuper
     override fun _initStartDrawerView(startDrawerView: View) {
         try{ //Karena kemungkinan Drawer sudah diinit namun fragment msh blum.
@@ -76,6 +80,8 @@ open class SingleFragDrawerAct_BarContentNav_Simple: SingleFragDrawerAct_BarCont
             }
         } catch (e: Exception){}
     }
+
+// */
 }
 
 /*

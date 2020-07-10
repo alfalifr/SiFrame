@@ -3,5 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke
         android:color="@color/putih"
-        android:width="3dp"/>
+        android:width="@dimen/corner_normal"/>
 </shape>

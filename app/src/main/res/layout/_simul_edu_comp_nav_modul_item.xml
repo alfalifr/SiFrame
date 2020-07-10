@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/border_top"
+        android:layout_above="@id/tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+
+    <View
+        android:id="@+id/border_bottom"
+        android:layout_below="@id/tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+
+
+    <ImageView
+        android:id="@+id/iv_indication_top"
+        android:layout_above="@id/iv_indication"
+        android:layout_below="@id/border_top"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="4dp"
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:src="@color/colorPrimaryDark"/>
+
+
+    <ImageView
+        android:id="@+id/iv_indication"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/shape_border_oval_sm"/>
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_toRightOf="@id/iv_indication"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="aogjaongoanboa aoboajb aobjaojba obajob oabjaobj oabjoa\naboaj\n\n"
+        android:textColor="@color/hitam"/>
+<!--
+    <LinearLayout
+        android:id="@+id/ll_main_container"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </LinearLayout>
+-->
+    <ImageView
+        android:id="@+id/iv_indication_bottom"
+        android:layout_below="@id/iv_indication"
+        android:layout_above="@id/border_bottom"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:src="@color/colorPrimaryDark"/>
+</RelativeLayout>

@@ -27,7 +27,7 @@ class ActBarFrag6 : ActBarFrag(){
         actBarView.tv.text= fragTitle
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         actSimple.asNotNull { act: BarContentNavAct -> act.setMenu(R.menu.menu_3) }
     }
 }

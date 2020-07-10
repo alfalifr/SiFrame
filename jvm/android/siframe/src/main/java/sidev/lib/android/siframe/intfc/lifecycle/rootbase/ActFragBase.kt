@@ -20,7 +20,7 @@ import sidev.lib.universal.tool.util.ThreadUtil
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
  */
-interface SimpleAbsActFragBase: LifecycleRootBase, ArchView,
+interface ActFragBase: LifecycleRootBase, //ArchView,
     InitViewFun, CtxProp {
 //    val layoutId: Int
 //    val styleId: Int

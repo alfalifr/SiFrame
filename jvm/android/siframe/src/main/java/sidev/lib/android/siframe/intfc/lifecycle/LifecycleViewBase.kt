@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.arch.view.ArchView
 
 /**
  * <8 Juni 2020> => Sementara hanya sbg penanda (marker)
@@ -18,8 +19,10 @@ import sidev.lib.android.siframe._customizable._Config
  *          Implementasi TIDAK dapat dirubah di luar framework.
  *
  *      - Properti atau fun yg berakhir dg _ berarti namanya udah ada yg ngembari pada framework asli Android.
+ *
+ * <10 Juli 2020> => [LifecycleViewBase] adalah turunan [ArchView].
  */
-interface LifecycleViewBase: LifecycleBase{
+interface LifecycleViewBase: LifecycleBase, ArchView {
     val layoutId: Int
     val styleId: Int
         get() = _Config.STYLE_APP

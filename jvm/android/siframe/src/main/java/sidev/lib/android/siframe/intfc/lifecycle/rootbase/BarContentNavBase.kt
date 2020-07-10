@@ -16,7 +16,7 @@ import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 
-interface BarContentNavBase: SimpleAbsActFragBase, InitActBarFun, ActProp {
+interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
 
     override val styleId: Int
         get() = _Config.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar

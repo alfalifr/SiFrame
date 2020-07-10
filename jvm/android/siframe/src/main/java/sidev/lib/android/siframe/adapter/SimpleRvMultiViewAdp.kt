@@ -11,6 +11,7 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.notNullTo
 
 abstract class SimpleRvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
     : SimpleRvAdp<D, LM>(ctx), MultiViewAdp<D, SimpleRvAdp<D, LM>.SimpleViewHolder>{
@@ -30,16 +31,21 @@ abstract class SimpleRvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Cont
      */
     abstract override fun getItemViewType(pos: Int, data: D): Int
     abstract override fun bindVhMulti(vh: SimpleViewHolder, pos: Int, viewType: Int, data: D)
-
+/*
     final override fun getItemViewType(pos: Int): Int{
-        return getItemViewType(pos, getDataAt(pos)!!) //dataList!![pos]
+        return when{
+            pos == 0 && headerView != null -> headerViewType
+            pos == itemCount-1 && footerView != null -> footerViewType
+            else -> getItemViewType(pos, getDataAt(pos)!!)
+        }
     }
+ */
     /**
      * Ini gak dipake dalam konteks [MultiViewAdp].
      * Sbg gantinya, override fungsi [bindVhMulti].
      */
     final override fun bindVH(vh: SimpleViewHolder, pos: Int, data: D){}
-
+/*
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleViewHolder {
         val v= LayoutInflater.from(ctx).inflate(itemContainerLayoutId, parent, false)
 //        val contentV= LayoutInflater.from(ctx).inflate(viewType, parent, false)
@@ -49,6 +55,7 @@ abstract class SimpleRvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Cont
         }
         return SimpleViewHolder(v)
     }
+ */
 
     final override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)

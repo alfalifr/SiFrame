@@ -9,9 +9,15 @@ class RvAdpContentArranger<T> : ContentArranger<T>(), AssertPropNotNullFun{
 
     override fun getProperty(propertyName: String?): Any? = rvAdp
 
+    //<9 Juli 2020> => Perlu dipikirkan lagi untuk metode pengambilan data dari adp.
+    //  Jika pada rumpun RvAdp, pengambilan data dilakukan menggunakan fungsi [SimpleRvAdp.getDataAt].
     override fun getContent(pos: Int): T
         = assertNotNull("rvAdp") { adp: SimpleRvAdp<T, *> -> adp.dataList!![pos] }
 
+    //<9 Juli 2020> => Jika fungsi [getContent] di atas menggunakan fungsi [SimpleRvAdp.getDataAt]
+    //  untuk mengambil data, maka metode pengambilan jml konten menggunakan adp.dataList?.size ?: 0
+    //  tidak aman karena menyebabkan jml konten menjadi 0. Hal tersebut dikarenakan [RvAdp.getItemCount]
+    //  mengambil panjang dari [resultInd].
     override fun getContentCount(): Int
         = assertNotNull("rvAdp") { adp: SimpleRvAdp<T, *> -> adp.dataList?.size ?: 0 }
 

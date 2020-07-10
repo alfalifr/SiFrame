@@ -13,12 +13,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.`fun`.toArrayList
 import java.lang.Exception
 
 interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
@@ -113,9 +115,11 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     }
 
     /**
-     * Opsional pada turunan yg memiliki tujuan yg berkaitan erat dg vp, seperti MultipleActBarViewPagerActBase.
+     * Opsional pada turunan yg memiliki tujuan yg berkaitan erat dg vp, seperti [MultipleActBarViewPagerBase].
+     *
+     * <10 Juli 2020> => Tidak jadi [CallSuper].
      */
-    @CallSuper
+//    @CallSuper
     fun initVp(){
 //        lateVp= vp
 //        loge("initVp() lateVp= vp")
@@ -129,8 +133,12 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         loge("initVp() isVpTitleFragBased= $isVpTitleFragBased this is SimpleAbsBarContentNavAct= ${this is SimpleAbsBarContentNavAct}")
         loge("initVp() vp != null = ${vp != null}")
  */
-
+        vpAdp= VpFragAdp(_prop_fm)
+        if(this is ActFragBase)
+            vpAdp._prop_parentLifecycle= this
+        vp.adapter= vpAdp
         setFragList(vpFragList)
+
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(
@@ -147,6 +155,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         if(vpFragList.isNotEmpty())
             attachActBarTitle(0)
     }
+
     fun initFragList(): Array<F>?{
         return vpFragList
     }
@@ -198,9 +207,10 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         if(list != null){
             vpFragList= list
             size= vpFragList.size
-            vpAdp= VpFragAdp(_prop_fm, *list)
+
+            vpAdp.items= list.toArrayList() as ArrayList<Frag>
+//            vpAdp= VpFragAdp(_prop_fm, *list)
 //            vp.removeAllViews()
-            vp.adapter= vpAdp
 
             if(isVpTitleFragBased && vpFragList.isNotEmpty())
                 this.asNotNull { act: BarContentNavAct ->
@@ -223,7 +233,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     }
 
     fun getFragPos(frag: F): Int{
-        return vpAdp.items.indexOf(frag)
+        return vpAdp.items?.indexOf(frag) ?: -1
     }
 
     fun attachActBarTitle(pos: Int){
@@ -247,7 +257,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
      * @return true jika berhasil dan sebaliknya.
      */
     fun registerOnPageFragToActListener(frag: F, l: OnPageFragActiveListener): Boolean{
-        val pos= vpAdp.items.indexOf(frag)
+        val pos= vpAdp.items?.indexOf(frag) ?: -1
         return if(pos >= 0){
             onPageFragActiveListener.setValueAt(pos, l) //= l
             true

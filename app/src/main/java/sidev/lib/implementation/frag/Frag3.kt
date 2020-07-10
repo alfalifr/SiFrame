@@ -21,7 +21,7 @@ class Frag3 : Frag(){
         _ViewUtil.setBgColor(layoutView, R.color.merahMuda)
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         callingLifecycle.notNull { act ->
             val callName= act::class.java.simpleName
             loge("onActive() callName= $callName")

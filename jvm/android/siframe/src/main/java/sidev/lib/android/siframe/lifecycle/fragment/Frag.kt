@@ -13,10 +13,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
-import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.arch.presenter.Presenter
@@ -24,8 +23,10 @@ import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.universal.`fun`.classSimpleName
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].
@@ -33,7 +34,7 @@ import sidev.lib.universal.`fun`.asNotNullTo
  * namun tidak meng-extend interface [MvvmView].
  */
 abstract class Frag : Fragment(),
-    SimpleAbsActFragBase,
+    FragBase,
     ViewModelBase,
     PresenterDependentCommon<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     LifecycleSideBase // Hanya sbg cetaka agar kelas ini dapat memanggil ___initSideBase()
@@ -46,6 +47,8 @@ abstract class Frag : Fragment(),
 
     override val _prop_ctx: Context
         get() = context!!
+    override var _prop_parentLifecycle: ActFragBase?= null
+        internal set
     val actSimple
         get() = activity as? Act
 //    val actBarContentNavAct
@@ -167,7 +170,7 @@ abstract class Frag : Fragment(),
         presenter= if(this is MviView<*, *>) __initMviPresenter()
             else initPresenter()
 
-        super<SimpleAbsActFragBase>.___initRootBase(*args)
+        super<FragBase>.___initRootBase(*args)
 
         if(this is MviView<*, *>)
             restoreCurrentState(true)
@@ -208,15 +211,22 @@ abstract class Frag : Fragment(),
         else activity?.intent?.extras?.get(key) as D? ?: default as D
     }
 
-    /**
-     * Dipanggil saat fragment terlihat di screen.
-     * Untuk case ViewPager, fungsi ini dipanggil setiap kali penggunamembuka halaman fragment ini.
-     *
-     * @param parentView merupakan view tempat fragment ini menempel.
-     */
-    open fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int){}
-
-//    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
+/*
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int){
+        super.onActive(parentView, callingLifecycle, pos)
+        loge("callingLifecycle= ${callingLifecycle?.classSimpleName()}")
+        _prop_parentLifecycle= callingLifecycle.asNotNullTo { parent: SimpleActFragBase ->
+//            loge("parent= ${parent::class.java.simpleName} is SimpleActFragBase")
+            parent
+        }
+    }
+// */
+    override fun onLifecycleAttach(callingLifecycle: ActFragBase?) {
+        super.onLifecycleAttach(callingLifecycle)
+        loge("callingLifecycle= ${callingLifecycle?.classSimpleName()}")
+        _prop_parentLifecycle= callingLifecycle
+    }
+    //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
 //    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 
         /*

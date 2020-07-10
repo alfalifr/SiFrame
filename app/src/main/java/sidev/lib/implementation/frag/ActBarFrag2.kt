@@ -29,7 +29,7 @@ class ActBarFrag2 : ActBarFrag(){
         actBarView.tv.text= fragTitle
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         actSimple.asNotNull { act: DrawerActBase ->
             act.setDrawerView(DrawerBase.Type.DRAWER_END, null)
             _ViewUtil.setBgColor(act.startDrawerContainer, R.color.biruLaut)

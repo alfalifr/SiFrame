@@ -1,10 +1,13 @@
 package sidev.lib.android.siframe.adapter
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import sidev.lib.android.siframe.intfc.adp.Adp
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
+import sidev.lib.android.siframe.intfc.prop.ParentLifecycleProp
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import java.lang.Exception
 /*
@@ -56,10 +59,22 @@ class ViewPagerFragAdp (val c: Context, vararg items: SimpleAbsFrag): PagerAdapt
 
 /**
  * Hanya sekali pake. Jika ingin update adapter, maka instantiate lagi kelas ini.
+ *
+ * <10 Juli 2020> => [items] udah bisa diupdate lewat setter. Jadi gak perlu instantiate baru.
  */
-class VpFragAdp(fm: FragmentManager, vararg items: Frag) : FragmentStatePagerAdapter(fm), Adp {
-    val items: ArrayList<Frag> = ArrayList()
-/*
+open class VpFragAdp(fm: FragmentManager, vararg items: Frag)
+    : FragmentStatePagerAdapter(fm), Adp, ParentLifecycleProp {
+    var items: ArrayList<Frag>? = null //ArrayList()
+        set(v){
+            field= v
+            notifyDataSetChanged()
+        }
+    final override var _prop_parentLifecycle: ActFragBase?= null
+        set(v){
+            field= v
+            notifyDataSetChanged()
+        }
+    /*
     var items: ArrayList<SimpleAbsFrag>?= null// = ArrayList()
         set(v){
             field= v
@@ -68,23 +83,36 @@ class VpFragAdp(fm: FragmentManager, vararg items: Frag) : FragmentStatePagerAda
  */
 
     init {
-        for(element in items)
-            this.items.add(element)
+        if(items.isNotEmpty()){
+            this.items= ArrayList()
+            for(element in items)
+                this.items!!.add(element)
+        }
+//        notifyDataSetChanged()
     }
 
     constructor(fm: FragmentManager, items: ArrayList<out Frag>) : this(fm) {
-        for(element in items)
-            this.items.add(element)
+        if(items.isNotEmpty()){
+            this.items= ArrayList()
+            for(element in items)
+                this.items!!.add(element)
+        }
     }
 
     override fun getItemId(pos: Int): Long = pos.toLong() //super<FragmentPagerAdapter>.getItemId(pos)
     override fun getItemCount(): Int= count
     override fun getView(pos: Int): View? {
-        return try{ items[pos].layoutView }
+        return try{ items?.get(pos)?.layoutView }
         catch (e: Exception){ null }
     }
 
-/*
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val res= super.instantiateItem(container, position)
+        items!![position].onLifecycleAttach(_prop_parentLifecycle)
+        return res
+    }
+
+    /*
     override fun instantiateItem(container: View, position: Int): Any {
         val any= super.instantiateItem(container, position) as View
         any.asNotNull { v: View ->
@@ -108,15 +136,15 @@ class VpFragAdp(fm: FragmentManager, vararg items: Frag) : FragmentStatePagerAda
     }
  */
 
-    override fun getItem(position: Int): Fragment {
-        return items[position]
+    override fun getItem(pos: Int): Fragment {
+        return items!![pos]
     }
 
     override fun getCount(): Int {
-        return items.size
+        return items?.size ?: 0
     }
 
     override fun getPageTitle(pos: Int): CharSequence? {
-        return items[pos].fragTitle
+        return items?.get(pos)?.fragTitle
     }
 }

@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.android.siframe.intfc.lifecycle.rootbase.SimpleAbsActFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
@@ -35,7 +35,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
  * menggunakan arsitektur MVVM, namun tidak meng-extend interface [MvvmView].
  */
 abstract class Act : AppCompatActivity(), Inheritable,
-    SimpleAbsActFragBase,
+    ActFragBase,
     ViewModelBase, //Scr default, smua Activity pada framework ini menggunakan MVP dan MVVM.
                    //Knp kok gak bisa default MVP atau MVI?. Karena MVVM merupakan arsitektur bawaan
                    //framework Android
@@ -157,7 +157,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
         super<ViewModelBase>.___initRootBase(*args)
         presenter= if(this is MviView<*, *>) __initMviPresenter()
             else initPresenter()
-        super<SimpleAbsActFragBase>.___initRootBase(*args)
+        super<ActFragBase>.___initRootBase(*args)
 
         if(this is MviView<*, *>)
             restoreCurrentState(true)

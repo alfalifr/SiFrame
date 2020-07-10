@@ -30,7 +30,7 @@ class ActBarFrag4 : ActBarFrag(){
         actBarView.tv.text= "$fragTitle _initActBar()"
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         if(callingLifecycle != null){
             val callName= callingLifecycle::class.java.simpleName
             loge("onActive() callName= $callName")

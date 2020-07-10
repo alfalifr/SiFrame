@@ -5,6 +5,8 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
@@ -80,6 +82,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
 
     fun __attachFrag(){
         _prop_ctx.commitFrag(fragContainerId, fragment)
+        if(this is ActFragBase)
+            fragment.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
         if(isTitleFragBased)
             this.asNotNull { act: BarContentNavAct ->
                 fragment.asNotNull { frag: Frag ->

@@ -49,6 +49,16 @@ interface BackBtnBase: ComplexLifecycleSideBase {
             }
         })
     }
+    fun removeOnBackBtnListener(l: OnBackPressedListener){
+        onBackPressedListenerList.remove(l)
+    }
+    fun removeOnBackBtnListener(func: () -> Boolean){
+        addOnBackBtnListener(object: OnBackPressedListener{
+            override fun onBackPressed_(): Boolean {
+                return func()
+            }
+        })
+    }
     fun isBackPressedHandled(): Boolean{
         var isHandled= false
         for(l in onBackPressedListenerList)

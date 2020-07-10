@@ -12,7 +12,6 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
-import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
@@ -201,21 +200,24 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         = contentArranger.resultInd.size()
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
-        val dataInd= getShownIndex(position)
-        val data= getDataAt(position)!! //dataList!![dataInd]
+        val dataInd= getDataShownIndex(position)
+        getDataAt(position).notNull { data ->
+            //<10 Juli 2020> => Dibuat jadi .notNull() agar saat bind header atau footer tidak dilakukan
+            //  di dalam RvAdp ini.
+            holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+                ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
+            else View.GONE
+            __bindVH(holder, position, data) //dataInd
+            bindVH(holder, position, data)
+            holder.itemView.setOnClickListener { v ->
+                selectItem(dataInd!!, onlyShownItem = false) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
+                onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
+            }
+        } //dataList!![dataInd]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
                 // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
-        holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
-            ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
-            else View.GONE
-        __bindVH(holder, position, data) //dataInd
-        bindVH(holder, position, data)
-        holder.itemView.setOnClickListener { v ->
-            selectItem(dataInd, onlyShownItem = false) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
-            onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
-        }
     }
 /*
     inline fun notifyDataSetChanged_(f: (() -> Unit)= {}){
@@ -262,13 +264,17 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     }
 
     /**
-     * @param itemPos merupakan index itemView yg ditampilkan di adapter, bkn index dari {@link #dataList}.
+     * Fungsi yg mengembalikan indeks dari [dataList] yg dipengaruhi oleh sort atau filter
+     * yg dilakukan oleh [contentArranger].
+     *
+     * @param adpPos merupakan index itemView yg ditampilkan di adapter, bkn index dari {@link #dataList}.
      */
-    fun getShownIndex(itemPos: Int): Int{
+    fun getDataShownIndex(adpPos: Int): Int?{
         try{
-            return contentArranger.resultInd[itemPos]
+            return try{ contentArranger.resultInd[getDataIndex(adpPos)!!] }
+            catch (e: KotlinNullPointerException){ null }
         } catch (e: IndexOutOfBoundsException){
-            throw IndexOutOfBoundsException("itemPos ($itemPos) melebihi itemCount ($itemCount)")
+            throw IndexOutOfBoundsException("itemPos ($adpPos) melebihi itemCount ($itemCount)")
         }
     }
 
@@ -342,8 +348,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      *   yg didapat dari [pos].
      */
     open fun selectItem(pos: Int, v: View?= null, onlyShownItem: Boolean= true){
-        val dataInd= if(onlyShownItem) getShownIndex(pos)
+        val dataInd= if(onlyShownItem) getDataShownIndex(pos)
             else pos
+        if(dataInd == null) return
+
         if(!isMultiSelectionEnabled){
             val isSelectedBefore= selectedItemPos_single >= 0
             var selectedItemView_before: View?= null
@@ -478,7 +486,12 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
     override fun getDataAt(pos: Int, onlyShownItem: Boolean): D?{
         return if(pos in 0 until (dataList?.size ?: 0))
-            dataList?.get(if(!onlyShownItem) pos else getShownIndex(pos))
+            try{
+                dataList?.get(
+                    if(!onlyShownItem) getDataIndex(pos)!!
+                    else getDataShownIndex(pos)!!
+                )
+            } catch (e: KotlinNullPointerException){ null }
         else
             null
     }
@@ -518,8 +531,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
  */
 
     override fun deleteItemAt(pos: Int, onlyShownItem: Boolean): D?{
-        val ind = if(onlyShownItem) getShownIndex(pos)
-            else pos //dataListFull?.removeAt(pos)
+        val ind = (if(onlyShownItem) getDataShownIndex(pos)
+            else pos)
+            ?: return null //dataListFull?.removeAt(pos)
+
         val e= dataList?.removeAt(ind)
         notifyDataSetChanged_()
         return e
@@ -527,15 +542,16 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
     override fun modifyDataAt(ind: Int, onlyShownItem: Boolean, func: (data: D) -> D){
         dataList.notNull { list ->
-            val ind= if(!onlyShownItem) ind
-                else getShownIndex(ind)
-            val data= list.getOrNull(ind)
-            if(data != null){
+            (if(!onlyShownItem) ind
+            else getDataShownIndex(ind)).notNull{ dataInd ->
+                val data= list.getOrNull(dataInd)
+                if(data != null){
 //                val indInFull= dataList!!.indexOf(data)
-                val dataNew= func(data)
-                dataList!![ind]= dataNew
+                    val dataNew= func(data)
+                    dataList!![dataInd]= dataNew
 //                dataListFull!![indInFull]= dataNew
-                onUpdateDataListener?.onUpdateData(dataList, ind, DataUpdateKind.EDIT)
+                    onUpdateDataListener?.onUpdateData(dataList, dataInd, DataUpdateKind.EDIT)
+                }
             }
         }
     }
@@ -814,11 +830,11 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
                 var filterInd= -1
                 for(i in 0 until searchSize){
-                    val ind=
-                        if(onlyShownItem) getShownIndex(i)
-                        else i
-                    if(searchFilterFun(dataList!![ind], keyword)) //!!!
-                        newFilter[++filterInd]= ind
+                    (if(onlyShownItem) getDataShownIndex(i)
+                    else i).notNull { ind ->
+                        if(searchFilterFun(dataList!![ind], keyword)) //!!!
+                            newFilter[++filterInd]= ind
+                    }
                 }
                 contentArranger.resultInd= newFilter
                 notifyDataSetChanged_()

@@ -8,7 +8,7 @@ import sidev.lib.android.siframe.intfc.prop.CtxProp
  * Hanya sbg penanda bahwa kelas turunan ini merupakan View dalam arsitektur.
  * Khusus untuk tipe arsitektur ini, interface ini tidak memiliki fungsi khusus.
  */
-interface ArchView: InterruptableBase, CtxProp{
+interface ArchView: InterruptableBase, CtxProp {
     /**
      * Flag apakah turunan interface ini sedang sibuk atau tidak.
      * Flag ini mempengaruhi [InterruptableBase.doWhenNotBusy].

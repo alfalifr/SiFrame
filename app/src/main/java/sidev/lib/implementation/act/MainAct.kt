@@ -7,8 +7,11 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
 import sidev.lib.implementation.R
+import sidev.lib.implementation._cob.dumm_module
 import sidev.lib.implementation._simulation.edc.frag.TransacFrag
 import sidev.lib.implementation._simulation.edc.frag.TransacFrag_Old
+import sidev.lib.implementation._simulation.edu_class.frag.ContentFragMain
+import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
 import sidev.lib.implementation.frag.*
 
 class MainAct : BarContentNavAct() {
@@ -59,4 +62,8 @@ class MainAct : BarContentNavAct() {
 
     fun _simul_edc_toTransaction(v: View)= startSingleFragAct_config<TransacFrag>()
     fun _simul_edc_toTransaction_Old(v: View)= startSingleFragAct_config<TransacFrag_Old>()
+
+    fun _simul_edu_toContentAct(v: View)= startSingleFragAct_config<ContentFragMain>(
+        Edu_Class_Const.DATA_MODULE to dumm_module[0]
+    )
 }

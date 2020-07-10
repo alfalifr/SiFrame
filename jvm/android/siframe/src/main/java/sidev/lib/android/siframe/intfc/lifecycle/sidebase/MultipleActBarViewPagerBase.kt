@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.core.util.set
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import sidev.lib.android.siframe.adapter.VpFragAdp
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
@@ -28,8 +30,12 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
 
     override var isActBarViewFromFragment: Boolean
 
-
+/*
     override fun ___initSideBase() {
+    }
+ */
+
+    override fun initVp() {
         val thisName= this::class.java.simpleName
 //        loge("thisName= $thisName ___initSideBase()")
 //        super.___initSideBase()
@@ -37,8 +43,12 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
             defaultActBarView= actBarContainer_vp!!.getChildAt(0)
         }
 //        loge("___initSideBase() defaultActBarView == null = ${defaultActBarView == null}")
-
+        vpAdp= VpFragAdp(_prop_fm)
+        if(this is ActFragBase)
+            vpAdp._prop_parentLifecycle= this
+        vp.adapter= vpAdp
         setFragList(vpFragList)
+
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}

@@ -30,7 +30,7 @@ class ActBarFrag5 : ActBarFrag(){
         actBarView.tv.textColorResource= _ColorRes.TEXT_DARK
     }
 
-    override fun onActive(parentView: View, callingLifecycle: LifecycleViewBase?, pos: Int) {
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         actSimple.asNotNull { act: BarContentNavAct -> act.setMenu(R.menu.menu_2) }
     }
 }

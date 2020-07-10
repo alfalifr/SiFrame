@@ -26,7 +26,7 @@ Convert
  */
 //<4 Juli 2020> => Definisi baru
 fun <T> Array<T>.toArrayList(): ArrayList<T>{
-    return this.toList() as ArrayList<T>
+    return this.toMutableList() as ArrayList<T>
 }
 /*
 <4 Juli 2020> => Definisi lama.

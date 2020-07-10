@@ -6,6 +6,7 @@ import sidev.lib.android.siframe._customizable._Constant
 import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.implementation.R
 import sidev.lib.implementation.act.SingleFragImplAct
 
@@ -22,6 +23,11 @@ class Appl : App(){
                 ?: v.findViewById(R.id.tv_title)
                 ?: v.findViewById(R.id.tv_desc)
                 ?: v.findViewById(R.id.tv_content)
+                ?: v.findViewByType()
+        }
+
+        _ViewUtil.Comp.getRv= { v ->
+            v.findViewByType()
         }
     }
 }

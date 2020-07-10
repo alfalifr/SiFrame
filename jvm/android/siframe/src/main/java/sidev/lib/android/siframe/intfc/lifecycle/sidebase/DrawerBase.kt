@@ -11,6 +11,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleS
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.notNullTo
 
 interface DrawerBase: ComplexLifecycleSideBase,
     InitViewFun {
@@ -150,6 +151,16 @@ interface DrawerBase: ComplexLifecycleSideBase,
             else
                 rootDrawerLayout?.closeDrawer(drawer)
         }
+    }
+
+    fun isDrawerOpen(type: Type): Boolean{
+        return when(type){
+            Type.DRAWER_START -> startDrawerContainer
+            Type.DRAWER_END -> endDrawerContainer
+        }.notNullTo { drawer ->
+            rootDrawerLayout.notNullTo { it.isDrawerOpen(drawer) }
+                ?: false
+        } ?: false
     }
 
     /**

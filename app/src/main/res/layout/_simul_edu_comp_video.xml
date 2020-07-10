@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <VideoView
+        android:id="@+id/vv"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="300dp"
+        android:layout_height="169dp"/>
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_centerInParent="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_triangle"
+        android:rotation="90"
+        android:tint="@color/putihTerawang"/>
+
+    <View
+        android:id="@+id/border_left"
+        android:layout_toLeftOf="@id/vv"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+    <View
+        android:id="@+id/border_right"
+        android:layout_toRightOf="@id/vv"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_note"
+        android:layout_toRightOf="@id/border_left"
+        android:layout_toLeftOf="@id/border_right"
+        android:layout_below="@id/vv"
+        android:layout_marginTop="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/template_msg_desc"/>
+
+</RelativeLayout>
