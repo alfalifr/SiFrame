@@ -112,8 +112,9 @@ class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
         __initTopMiddleBottomView(layoutView)
         onRefreshListener= { downloadContent(pageData.id) }
         downloadContent(pageData.id)
+///*
         actSimple?.addOnBackBtnListener {
-            actSimple.asNotNullTo { act: ViewPagerBase<Frag> ->
+            _prop_parentLifecycle.asNotNullTo { act: ViewPagerBase<Frag> ->
                 val fragInd= act.getFragPos(this)
                 if(fragInd == act.vp.currentItem){
                     val canNotBack= pageData.isQuiz && pageData.isQuizStillValid
@@ -124,6 +125,7 @@ class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
                     false
             } ?: false
         }
+// */
 //        downloadPageList()
     }
 

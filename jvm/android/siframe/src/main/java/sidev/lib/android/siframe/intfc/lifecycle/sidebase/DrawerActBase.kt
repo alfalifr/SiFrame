@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.LifecycleOwner
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 
 interface DrawerActBase : DrawerBase{
     override val _prop_act: AppCompatActivity
@@ -45,5 +47,11 @@ interface DrawerActBase : DrawerBase{
         rootDrawerLayout= rootView.findViewByType()!!
         __initView(rootView)
         _inflateStructure(rootView.context)
+
+        if(this is LifecycleOwner){
+            this.lifecycle.addObserver(this)
+            _prop_backBtnBase?.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, onBackBtnListener)
+        } else
+            loge("Kelas ini bkn merupakan \"LifecycleOwner\" sehingga tidak dapat ditambah \"onBackBtnListener\" untuk drawer.")
     }
 }

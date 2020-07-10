@@ -26,6 +26,7 @@ abstract class DrawerFrag : Frag(), DrawerFragBase {
 
     final override val _prop_backBtnBase: BackBtnBase?
         get() = activity.asNotNullTo { act: BackBtnBase -> act }
+/*
     final override val onBackBtnListener: OnBackPressedListener
         = object : OnBackPressedListener{
         override fun onBackPressed_(): Boolean {
@@ -43,6 +44,7 @@ abstract class DrawerFrag : Frag(), DrawerFragBase {
             } else false
         }
     }
+ */
 
     //<6 Juli 2020> => Di-final karena jika diubah di level turunan, maka dapat menyebabkan error.
     final override val layoutId: Int

@@ -189,7 +189,7 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
         }
     }
     fun showSideNavPb(show: Boolean= true){
-        loge("showSideNavPb() startDrawerContainer.findViewById<View>(R.id.pb)= ${startDrawerContainer?.findViewById<View>(R.id.pb)}")
+//        loge("showSideNavPb() startDrawerContainer.findViewById<View>(R.id.pb)= ${startDrawerContainer?.findViewById<View>(R.id.pb)}")
         startDrawerContainer?.findViewById<View>(R.id.pb)?.visibility= if(show) View.VISIBLE
         else View.GONE
         startDrawerContainer?.findViewById<View>(R.id.rv)?.visibility= if(!show) View.VISIBLE

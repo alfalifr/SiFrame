@@ -14,7 +14,7 @@ import sidev.lib.implementation.frag.*
 import sidev.lib.universal.`fun`.classSimpleName
 
 class ViewPagerAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
-    override var isVpTitleFragBased: Boolean= true
+//    override var isVpTitleFragBased: Boolean= true
     override var vpFragList: Array<Frag> =
         arrayOf(
             Frag1(),

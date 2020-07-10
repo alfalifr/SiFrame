@@ -23,6 +23,7 @@ abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
 
     final override val _prop_backBtnBase: BackBtnBase?
         get() = activity.asNotNullTo { act: BackBtnBase -> act }
+/*
     final override val onBackBtnListener: OnBackPressedListener
             = object : OnBackPressedListener {
         override fun onBackPressed_(): Boolean {
@@ -40,6 +41,7 @@ abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
             } else false
         }
     }
+ */
 /*
     final override var rootDrawerLayout: DrawerLayout?= null
         get() = activity.asNotNullTo { act: DrawerActBase -> act.rootDrawerLayout }

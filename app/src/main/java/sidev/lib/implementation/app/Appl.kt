@@ -23,6 +23,7 @@ class Appl : App(){
                 ?: v.findViewById(R.id.tv_title)
                 ?: v.findViewById(R.id.tv_desc)
                 ?: v.findViewById(R.id.tv_content)
+                ?: v.findViewById(R.id.tv_header)
                 ?: v.findViewByType()
         }
 

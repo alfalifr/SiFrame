@@ -5,15 +5,23 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
+import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
+import sidev.lib.android.siframe.intfc.prop.BackBtnBaseProp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
+import java.lang.IllegalArgumentException
 
 interface DrawerBase: ComplexLifecycleSideBase,
+    BackBtnBaseProp, LifecycleObserver,
     InitViewFun {
     companion object{
         /**
@@ -26,6 +34,7 @@ interface DrawerBase: ComplexLifecycleSideBase,
          */
         @JvmStatic
         val DRAWER_LAYOUT_SAME_AS_EXISTING= -10
+        val TAG_ON_BACK_BTN_LISTENER= "DrawerBase"
     }
     enum class Type{
         DRAWER_START, DRAWER_END
@@ -33,6 +42,31 @@ interface DrawerBase: ComplexLifecycleSideBase,
 
     override val layoutId: Int
         get() = _Config.LAYOUT_DL
+
+
+    override val _prop_backBtnBase: BackBtnBase?
+    /**
+     * Untuk mengakodomasi back-button event oleh user saat drawer dibuka.
+     * Tujuan [onBackBtnListener] bkn hanya pada level fragment, namun juga Activity.
+     * Hal tersebut dikarenakan ada bbrp Activity yg tidak bisa mendeteksi jika
+     * drawernya dibuka. Nilai dari [OnBackPressedListener] disimpan agar
+     * saat [DrawerFragBase] di-destroy maka tidak akan terjadi NullPointerException.
+     */
+    val onBackBtnListener: () -> Boolean
+        get()= {
+            if(rootDrawerLayout != null){
+                val startDrawerIsOpen= isDrawerOpen(Type.DRAWER_START)
+                val endDrawerIsOpen= isDrawerOpen(Type.DRAWER_END)
+
+                if(startDrawerIsOpen)
+                    slideDrawer(Type.DRAWER_START, false)
+
+                if(endDrawerIsOpen)
+                    slideDrawer(Type.DRAWER_END, false)
+
+                startDrawerIsOpen || endDrawerIsOpen
+            } else false
+        }
 
     val contentContainerId
         get()= _Config.ID_VG_CONTENT_CONTAINER
@@ -153,13 +187,21 @@ interface DrawerBase: ComplexLifecycleSideBase,
         }
     }
 
+    /**
+     * Digunakan untuk mengecek apakah drawer dg tipe [type] sedang dibuka atau tidak.
+     *
+     * @return true jika sedang dibuka.
+     *   false jika sedang ditutup atau drawer dg tipe [type] bkn drawer (gravity == [Gravity.NO_GRAVITY]).
+     */
     fun isDrawerOpen(type: Type): Boolean{
         return when(type){
             Type.DRAWER_START -> startDrawerContainer
             Type.DRAWER_END -> endDrawerContainer
         }.notNullTo { drawer ->
-            rootDrawerLayout.notNullTo { it.isDrawerOpen(drawer) }
+            try{
+                rootDrawerLayout.notNullTo { it.isDrawerOpen(drawer) }
                 ?: false
+            } catch (e: IllegalArgumentException){ false }
         } ?: false
     }
 
@@ -189,5 +231,15 @@ interface DrawerBase: ComplexLifecycleSideBase,
             }
 //        lp.width= 0
         }
+    }
+
+    /**
+     * @param owner hanya sbg pengaman jika fungsi ini dipanggil dari luar.
+     *   Jika tidak diberi [owner], kemungkinan terjadi error.
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun __detachBackBtnListener(owner: LifecycleOwner){
+        if(owner == this)
+            _prop_backBtnBase?.removeOnBackBtnListenerByTag(TAG_ON_BACK_BTN_LISTENER)
     }
 }

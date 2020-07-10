@@ -7,10 +7,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.prop.BackBtnBaseProp
 import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
@@ -28,7 +26,7 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
     override var contentViewContainer: ViewGroup?
     override var startDrawerContainer: ViewGroup?
     override var endDrawerContainer: ViewGroup?
-
+/*
     override val _prop_backBtnBase: BackBtnBase?
 
     /**
@@ -37,6 +35,7 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
      * saat [DrawerFragBase] di-destroy maka tidak akan terjadi NullPointerException.
      */
     val onBackBtnListener: OnBackPressedListener
+ */
         //() -> Boolean
 /*
         get()= {
@@ -83,7 +82,7 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
 
             if(this is LifecycleOwner){
                 this.lifecycle.addObserver(this)
-                _prop_backBtnBase?.addOnBackBtnListener(onBackBtnListener)
+                _prop_backBtnBase?.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, onBackBtnListener)
             } else
                 loge("Kelas ini bkn merupakan \"LifecycleOwner\" sehingga tidak dapat ditambah \"onBackBtnListener\" untuk drawer.")
         } else{
@@ -99,10 +98,5 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
                 endDrawerContainer?.getChildAt(0).notNull { _initEndDrawerView(it) }
             }
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun __detachBackBtnListener(){
-        _prop_backBtnBase?.removeOnBackBtnListener(onBackBtnListener)
     }
 }

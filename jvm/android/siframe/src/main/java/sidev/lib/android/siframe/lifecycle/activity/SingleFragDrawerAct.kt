@@ -3,7 +3,10 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragDrawerActBase
+import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 
 abstract class SingleFragDrawerAct: SingleFragAct(), SingleFragDrawerActBase{
     override val layoutId: Int
@@ -18,6 +21,9 @@ abstract class SingleFragDrawerAct: SingleFragAct(), SingleFragDrawerActBase{
     final override lateinit var contentViewContainer: ViewGroup
     final override lateinit var startDrawerContainer: ViewGroup
     final override lateinit var endDrawerContainer: ViewGroup
+
+    final override val _prop_backBtnBase: BackBtnBase?
+        get() = this
 
     //<27 Juni 2020> => __initDrawer(rootView) gak jadi di __initViewFlow(). Error dapat terjadi
     //                      karena saat __initDrawer(rootView) pada kelas SingleFragDrawerAct_BarContentNav_Simple

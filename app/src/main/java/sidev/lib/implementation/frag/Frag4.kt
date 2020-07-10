@@ -55,12 +55,14 @@ class Frag4 : DrawerFrag(){
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+///*
+        actSimple.asNotNull { act: BarContentNavAct ->
+            act.setActBarTitle("Frag 4 bro!!")
+        }
+// */
         callingLifecycle.asNotNull { act: ViewPagerBase<*> ->
             act.isVpTitleFragBased= true
             loge("onActive() act.isVpTitleFragBased= true")
-        }
-        actSimple.asNotNull { act: BarContentNavAct ->
-            act.setActBarTitle("Frag 4 bro!!")
         }
     }
 }

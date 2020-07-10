@@ -42,23 +42,36 @@ interface BackBtnBase: ComplexLifecycleSideBase {
     fun addOnBackBtnListener(l: OnBackPressedListener){
         onBackPressedListenerList.add(l)
     }
-    fun addOnBackBtnListener(func: () -> Boolean){
+    fun addOnBackBtnListener(tag: String= this@BackBtnBase::class.java.simpleName,
+                             func: () -> Boolean){
         addOnBackBtnListener(object: OnBackPressedListener{
+            override val tag: String?
+                get() = tag
+
             override fun onBackPressed_(): Boolean {
                 return func()
             }
         })
     }
+
     fun removeOnBackBtnListener(l: OnBackPressedListener){
         onBackPressedListenerList.remove(l)
     }
-    fun removeOnBackBtnListener(func: () -> Boolean){
-        addOnBackBtnListener(object: OnBackPressedListener{
-            override fun onBackPressed_(): Boolean {
-                return func()
-            }
-        })
+    /**
+     * @return true jika listener dg [tag] berhasil dihilangkan dari [onBackPressedListenerList].
+     */
+    fun removeOnBackBtnListenerByTag(tag: String): Boolean{
+        var removedListener: OnBackPressedListener?= null
+        for(l in onBackPressedListenerList){
+            if(l.tag == tag)
+                removedListener= l
+        }
+        return if(removedListener != null){
+            onBackPressedListenerList.remove(removedListener)
+            true
+        } else false
     }
+
     fun isBackPressedHandled(): Boolean{
         var isHandled= false
         for(l in onBackPressedListenerList)
