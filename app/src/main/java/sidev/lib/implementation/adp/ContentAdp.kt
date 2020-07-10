@@ -18,5 +18,5 @@ class ContentAdp(c: Context) : RvAdp<Content, LinearLayoutManager>(c){
         v.tv_desc.text= data.desc
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager = LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLayoutManager = LinearLayoutManager(context)
 }

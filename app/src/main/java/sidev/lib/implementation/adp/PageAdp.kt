@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.comp_page_row.view.*
 import org.jetbrains.anko.imageResource
 import sidev.lib.android.siframe.adapter.RvAdp
+import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.NumberPickerComp
@@ -16,7 +17,7 @@ import sidev.lib.implementation.util.PageSqlite
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 
-class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutManager>(c, data){
+class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, data){
     override val itemLayoutId: Int
         get() = R.layout.comp_page_row
 
@@ -104,5 +105,5 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLayoutMana
         }
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager = LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLm = LinearLm(context)
 }

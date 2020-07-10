@@ -12,6 +12,7 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
@@ -202,6 +203,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         val dataInd= getDataShownIndex(position)
         getDataAt(position).notNull { data ->
+            loge("data != null position= $position dataInd= $dataInd headerView == null= ${headerView == null}")
             //<10 Juli 2020> => Dibuat jadi .notNull() agar saat bind header atau footer tidak dilakukan
             //  di dalam RvAdp ini.
             holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
@@ -271,7 +273,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      */
     fun getDataShownIndex(adpPos: Int): Int?{
         try{
-            return try{ contentArranger.resultInd[getDataIndex(adpPos)!!] }
+            return try{ contentArranger.resultInd[getDataIndex(adpPos)!!, -1] }
             catch (e: KotlinNullPointerException){ null }
         } catch (e: IndexOutOfBoundsException){
             throw IndexOutOfBoundsException("itemPos ($adpPos) melebihi itemCount ($itemCount)")
@@ -485,13 +487,13 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
 
     override fun getDataAt(pos: Int, onlyShownItem: Boolean): D?{
-        return if(pos in 0 until (dataList?.size ?: 0))
+        return if(pos in 0 until itemCount) //(dataList?.size ?: 0))
             try{
                 dataList?.get(
                     if(!onlyShownItem) getDataIndex(pos)!!
                     else getDataShownIndex(pos)!!
                 )
-            } catch (e: KotlinNullPointerException){ null }
+            } catch (e: Exception){ null }
         else
             null
     }

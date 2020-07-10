@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 //import kotlinx.android.synthetic.main._sif_comp_item_txt_desc.view.*
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.implementation.R
 
-class StrAdp(c: Context, data: ArrayList<String>?) : RvAdp<String, LinearLayoutManager>(c, data){
+class StrAdp(c: Context, data: ArrayList<String>?) : RvAdp<String, LinearLm>(c, data){
     override val itemLayoutId: Int
         get() = _Config.LAYOUT_COMP_ITEM_TXT_DESC
 
@@ -17,5 +18,5 @@ class StrAdp(c: Context, data: ArrayList<String>?) : RvAdp<String, LinearLayoutM
         vh.itemView.findViewById<TextView>(R.id.tv).text= data
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager= LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLm= LinearLm(context)
 }

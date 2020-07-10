@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.lifecycle.fragment
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -9,7 +10,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 //import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
+import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
+import sidev.lib.android.siframe.intfc.listener.RvScrollListener
 import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.universal.`fun`.isNull
+import sidev.lib.universal.`fun`.notNull
+
 //import sidev.lib.android.siframe.tool.util.`fun`.loge
 
 abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
@@ -27,8 +36,10 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
 
     lateinit var fullScrollIv: ImageView
         protected set
+/*
     lateinit var scrollView: NestedScrollView
         protected set
+ */
     lateinit var rv: RecyclerView
         protected set
     lateinit var rvAdp: R //RvAdp<*, *>
@@ -43,7 +54,7 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)
         rv= layoutView.findViewById(_Config.ID_RV) //.rv
-        scrollView= layoutView.findViewById(_Config.ID_SV) //.rv
+//        scrollView= layoutView.findViewById(_Config.ID_SV) //.rv
         pb= layoutView.findViewById(_Config.ID_PB)
         layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL).setOnRefreshListener {
             onRefreshListener?.invoke()
@@ -52,14 +63,32 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
         rvAdp.rv= rv
         fullScrollIv= layoutView.findViewById(_Config.ID_IV_ARROW) //.rv
         fullScrollIv.setOnClickListener { fullScroll(View.FOCUS_UP) }
-
+/*
         scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if(isFullScrollIvShown)
                 showFullScrollIv(scrollY > 0)
         }
+// */
+///*
+        rv.layoutManager.asNotNullTo { lm: LinearLm ->
+            lm.onScrollListener= { targetPosition, dx, dy, isAtFirstPos, isSmoothScroll ->
+                if(isFullScrollIvShown)
+                    showFullScrollIv(!isAtFirstPos)
+            }
+        }
+        rv.addOnScrollListener(object: RvScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                loge("scrollY= $scrollY dy= $dy scrollX= $scrollX dx= $dx")
+                Log.e("RV_FRAG", "scrollY= $scrollY dy= $dy scrollX= $scrollX dx= $dx")
+                if(isFullScrollIvShown)
+                    showFullScrollIv(this.scrollY > 0)
+            }
+        })
+// */
         //<7 Juli 2020> => Ini sengaja dibuat dobel (satunya ada di [TopMiddleBottomBase.__initTopMiddleBottomView])
         //  agar tampilan [NestedScrollView] menuju ke paling atas.
-        scrollView.addOnGlobalLayoutListener { fullScroll(View.FOCUS_UP) }
+//        scrollView.addOnGlobalLayoutListener { fullScroll(View.FOCUS_UP) }
         showFullScrollIv(false)
     }
 
@@ -80,12 +109,16 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
      * Fungsi ini memanggil fungsi [NestedScrollView.scrollTo],
      * bkn [RecyclerView.scrollToPosition].
      */
-    fun scrollToPosition(pos: Int, smoothScroll: Boolean= false){
-        val y= rv.y + rv.getChildAt(pos).y
-        if(!smoothScroll)
-            scrollView.scrollTo(0, y.toInt())
-        else
-            scrollView.smoothScrollTo(0, y.toInt())
+    fun scrollToPosition(pos: Int, smoothScroll: Boolean= true){
+        rv.layoutManager.asNotNullTo { lm: LinearLm ->
+            if(smoothScroll)
+                lm.smoothScrollTo(pos)
+            else
+                lm.scrollToPosition(pos)
+        }.isNull {
+//            val y= rv.y + rv.getChildAt(pos).y
+            rv.scrollToPosition(pos)
+        }
     }
 
     /**
@@ -93,7 +126,18 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
      *   [View.FOCUS_DOWN] untuk scroll-to-bottom.
      */
     fun fullScroll(direction: Int){
-        scrollView.fullScroll(direction)
+        when(direction){
+            View.FOCUS_UP -> 0
+            View.FOCUS_DOWN -> rv.adapter?.itemCount ?: 0
+            else -> null
+        }.notNull { pos ->
+            rv.layoutManager.asNotNullTo { lm: LinearLm ->
+                lm.smoothScrollTo(pos)
+            }.isNull {
+                rv.scrollToPosition(pos)
+            }
+        }
+//        scrollView.fullScroll(direction)
     }
 
     fun showFullScrollIv(show: Boolean= true){

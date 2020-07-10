@@ -84,6 +84,27 @@ object  _ViewUtil{
         return l
     }
 
+    /**
+     * @return IntArray[0]=x IntArray[0]= y
+     */
+    fun getViewLocationInWIndow(v: View): IntArray{
+        val location= IntArray(2)
+        v.getLocationInWindow(location)
+        return location
+    }
+
+    /**
+     * @param v untuk view yg sudah di gambar di layar.
+     */
+    fun getViewXInWindow(v: View): Int{
+        val x= getViewLocationInWIndow(v)[0]
+        return x +v.width
+    }
+    fun getViewYInWindow(v: View): Int{
+        val y= getViewLocationInWIndow(v)[1]
+        return y +v.height
+    }
+
 
     fun getPercentOfScreenHeight(act: Activity, percent: Float): Int{
         val screenHeight= getScreenHeight(act)

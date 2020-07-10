@@ -155,5 +155,5 @@ Bagian setOnClickListener -END
  */
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager = LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLayoutManager = LinearLayoutManager(context)
 }

@@ -30,8 +30,12 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_performance_bar
+    override val isBottomContainerNestedInRv: Boolean
+        get() = false
+    /*
     override val bottomContainerId: Int
         get() = _Config.ID_RL_BOTTOM_CONTAINER_OUTSIDE
+ */
 
     var timeStart= System.currentTimeMillis()
     var timeEnd: Long= 0
@@ -89,7 +93,7 @@ class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
                 iv.setOnClickListener { popup.show() }
             }
         }
-        val transList= dum_transaction.copy().toArrayList() //dum_transaction.toArrayList()
+        val transList= dum_transaction.copyGrowExponentially(8) //dum_transaction.toArrayList()
         rvAdp.dataList= transList as ArrayList
         timeEnd= System.currentTimeMillis()
         timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()

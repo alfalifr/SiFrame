@@ -39,5 +39,5 @@ class PageNavAdp(c: Context, data: ArrayList<Page>?): RvAdp<Page, LinearLayoutMa
         )
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager = LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLayoutManager = LinearLayoutManager(context)
 }

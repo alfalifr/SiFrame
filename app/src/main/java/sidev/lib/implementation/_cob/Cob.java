@@ -1,5 +1,7 @@
 package sidev.lib.implementation._cob;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,7 +74,7 @@ public class Cob {
 
             @NotNull
             @Override
-            public RecyclerView.LayoutManager setupLayoutManager() {
+            public RecyclerView.LayoutManager setupLayoutManager(Context ctx) {
                 return null;
             }
 

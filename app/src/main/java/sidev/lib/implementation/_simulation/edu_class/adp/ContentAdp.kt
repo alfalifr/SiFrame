@@ -208,7 +208,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
         }
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager = LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLayoutManager = LinearLayoutManager(context)
 
     /**
      * @return map [question.id, question.answerByReader] di mana question.answerByReader yg berupa string kosong (")

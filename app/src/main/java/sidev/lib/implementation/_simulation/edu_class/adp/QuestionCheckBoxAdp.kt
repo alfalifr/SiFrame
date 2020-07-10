@@ -34,5 +34,5 @@ class QuestionCheckBoxAdp(c: Context, data: ArrayList<String>?)
         }
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager = LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLayoutManager = LinearLayoutManager(context)
 }

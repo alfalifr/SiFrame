@@ -2,10 +2,11 @@ package sidev.lib.implementation.adp
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.RvMultiViewAdp
 import sidev.lib.implementation.model.Content
 
-class TestAdp(c: Context, data: ArrayList<Content>) : RvMultiViewAdp<Content, LinearLayoutManager>(c, data){
+class TestAdp(c: Context, data: ArrayList<Content>) : RvMultiViewAdp<Content, RecyclerView.LayoutManager>(c, data){
     override fun getItemViewType(pos: Int, data: Content): Int {
         TODO("Not yet implemented")
     }
@@ -14,7 +15,11 @@ class TestAdp(c: Context, data: ArrayList<Content>) : RvMultiViewAdp<Content, Li
         TODO("Not yet implemented")
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager {
-        TODO("Not yet implemented")
+    override fun setupLayoutManager(context: Context): RecyclerView.LayoutManager {
+        return object : RecyclerView.LayoutManager(){
+            override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
+                TODO("Not yet implemented")
+            }
+        }
     }
 }

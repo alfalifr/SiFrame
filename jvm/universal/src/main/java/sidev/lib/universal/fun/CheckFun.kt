@@ -9,7 +9,7 @@ fun <T> T.iff(func: (T) -> Boolean): Boolean{
 }
 
 /**
- * Mirip dg notNull() namun terdapat cast untuk input lambda.
+ * Mirip dg [notNull] namun terdapat cast untuk input lambda.
  */
 inline fun <T1, reified T2> T1?.asNotNull(f: (T2) -> Unit): T1? {
     if(this is T2)
@@ -17,7 +17,8 @@ inline fun <T1, reified T2> T1?.asNotNull(f: (T2) -> Unit): T1? {
     return this
 }
 /**
- * Lawan dari asNotNull(), yaitu fungsi dijalankan saat T1 bkn merupakan T2.
+ * Lawan dari [asNotNull], yaitu fungsi dijalankan saat [T1] bkn merupakan [T2].
+ * [f] tidak dijalankan jika [T1] == null.
  */
 inline fun <T1, reified T2> T1?.asntNotNull(f: () -> Unit): T1? {
     if(this !is T2 && this != null) f()
@@ -25,7 +26,15 @@ inline fun <T1, reified T2> T1?.asntNotNull(f: () -> Unit): T1? {
 }
 
 /**
- * Mirip dg notNull() namun terdapat cast untuk input lambda.
+ * Memiliki fungsi yg sama dg [asntNotNull], namun [f] dijalankan juga jika [T1] == null.
+ */
+inline fun <T1, reified T2> T1?.asnt(f: () -> Unit): T1? {
+    if(this !is T2) f()
+    return this
+}
+
+/**
+ * Mirip dg [notNull] namun terdapat cast untuk input lambda.
  * Bkn merupakan fungsi chaining.
  */
 inline fun <T1, reified T2, O> T1?.asNotNullTo(f: (T2) -> O): O? {
@@ -33,7 +42,7 @@ inline fun <T1, reified T2, O> T1?.asNotNullTo(f: (T2) -> O): O? {
     else null
 }
 /**
- * Lawan dari asNotNullTo(), yaitu fungsi dijalankan saat T1 bkn merupakan T2.
+ * Lawan dari [asNotNullTo], yaitu fungsi dijalankan saat [T1] bkn merupakan [T2].
  */
 inline fun <T1, reified T2, O> T1?.asntNotNullTo(f: () -> O): O? {
     return if(this !is T2 && this != null) f()
@@ -77,16 +86,16 @@ fun <T> ifNullDefault(any: T?, default: T): T{
 }
 
 /**
- * Jika this null, maka akan mengembalikan nilai def.
- * Memaksa def tidak boleh null.
+ * Jika this null, maka akan mengembalikan nilai [def].
+ * Memaksa [def] tidak boleh null.
  */
 fun <T> T?.orDefault(def: T): T {
     return this ?: def
 }
 
 /**
- * Jika this null, maka akan mengembalikan nilai def.
- * def boleh null sehingga nilai return dapat null.
+ * Jika this null, maka akan mengembalikan nilai [def].
+ * [def] boleh null sehingga nilai return dapat null.
  */
 fun <T> T?.orElse(def: T?): T? {
     return this ?: def
@@ -135,7 +144,7 @@ inline fun <T, O> runWithParamTypeSafety(
 ) {
     try{ func(paramInput) }
     catch (e: NullPointerException){
-        Log.e("runWithParamTypeSafety", "e.stackTrace[1].className= ${e.stackTrace[1].className} ignoreException= ${!ignoreException}")
+//        Log.e("runWithParamTypeSafety", "e.stackTrace[1].className= ${e.stackTrace[1].className} ignoreException= ${!ignoreException}")
         //e.stackTrace[1] merupakan operasi input [paramInput] pertama kali ke [func].
         //e.stackTrace[0] merupakan operasi get value dari boxed variable. Di sini lah, error NullPointerException-nya.
         if(e.stackTrace[1].className.startsWith(runningCls.name).not()

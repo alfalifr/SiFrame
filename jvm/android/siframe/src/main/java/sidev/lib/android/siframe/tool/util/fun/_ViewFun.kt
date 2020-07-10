@@ -247,11 +247,11 @@ fun RadioGroup.getSelectedInd(): Int{
  *   segera dihilangkan ([ViewTreeObserver.removeOnGlobalLayoutListener]) setelah listener dipanggil.
  * @param l ada kode fungsi listener.
  */
-fun View.addOnGlobalLayoutListener(justOnce: Boolean= true, l: () -> Unit): ViewTreeObserver.OnGlobalLayoutListener{
+fun View.addOnGlobalLayoutListener(justOnce: Boolean= true, l: (View) -> Unit): ViewTreeObserver.OnGlobalLayoutListener{
     val innerL= object: ViewTreeObserver.OnGlobalLayoutListener{
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
         override fun onGlobalLayout() {
-            l()
+            l(this@addOnGlobalLayoutListener)
             if(justOnce)
                 this@addOnGlobalLayoutListener
                     .viewTreeObserver.removeOnGlobalLayoutListener(this)

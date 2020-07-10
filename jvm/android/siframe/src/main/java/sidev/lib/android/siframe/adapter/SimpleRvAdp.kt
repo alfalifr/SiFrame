@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.CallSuper
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
+import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
@@ -243,7 +247,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      * Fungsi ini digunakan untuk bind view yg bkn merupakan header atau footer.
      */
     abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
-    abstract fun setupLayoutManager(): LM
+    abstract fun setupLayoutManager(context: Context): LM
     /**
      * Fungsi ini digunakan untuk bind view yg bkn merupakan header atau footer.
      */
@@ -319,7 +323,9 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     protected open fun setupRv(){
         if(rv != null){
             rv!!.adapter= this
-            val lm= setupLayoutManager()
+            val lm= setupLayoutManager(ctx)
+            if(lm is LinearLm)
+                lm.smoothScroller= RvSmoothScroller(ctx)
             rv!!.layoutManager= lm
             initLayoutManager(lm)
         }
@@ -329,6 +335,17 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     fun updateLayoutManager(func: (lm: LM) -> Unit){
         if(rv != null)
             func(rv!!.layoutManager as LM)
+    }
+
+    /**
+     * <10 Juli 2020> => Untuk sementara [isSmoothScroll] blum dipake karena
+     *   pada fungsi ini hanya dapat dilakukan smoothScroll.
+     */
+    fun scrollToPosition(pos: Int, isSmoothScroll: Boolean= true): Boolean{
+        return rv?.layoutManager.asNotNullTo { lm: LinearLm ->
+            lm.smoothScrollTo(pos)
+            true
+        } ?: false
     }
 /*
     /**

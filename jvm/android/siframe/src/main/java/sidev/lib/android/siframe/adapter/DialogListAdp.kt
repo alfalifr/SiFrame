@@ -15,7 +15,7 @@ class DialogListAdp(ctx: Context, dataList: ArrayList<StringId>?)
         vh.itemView.findViewById<TextView>(_Config.ID_TV).text= data.str
     }
 
-    override fun setupLayoutManager(): LinearLayoutManager {
-        return LinearLayoutManager(ctx)
+    override fun setupLayoutManager(context: Context): LinearLayoutManager {
+        return LinearLayoutManager(context)
     }
 }
