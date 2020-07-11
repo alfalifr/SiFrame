@@ -67,7 +67,10 @@ interface TopMiddleBottomBase: LifecycleSideBase {
             layoutView.findViewByType<RecyclerView>()
                 .notNull { rv ->
                     rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
-                        c.inflate(topLayoutId).notNull { adp.headerView= it }
+                        c.inflate(topLayoutId).notNull { topView ->
+                            adp.headerView= topView
+                            _initTopView(topView)
+                        }
                     }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
                         msg= "adater dari ${c.resources.getResourceName(rv.id)} bkn merupakan SimpleRvAdp"
                     }
@@ -79,7 +82,8 @@ interface TopMiddleBottomBase: LifecycleSideBase {
             c.inflate(topLayoutId, topContainer as ViewGroup)
                 .notNull { v ->
                     (topContainer as ViewGroup).addView(v)
-// /*
+ /*
+                    <10 Juli 2020> => tidak ada scrollView lagi.
                     this.asNotNull { rvFrag: RvFrag<*> ->
                         //Jika kelas ini [RvFrag], maka cek apakah [topContainer] berada
                         // di dalam [NestedScrollView].
@@ -114,12 +118,9 @@ interface TopMiddleBottomBase: LifecycleSideBase {
          * maka [bottomViewHasBeenAdded] jadi false.
          */
         var bottomViewHasBeenAdded= false
-        val addBottomViewToContainerFunc= {
-            c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
-                .notNull { v ->
-                    (bottomContainer as ViewGroup).addView(v)
-                    _initBottomView(v)
-                }
+        val addBottomViewToContainerFunc= { bottomView: View ->
+            (bottomContainer as ViewGroup).addView(bottomView)
+            _initBottomView(bottomView)
         }
         if(isBottomContainerNestedInRv){
             loge("Mulai operasi penambahan bottomLayoutId pada RecyclerView")
@@ -143,12 +144,16 @@ interface TopMiddleBottomBase: LifecycleSideBase {
                                 val screenHeight= _ViewUtil.getScreenHeight(act)
                                 val bool= bottom >= screenHeight
                                 loge("bottom= $bottom screenHeight= $screenHeight bool= $bool")
-                                if(_ViewUtil.getViewYInWindow(it) >= _ViewUtil.getScreenHeight(act))
+                                if(_ViewUtil.getViewYInWindow(it) >= _ViewUtil.getScreenHeight(act)){
                                     adp.footerView= bottomView
-                                else
-                                    addBottomViewToContainerFunc()
+                                    _initBottomView(bottomView)
+                                } else
+                                    addBottomViewToContainerFunc(bottomView)
                             }
-                        }.isNull { adp.footerView= bottomView }
+                        }.isNull {
+                            adp.footerView= bottomView
+                            _initBottomView(bottomView)
+                        }
                         bottomViewHasBeenAdded= true
                     }
                 }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
@@ -157,10 +162,10 @@ interface TopMiddleBottomBase: LifecycleSideBase {
             }.isNull { msg= "layout: \"$resName\" tidak memiliki RecyclerView" }
 
             if(msg != null) loge(msg!!)
-
         }
         if(!bottomViewHasBeenAdded && bottomContainer != null){
-            addBottomViewToContainerFunc()
+            c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
+                .notNull { v -> addBottomViewToContainerFunc(v) }
         }
         //initTopView()
     }
