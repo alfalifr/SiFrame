@@ -69,13 +69,14 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
                 showFullScrollIv(scrollY > 0)
         }
 // */
-///*
+/*
         rv.layoutManager.asNotNullTo { lm: LinearLm ->
             lm.onScrollListener= { targetPosition, dx, dy, isAtFirstPos, isSmoothScroll ->
                 if(isFullScrollIvShown)
                     showFullScrollIv(!isAtFirstPos)
             }
         }
+// */
         rv.addOnScrollListener(object: RvScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

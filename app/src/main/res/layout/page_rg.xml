@@ -4,32 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RadioGroup
-        android:id="@+id/rg"
+    <RelativeLayout
+        android:id="@+id/rl_top_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <include
-            android:id="@+id/comp_1"
-            layout="@layout/comp_rb"/>
-        <include
-            android:id="@+id/comp_2"
-            layout="@layout/comp_rb"/>
-        <include
-            android:id="@+id/comp_3"
-            layout="@layout/comp_rb"/>
-        <include
-            android:id="@+id/comp_3"
-            layout="@layout/comp_rb"/>
-    </RadioGroup>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@color/ijoRumput"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="10dp"
+                android:src="@color/merah"/>
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <include
+                android:id="@+id/comp_1"
+                layout="@layout/comp_rb"/>
+            <!--
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="30dp"
+                        android:src="@color/colorPrimaryDark"/>
+            -->
+            <include
+                android:id="@+id/comp_2"
+                layout="@layout/comp_rb"/>
+            <include
+                android:id="@+id/comp_3"
+                layout="@layout/comp_rb"/>
+            <!--
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="30dp"
+                        android:src="@color/colorPrimaryDark"/>
+            -->
+            <include
+                android:id="@+id/comp_3"
+                layout="@layout/comp_rb"/>
+        </RadioGroup>
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_below="@id/rg"
+        android:layout_below="@id/rl_top_container"
         android:layout_marginLeft="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RadioGroup
+            android:id="@+id/tve"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <RadioButton

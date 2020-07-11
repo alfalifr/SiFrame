@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.util.SparseArray
 import android.util.SparseIntArray
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.core.net.toUri
 import androidx.core.util.containsKey
@@ -24,10 +23,7 @@ import sidev.lib.android.siframe.adapter.RvMultiViewAdp
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getTvNote
 import sidev.lib.android.siframe.tool.util._ViewUtil.setColor
-import sidev.lib.android.siframe.tool.util.`fun`.detachFromParent
-import sidev.lib.android.siframe.tool.util.`fun`.getSelectedInd
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edu_class.model.Content
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
@@ -46,8 +42,8 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
             field= v
             notifyDataSetChanged_()
         }
-    val screenWidth= if(c is Activity) _ViewUtil.getScreenWidth(c)
-    else ViewGroup.LayoutParams.MATCH_PARENT
+    val screenWidth= _ViewUtil.getScreenWidth(c) //if(c is Activity) _ViewUtil.getScreenWidth(c)
+    //else ViewGroup.LayoutParams.MATCH_PARENT
 
     private val questionIndex= SparseIntArray()
     var isQuestionNumberShown= true
@@ -334,7 +330,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
             }
         }
         rg.setOnCheckedChangeListener { group, checkedId ->
-            val ind= group.getSelectedInd()
+            val ind= group.selectedInd //.getSelectedInd()
             if(ind >= 0){
                 radioSelIndexList[pos]= ind
                 data.answerByReader.notNull { arrList ->

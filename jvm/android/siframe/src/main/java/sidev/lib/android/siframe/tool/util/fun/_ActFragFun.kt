@@ -23,13 +23,12 @@ import java.lang.Exception
 
 
 
-fun Context.getFM(): FragmentManager? {
-    return when(this){
+val Context.fragManager: FragmentManager?
+    get()= when(this){
         is AppCompatActivity -> this.supportFragmentManager
         is FragmentActivity -> this.supportFragmentManager
         else -> null
     }
-}
 
 fun Context.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     Toast.makeText(this, msg, length).show()
@@ -114,12 +113,11 @@ fun <T> Intent.getExtra(key: String, default: T?= null): T? {
 }
 
 
-fun Activity.getActReqCode(): Int? {
-    return getIntent(_SIF_Constant.REQ_CODE)
-}
-fun Fragment.getActReqCode(): Int? {
-    return getIntent(_SIF_Constant.REQ_CODE)
-}
+val Activity.actReqCode: Int?
+    get()= getIntent(_SIF_Constant.REQ_CODE)
+
+val Fragment.actReqCode: Int?
+    get()= getIntent(_SIF_Constant.REQ_CODE)
 
 
 fun <T: Activity> Context.startAct(actClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {

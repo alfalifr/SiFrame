@@ -154,6 +154,7 @@ abstract class Frag : Fragment(),
         super.onDestroy()
         isExpired= true
         presenter= null
+        loge("Fragment ${this::class.java.simpleName} is destroyed!!!")
     }
 /*
     override fun ___initRootBase(vararg args: Any) {

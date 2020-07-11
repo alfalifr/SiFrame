@@ -19,6 +19,7 @@ import android.transition.TransitionSet
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
@@ -36,11 +37,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.textColorResource
+import org.jetbrains.anko.windowManager
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.PictModel
+import sidev.lib.android.siframe.tool.util.`fun`.animator
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.tool.util.FileUtil
@@ -60,14 +64,14 @@ object  _ViewUtil{
         return (dp*Resources.getSystem().displayMetrics.density).toInt()
     }
 
-    fun getScreenWidth(act: Activity) : Int {
+    fun getScreenWidth(ctx: Context) : Int {
         val dm = DisplayMetrics()
-        act.windowManager.defaultDisplay.getMetrics(dm)
+        ctx.windowManager.defaultDisplay.getMetrics(dm)
         return dm.widthPixels
     }
-    fun getScreenHeight(act: Activity): Int{
+    fun getScreenHeight(ctx: Context): Int{
         val dm = DisplayMetrics()
-        act.windowManager.defaultDisplay.getMetrics(dm)
+        ctx.windowManager.defaultDisplay.getMetrics(dm)
         return dm.heightPixels
     }
 
@@ -85,6 +89,7 @@ object  _ViewUtil{
     }
 
     /**
+     * @param v untuk view yg sudah di gambar di layar.
      * @return IntArray[0]=x IntArray[0]= y
      */
     fun getViewLocationInWIndow(v: View): IntArray{
@@ -96,13 +101,20 @@ object  _ViewUtil{
     /**
      * @param v untuk view yg sudah di gambar di layar.
      */
-    fun getViewXInWindow(v: View): Int{
+    fun getViewXEndInWindow(v: View): Int{
         val x= getViewLocationInWIndow(v)[0]
         return x +v.width
     }
-    fun getViewYInWindow(v: View): Int{
+    fun getViewYEndInWindow(v: View): Int{
         val y= getViewLocationInWIndow(v)[1]
         return y +v.height
+    }
+
+    fun getViewXStartInWindow(v: View): Int{
+        return getViewLocationInWIndow(v)[0]
+    }
+    fun getViewYStartInWindow(v: View): Int{
+        return getViewLocationInWIndow(v)[1]
     }
 
 
@@ -199,50 +211,40 @@ object  _ViewUtil{
     }
 
     // Untuk Fade Out View
-    fun fadeOut(duration : Long, vararg v : View) {
-        for(i in 0 until v.size) {
-            val alphaAnim  = AlphaAnimation(1.00f, 0.00f)
-            alphaAnim.duration = duration
-            alphaAnim.setAnimationListener(object : Animation.AnimationListener{
-                override fun onAnimationRepeat(animation: Animation?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    v[i].visibility = View.GONE
-                }
-
-                override fun onAnimationStart(animation: Animation?) {
-                    v[i].visibility = View.VISIBLE
-                }
-
-            })
-
-            v[i].animation = alphaAnim
-        }
+    fun fadeOut(vararg views : View, duration : Long= 1000) {
+        fade(1f, 0f, *views, duration = duration)
     }
 
     // Untuk Fade In View
-    fun fadeIn(duration : Long, vararg v : View) {
-        for(i in 0 until v.size){
-            val alphaAnim  = AlphaAnimation(0.00f, 1.00f)
+    fun fadeIn(vararg views : View, duration : Long= 1000) {
+        fade(0f, 1f, *views, duration = duration)
+    }
+
+    fun fade(start: Float, end: Float, vararg views : View, duration : Long= 1000) {
+        for(v in views){
+            val alphaAnim  = AlphaAnimation(start, end)
             alphaAnim.duration = duration
+//            alphaAnim.interpolator= AccelerateInterpolator() //.setInterpolator { it }
             alphaAnim.setAnimationListener(object : Animation.AnimationListener{
                 override fun onAnimationRepeat(animation: Animation?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    loge("ini method onAnimationRepeat")
+//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    v[i].visibility = View.VISIBLE
+                    v.alpha= end
+                    v.visibility = if(end > 0) View.VISIBLE
+                        else View.GONE
                 }
 
                 override fun onAnimationStart(animation: Animation?) {
-                    v[i].visibility = View.GONE
+                    v.visibility = if(start > 0) View.VISIBLE
+                        else View.GONE
                 }
 
             })
-
-            v[i].animation = alphaAnim
+//            v.animation = alphaAnim
+            v.startAnimation(alphaAnim)
         }
     }
 
@@ -815,6 +817,24 @@ object  _ViewUtil{
             tvDesc.text= "Aplikasi telah kadaluwarsa.\nMohon update ke versi terbaru."
 
             return overlay
+        }
+    }
+
+    /**
+     * Kelas untuk chaining saat pemanggilan [View.animator].
+     */
+    class SimpleAnimator(val v: View): Animation(){
+        fun fadeIn(duration: Long= 1000): SimpleAnimator{
+            fadeIn(v, duration = duration)
+            return this
+        }
+        fun fadeOut(duration: Long= 1000): SimpleAnimator{
+            fadeOut(v, duration = duration)
+            return this
+        }
+        fun fadeTo(to: Float, from: Float= v.alpha, duration: Long= 1000): SimpleAnimator{
+            fade(from, to, v, duration = duration)
+            return this
         }
     }
 }

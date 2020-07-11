@@ -121,7 +121,10 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
         }
 
         _ViewUtil.Comp.getTv?.invoke(startDrawerView).notNull { tv -> tv.text= module.name }
-        _ViewUtil.Comp.getRv?.invoke(startDrawerView).notNull { rv -> sideNavAdp.rv= rv }
+        _ViewUtil.Comp.getRv?.invoke(startDrawerView).notNull { rv ->
+            sideNavAdp.rv= rv
+            loge("sideNavAdp.rv udah diisi")
+        }
         downloadPageList()
     }
 

@@ -30,21 +30,21 @@ fun <TO> FK_M<TO>?.toIdList(): ArrayList<String>? {
     } else null
 }
 
-fun <TO> FK_M<TO>?.firstObj(): TO? {
-    return if(this == null) null
+val <TO> FK_M<TO>?.firstObj: TO?
+    get()= if(this == null) null
         else toObj?.get(0)
-}
-fun <TO> FK_M<TO>?.firstId(): String? {
-    return if(this == null) null
-        else toId[0]
-}
 
-fun <TO> FK_M<TO>?.isObjEmpty(): Boolean {
-    return this?.toObj?.isEmpty() ?: true
-}
-fun <TO> FK_M<TO>?.isIdEmpty(): Boolean {
-    return this?.toId?.isEmpty() ?: true
-}
+val <TO> FK_M<TO>?.firstId: String?
+    get()= if(this == null) null
+        else toId[0]
+
+
+val <TO> FK_M<TO>?.isObjEmpty: Boolean
+    get()= this?.toObj?.isEmpty() ?: true
+
+val <TO> FK_M<TO>?.isIdEmpty: Boolean
+    get()= this?.toId?.isEmpty() ?: true
+
 
 /**
  * Mengecek apakah tiap toObj memiliki satu pasangan dg 1 toId.

@@ -11,8 +11,9 @@ import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.iterator
+//import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 
 /**

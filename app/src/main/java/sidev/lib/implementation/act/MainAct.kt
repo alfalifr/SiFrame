@@ -56,6 +56,8 @@ class MainAct : BarContentNavAct() {
     fun toContentMvpFrag(v: View)= startSingleFragAct_config<ContentMvpFrag>()
     fun toDrawerVpImplFrag(v: View)= startSingleFragAct_config<DrawerVpImplFrag>()
     fun toDrawerImplFrag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
+
+    fun toCobFrag(v: View)= startSingleFragAct_config<CobFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()

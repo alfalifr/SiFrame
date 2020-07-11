@@ -73,12 +73,16 @@ abstract class Act : AppCompatActivity(), Inheritable,
         get() = layoutView
 
     abstract override val layoutId: Int
-/*
+
+    /*
     override val actBackBtn: Activity
         get() = this
  */
+    final override var isHandlingBackBtn: Boolean= false
     final override var backBtnViewList= ArrayList<View>()
     final override var onBackPressedListenerList: ArrayList<OnBackPressedListener>
+        = ArrayList()
+    final override var removedOnBackPressedListenerList: ArrayList<OnBackPressedListener>
         = ArrayList()
 
     override val styleId: Int

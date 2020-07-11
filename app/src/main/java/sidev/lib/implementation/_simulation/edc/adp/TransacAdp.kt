@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.comp_item_list_text_left_3_right_2.view.*
 import org.jetbrains.anko.startActivity
 import sidev.lib.android.siframe.adapter.RvAdp
+import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edc.model.Transaction
 import sidev.lib.implementation._simulation.edc.util.Edc_Config
 import sidev.lib.implementation._simulation.edc.util.Edc_Const
 import sidev.lib.implementation._simulation.edc.util.Edc_Util
 
-class TransacAdp(c: Context) : RvAdp<Transaction, LinearLayoutManager>(c){
+class TransacAdp(c: Context) : RvAdp<Transaction, LinearLm>(c){
     override val itemLayoutId: Int
         get() = R.layout.comp_item_list_text_left_3_right_2
 
@@ -155,5 +156,5 @@ Bagian setOnClickListener -END
  */
     }
 
-    override fun setupLayoutManager(context: Context): LinearLayoutManager = LinearLayoutManager(context)
+    override fun setupLayoutManager(context: Context): LinearLm = LinearLm(context)
 }

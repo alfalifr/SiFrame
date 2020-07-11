@@ -5,15 +5,25 @@ import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.isNotNullAndEmpty
 
 interface BackBtnBase: ComplexLifecycleSideBase {
     //    val actBackBtn: Activity
     override val _prop_act: AppCompatActivity
     var backBtnViewList: ArrayList<View>
     var onBackPressedListenerList: ArrayList<OnBackPressedListener>
+    /**
+     * Wadah menampung [OnBackPressedListener] yg akan dicopot pada saat
+     * interface ini memproses listener yg ada ([isHandlingBackBtn] == true)
+     * pada fungsi [isBackPressedHandled] agar tidak terjadi [ConcurrentModificationException].
+     */
+    var removedOnBackPressedListenerList: ArrayList<OnBackPressedListener>
+    var isHandlingBackBtn: Boolean
 
     override val layoutId: Int
         get() = _Config.INT_EMPTY
+
 
     override fun ___initSideBase() {}
 
@@ -38,7 +48,6 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         }
     }
 
-
     fun addOnBackBtnListener(l: OnBackPressedListener){
         onBackPressedListenerList.add(l)
     }
@@ -55,7 +64,10 @@ interface BackBtnBase: ComplexLifecycleSideBase {
     }
 
     fun removeOnBackBtnListener(l: OnBackPressedListener){
-        onBackPressedListenerList.remove(l)
+        if(!isHandlingBackBtn)
+            onBackPressedListenerList.remove(l)
+        else
+            removedOnBackPressedListenerList.add(l)
     }
     /**
      * @return true jika listener dg [tag] berhasil dihilangkan dari [onBackPressedListenerList].
@@ -67,15 +79,33 @@ interface BackBtnBase: ComplexLifecycleSideBase {
                 removedListener= l
         }
         return if(removedListener != null){
-            onBackPressedListenerList.remove(removedListener)
+            removeOnBackBtnListener(removedListener)
             true
         } else false
     }
 
     fun isBackPressedHandled(): Boolean{
+        isHandlingBackBtn= true
         var isHandled= false
+
         for(l in onBackPressedListenerList)
             isHandled= isHandled || l.onBackPressed_()
+
+        isHandlingBackBtn= false
+        resolveRemovedListener()
+
         return isHandled
+    }
+
+    /**
+     * Memproses pencopotan [OnBackPressedListener] yg tertunda
+     * karena pemrosesn listener pada fungsi [isBackPressedHandled].
+     */
+    private fun resolveRemovedListener(){
+        if(!isHandlingBackBtn && removedOnBackPressedListenerList.isNotNullAndEmpty()){
+            for(l in removedOnBackPressedListenerList)
+                onBackPressedListenerList.remove(l)
+            removedOnBackPressedListenerList.clear()
+        }
     }
 }
