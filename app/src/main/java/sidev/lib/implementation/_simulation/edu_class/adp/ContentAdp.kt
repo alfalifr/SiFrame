@@ -74,10 +74,12 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
         val v= vh.itemView
 //        val parName= v.parent?.classSimpleName()
 //        loge("bindVhMulti() parName= $parName")
+/*
         v.findViewById<View>(_Config.ID_VG_CONTENT_CONTAINER).notNull { container ->
             container.layoutParams.width= screenWidth
 //            loge("bindVhMulti() setting parent width to MATCH_PARENT screenWidth= $screenWidth")
         }
+// */
         when(data){
             is ContentRead -> {
                 val titleVis= if(data.title != null){

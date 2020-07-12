@@ -41,10 +41,7 @@ import org.jetbrains.anko.windowManager
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.PictModel
-import sidev.lib.android.siframe.tool.util.`fun`.animator
-import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.tool.util.FileUtil
@@ -414,6 +411,7 @@ object  _ViewUtil{
          * Untuk mencari TextView dalam komponen.
          */
         var getTv: ((View) -> TextView?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk mencari TextView berupa title dalam komponen.
@@ -437,6 +435,7 @@ object  _ViewUtil{
          * Untuk mencari EditText dalam komponen.
          */
         var getEt: ((View) -> EditText?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk mencari EditText atau field yg dapat diisi dalam komponen.
@@ -448,6 +447,7 @@ object  _ViewUtil{
          * Untuk mencari ImageView dalam komponen.
          */
         var getIv: ((View) -> ImageView?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk mencari ImageView yg berupa action pada suatu bar dalam komponen.
@@ -465,21 +465,25 @@ object  _ViewUtil{
          * Untuk mencari RecyclerView dalam komponen.
          */
         var getRv: ((View) -> RecyclerView?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk mencari ProgressBar dalam komponen.
          */
         var getPb: ((View) -> ProgressBar?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk mencari Button dalam komponen.
          */
         var getBtn: ((View) -> Button?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk mencari Button dalam komponen.
          */
         var getSfv: ((View) -> SurfaceView?)?= null
+            get()= field ?: { it.findViewByType() }
 
         /**
          * Untuk fungsi kustom sesuai kriteria user.
@@ -500,21 +504,24 @@ object  _ViewUtil{
             else null
         }
  */
-        inline fun <reified V> getDefView(compView: View, noinline defFunc: ((View) -> V?)?= null): V? {
+        inline fun <reified V: View> getDefView(compView: View, noinline defFunc: ((View) -> V?)?= null): V? {
             return if(compView is V) compView
             else defFunc?.invoke(compView)
+                ?: compView.findViewByType()
         }
         /**
          * @param onlyPb bertujuan menghilangkan iv_action yg letaknya sama dg pb
          */
         fun showPb(compView: View, show: Boolean= true, onlyPb: Boolean= false){
-            getPb?.invoke(compView).notNull { pb ->
+            //getPb?.invoke(compView)
+            getDefView(compView, getPb).notNull { pb ->
                 pb.visibility=
                     if(show) View.VISIBLE
                     else View.GONE
 
                 if(onlyPb)
-                    getIvAction?.invoke(compView).notNull { iv ->
+                    //getIvAction?.invoke(compView)
+                    getDefView(compView, getIvAction).notNull { iv ->
                         iv.visibility=
                             if(show) View.GONE
                             else View.VISIBLE
@@ -698,9 +705,9 @@ object  _ViewUtil{
             val lastIndex= compViews.lastIndex
             for((i, comp) in compViews.withIndex()){
                 val edPrev= try{ getDefView(compViews[i-1], getEt) }
-                catch (e: Exception){ null }
+                    catch (e: Exception){ null }
                 val edNext= try{ getDefView(compViews[i-1], getEt) }
-                catch (e: Exception){ null }
+                    catch (e: Exception){ null }
                 val ed= getDefView(comp, getEt)
                 val c= ed?.context
 

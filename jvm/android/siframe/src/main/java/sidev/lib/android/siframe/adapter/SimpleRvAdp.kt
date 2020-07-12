@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.CallSuper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
@@ -15,6 +16,7 @@ import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.notNull
@@ -281,8 +283,11 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
                 )
         }!!
 //            LayoutInflater.from(ctx).inflate(itemLayoutId, parent, false)
-        v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER) //R.id.ll_content_container
-            .addView(contentV)
+        v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER)!! //R.id.ll_content_container
+            .notNull { vg ->
+                setupItemContainer(vg)
+                vg.addView(contentV)
+            }
         return SimpleViewHolder(v)
     }
 
@@ -317,6 +322,21 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
             notifyDataSetChanged()
 //            Log.e(this::class.java.simpleName, "notifyDatasetChenged!!! name= ${this::class.java.simpleName}")
             rv!!.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        }
+    }
+
+    /**
+     * Fungsi internal untuk menyesuaikan [itemContainer].
+     * Fungsi ini dikhususkan jika [RecyclerView.LayoutManager] == [LinearLayoutManager]
+     * maka panjang atau lebar [itemContainer] akan diubah menjadi [ViewGroup.LayoutParams.MATCH_PARENT].
+     */
+    private fun setupItemContainer(itemContainer: View){
+        if(rv?.layoutManager is LinearLayoutManager){
+            val lm= rv!!.layoutManager!! as LinearLayoutManager
+            when(lm.orientation){
+                RecyclerView.VERTICAL -> itemContainer.layoutParams.width= ViewGroup.LayoutParams.MATCH_PARENT
+                RecyclerView.HORIZONTAL -> itemContainer.layoutParams.height= ViewGroup.LayoutParams.MATCH_PARENT
+            }
         }
     }
 

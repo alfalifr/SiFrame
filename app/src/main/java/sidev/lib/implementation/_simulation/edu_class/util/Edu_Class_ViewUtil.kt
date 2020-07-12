@@ -7,6 +7,7 @@ import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.enableFillTxt
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getEt
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.tool.util.FileUtil
@@ -24,7 +25,8 @@ object Edu_Class_ViewUtil {
         fun enableEd(compView: View, enable: Boolean = true){
             enableFillTxt(compView, enable)
             getEt?.invoke(compView).notNull { et ->
-                et.setTextColor(_ResUtil.getColor(et.context, R.color.putihTerawang))
+                loge("_simul_edu_ enableEd() enable= $enable et != NULL")
+                et.setTextColor(_ResUtil.getColor(et.context, R.color.hitam))
                 if(enable)
                     et.setBackgroundResource(R.drawable.shape_solid_rect)
                 else

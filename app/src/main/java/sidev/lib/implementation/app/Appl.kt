@@ -26,9 +26,10 @@ class Appl : App(){
                 ?: v.findViewById(R.id.tv_header)
                 ?: v.findViewByType()
         }
-
+/*
         _ViewUtil.Comp.getRv= { v ->
             v.findViewByType()
         }
+ */
     }
 }
