@@ -63,15 +63,27 @@
     <dimen name="corner_sm_extra">1sp</dimen>
     <dimen name="corner_def">14sp</dimen>
 
-<!--
-    <dimen name="corner_bg">50dp</dimen>
-    <dimen name="corner_med">20dp</dimen>
-    <dimen name="corner_sm_extra">1dp</dimen>
-    <dimen name="corner_sm">4dp</dimen>
-    <dimen name="corner_normal_sm">6dp</dimen>
-    <dimen name="corner_normal">15dp</dimen>
-    <dimen name="corner_default">10dp</dimen>
--->
+
+    <dimen name="padding_bg_extra">20sp</dimen>
+    <dimen name="padding_bg">18sp</dimen>
+    <dimen name="padding_bg_med">16sp</dimen>
+    <dimen name="padding_med">14sp</dimen>
+    <dimen name="padding_med_normal">12sp</dimen>
+    <dimen name="padding_normal">10sp</dimen>
+    <dimen name="padding_normal_sm">8sp</dimen>
+    <dimen name="padding_sm">4sp</dimen>
+    <dimen name="padding_sm_extra">1sp</dimen>
+
+
+    <!--
+        <dimen name="corner_bg">50dp</dimen>
+        <dimen name="corner_med">20dp</dimen>
+        <dimen name="corner_sm_extra">1dp</dimen>
+        <dimen name="corner_sm">4dp</dimen>
+        <dimen name="corner_normal_sm">6dp</dimen>
+        <dimen name="corner_normal">15dp</dimen>
+        <dimen name="corner_default">10dp</dimen>
+    -->
 
     <dimen name="box_menu_dimen">35dp</dimen>
 

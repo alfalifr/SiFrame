@@ -28,8 +28,9 @@ class RvDbFrag : RvFrag<PageAdp>(){
                 btn.layoutParams= lp
                 btn.setOnClickListener {
 ///*
-                    for(i in 0 until rvAdp.itemCount){
-                        val number= rvAdp.numberPicker.getNumberAt(i)
+                    loge("number print numAt size= ${rvAdp.numberPicker.savedDataCount}")
+                    for((i, number) in rvAdp.numberPicker.dataIterator().withIndex()){
+//                        val number= rvAdp.numberPicker.getNumberAt(i)
                         loge("number print numAt i= $i num= $number")
                     }
  // */

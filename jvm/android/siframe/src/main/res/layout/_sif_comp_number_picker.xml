@@ -9,7 +9,7 @@
         android:id="@+id/iv_minus"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:padding="5dp"
+        android:padding="@dimen/padding_sm"
         android:layout_marginRight="7dp"
         android:background="@drawable/shape_solid_oval"
         android:backgroundTint="@color/colorPrimaryDark"
@@ -19,6 +19,7 @@
 
     <sidev.lib.android.siframe.view.ModEt
         android:id="@+id/et"
+        android:padding="@dimen/padding_sm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
@@ -30,7 +31,7 @@
         android:id="@+id/iv_plus"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:padding="5dp"
+        android:padding="@dimen/padding_sm"
         android:layout_marginLeft="7dp"
         android:background="@drawable/shape_solid_oval"
         android:backgroundTint="@color/colorPrimaryDark"

@@ -12,7 +12,6 @@ import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
-import sidev.lib.universal.`fun`.asNotNullTo
 //import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 
@@ -35,6 +34,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     open val isDataRecycled= false
     open val isViewSaved= false
 
+    val savedDataCount: Int
+        get()= mData.size()
+    val savedViewCount: Int
+        get()= mView?.size() ?: 0
+
     private var rvAdp: SimpleRvAdp<*, *>?= null
     private var onBindViewListener: ((SimpleRvAdp<*, *>.SimpleViewHolder, Int, Any?) -> Unit)?= null
     private var onViewRecycledListener: ((SimpleRvAdp<*, *>.SimpleViewHolder) -> Unit)?= null
@@ -46,13 +50,31 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         catch (e: ClassCastException){ null }
     }
 
-//    open val isViewDefaultEnabled= true
 
+    /**
+     * @param skipNulls true jika data pada [mData] tidak akan di
+     */
+    fun dataIterator(skipNulls: Boolean= true): Iterator<D?>
+        = object: Iterator<D?>{
+            private var innerIterator= mData.iterator()
+            private var next: D?= null
+            override fun hasNext(): Boolean{
+                return if(innerIterator.hasNext()){
+                    next= innerIterator.next().second.value
+                    //Mencari nilai next yg tidak null
+                    while(skipNulls && next == null && innerIterator.hasNext()){
+                        next= innerIterator.next().second.value
+                    }
+                    //Jika sampai iterasi trahir dan data yg dihasilkan msh null,
+                    // maka fungsi [hasNext] pada object ini akan menghasilkan false.
+                    next != null || !skipNulls
+                } else false
+            }
+            override fun next(): D? = next
+        }
 
     fun getDataAt(pos: Int): D?= mData[pos].value
     fun getViewAt(pos: Int): View?= mView?.get(pos)
-    fun getSavedDataCount(): Int= mData.size()
-    fun getSavedViewCount(): Int= mView?.size() ?: 0
 
     /**
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].

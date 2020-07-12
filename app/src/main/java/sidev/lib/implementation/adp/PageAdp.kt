@@ -23,7 +23,17 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
 
     val sqlite= PageSqlite(c)
 ///*
-    val numberPicker= NumberPickerComp<Any>(c)
+    val numberPicker= object: NumberPickerComp<Page>(c){
+    override val isDataRecycled: Boolean
+        get() = true
+
+    override fun initData(position: Int, inputData: Page?): NumberPickerData?{
+            val no= inputData!!.no %6
+            val lowerBorder= (inputData.no +1) %3
+            val upperBorder= inputData.no +2
+            return NumberPickerData(no, lowerBorder, upperBorder)
+        }
+    }
 
     init{
         numberPicker.setupWithRvAdapter(this)
@@ -33,7 +43,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
         vh.itemView.tv_id.text= data.id
         vh.itemView.tv_content.text= data.content?.getFkId(0)
         vh.itemView.tv_no.text= data.no.toString()
-///*
+/*
         numberPicker.setUpperNumberAt(pos, data.no +2)
         numberPicker.setLowerNumberAt(pos, (data.no +1) %3)
         numberPicker.setNumberAt(pos, data.no %6)
