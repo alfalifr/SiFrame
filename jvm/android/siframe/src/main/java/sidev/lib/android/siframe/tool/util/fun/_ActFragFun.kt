@@ -248,3 +248,16 @@ fun Fragment.setResult(vararg params: Pair<String, Any?>, resCode: Int= Activity
     activity!!.setResult(resCode, intent)
     if(isFinished) activity!!.finish()
 }
+
+
+
+fun <T: Activity> setSingleFragAct(cls: Class<T>, asDefault: Boolean= false){
+    if(!asDefault)
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT= cls
+    else
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT_DEFAULT= cls
+}
+
+fun resetSingleFragActToDefault(){
+    _SIF_Config.CLASS_SINGLE_FRAG_ACT= _SIF_Config.CLASS_SINGLE_FRAG_ACT_DEFAULT
+}
