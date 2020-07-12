@@ -72,13 +72,14 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     val headerViewType= 10
     val footerViewType= 11
-
+/*
     /**
      * Marker bahwa pada posisi tertentu, sebuah view pada adapter ini
      * merupakan view normal dg id layout [itemLayoutId].
      */
     @Deprecated("Gunakan itemLayoutId scr langsung untuk menandakan view adalah sebuah konten")
     val contentItemType= 12
+ */
 /*
     var hasHeader= false
         private set
