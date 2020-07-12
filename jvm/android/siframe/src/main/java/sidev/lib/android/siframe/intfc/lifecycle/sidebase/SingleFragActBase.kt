@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.exception.PropertyAccessExc
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
@@ -45,7 +46,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
 //        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         __initFrag()
         giveFrag()
-
+/*
+        <12 Juli 2020> => Sementara dikomen karena dirasa belum kepake.
         /**
          * Karena jika fragment langsung dipasang ke container, maka data pada fragment gak bisa direload.
          * Jadi inisiasi fragment harus setelah data didownload.
@@ -53,6 +55,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
         isDataAsync= _prop_intent.getExtra(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)!! //getIntentData(_SIF_Constant.EXTRA_DATA_ASYNC, default = isDataAsync)
         if(!isDataAsync)
             __attachFrag()
+ */
     }
 
     /*  override fun onStart() {
@@ -62,22 +65,23 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
   */
 
     /**
-     * Digunakan saat Fragment lateinit. Biasanya saat pemanggilan pada fungsi startSingleFragAct()
+     * Digunakan saat Fragment lateinit. Biasanya saat pemanggilan pada fungsi [startSingleFragAct]
      */
     fun __initFrag(){
-//        if(isFragLate) {
-            _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
-                .notNull { fragName ->
-                    fragment= ReflexUtil.newInstance(fragName)
-//                    _prop_view.findViewById<View>(fragContainerId)!!
-                    __attachFrag()
-                }
-/*
-            val fragTrans= _sideBase_fm.beginTransaction()
-            fragTrans.replace(fragContainerId, fragment)
-            fragTrans.commit()
- */
-//        }
+        _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
+            .notNull { fragName ->
+                fragment= ReflexUtil.newInstance(fragName)
+            }
+
+        try{
+            __attachFrag()
+        } catch (e: UninitializedPropertyAccessException){
+            throw PropertyAccessExc(
+                kind = PropertyAccessExc.Kind.Uninitialized,
+                propertyName = "fragment",
+                ownerName = this::class.java.simpleName
+            )
+        }
     }
 
     fun __attachFrag(){

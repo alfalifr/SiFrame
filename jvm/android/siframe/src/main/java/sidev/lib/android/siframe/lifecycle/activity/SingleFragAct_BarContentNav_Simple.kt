@@ -8,7 +8,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  * Kelas yg properti abstraknya dapat di-lateinit.
  */
 open class SingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav(){
-    final override lateinit var fragment: Fragment
+    //<12 Juli 2020> => Walau pun simple tapi programmer ttp dapat menentukan fragmentnya scr langsung
+    override lateinit var fragment: Fragment
 
     override fun _initActBar(actBarView: View) {}
     override fun _initNavBar(navBarView: BottomNavigationView) {}

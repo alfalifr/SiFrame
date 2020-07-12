@@ -15,9 +15,10 @@ import sidev.lib.universal.`fun`.asNotNull
  * Kelas yg properti abstraknya dapat di-lateinit.
  */
 open class SingleFragDrawerAct_BarContentNav_Simple: SingleFragDrawerAct_BarContentNav(){
-    final override lateinit var fragment: Fragment
-    final override var startDrawerLayoutId: Int= _Config.INT_EMPTY
-    final override var endDrawerLayoutId: Int= _Config.INT_EMPTY
+    //<12 Juli 2020> => Walau pun simple tapi programmer ttp dapat menentukan fragmentnya scr langsung
+    override lateinit var fragment: Fragment
+    override var startDrawerLayoutId: Int= _Config.INT_EMPTY
+    override var endDrawerLayoutId: Int= _Config.INT_EMPTY
 
     override fun _initActBar(actBarView: View) {}
     override fun _initNavBar(navBarView: BottomNavigationView) {}

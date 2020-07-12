@@ -10,8 +10,9 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
  */
 open class BarContentNavAct_ViewPager_Simple
     : BarContentNavAct_ViewPager<Frag>(){
-    final override var vpFragList: Array<Frag> = arrayOf()
-    final override var vpFragListStartMark: Array<Int> = arrayOf()
+    //<12 Juli 2020> => Walau pun simple tapi programmer ttp dapat menentukan fragmentnya scr langsung
+    override var vpFragList: Array<Frag> = arrayOf()
+    override var vpFragListStartMark: Array<Int> = arrayOf()
 
     override fun _initActBar(actBarView: View) {}
     override fun _initNavBar(navBarView: BottomNavigationView) {}
