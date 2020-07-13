@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.cob_page.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.android.siframe.tool.util.isIdIn
+import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 
@@ -35,6 +36,7 @@ class CobFrag : Frag(){
         layoutView.btn.asNotNull { btn: Button ->
             val id= R.id.tv_id
             btn.text= "R.id.tv_id => isId? -> ${id isIdIn context!!}"
+            btn.setOnClickListener { layoutView.findViewByType<ModEt>() }
         }
 
 //        (layoutView as EditText).txt= "aku"

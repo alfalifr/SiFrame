@@ -22,19 +22,26 @@ abstract class NestedIterator<T>(val start: T): Iterator<T>{
             hasInited= true
             activeIterator != null //Jika null, itu artinya object dg iterator ini gak punya element.
         } else{
+            if(!activeIterator!!.hasNext() && activeLines.size > 1){
+                activeLines.remove(activeIterator!!)
+                activeIterator= activeLines.lastOrNull()
+            }
             activeIterator?.hasNext() == true
-                    || activeLines.size > 1
+//                    || activeLines.size > 1
         }
     }
 
     override fun next(): T {
-        val now=
+        val now= activeIterator!!.next()
+/*
+            <13 Juli 2020> => Definisi lama. Pergantian [activeIterator] dilakukan di [hasNext].
             if(activeIterator?.hasNext() == true) activeIterator!!.next()
             else {
                 activeLines.remove(activeIterator!!)
                 activeIterator= activeLines.last()
                 activeIterator?.next()
             }
+ */
 
 //        var child: Iterator<T>?= null
         if(now != null)
