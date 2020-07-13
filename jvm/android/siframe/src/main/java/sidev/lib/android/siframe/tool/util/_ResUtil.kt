@@ -32,10 +32,11 @@ object _ResUtil{
     @SuppressLint("ResourceType")
     fun getDimen(c: Context, @DimenRes res: Int): Float
             = try{ c.resources.getDimension(res) }
-            catch (e: Resources.NotFoundException){
+            catch (resNotFoundExc: Resources.NotFoundException){
                 //Tujuan dari [Resources.getString] adalah jika dimen-nya gak punya satuan,
                 // maka scr otomatis dianggap sbg string oleh Android.
-                c.resources.getString(res).toFloat()
+                try{ c.resources.getString(res).toFloat() }
+                catch (numFormatExc: NumberFormatException){ throw resNotFoundExc }
             }
 
     fun getColor(c: Context, @ColorRes colorId: Int): Int = ContextCompat.getColor(c, colorId)

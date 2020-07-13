@@ -130,7 +130,7 @@ inline fun <reified T> new(noinline defParamValFunc: ((param: KParameter) -> Any
         val type= param.type //.classifier!!//as KClass<*>
         val typeClass= type.classifier as KClass<*>
         val paramVal=
-            try{ defaultPrimitiveValue(typeClass) }
+            try{ defaultPrimitiveValue(typeClass)!! } //Anggapannya jika null, maka panggil [defParamValFunc].
             catch (e: Exception) {
                 try{ defParamValFunc!!(param) }
                 catch (e: Exception){
