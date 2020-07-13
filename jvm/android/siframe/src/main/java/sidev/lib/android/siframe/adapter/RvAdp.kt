@@ -197,8 +197,12 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         return SimpleViewHolder(v)
     }
  */
-    override fun getItemCount(): Int
-        = contentArranger.resultInd.size()
+    override fun getItemCount(): Int{
+        var count= contentArranger.resultInd.size()
+        if(headerView != null) count++
+        if(footerView != null) count++
+        return count
+    }
 
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         val dataInd= getDataShownIndex(position)
