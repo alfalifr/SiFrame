@@ -215,7 +215,7 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
      * @return true jika komponen tidak null. Komponen didapat dari parameter [v]
      *   atau jika null, maka didapat dari fungsi [getViewAt].
      */
-    open fun setComponentEnabled(position: Int, v: View?= null, enable: Boolean= true): Boolean= false
+    open fun setComponentEnabled(position: Int, v: View?= null, enable: Boolean= true){}
 /*
     fun iterateSavedView(iterator: (View) -> Unit){
         if(mView != null)

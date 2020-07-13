@@ -7,14 +7,10 @@ import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-//import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.intfc.listener.RvScrollListener
-import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
@@ -80,8 +76,7 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
         rv.addOnScrollListener(object: RvScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                loge("scrollY= $scrollY dy= $dy scrollX= $scrollX dx= $dx")
-                Log.e("RV_FRAG", "scrollY= $scrollY dy= $dy scrollX= $scrollX dx= $dx")
+//                loge("scrollY= $scrollY dy= $dy scrollX= $scrollX dx= $dx")
                 if(isFullScrollIvShown)
                     showFullScrollIv(this.scrollY > 0)
             }
