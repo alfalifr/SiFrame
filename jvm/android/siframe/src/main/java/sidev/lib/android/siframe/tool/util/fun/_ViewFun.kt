@@ -21,7 +21,7 @@ import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.exception.ClassCastExc
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.structure.NestedIterator
@@ -166,7 +166,7 @@ inline fun <reified T: View> View.findViewByType(
         }
     } else{ //Scr default akan meng-iterate ke bawah atau ke child.
         for(child in this.childrenTree){
-//            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} child is T= ${child is T}")
+            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${child is T}")
             if(child is T)
                 return child
         }

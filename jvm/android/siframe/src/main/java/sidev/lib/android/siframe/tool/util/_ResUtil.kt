@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -49,6 +50,13 @@ object _ResUtil{
             = c.obtainStyledAttributes(styleId, attrib)
 
 
+    /**
+     * Fungsi penghubung untuk mengambil nama dari resource dg id [res].
+     * @throws Resources.NotFoundException
+     */
+    fun getResName(c: Context, res: Int): String
+            = c.resources.getResourceName(res)
+
     fun getResPackageName(c: Context, res: Int): String
         = c.resources.getResourcePackageName(res)
 
@@ -57,9 +65,6 @@ object _ResUtil{
 
     fun getResEntryName(c: Context, res: Int): String
         = c.resources.getResourceEntryName(res)
-
-    fun getResName(c: Context, res: Int): String
-        = c.resources.getResourceName(res)
 
 
     fun isResType(c: Context, res: Int, type: Type): Boolean
@@ -107,3 +112,41 @@ infix fun Int.asDimenIn(c: Context): Float = _ResUtil.getDimen(c, this)
 infix fun Int.asColorIn(c: Context): Int = _ResUtil.getColor(c, this)
 infix fun Int.asDrawableIn(c: Context): Drawable? = _ResUtil.getDrawable(c, this)
 infix fun Int.asFontIn(c: Context): Typeface? = _ResUtil.getFont(c, this)
+
+infix fun Int.asResNameBy(c: Context): String = _ResUtil.getResName(c, this)
+infix fun Int.asResPackageBy(c: Context): String = _ResUtil.getResPackageName(c, this)
+infix fun Int.asResTypeBy(c: Context): String = _ResUtil.getResTypeName(c, this)
+infix fun Int.asResEntryBy(c: Context): String = _ResUtil.getResEntryName(c, this)
+
+
+/**
+ * Properti ini tidak akan @throws [Resources.NotFoundException].
+ * @return null jika this [View] tidak memiliki [View.getId].
+ */
+val View.idResName: String?
+    get()= try{ _ResUtil.getResName(this.context, this.id) }
+    catch (e: Resources.NotFoundException){ null }
+
+/**
+ * Properti ini tidak akan @throws [Resources.NotFoundException].
+ * @return null jika this [View] tidak memiliki [View.getId].
+ */
+val View.idPackage: String?
+    get()= try{ _ResUtil.getResPackageName(this.context, this.id) }
+    catch (e: Resources.NotFoundException){ null }
+
+/**
+ * Properti ini tidak akan @throws [Resources.NotFoundException].
+ * @return null jika this [View] tidak memiliki [View.getId].
+ */
+val View.idName: String?
+    get()= try{ _ResUtil.getResEntryName(this.context, this.id) }
+    catch (e: Resources.NotFoundException){ null }
+
+
+
+/*
+infix fun Int.asResPackageBy(c: Context): String = _ResUtil.getResPackageName(c, this)
+infix fun Int.asResTypeBy(c: Context): String = _ResUtil.getResTypeName(c, this)
+infix fun Int.asResEntryBy(c: Context): String = _ResUtil.getResEntryName(c, this)
+ */

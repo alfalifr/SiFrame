@@ -38,5 +38,10 @@
             android:src="@color/colorPrimaryDark"/>
     </RadioGroup>
 
+    <include
+        android:layout_centerInParent="true"
+        layout="@layout/_sif_comp_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
