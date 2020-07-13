@@ -82,6 +82,7 @@ object _Config {
     var ID_RV= R.id.rv
     var ID_SRL= R.id.srl
     var ID_TV= R.id.tv
+//    var ID_ET= R.id.et
     var ID_PB= R.id.pb
     var ID_VP= R.id.vp
 //    var ID_SV= R.id.sv
@@ -94,10 +95,13 @@ object _Config {
     var ID_IV_CHECK= R.id.iv_check
     var ID_IV_OVERLAY= R.id.iv_overlay
     var ID_IV_INDICATION= R.id.iv_indication
+    var ID_IV_PLUS= R.id.iv_plus
+    var ID_IV_MINUS= R.id.iv_minus
     var ID_TV_TITLE= R.id.tv_title
     var ID_TV_DESC= R.id.tv_desc
     var ID_TV_NO_DATA= R.id.tv_no_data
-    var ID_ED_SEARCH= R.id.ed_search
+    var ID_ET_SEARCH= R.id.et_search
+    var ID_ET_NUMBER= R.id.et_number
     var ID_BTN_RIGHT= R.id.btn_right
     var ID_BTN_LEFT= R.id.btn_left
 

@@ -230,7 +230,7 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
  */
 
     fun addTextWatcher(tw: TextWatcher){
-        layoutView.findViewById<EditText>(_Config.ID_ED_SEARCH) //R.id.ed_search
+        layoutView.findViewById<EditText>(_Config.ID_ET_SEARCH) //R.id.ed_search
             .addTextChangedListener(tw)
     }
 }

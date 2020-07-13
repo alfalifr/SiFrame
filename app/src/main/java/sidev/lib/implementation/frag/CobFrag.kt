@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.cob_page.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
@@ -37,7 +38,7 @@ class CobFrag : Frag(){
         layoutView.btn.asNotNull { btn: Button ->
             val id= R.id.tv_id
             btn.text= "R.id.tv_id => isId? -> ${id isIdIn context!!}"
-            btn.setOnClickListener { layoutView.findViewByType<EditText>() }
+            btn.setOnClickListener { layoutView.findView<TextView>(R.id.et_number)!! }
         }
 
 //        (layoutView as EditText).txt= "aku"

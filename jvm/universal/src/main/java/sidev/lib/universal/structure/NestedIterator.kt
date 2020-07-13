@@ -22,11 +22,11 @@ abstract class NestedIterator<T>(val start: T): Iterator<T>{
             hasInited= true
             activeIterator != null //Jika null, itu artinya object dg iterator ini gak punya element.
         } else{
-            if(!activeIterator!!.hasNext() && activeLines.size > 1){
+            while(!activeIterator!!.hasNext() && activeLines.size > 1){
                 activeLines.remove(activeIterator!!)
-                activeIterator= activeLines.lastOrNull()
+                activeIterator= activeLines.last()
             }
-            activeIterator?.hasNext() == true
+            activeIterator!!.hasNext() //Gak mungkin null, karena kalo ada null, nullnya di awal.
 //                    || activeLines.size > 1
         }
     }

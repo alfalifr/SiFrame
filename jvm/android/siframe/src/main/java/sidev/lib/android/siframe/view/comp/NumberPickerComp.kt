@@ -9,8 +9,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import sidev.lib.android.siframe.R
 import sidev.lib.android.siframe._customizable._ColorRes
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.ModEt
@@ -23,6 +25,10 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     override val viewLayoutId: Int
         get() = R.layout._sif_comp_number_picker
     override val isViewSaved: Boolean= true
+
+    open val etNumberId: Int= _Config.ID_ET_NUMBER
+    open val ivPlusId: Int= _Config.ID_IV_PLUS
+    open val ivMinusId: Int= _Config.ID_IV_MINUS
 
     var defaultLowerBorder: Int= 0
     var defaultUpperBorder: Int= Int.MAX_VALUE
@@ -37,9 +43,10 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
 
     override fun bindComponent(position: Int, v: View,
                                valueBox: BoxedVal<NumberPickerData>, inputData: I?) {
-        val ivMinus= v.findViewById<ImageView>(R.id.iv_minus)!!
-        val ivPlus= v.findViewById<ImageView>(R.id.iv_plus)!!
-        val etNumber= v.findViewByType<ModEt>()!! //v.findViewById<ModEt>(R.id.et)!!
+        val ivPlus= v.findViewById<ImageView>(ivPlusId)!!
+        val ivMinus= v.findViewById<ImageView>(ivMinusId)!!
+        val etNumber= v.findView<ModEt>(etNumberId) ?: v.findViewByType()!!
+        //v.findViewById<ModEt>(R.id.et)!!
                 // Diganti [findViewByType] agar lebih fleksibel dg view yg beda id.
         val data= valueBox.value!!
 
@@ -94,9 +101,10 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
             val colorId= if(enable) enabledColorId
                 else disabledColorId
 
-            val ivMinus= view.findViewById<ImageView>(R.id.iv_minus)!!
-            val ivPlus= view.findViewById<ImageView>(R.id.iv_plus)!!
-            val etNumber= view.findViewByType<EditText>()!! //.findViewById<ModEt>(R.id.iv_plus)!!
+            val ivPlus= view.findViewById<ImageView>(ivPlusId)!!
+            val ivMinus= view.findViewById<ImageView>(ivMinusId)!!
+            val etNumber= view.findView<EditText>(etNumberId) ?: view.findViewByType()!!
+            //.findViewById<ModEt>(R.id.iv_plus)!!
 
             _ViewUtil.setBgColor(ivMinus, colorId)
             _ViewUtil.setBgColor(ivPlus, colorId)

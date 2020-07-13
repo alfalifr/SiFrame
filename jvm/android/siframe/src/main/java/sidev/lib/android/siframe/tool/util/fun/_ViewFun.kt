@@ -7,9 +7,8 @@ import android.content.res.Resources
 import android.os.Build
 import android.util.SparseIntArray
 import android.view.*
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
+import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
 import androidx.core.util.set
 import androidx.core.view.children
@@ -48,7 +47,7 @@ fun SimpleRvAdp<*, *>.notifyDatasetChanged_ui(){
 }
 
 /**
- * Iterasi ini menggunakan Depth-First Traversal.
+ * Iterasi ini menggunakan Depth-First Pre-Order.
  */
 fun View.iterateChildren(func: (child: View) -> Unit){
     if(this is ViewGroup){
@@ -60,6 +59,10 @@ fun View.iterateChildren(func: (child: View) -> Unit){
     }
 }
 
+/**
+ * Properti untuk meng-iterasi seluruh keturunan this [View].
+ * Menggunakan metode Depth-First Pre-Order.
+ */
 val View.childrenTree: Iterator<View>
     get()= object : NestedIterator<View>(this){
         override fun getIterator(now: View): Iterator<View>? {
@@ -95,6 +98,9 @@ val View.childrenTree: MutableIterator<View>
     }
  */
 
+/**
+ * Properti untuk meng-iterasi parent yg merupakan satu garis hirarki.
+ */
 val View.parentsTree: Iterator<View>
     get()= object: Iterator<View>{
         override fun hasNext(): Boolean
@@ -115,6 +121,7 @@ fun View.iterateParent(func: (parent: View) -> Unit){
         parent= parent.parent
     }
 }
+
 /*
 /**
  * @param func return true jika berhenti
@@ -153,9 +160,11 @@ fun Fragment.getRootView(): View?{
  */
 inline fun <reified T: View> View.findViewByType(
     direction: Int= _SIF_Constant.DIRECTION_DOWN,
+//    tag: Any?= null,
     includeItself: Boolean= true
 ): T? {
-    if(includeItself && this is T) return this
+    if(includeItself && this is T)
+        return this
 //    var viewRes: T?= null
 
     if(direction == _SIF_Constant.DIRECTION_UP){
@@ -166,8 +175,45 @@ inline fun <reified T: View> View.findViewByType(
         }
     } else{ //Scr default akan meng-iterate ke bawah atau ke child.
         for(child in this.childrenTree){
-            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${child is T}")
+//            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${child is T}")
             if(child is T)
+                return child
+        }
+    }
+    return null
+}
+
+/**
+ * Fungsi untuk menemukan view yg sesuai dg spesifikasi [id], [tag], atau [T].
+ * Fungsi ini akan selalu menyertakan spesifikasi tipe data [T] view.
+ * Untuk spesifikasi [id] dan [tag] adalah opsional.
+ *
+ * Fungsi dapat menyertakan this [View] tempat fungsi ini dipanggil
+ * maupun tidak tergantung [includeItself].
+ *
+ * @return view dg spesifikasi yg diinputkan
+ *   dan null jika tidak ada view yg cocok dalam hirarki.
+ */
+inline fun <reified T: View> View.findView(
+    @IdRes id: Int?= null,
+    tag: Any?= null,
+    direction: Int= _SIF_Constant.DIRECTION_DOWN,
+    includeItself: Boolean= true
+): T?{
+    if(includeItself && this is T
+        && (id == null || id == this.id) && (tag == null || tag == this.tag))
+        return this
+
+    if(direction == _SIF_Constant.DIRECTION_UP){
+        for(parent in this.parentsTree){
+//            loge("parent= $parent parent is T= ${parent is T}")
+            if(parent is T && (id == null || id == parent.id) && (tag == null || tag == parent.tag))
+                return parent
+        }
+    } else{ //Scr default akan meng-iterate ke bawah atau ke child.
+        for(child in this.childrenTree){
+//            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${child is T}")
+            if(child is T && (id == null || id == child.id) && (tag == null || tag == child.tag))
                 return child
         }
     }
