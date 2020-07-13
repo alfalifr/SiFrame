@@ -4,14 +4,19 @@ import android.content.Context
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.core.util.remove
 import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
+import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
+import sidev.lib.android.siframe.intfc.`fun`.InitPropFun
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
+import sidev.lib.android.siframe.tool.util.isIdIn
 //import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 
@@ -27,12 +32,36 @@ import sidev.lib.universal.`fun`.notNull
  * @param D adalah tipe data yg akan dimanage oleh kelas [ViewComp] ini.
  * @param I adalah tipe data inputan dari [RecyclerView.Adapter].
  */
-abstract class ViewComp<D, I>(val ctx: Context) {
+abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
+    final override var isInit: Boolean= false
+
     abstract val viewLayoutId: Int
     private val mData= SparseArray<BoxedVal<D>>()
     private var mView: SparseArray<View>?= null
     open val isDataRecycled= false
     open val isViewSaved= false
+
+    /**
+     * <13 Juli 2020>
+     *   Menunjukan scr spesifik komponen dalam view [viewLayoutId] yg data bindingnya
+     *   diurus oleh [ViewComp] ini. Hal ini bertujuan pada saat bbrp ViewComp memiliki
+     *   [viewLayoutId] yg sama, namun memiliki tanggung jawab data binding terhadap
+     *   komponen yg berbeda-beda.
+     *
+     *   [compId] disarankan sebagai val karena perubahan id komponen scr dinamis
+     *   adalah kasus yg sangat langkah.
+     */
+    @IdRes
+    open val compId: Int= _Config.INT_EMPTY
+    private var isCompIdValid= true
+    var isCompVisible= true
+        set(v){
+            field= v
+            val vis= if(v) View.VISIBLE
+                else View.GONE
+            for(view in viewIterator)
+                view.visibility= vis
+        }
 
     val savedDataCount: Int
         get()= mData.size()
@@ -50,6 +79,13 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         catch (e: ClassCastException){ null }
     }
 
+    /** Iterator view yg disimpan di dalam [ViewComp] ini. */
+    val viewIterator: Iterator<View>
+            = object: Iterator<View>{
+        private var innerIterator= mView?.iterator()
+        override fun hasNext(): Boolean= innerIterator?.hasNext() == true
+        override fun next(): View = innerIterator!!.next().second
+    }
 
     /**
      * @param skipNulls true jika data pada [mData] tidak akan di
@@ -73,6 +109,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             override fun next(): D? = next
         }
 
+
     fun getDataAt(pos: Int): D?= mData[pos].value
     fun getViewAt(pos: Int): View?= mView?.get(pos)
 
@@ -80,6 +117,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].
      */
     fun setupWithRvAdapter(rvAdp: SimpleRvAdp<*, *>?){
+        initProp { isCompIdValid= compId isIdIn ctx }
         if(rvAdp != null){
             onBindViewListener= { holder, pos, dataInput ->
                 val dataInputRes= rvAdpInputDataConverter?.invoke(dataInput)
@@ -116,6 +154,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             mView!![position]= v
         }
 
+        /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
+        if(isCompIdValid)
+            v.findViewById<View>(compId).notNull {
+                it.visibility= if(isCompVisible) View.VISIBLE else View.GONE
+            }
         bindComponent(position, v, valueBox, inputData)
     }
 
@@ -164,6 +207,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      *
      * @param valueBox adalah wadah untuk menyimpan data yg diambil dari
      *   input user pada view.
+     * @param v adalah view hasil inflate dari [viewLayoutId].
      */
     abstract fun bindComponent(position: Int, v: View, valueBox: BoxedVal<D>, inputData: I?)
 
@@ -172,10 +216,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      *   atau jika null, maka didapat dari fungsi [getViewAt].
      */
     open fun setComponentEnabled(position: Int, v: View?= null, enable: Boolean= true): Boolean= false
-
+/*
     fun iterateSavedView(iterator: (View) -> Unit){
         if(mView != null)
             for((i, view) in mView!!)
                 iterator(view)
     }
+ */
 }

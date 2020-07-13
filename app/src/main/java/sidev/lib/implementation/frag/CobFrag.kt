@@ -1,11 +1,13 @@
 package sidev.lib.implementation.frag
 
+import android.content.Context
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.cob_page.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.siframe.tool.util.isIdIn
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 
@@ -24,6 +26,15 @@ class CobFrag : Frag(){
         layoutView.btn_fade_out.asNotNull { btn: Button ->
             btn.text= "Fade Out"
             btn.setOnClickListener { layoutView.btn.animator.fadeTo(0.3f) }
+        }
+
+        this.asNotNull { c: Context ->
+
+        }
+
+        layoutView.btn.asNotNull { btn: Button ->
+            val id= R.id.tv_id
+            btn.text= "R.id.tv_id => isId? -> ${id isIdIn context!!}"
         }
 
 //        (layoutView as EditText).txt= "aku"

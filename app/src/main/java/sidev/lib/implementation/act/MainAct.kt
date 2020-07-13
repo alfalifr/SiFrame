@@ -6,6 +6,10 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
+import sidev.lib.android.siframe.tool.util.asColorIn
+import sidev.lib.android.siframe.tool.util.getColorOf
+import sidev.lib.android.siframe.tool.util.getFontOf
+import sidev.lib.android.siframe.tool.util.isColorIn
 import sidev.lib.implementation.R
 import sidev.lib.implementation._cob.dumm_module
 import sidev.lib.implementation._simulation.edc.frag.TransacFrag
