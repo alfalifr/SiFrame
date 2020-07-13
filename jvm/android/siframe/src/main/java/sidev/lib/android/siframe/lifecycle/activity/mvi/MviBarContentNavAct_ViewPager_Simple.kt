@@ -14,7 +14,7 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager_S
  */
 open class MviBarContentNavAct_ViewPager_Simple
     : BarContentNavAct_ViewPager_Simple(), MviView<ViewState, ViewIntent>{
-    override var currentState: ViewState?= null
+    override var currentViewState: ViewState?= null
     override var intentConverter: IntentConverter<ViewIntent>?= null
     override fun initPresenter(): Presenter?= null
     override fun initStateProcessor(): StateProcessor<ViewState, ViewIntent>?= null

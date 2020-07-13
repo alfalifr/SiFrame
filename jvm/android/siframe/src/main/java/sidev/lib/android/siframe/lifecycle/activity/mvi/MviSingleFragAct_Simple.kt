@@ -12,7 +12,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
 
 open class MviSingleFragAct_Simple: SingleFragAct_Simple(), MviView<ViewState, ViewIntent>{
-    override var currentState: ViewState?= null
+    override var currentViewState: ViewState?= null
     override var intentConverter: IntentConverter<ViewIntent>?= null
     override fun initPresenter(): Presenter?= null
     override fun initStateProcessor(): StateProcessor<ViewState, ViewIntent>?= null

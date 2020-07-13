@@ -4,7 +4,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import sidev.lib.android.siframe._customizable._ColorRes
@@ -82,11 +81,13 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
 
             if(this is LifecycleOwner){
                 this.lifecycle.addObserver(this)
+                _prop_backBtnBase?.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, 0, onBackBtnListener)
+/*
                 _prop_backBtnBase.notNull { base ->
-                    base.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, onBackBtnListener)
-                    loge("addOnBackBtnListener ditambahkan ke backBtnBase")
+                    base.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, 0, onBackBtnListener)
+//                    loge("addOnBackBtnListener ditambahkan ke backBtnBase")
                 }
-//                _prop_backBtnBase?.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, onBackBtnListener)
+// */
             } else
                 loge("Kelas ini bkn merupakan \"LifecycleOwner\" sehingga tidak dapat ditambah \"onBackBtnListener\" untuk drawer.")
         } else{

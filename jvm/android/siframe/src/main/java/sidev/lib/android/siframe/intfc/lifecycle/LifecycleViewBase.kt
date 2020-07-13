@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
+import androidx.lifecycle.Lifecycle
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.arch.view.ArchView
 

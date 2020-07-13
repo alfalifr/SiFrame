@@ -1,9 +1,7 @@
 package sidev.lib.android.siframe.arch.intent_state
 
-import androidx.annotation.Keep
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.universal.`fun`.classSimpleName
-import sidev.lib.universal.`fun`.getSealedClassName
 import sidev.lib.universal.tool.util.StringUtil
 
 /**
@@ -18,7 +16,7 @@ abstract class ViewIntent: Mvi{
 
     /**
      * Flag apakah [ViewState] yg dihasilkan oleh [ViewIntent] ini bersifat sementara atau tidak.
-     * Jika bersifat sementara, maka [ViewState] yg dihasilkan tidak akan disimpan pada [StateProcessor.currentState].
+     * Jika bersifat sementara, maka [ViewState] yg dihasilkan tidak akan disimpan pada [StateProcessor.currentViewState].
      * sehingga saat fungsi [StateProcessor.restoreCurrentState] dipanggil [ViewState] hasil
      * [ViewIntent] ini tidak ditampilkan pada layar.
      */

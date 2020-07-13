@@ -14,7 +14,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari Fragment
  */
 abstract class MviFrag<S: ViewState, I: ViewIntent> : Frag(), MviView<S, I>{
-    override var currentState: S?= null
+    override var currentViewState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

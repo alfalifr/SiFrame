@@ -23,6 +23,7 @@ import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
@@ -39,6 +40,9 @@ abstract class Frag : Fragment(),
     PresenterDependentCommon<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     LifecycleSideBase // Hanya sbg cetaka agar kelas ini dapat memanggil ___initSideBase()
 { //RepositoryCallback {
+
+    final override var currentState: LifecycleBase.State= super<FragBase>.currentState
+        internal set
 
     final override var isExpired: Boolean= false
         private set
@@ -133,6 +137,7 @@ abstract class Frag : Fragment(),
  */
 //        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
         listener_onViewCreated?.onViewCreated_(view, savedInstanceState)
+        currentState= LifecycleBase.State.CREATED
     }
 
     override fun onAttach(context: Context) {
@@ -142,6 +147,22 @@ abstract class Frag : Fragment(),
     override fun onAttach(act: Activity) {
         super.onAttach(act)
         loge("Fragment ${this::class.java.simpleName} is attached to activity!!!")
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        currentState= LifecycleBase.State.STARTED
+    }
+
+    override fun onResume() {
+        super.onResume()
+        currentState= LifecycleBase.State.ACTIVE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        currentState= LifecycleBase.State.PAUSED
     }
 
     @CallSuper
@@ -154,6 +175,7 @@ abstract class Frag : Fragment(),
         super.onDestroy()
         isExpired= true
         presenter= null
+        currentState= LifecycleBase.State.DESTROYED
         loge("Fragment ${this::class.java.simpleName} is destroyed!!!")
     }
 /*

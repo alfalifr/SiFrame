@@ -1,7 +1,7 @@
 package sidev.lib.android.siframe.arch.intent_state
 
 import android.content.Context
-import org.jetbrains.anko.runOnUiThread
+import sidev.lib.android.external._AnkoInternals.runOnUiThread
 import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.MviView
@@ -19,8 +19,8 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
             field= v
             intentConverter?.expirableView= v
         }
-    internal var currentState: HashMap<String, S>?= null
-    internal var currentStateOrder: LinkedHashSet<String>?= null
+    internal var currentViewState: HashMap<String, S>?= null
+    internal var currentViewStateOrder: LinkedHashSet<String>?= null
     private var currentStateIsTemporary: HashMap<String, Boolean>?= null
 
 //    internal var currentStateIsPreState= false
@@ -85,7 +85,7 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
      * sbg buffer selagi menunggu hasil request datang.
      *
      * @param isStateTemporary true jika state yg akan datang baik dari fungsi [postPreResult]
-     *   atau [postResult] dg kode [reqCode] tidak akan disimpan pada [currentState].
+     *   atau [postResult] dg kode [reqCode] tidak akan disimpan pada [currentViewState].
      */
     fun postPreResult(reqCode: String, data: Map<String, Any>?, isStateTemporary: Boolean){
         if(currentStateIsTemporary == null)
@@ -149,15 +149,15 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         if(state.isPreState
             || !currentStateIsTemporary!!
                     [reqCode]!!){
-            if(currentState == null){
-                currentState= HashMap()
-                currentStateOrder= LinkedHashSet()
+            if(currentViewState == null){
+                currentViewState= HashMap()
+                currentViewStateOrder= LinkedHashSet()
             }
-            if(currentStateOrder!!.contains(reqCode)){
-                currentStateOrder!!.remove(reqCode)
+            if(currentViewStateOrder!!.contains(reqCode)){
+                currentViewStateOrder!!.remove(reqCode)
             }
-            currentStateOrder!!.add(reqCode)
-            currentState!![reqCode]= state
+            currentViewStateOrder!!.add(reqCode)
+            currentViewState!![reqCode]= state
         }
         //Cabang ini berfungsi untuk menghilangkan preState yg [ViewState]-nya
         // bersifat sementara agar saat di-restore layar buffer tidak muncul
@@ -165,15 +165,15 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         else if(!state.isPreState
             && currentStateIsTemporary!!
                     [reqCode]!!){
-            currentState?.remove(reqCode)
-            currentStateOrder?.remove(reqCode)
+            currentViewState?.remove(reqCode)
+            currentViewStateOrder?.remove(reqCode)
         }
     }
 
     fun restoreCurrentState(){
         try{
-            for(reqCode in currentStateOrder!!){
-                val state= currentState!![reqCode]!!
+            for(reqCode in currentViewStateOrder!!){
+                val state= currentViewState!![reqCode]!!
                 postState(reqCode, state, true)
             }
 //            currentState!!.isPreState= currentStateIsPreState
@@ -183,7 +183,7 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         }
         val viewName= view::class.simpleName
         loge("$viewName berhasil di-restore ke state sebelumnya.")
-        loge("previousState= $currentState")
+        loge("previousState= $currentViewState")
     }
 /*
     @Deprecated("Gak dipake pada konteks MVI di kelas ini")

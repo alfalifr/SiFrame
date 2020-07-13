@@ -1,14 +1,11 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
-import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 

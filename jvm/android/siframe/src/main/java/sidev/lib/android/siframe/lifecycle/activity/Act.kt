@@ -3,6 +3,7 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
@@ -23,6 +24,7 @@ import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
@@ -44,6 +46,9 @@ abstract class Act : AppCompatActivity(), Inheritable,
 //    MviView<State>,
 //    PresenterCallback<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     BackBtnBase {
+
+    final override var currentState: LifecycleBase.State= super<ActFragBase>.currentState
+        internal set
 
     final override var isExpired: Boolean= false
         private set
@@ -79,6 +84,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
         get() = this
  */
     final override var isHandlingBackBtn: Boolean= false
+    override var isBackBtnHandledGradually: Boolean= super.isBackBtnHandledGradually
     final override var backBtnViewList= ArrayList<View>()
     final override var onBackPressedListenerList: ArrayList<OnBackPressedListener>
         = ArrayList()
@@ -116,6 +122,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
             ___initRootBase(this, getRootView())
         }
         ___initSideBase()
+
+        currentState= LifecycleBase.State.CREATED
 /*
         if(isViewInitFirst){
             Log.e("SimpleAbsAct", "::layoutView.isInitialized ${::layoutView.isInitialized} name= ${this::class.java.simpleName}")
@@ -125,11 +133,27 @@ abstract class Act : AppCompatActivity(), Inheritable,
  */
     }
 
+    override fun onStart() {
+        super.onStart()
+        currentState= LifecycleBase.State.STARTED
+    }
+
+    override fun onResume() {
+        super.onResume()
+        currentState= LifecycleBase.State.ACTIVE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        currentState= LifecycleBase.State.PAUSED
+    }
+
     @CallSuper
     override fun onDestroy() {
         super.onDestroy()
         isExpired= true
         presenter= null
+        currentState= LifecycleBase.State.DESTROYED
 //        onDestroyListenerQueue.iterateRunQueue(null)
         loge("Activity ${this::class.java.simpleName} is destroyed!!!")
     }

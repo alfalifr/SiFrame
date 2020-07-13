@@ -1,11 +1,8 @@
 package sidev.lib.implementation.frag
 
-import android.util.Log
 import android.view.View
-import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.core.view.iterator
-import kotlinx.android.synthetic.main.comp_rb.view.*
+import kotlinx.android.synthetic.main.page_rg.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge

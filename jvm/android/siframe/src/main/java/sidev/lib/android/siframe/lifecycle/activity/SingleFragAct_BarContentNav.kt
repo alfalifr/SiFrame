@@ -1,10 +1,6 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.content.Context
-import android.content.Intent
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.universal.`fun`.*

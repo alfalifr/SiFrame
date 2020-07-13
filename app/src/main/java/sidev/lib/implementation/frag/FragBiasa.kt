@@ -20,7 +20,7 @@ class FragBiasa : Fragment(), MviView<ContentFragState, ContentFragIntent>{
         get() = context
     override var presenter: Presenter?= null
     override var isExpired: Boolean= false
-    override var currentState: ContentFragState?= null
+    override var currentViewState: ContentFragState?= null
 
 
     override fun onNoCurrentState() {}

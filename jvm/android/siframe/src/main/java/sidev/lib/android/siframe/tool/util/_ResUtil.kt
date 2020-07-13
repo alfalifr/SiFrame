@@ -10,22 +10,21 @@ import android.view.View
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import sidev.lib.android.siframe.R
 import java.util.*
 
 object _ResUtil{
     enum class Type{
-        Id,
-        Layout,
-        Drawable,
-        Color,
-        String,
-        Dimen,
-        Style,
-        Font,
-        Anim,
-        Animator,
-        Attr,
+        ID,
+        LAYOUT,
+        DRAWABLE,
+        COLOR,
+        STRING,
+        DIMEN,
+        STYLE,
+        FONT,
+        ANIM,
+        ANIMATOR,
+        ATTR,
     }
 
     fun getString(c: Context, @StringRes res: Int): String = c.resources.getString(res)
@@ -82,17 +81,17 @@ object _ResUtil{
 /**
  * Fungsi infix sederhana untuk mengecek apakah this [Int] merupakan res dg type tertentu.
  */
-infix fun Int.isIdIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Id)
-infix fun Int.isLayoutIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Layout)
-infix fun Int.isDrawableIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Drawable)
-infix fun Int.isColorIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Color)
-infix fun Int.isStringIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.String)
-infix fun Int.isDimenIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Dimen)
-infix fun Int.isStyleIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Style)
-infix fun Int.isFontIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Font)
-infix fun Int.isAnimIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Anim)
-infix fun Int.isAnimatorIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Animator)
-infix fun Int.isAttrIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.Attr)
+infix fun Int.isIdIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.ID)
+infix fun Int.isLayoutIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.LAYOUT)
+infix fun Int.isDrawableIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.DRAWABLE)
+infix fun Int.isColorIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.COLOR)
+infix fun Int.isStringIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.STRING)
+infix fun Int.isDimenIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.DIMEN)
+infix fun Int.isStyleIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.STYLE)
+infix fun Int.isFontIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.FONT)
+infix fun Int.isAnimIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.ANIM)
+infix fun Int.isAnimatorIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.ANIMATOR)
+infix fun Int.isAttrIn(c: Context): Boolean = _ResUtil.isResType(c, this, _ResUtil.Type.ATTR)
 
 /**
  * Fungsi infix sederhana untuk mengambil resource yg ada dg id [res] dari [Context].

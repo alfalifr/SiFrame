@@ -21,6 +21,14 @@ interface BackBtnBase: ComplexLifecycleSideBase {
     var removedOnBackPressedListenerList: ArrayList<OnBackPressedListener>
     var isHandlingBackBtn: Boolean
 
+    /**
+     * Jika true, maka [onBackPressedListenerList] akan di-iterasi scr bertahap,
+     * artinya, jika ada satu listener yg @return true, maka listener di urutan selanjutnya
+     * akan diabaikan dan iterasi selesai.
+     */
+    val isBackBtnHandledGradually: Boolean
+        get()= true
+
     override val layoutId: Int
         get() = _Config.INT_EMPTY
 
@@ -48,10 +56,12 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         }
     }
 
-    fun addOnBackBtnListener(l: OnBackPressedListener){
-        onBackPressedListenerList.add(l)
+    fun addOnBackBtnListener(l: OnBackPressedListener,
+                             position: Int= onBackPressedListenerList.size){
+        onBackPressedListenerList.add(position, l)
     }
     fun addOnBackBtnListener(tag: String= this@BackBtnBase::class.java.simpleName,
+                             position: Int= onBackPressedListenerList.size,
                              func: () -> Boolean){
         addOnBackBtnListener(object: OnBackPressedListener{
             override val tag: String?
@@ -60,7 +70,7 @@ interface BackBtnBase: ComplexLifecycleSideBase {
             override fun onBackPressed_(): Boolean {
                 return func()
             }
-        })
+        }, position)
     }
 
     fun removeOnBackBtnListener(l: OnBackPressedListener){
@@ -88,8 +98,10 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         isHandlingBackBtn= true
         var isHandled= false
 
-        for(l in onBackPressedListenerList)
+        for(l in onBackPressedListenerList){
             isHandled= isHandled || l.onBackPressed_()
+            if(isBackBtnHandledGradually && isHandled) break
+        }
 
         isHandlingBackBtn= false
         resolveRemovedListener()

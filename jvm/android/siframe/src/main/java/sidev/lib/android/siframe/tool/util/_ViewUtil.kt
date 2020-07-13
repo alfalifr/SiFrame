@@ -19,7 +19,6 @@ import android.transition.TransitionSet
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager

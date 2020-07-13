@@ -112,6 +112,9 @@ open class VpFragAdp(fm: FragmentManager, vararg items: Frag)
         return res
     }
 
+    override fun destroyItem(container: View, position: Int, `object`: Any) {
+        if(container == `object`) (container as ViewGroup).removeAllViews()
+    }
     /*
     override fun instantiateItem(container: View, position: Int): Any {
         val any= super.instantiateItem(container, position) as View

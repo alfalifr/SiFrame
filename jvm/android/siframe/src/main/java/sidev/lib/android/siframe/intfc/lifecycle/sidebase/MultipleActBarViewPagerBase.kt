@@ -8,6 +8,7 @@ import androidx.core.util.set
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.adapter.VpFragAdp
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
@@ -15,6 +16,7 @@ import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.trya
 import java.lang.Exception
 
 interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFragBase{
@@ -50,14 +52,20 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
         setFragList(vpFragList)
 
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            private var currentPosition= 0
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
+                trya{ vpFragList[currentPosition].currentState= LifecycleBase.State.PAUSED }
+
                 attachActBarView(position)
                 attachActBarTitle(position)
                 vpFragList[position].onActive(_prop_view, this@MultipleActBarViewPagerBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_prop_view, position) //
+
+                vpFragList[position].currentState= LifecycleBase.State.ACTIVE
+                currentPosition= position
             }
         })
         if(vpFragList.isNotEmpty()){

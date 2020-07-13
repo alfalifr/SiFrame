@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
@@ -21,6 +22,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.toArrayList
+import sidev.lib.universal.`fun`.trya
 import java.lang.Exception
 
 interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
@@ -140,6 +142,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         setFragList(vpFragList)
 
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            private var currentPosition= 0
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(
                 position: Int,
@@ -147,9 +150,14 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
                 positionOffsetPixels: Int
             ) {}
             override fun onPageSelected(position: Int) {
+                trya{ vpFragList[currentPosition].currentState= LifecycleBase.State.PAUSED }
+
                 attachActBarTitle(position)
                 vpFragList[position].onActive(_prop_view, this@ViewPagerBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_prop_view, position) //
+
+                vpFragList[position].currentState= LifecycleBase.State.ACTIVE
+                currentPosition= position
             }
         })
         if(vpFragList.isNotEmpty())

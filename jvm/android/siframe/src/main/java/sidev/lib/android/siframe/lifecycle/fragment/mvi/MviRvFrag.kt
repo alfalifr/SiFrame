@@ -9,7 +9,7 @@ import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 
 abstract class MviRvFrag<R: SimpleRvAdp<*, *>, S: ViewState, I: ViewIntent> : RvFrag<R>(), MviView<S, I>{
-    override var currentState: S?= null
+    override var currentViewState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

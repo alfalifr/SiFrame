@@ -1,6 +1,5 @@
 package sidev.lib.implementation._simulation.edu_class.adp
 
-import android.app.Activity
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher

@@ -50,7 +50,7 @@ interface DrawerActBase : DrawerBase{
 
         if(this is LifecycleOwner){
             this.lifecycle.addObserver(this)
-            _prop_backBtnBase?.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, onBackBtnListener)
+            _prop_backBtnBase?.addOnBackBtnListener(DrawerBase.TAG_ON_BACK_BTN_LISTENER, 0, onBackBtnListener)
         } else
             loge("Kelas ini bkn merupakan \"LifecycleOwner\" sehingga tidak dapat ditambah \"onBackBtnListener\" untuk drawer.")
     }

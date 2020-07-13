@@ -11,7 +11,7 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
 
 abstract class MviBarContentNavAct_ViewPager<F: Frag, S: ViewState, I: ViewIntent>
     : BarContentNavAct_ViewPager<F>(), MviView<S, I> { //ViewPagerActBase<F>
-    override var currentState: S?= null
+    override var currentViewState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

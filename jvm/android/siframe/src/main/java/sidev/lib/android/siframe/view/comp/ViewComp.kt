@@ -5,7 +5,6 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
 import androidx.core.util.remove
 import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
@@ -61,6 +60,18 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
                 else View.GONE
             for(view in viewIterator)
                 view.visibility= vis
+        }
+
+    /**
+     * Jika tidak null, maka fungsi [setComponentEnabled] akan dipanggil setiap kali
+     * fungsi [onBind] dipanggil.
+     */
+    var isEnabled: Boolean?= null
+        set(v){
+            field= v
+            if(v != null)
+                for((i, view) in viewIterator.withIndex())
+                    setComponentEnabled(i, view, v)
         }
 
     val savedDataCount: Int
@@ -159,6 +170,8 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
             v.findViewById<View>(compId).notNull {
                 it.visibility= if(isCompVisible) View.VISIBLE else View.GONE
             }
+        if(isEnabled != null)
+            setComponentEnabled(position, v, isEnabled!!)
         bindComponent(position, v, valueBox, inputData)
     }
 
@@ -212,8 +225,10 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
     abstract fun bindComponent(position: Int, v: View, valueBox: BoxedVal<D>, inputData: I?)
 
     /**
-     * @return true jika komponen tidak null. Komponen didapat dari parameter [v]
-     *   atau jika null, maka didapat dari fungsi [getViewAt].
+     * Fungsi yg digunakan untuk me-enabled atau tidak komponen view yg dikelola oleh kelas [ViewComp] ini.
+     * Fungsi ini akan dipanggil setiap kali [onBind] dipanggil jika [isEnabled] != null.
+     *
+     * Komponen view didapat dari parameter [v] atau jika null, maka didapat dari fungsi [getViewAt].
      */
     open fun setComponentEnabled(position: Int, v: View?= null, enable: Boolean= true){}
 /*

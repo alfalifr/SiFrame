@@ -11,7 +11,7 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragDrawerAct_BarConte
 
 open class MviSingleFragDrawerAct_BarContentNav_Simple
     : SingleFragDrawerAct_BarContentNav_Simple(), MviView<ViewState, ViewIntent>{
-    override var currentState: ViewState?= null
+    override var currentViewState: ViewState?= null
     override var intentConverter: IntentConverter<ViewIntent>?= null
     override fun initPresenter(): Presenter?= null
     override fun initStateProcessor(): StateProcessor<ViewState, ViewIntent>?= null

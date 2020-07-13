@@ -9,7 +9,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.notNull
 
 class Frag2 : Frag(){

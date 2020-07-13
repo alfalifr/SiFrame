@@ -1,8 +1,8 @@
 package sidev.lib.universal.`fun`
 
 import android.util.Log
-import java.lang.Exception
 import java.lang.NullPointerException
+import kotlin.Exception
 
 fun <T> T.iff(func: (T) -> Boolean): Boolean{
     return func(this)
@@ -110,6 +110,54 @@ fun assertNotNull(obj: Any?, msg: String= ""): Nothing? {
     if(obj == null)
         throw Exception(msg)
     return null
+}
+
+/*
+=============================
+Ignoring Function
+=============================
+ */
+/**
+ * Fungsi sederhana untuk menjalankan sebuah blok [trya] dan mengabaikan Exception yang terjadi.
+ * Jika tidak ingin mengabaikan Exception, maka programmer dapat mengubah blok [catcha].
+ * [ignoreError] true jika semua bentuk exception, baik itu [Exception] maupun [Error].
+ *
+ * @return true jika blok pada [trya] berhasil dieksekusi dan sebaliknya.
+ */
+fun trya(
+    ignoreError: Boolean= true,
+    catcha: (Throwable) -> Unit = { Log.e("TRY_CATCH", "Throwable: ${it::class.java.simpleName} diabaikan!!!", it) },
+    trya:() -> Unit
+): Boolean{
+    return try{ trya()
+        true
+    } catch (e: Throwable){
+        if(ignoreError || e is Exception) catcha(e)
+        else throw e
+        false
+    }
+}
+/**
+ * Fungsi sederhana untuk menjalankan sebuah blok [trya] dan mengabaikan Exception yang terjadi.
+ * Jika tidak ingin mengabaikan Exception, maka programmer dapat mengubah blok [catcha].
+ * [ignoreError] true jika semua bentuk exception, baik itu [Exception] maupun [Error].
+ *
+ * Bentuk lebih [trya] dg typed-throwable
+ *
+ * @return true jika blok pada [trya] berhasil dieksekusi dan sebaliknya.
+ */
+inline fun <reified T: Throwable> tryCatch(
+    ignoreError: Boolean= true,
+    catcha: (T) -> Unit = { Log.e("TRY_CATCH", "Throwable: ${it::class.java.simpleName} diabaikan!!!", it) },
+    trya:() -> Unit
+): Boolean{
+    return try{ trya()
+        true
+    } catch (e: Throwable){
+        if((ignoreError || e is Exception) && e is T) catcha(e)
+        else throw e
+        false
+    }
 }
 
 

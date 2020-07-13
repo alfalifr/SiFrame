@@ -10,7 +10,6 @@ import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getEt
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.tool.util.FileUtil
 
 object Edu_Class_ViewUtil {
     fun setImg(iv: ImageView, img: PictModel?){

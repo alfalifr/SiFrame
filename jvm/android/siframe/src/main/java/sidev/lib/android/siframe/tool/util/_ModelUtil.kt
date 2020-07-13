@@ -1,7 +1,6 @@
 package id.go.surabaya.ediscont.utilities.modelutil
 
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
 import org.json.JSONArray
 import org.json.JSONObject

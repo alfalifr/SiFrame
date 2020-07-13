@@ -1,8 +1,6 @@
 package sidev.lib.implementation.adp
 
 import android.content.Context
-import android.widget.NumberPicker
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.comp_page_row.view.*
 import org.jetbrains.anko.imageResource
 import sidev.lib.android.siframe.adapter.RvAdp
@@ -24,8 +22,6 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
     val sqlite= PageSqlite(c)
 ///*
     val numberPicker= object: NumberPickerComp<Page>(c){
-    override val isDataRecycled: Boolean
-        get() = true
 
     override fun initData(position: Int, inputData: Page?): NumberPickerData?{
             val no= inputData!!.no %6

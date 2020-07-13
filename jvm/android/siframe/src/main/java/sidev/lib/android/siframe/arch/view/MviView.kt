@@ -23,7 +23,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
 //        val KEY_VM_MVI_STATE= "_internal_vm_mvi_state"
 //        val KEY_VM_MVI_STATE_STATUS= "_internal_vm_mvi_state_status"
     }
-    var currentState: S?
+    var currentViewState: S?
     override var intentConverter: IntentConverter<I>?
     override fun initPresenter(): Presenter?
     fun initStateProcessor(): StateProcessor<S, I>?
@@ -156,7 +156,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                 }
             } ?: false
 
-        if(isInit && currentState == null)
+        if(isInit && currentViewState == null)
             onNoCurrentState()
 
         return isSuccess
@@ -169,12 +169,12 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
     fun __render(state: S/*, isPreState: Boolean*/){
         isBusy= state.isPreState
         render(state)
-        currentState= state
+        currentViewState= state
     }
     fun render(state: S/*, isPreState: Boolean*/)
 
     /**
-     * Dipanggil saat interface [MviView] ini tidak punya [currentState].
+     * Dipanggil saat interface [MviView] ini tidak punya [currentViewState].
      */
     fun onNoCurrentState()
 }

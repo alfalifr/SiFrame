@@ -3,7 +3,6 @@ package sidev.lib.implementation.frag
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.page_rv_btn.view.*
@@ -17,7 +16,6 @@ import sidev.lib.implementation.adp.ContentAdp
 import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.viewmodel.ContentVm
-import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.tool.util.ThreadUtil
 

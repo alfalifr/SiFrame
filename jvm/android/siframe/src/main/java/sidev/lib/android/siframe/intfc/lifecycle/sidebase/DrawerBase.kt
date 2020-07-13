@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.prop.BackBtnBaseProp
@@ -55,8 +56,9 @@ interface DrawerBase: ComplexLifecycleSideBase,
      */
     val onBackBtnListener: () -> Boolean
         get()= {
-            loge("onBackBtnListener DrawerBase dipanggil")
             if(rootDrawerLayout != null){
+                loge("onBackBtnListener DrawerBase dipanggil isThisLifecycleActive= ${currentState == LifecycleBase.State.ACTIVE}")
+
                 val startDrawerIsOpen= isDrawerOpen(Type.DRAWER_START)
                 val endDrawerIsOpen= isDrawerOpen(Type.DRAWER_END)
 
@@ -66,7 +68,8 @@ interface DrawerBase: ComplexLifecycleSideBase,
                 if(endDrawerIsOpen)
                     slideDrawer(Type.DRAWER_END, false)
 
-                startDrawerIsOpen || endDrawerIsOpen
+                currentState == LifecycleBase.State.ACTIVE
+                        && (startDrawerIsOpen || endDrawerIsOpen)
             } else false
         }
 
@@ -244,7 +247,7 @@ interface DrawerBase: ComplexLifecycleSideBase,
         if(owner == this)
             _prop_backBtnBase.notNull { base ->
                 base.removeOnBackBtnListenerByTag(TAG_ON_BACK_BTN_LISTENER)
-                loge("backBtnBase dicopot")
+//                loge("backBtnBase dicopot")
             }
 //            _prop_backBtnBase?.removeOnBackBtnListenerByTag(TAG_ON_BACK_BTN_LISTENER)
     }

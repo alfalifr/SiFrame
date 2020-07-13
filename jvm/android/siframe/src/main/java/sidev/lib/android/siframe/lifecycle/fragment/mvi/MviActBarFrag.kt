@@ -9,7 +9,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 
 abstract class MviActBarFrag<S: ViewState, I: ViewIntent> : ActBarFrag(), MviView<S, I>{
-    override var currentState: S?= null
+    override var currentViewState: S?= null
     override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): Presenter?
 }

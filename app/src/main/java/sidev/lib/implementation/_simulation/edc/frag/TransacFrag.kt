@@ -7,7 +7,6 @@ import android.widget.PopupMenu
 import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
 import kotlinx.android.synthetic.main.comp_performance_bar.view.*
 import org.jetbrains.anko.support.v4.runOnUiThread
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
