@@ -75,6 +75,8 @@ dependencies {
     //Google Material
     implementation 'com.google.android.material:material:1.0.0'
 
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
+
     //String match
     implementation 'io.grpc:grpc-core:1.13.1'
     implementation 'org.apache.commons:commons-lang3:3.6'

@@ -508,4 +508,9 @@ Pola String Umum
     fun isUrl(str: String): Boolean{
         return str.matches(urlRegexStr.toRegex())
     }
+
+
+    object Json{
+
+    }
 }

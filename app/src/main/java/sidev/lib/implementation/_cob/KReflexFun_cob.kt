@@ -1,6 +1,10 @@
-package sidev.lib.universal.`fun`
+package sidev.lib.implementation._cob
 
 import android.util.Log
+import sidev.lib.universal.`fun`.notNullTo
+import sidev.lib.universal.`fun`.printe
+import sidev.lib.universal.`fun`.superInterfacesTree
+import sidev.lib.universal.`fun`.superclassesTree
 import sidev.lib.universal.`val`.StringLiteral
 import sidev.lib.universal.annotation.Interface
 import sidev.lib.universal.structure.NestedIterator
@@ -9,8 +13,8 @@ import sidev.lib.universal.structure.NestedSequence
 import java.io.Serializable
 import java.lang.Exception
 import kotlin.reflect.*
-import kotlin.reflect.full.*
-
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberProperties
 
 const val K_CLASS_BASE_NAME= "KClassImpl"
 /*
@@ -74,24 +78,9 @@ fun main(args: Array<String>){
 
     println("\n=============BATAS==============\n")
 
-    for((i, supert) in AC::class.java.superclassesTree.withIndex()) {
+    for((i, supert) in AC::class.java.superclassesTree.withIndex()){
         println("i= $i super= $supert isInterface= ${supert.isInterface}")
     }
-
-    println("\n=============BATAS sealedSubClass for biasa ==============\n")
-
-    for((i, subclass) in AA::class.sealedSubclasses.withIndex()){
-        println("i= $i subclass= $subclass isSealed= ${subclass.isSealed}")
-    }
-
-    println("\n=============BATAS sealedSubClass==============\n")
-
-    for((i, subclass) in AA::class.sealedSubClassesTree.withIndex()){
-        println("i= $i subclass= $subclass isSealed= ${subclass.isSealed}")
-    }
-
-
-    println("\n============= AC::class.getSealedClassName()= ${AC::class.getSealedClassName()} ==============\n")
 
     println("\n=============BATAS==============\n")
 
@@ -106,18 +95,11 @@ fun main(args: Array<String>){
 }
 
 
-
 val <T: Any> KClass<T>.isInterface
     get()= this.java.isInterface
 
 val KType.isInterface
     get()= (this.classifier as? KClass<*>)?.java?.isInterface
-
-/**
- * Fungsi yg dapat dipanggil melalui Java.
- */
-fun <T: Any> getKClass(javaClass: Class<T>): KClass<T>
-        = javaClass.kotlin
 
 /*
 /**
@@ -271,13 +253,6 @@ fun Any.getSealedClassName(isQualifiedName: Boolean= true): String?{
  */
 
 /**
- * Digunakan untuk mengambil nama qualified dari turunan sealed class.
- * Qualified name yg diambil dg pola berikut <Super>...<Class> dg super merupakan superclass.
- * Bagian paling depan dari qualified name adalah nama class dg kata kunci sealed yg paling dekat
- * dg this [KClass] tempat fungsi ini dipanggil.
- *
- * Fungsi ini msh bergantung pada Java Reflection.
- *
  * [isQualifiedName] -true jika nama yg diambil adalah nama lengkap dimulai dari sealed super class
  *                    hingga kelas ini yg dipidahkan oleh titik (.).
  *                   -false jika nama yg diambil hanyalah nama kelas ini.
@@ -285,16 +260,15 @@ fun Any.getSealedClassName(isQualifiedName: Boolean= true): String?{
  *         -[KClass.simpleName] jika ternyata kelas ini gak punya sealed super class.
  */
 fun KClass<*>.getSealedClassName(isQualifiedName: Boolean= true): String?{
-//    Log.e("getSealedClassName", ".getSealedClassName() MAULAI")
+    Log.e("getSealedClassName", ".getSealedClassName() MAULAI")
     return this.simpleName.notNullTo { thisName ->
         var thisNameRes= thisName
         if(isQualifiedName){
 //            Log.e("getSealedClassName", ".getSealedClassName() QUALIFIED MAULAI")
             var superName= ""
             var isSealedSuperFound= false
-            for(supertype in this.supertypesJvm(true)){
+            for(supertype in this.supertypesTree){
                 val clazz= (supertype.classifier as? KClass<*>)
-//                if(clazz == Any::class) continue
                 if(clazz != null){
                     superName= clazz.simpleName!! +"." +superName
                     if(clazz.isSealed){
@@ -319,8 +293,7 @@ fun KClass<*>.getSealedClassName(isQualifiedName: Boolean= true): String?{
             if(isSealedSuperFound)
                 thisNameRes= superName +thisNameRes
         }
-//        println("getSealedClassName(): thisNameRes= $thisNameRes")
-//        Log.e("getSealedClassName", "thisNameRes= $thisNameRes")
+        Log.e("getSealedClassName", "thisNameRes= $thisNameRes")
         thisNameRes
     }
 }
@@ -453,6 +426,11 @@ fun <T: Any> defaultPrimitiveValue(clazz: KClass<T>): T?{
     return res as? T
 }
 
+/**
+ * Fungsi yg dapat dipanggil melalui Java.
+ */
+fun <T: Any> getKClass(javaClass: Class<T>): KClass<T>
+    = javaClass.kotlin
 
 /*
 fun <T: Any> checkTypeSafety(any: T): Boolean{

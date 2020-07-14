@@ -20,6 +20,7 @@ import sidev.lib.android.siframe.arch.intent_state.ViewIntent;
 import sidev.lib.implementation.intent_state.ContentFragIntent;
 import sidev.lib.implementation.intent_state.ContentFragState;
 import sidev.lib.implementation.viewmodel.ContentVm;
+//import sidev.lib.universal.fun.KReflexFunKt;
 
 public class Cob {
     public static void main(String[] args) {
@@ -96,9 +97,11 @@ public class Cob {
 
 //        for(Class cls : Z.class)
 //        System.out.println("");
+        int defa= KReflexFun_cobKt.defaultPrimitiveValue(KReflexFun_cobKt.getKClass(int.class));
+        System.out.println("default int= " +defa);
     }
 }
-
+/*
 class B extends A{
 
 }
@@ -110,3 +113,4 @@ interface S{}
 interface Y extends S{}
 interface X{}
 interface Z extends S, X{}
+// */
