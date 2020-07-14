@@ -93,6 +93,9 @@ public class Cob {
                 return 0;
             }
         };
+
+//        for(Class cls : Z.class)
+//        System.out.println("");
     }
 }
 
@@ -102,3 +105,8 @@ class B extends A{
 class A{
     String a;
 }
+
+interface S{}
+interface Y extends S{}
+interface X{}
+interface Z extends S, X{}

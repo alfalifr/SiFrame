@@ -5,12 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
-import android.util.SparseIntArray
 import android.view.*
 import android.widget.*
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
-import androidx.core.util.set
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.layoutInflater
@@ -18,12 +17,13 @@ import sidev.lib.android.external._AnkoInternals.runOnUiThread
 //import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.exception.ClassCastExc
-import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.android.siframe.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
-import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.structure.NestedIterator
+import sidev.lib.universal.structure.NestedIteratorImpl
+import sidev.lib.universal.structure.NestedSequence
 import java.lang.ClassCastException
 
 
@@ -63,12 +63,15 @@ fun View.iterateChildren(func: (child: View) -> Unit){
  * Properti untuk meng-iterasi seluruh keturunan this [View].
  * Menggunakan metode Depth-First Pre-Order.
  */
-val View.childrenTree: Iterator<View>
-    get()= object : NestedIterator<View>(this){
-        override fun getIterator(now: View): Iterator<View>? {
-            return if(now is ViewGroup && now.childCount > 0) now.children.iterator()
-            else null
-        }
+val View.childrenTree: NestedSequence<View>
+    get()= object : NestedSequence<View>{
+        override fun iterator(): NestedIterator<View>
+            = object: NestedIteratorImpl<View>(this@childrenTree){
+                override fun getIterator(now: View): Iterator<View>? {
+                    return if(now is ViewGroup && now.childCount > 0) now.children.iterator()
+                    else null
+                }
+            }
     }
 /*
 val View.childrenTree: MutableIterator<View>
@@ -101,13 +104,16 @@ val View.childrenTree: MutableIterator<View>
 /**
  * Properti untuk meng-iterasi parent yg merupakan satu garis hirarki.
  */
-val View.parentsTree: Iterator<View>
-    get()= object: Iterator<View>{
-        override fun hasNext(): Boolean
-            = this@parentsTree.parent is View
+val View.parentsTree: Sequence<View>
+    get()= object: Sequence<View>{
+        override fun iterator(): Iterator<View>
+            = object: Iterator<View>{
+            override fun hasNext(): Boolean
+                    = this@parentsTree.parent is View
 
-        override fun next(): View
-            = this@parentsTree.parent as View
+            override fun next(): View
+                    = this@parentsTree.parent as View
+        }
     }
 
 /**
@@ -147,6 +153,15 @@ fun Fragment.getRootView(): View?{
         ?: this.view?.rootView
 }
 
+
+
+inline fun <reified T: View> View.findViewByType(
+    direction: Int= _SIF_Constant.DIRECTION_DOWN,
+//    tag: Any?= null,
+    includeItself: Boolean= true
+): T?
+    = findViewByType(T::class.java, direction, includeItself)
+
 /**
  * Menemukan first occurrence.
  *
@@ -158,30 +173,40 @@ fun Fragment.getRootView(): View?{
  * @return view dg tipe [T]. View dapat berupa child, parent, ataupun
  *   view tempat fungsi ini menempel.
  */
-inline fun <reified T: View> View.findViewByType(
+fun <T: View> View.findViewByType(
+    clazz: Class<T>,
     direction: Int= _SIF_Constant.DIRECTION_DOWN,
 //    tag: Any?= null,
     includeItself: Boolean= true
 ): T? {
-    if(includeItself && this is T)
-        return this
+    if(includeItself && clazz.isAssignableFrom(this::class.java)) //this::class.java.name == clazz.name
+        return this as T
 //    var viewRes: T?= null
 
     if(direction == _SIF_Constant.DIRECTION_UP){
         for(parent in this.parentsTree){
 //            loge("parent= $parent parent is T= ${parent is T}")
-            if(parent is T)
-                return parent
+            if(clazz.isAssignableFrom(parent::class.java))
+                return parent as T
         }
     } else{ //Scr default akan meng-iterate ke bawah atau ke child.
         for(child in this.childrenTree){
 //            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${child is T}")
-            if(child is T)
-                return child
+            if(clazz.isAssignableFrom(child::class.java))
+                return child as T
         }
     }
     return null
 }
+
+
+inline fun <reified T: View> View.findView(
+    @IdRes id: Int?= null,
+    tag: Any?= null,
+    direction: Int= _SIF_Constant.DIRECTION_DOWN,
+    includeItself: Boolean= true
+): T?
+    = findView(T::class.java, id, tag, direction, includeItself)
 
 /**
  * Fungsi untuk menemukan view yg sesuai dg spesifikasi [id], [tag], atau [T].
@@ -194,27 +219,30 @@ inline fun <reified T: View> View.findViewByType(
  * @return view dg spesifikasi yg diinputkan
  *   dan null jika tidak ada view yg cocok dalam hirarki.
  */
-inline fun <reified T: View> View.findView(
+fun <T: View> View.findView(
+    clazz: Class<T>,
     @IdRes id: Int?= null,
     tag: Any?= null,
     direction: Int= _SIF_Constant.DIRECTION_DOWN,
     includeItself: Boolean= true
 ): T?{
-    if(includeItself && this is T
+    if(includeItself && clazz.isAssignableFrom(this::class.java) //this::class.java.name == clazz.name
         && (id == null || id == this.id) && (tag == null || tag == this.tag))
-        return this
+        return this as T
 
     if(direction == _SIF_Constant.DIRECTION_UP){
         for(parent in this.parentsTree){
 //            loge("parent= $parent parent is T= ${parent is T}")
-            if(parent is T && (id == null || id == parent.id) && (tag == null || tag == parent.tag))
-                return parent
+            if(clazz.isAssignableFrom(parent::class.java) //parent::class.java.name == clazz.name
+                && (id == null || id == parent.id) && (tag == null || tag == parent.tag))
+                return parent as T
         }
     } else{ //Scr default akan meng-iterate ke bawah atau ke child.
         for(child in this.childrenTree){
-//            loge("T= ${T::class.java.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${child is T}")
-            if(child is T && (id == null || id == child.id) && (tag == null || tag == child.tag))
-                return child
+            loge("T= ${clazz.simpleName} child= ${child::class.java.simpleName} idName= ${child.idName} idPkg= ${child.idPackage} idRes= ${child.idResName} child is T= ${clazz.isAssignableFrom(child::class.java)}")
+            if(clazz.isAssignableFrom(child::class.java) //child::class.java.name == clazz.name
+                && (id == null || id == child.id) && (tag == null || tag == child.tag))
+                return child as T
         }
     }
     return null
@@ -304,21 +332,46 @@ fun View.getActivity(): Activity?{
 val View.activity: Activity?
     get()= _ViewUtil.getActivity(this)
 
-fun View.getSize(): Array<Int>{
-    return _ViewUtil.getViewSize(this.activity, this)
-}
+var View.size: Array<Int>
+    get()= _ViewUtil.getViewSize(this.activity, this)
+    set(v){
+        if(v.size != 2)
+            throw ParameterExc(paramName = "View.size", detMsg = "IntArray yg diinputkan harus berukuran 2")
+        _ViewUtil.setViewSize(this, v[0], v[1])
+    }
+/*
 fun View.setSize(width: Int, height: Int){
     return _ViewUtil.setViewSize(this, width, height)
 }
+ */
 
+/*
 fun Int.dpToPx(): Int{
     return _ViewUtil.dpToPx(this)
 }
+ */
+
+/**
+ * Properti yg mengubah this [Int] dp menjadi px.
+ * Sama dg fungsi [_ViewUtil.dpToPx].
+ */
+val Int.dp: Int
+    get()= _ViewUtil.dpToPx(this)
 
 fun ViewGroup.changeView(v: View){
     removeAllViews()
     addView(v)
 }
+
+
+fun View.setBgColorRes(@ColorRes colorId: Int){
+    _ViewUtil.setBgColorRes(this, colorId)
+}
+
+fun ImageView.setBgColorRes(@ColorRes colorId: Int){
+    _ViewUtil.setColorRes(this, colorId)
+}
+
 
 fun Context.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View? {
     return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
@@ -359,7 +412,7 @@ var RadioGroup.selectedInd: Int
     }
 
 
-///*
+/*
 /** Returns a [MutableIterator] over the views in this view group. */
 fun ViewGroup.withIndex() = object : MutableIterator<Pair<Int, View>> {
     private var index = 0
@@ -400,6 +453,10 @@ fun View.getInitSize(l: (width: Int, height: Int) -> Unit){
 
 var EditText.txt: String
     set(v)= this.setText(v)
+    get()= this.text.toString()
+
+var TextView.txt: String
+    set(v){ this.text= v }
     get()= this.text.toString()
 
 

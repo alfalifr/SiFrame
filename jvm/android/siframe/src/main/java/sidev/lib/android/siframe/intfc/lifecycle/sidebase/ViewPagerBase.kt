@@ -264,16 +264,17 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     /**
      * @return true jika berhasil dan sebaliknya.
      */
-    fun registerOnPageFragToActListener(frag: F, l: OnPageFragActiveListener): Boolean{
+    fun registerOnPageFragActiveListener(frag: F, l: OnPageFragActiveListener): Boolean{
         val pos= vpAdp.items?.indexOf(frag) ?: -1
         return if(pos >= 0){
             onPageFragActiveListener.setValueAt(pos, l) //= l
             true
         } else false
     }
-    fun registerOnPageFragToActListener(frag: F, func: (vParent: View, pos: Int) -> Unit): Boolean{
-        return registerOnPageFragToActListener(frag, object :
-            OnPageFragActiveListener {
+    fun registerOnPageFragActiveListener(frag: F, func: (vParent: View, pos: Int) -> Unit): Boolean{
+        return registerOnPageFragActiveListener(frag, object : OnPageFragActiveListener {
+            override var tag: Any?= null
+
             override fun onPageFragActive(vParent: View, pos: Int) {
                 func(vParent, pos)
             }

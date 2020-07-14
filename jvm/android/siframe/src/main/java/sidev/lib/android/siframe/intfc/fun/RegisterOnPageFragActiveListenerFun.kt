@@ -10,6 +10,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
  */
 interface RegisterOnPageFragActiveListenerFun {
     fun registerOnPageFragActiveListener(vpAct: ViewPagerBase<Frag>, frag: Frag, func: (vParent: View, pos: Int) -> Unit){
-        vpAct.registerOnPageFragToActListener(frag, func)
+        vpAct.registerOnPageFragActiveListener(frag, func)
     }
 }

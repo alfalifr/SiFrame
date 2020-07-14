@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.listener
 
-interface OnValueChange<T> {
+interface OnValueChange<T>: Listener {
     companion object{
 
     }

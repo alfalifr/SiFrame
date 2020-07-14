@@ -50,15 +50,15 @@ class DrawerVpImplFrag : DrawerVpFrag<Frag>(), TopMiddleBottomBase{
     override fun _initStartDrawerView(startDrawerView: View) {
         startDrawerView.iv.imageResource= R.drawable.ic_profile
         startDrawerView.tv.text= "_initStartDrawerView() ${this::class.java.simpleName}"
-        _ViewUtil.setColor(startDrawerView.iv, _ColorRes.COLOR_LIGHT)
-        _ViewUtil.setBgColor(startDrawerView, R.color.unguTua)
+        _ViewUtil.setColorRes(startDrawerView.iv, _ColorRes.COLOR_LIGHT)
+        _ViewUtil.setBgColorRes(startDrawerView, R.color.unguTua)
     }
 
     override fun _initEndDrawerView(endDrawerView: View) {
         endDrawerView.iv.imageResource= R.drawable.ic_cross_circle
         endDrawerView.tv.text= "_initEndDrawerView() ${this::class.java.simpleName}"
-        _ViewUtil.setColor(endDrawerView.iv, _ColorRes.RED)
-        _ViewUtil.setBgColor(endDrawerView, R.color.ijoRumputMuda)
+        _ViewUtil.setColorRes(endDrawerView.iv, _ColorRes.RED)
+        _ViewUtil.setBgColorRes(endDrawerView, R.color.ijoRumputMuda)
     }
 
     override fun _initView(layoutView: View) {

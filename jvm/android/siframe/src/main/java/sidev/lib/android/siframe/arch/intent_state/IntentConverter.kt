@@ -99,7 +99,7 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
 
     fun postRequest(intent: I /*, vararg data: Pair<String, Any>*/){
         doWhenLinkNotExpired {
-            val sealedName= intent.getSealedClassName(true)!!
+            val sealedName= intent::class.getSealedClassName(true)!!
             var reqCode= equivReqCodeMap[sealedName]
             if(reqCode == null){
                 reqCode= getEquivReqCode(intent, getDefaultEquivReqCode(intent))

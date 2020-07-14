@@ -21,12 +21,12 @@ class ActBarFrag4 : ActBarFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag4 - Act"
-        _ViewUtil.setBgColor(layoutView, R.color.ijoBiruMuda)
+        _ViewUtil.setBgColorRes(layoutView, R.color.ijoBiruMuda)
         isActBarViewFromFragment= true
     }
 
     override fun _initActBar(actBarView: View) {
-        _ViewUtil.setBgColor(actBarView, R.color.unguTua)
+        _ViewUtil.setBgColorRes(actBarView, R.color.unguTua)
         actBarView.tv.text= "$fragTitle _initActBar()"
     }
 

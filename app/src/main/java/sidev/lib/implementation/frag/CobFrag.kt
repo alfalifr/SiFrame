@@ -7,9 +7,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.cob_page.view.*
+import org.jetbrains.anko.textColor
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.android.siframe.tool.util.isIdIn
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
@@ -37,9 +38,16 @@ class CobFrag : Frag(){
 
         layoutView.btn.asNotNull { btn: Button ->
             val id= R.id.tv_id
-            btn.text= "R.id.tv_id => isId? -> ${id isIdIn context!!}"
+            btn.text= "R.id.tv_id => isId? -> ${id isIdIn context!!}" //(R.dimen.drawer_horizontal_width_percent asDimenIn context!!).toString() //
+            btn.textColor= R.color.ijoRumputMuda asColorIn context!!
+//            btn.setBgColorRes(R.)
             btn.setOnClickListener { layoutView.findView<TextView>(R.id.et_number)!! }
         }
+
+        layoutView.rl_top_container.setOnClickListener { toast("Halo bro") }
+        layoutView.rl_top_container.isClickable= false
+        layoutView.rl_top_container.isClickable= true
+        layoutView.rl_top_container.setBgColorRes(R.color.colorPrimaryDark)
 
 //        (layoutView as EditText).txt= "aku"
     }

@@ -13,7 +13,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.runWithParamTypeSafety
 
 //Nullable karena kemungkinan user pingin ada kondisi saat value == null
-open class LifeData<T> : MutableLiveData<T>(), ExpirableBase, TagProp {
+open class LifeData<T> : MutableLiveData<T>(), ExpirableBase, TagProp<String> {
     final override val isExpired: Boolean
         get() = !hasObservers()
 

@@ -41,8 +41,8 @@ interface DrawerActBase : DrawerBase{
         startDrawerContainer.layoutParams= lpStart
         endDrawerContainer.layoutParams= lpEnd
 
-        _ViewUtil.setBgColor(startDrawerContainer, _ColorRes.COLOR_PRIMARY_DARK)
-        _ViewUtil.setBgColor(endDrawerContainer, _ColorRes.COLOR_PRIMARY_DARK)
+        _ViewUtil.setBgColorRes(startDrawerContainer, _ColorRes.COLOR_PRIMARY_DARK)
+        _ViewUtil.setBgColorRes(endDrawerContainer, _ColorRes.COLOR_PRIMARY_DARK)
 
         rootDrawerLayout= rootView.findViewByType()!!
         __initView(rootView)

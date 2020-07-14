@@ -20,19 +20,19 @@ class ActBarFrag2 : ActBarFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag2"
-        _ViewUtil.setBgColor(layoutView, R.color.ijoRumputMuda)
+        _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumputMuda)
         isActBarViewFromFragment= true
     }
 
     override fun _initActBar(actBarView: View) {
-        _ViewUtil.setBgColor(actBarView, R.color.ijo)
+        _ViewUtil.setBgColorRes(actBarView, R.color.ijo)
         actBarView.tv.text= fragTitle
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         actSimple.asNotNull { act: DrawerActBase ->
             act.setDrawerView(DrawerBase.Type.DRAWER_END, null)
-            _ViewUtil.setBgColor(act.startDrawerContainer, R.color.biruLaut)
+            _ViewUtil.setBgColorRes(act.startDrawerContainer, R.color.biruLaut)
         }
     }
 }

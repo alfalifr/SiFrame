@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.universal.`fun`.*
 
-open class RvScrollListener : RecyclerView.OnScrollListener(){
+open class RvScrollListener : RecyclerView.OnScrollListener(), Listener{
+    override var tag: Any?= null
+
     /**
      * Total scroll scr vertical yg telah dilakukan pada [RecyclerView].
      */

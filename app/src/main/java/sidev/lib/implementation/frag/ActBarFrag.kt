@@ -17,7 +17,7 @@ class ActBarFrag : ActBarFrag(){
 
 
     override fun _initView(layoutView: View) {
-        _ViewUtil.setBgColor(layoutView, R.color.biruLangit)
+        _ViewUtil.setBgColorRes(layoutView, R.color.biruLangit)
         actSimple.asNotNull { act: ActBarFromFragBase ->
             act.isActBarViewFromFragment= true
         }

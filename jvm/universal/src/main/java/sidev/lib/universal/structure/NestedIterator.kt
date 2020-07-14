@@ -1,7 +1,7 @@
 package sidev.lib.universal.structure
 
-import android.util.Log
 import android.view.ViewGroup
+import sidev.lib.universal.annotation.Interface
 
 /**
  * Digunakan untuk melakukan iterasi terhadap data yg memiliki banyak keturunan.
@@ -9,58 +9,10 @@ import android.view.ViewGroup
  *
  * Iterasi dilakukan menggunakan metode DEPTH-FIRST PRE-ORDER.
  */
-abstract class NestedIterator<T>(val start: T): Iterator<T>{
-    private val activeLines= ArrayList<Iterator<T>>()
-//    private var activeLineRowIndex= -1 //Child ke pertama dimulai dari index 0 [activeLines].
-    private var activeIterator: Iterator<T>?= null
-    private var hasInited= false
-//    private var now: T?= null
-
-    override fun hasNext(): Boolean{
-        return if(!hasInited){
-            getChildIterator(start)
-            hasInited= true
-            activeIterator != null //Jika null, itu artinya object dg iterator ini gak punya element.
-        } else{
-            while(!activeIterator!!.hasNext() && activeLines.size > 1){
-                activeLines.remove(activeIterator!!)
-                activeIterator= activeLines.last()
-            }
-            activeIterator!!.hasNext() //Gak mungkin null, karena kalo ada null, nullnya di awal.
-//                    || activeLines.size > 1
-        }
-    }
-
-    override fun next(): T {
-        val now= activeIterator!!.next()
-/*
-            <13 Juli 2020> => Definisi lama. Pergantian [activeIterator] dilakukan di [hasNext].
-            if(activeIterator?.hasNext() == true) activeIterator!!.next()
-            else {
-                activeLines.remove(activeIterator!!)
-                activeIterator= activeLines.last()
-                activeIterator?.next()
-            }
- */
-
-//        var child: Iterator<T>?= null
-        if(now != null)
-            getChildIterator(now)
-
-        return now!!
-    }
-
+@Interface
+interface NestedIterator<T>: Iterator<T>{
     /**
-     * @return null jika sudah tidak ada lagi element pada [index].
+     * @return null jika sudah tidak ada lagi nested iterator pada [now].
      */
-//    abstract fun getElement(index: Int): T?
-    abstract fun getIterator(now: T): Iterator<T>?
-
-    private fun getChildIterator(now: T){
-        val child= getIterator(now)
-        if(child != null){
-            activeLines.add(child)
-            activeIterator= child
-        }
-    }
+    fun getIterator(now: T): Iterator<T>?
 }

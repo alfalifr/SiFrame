@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.intfc.listener
 import android.app.Activity
 
 abstract class ProgressListener<M>(var act: Activity?= null,
-                                   var listenerId: String? = null){
+                                   var listenerId: String? = null): Listener{
     companion object {
         val RES_OK= 1
         val RES_PARTIAL= 0
@@ -14,6 +14,8 @@ abstract class ProgressListener<M>(var act: Activity?= null,
         val PROGRES_FINISHED= 11 //saat pekerjaan selesai (bisa HASIL_BERHASIL atau HASIL_GAGAL)
         val PROGRES_NOT_STARTED= 10 //saat total diganti namun progres belum bertambah
     }
+
+    override var tag: Any?= null
 
     private var progresStatus= PROGRES_NOT_STARTED
     var total= 0

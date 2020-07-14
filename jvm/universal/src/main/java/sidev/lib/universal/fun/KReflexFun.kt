@@ -1,17 +1,14 @@
 package sidev.lib.universal.`fun`
 
-import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
+import sidev.lib.universal.annotation.Interface
+import sidev.lib.universal.structure.NestedIterator
+import sidev.lib.universal.structure.NestedIteratorImpl
+import sidev.lib.universal.structure.NestedSequence
 import java.io.Serializable
 import java.lang.Exception
-import kotlin.reflect.KClass
-import kotlin.reflect.KDeclarationContainer
-import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.defaultType
-import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.*
+import kotlin.reflect.full.*
 
 const val K_CLASS_BASE_NAME= "KClassImpl"
 /*
@@ -19,9 +16,66 @@ fun Any.findSealedSubclass(func: ()): Class{
     this::class.isInstance()
 }
  */
+interface A
+interface Y
+interface X: Y
+interface Z: A
+open class B
+open class D
 
+class C: Z, B()
+
+sealed class AA
+sealed class AB: AA()
+sealed class AC:  Z, Y, X, AB()
+
+
+fun main(args: Array<String>){
+//    Class.forName("").kotlin.java.isInterface
+    for(supert in AC::class.supertypes){
+        (supert.classifier as KClass<*>)
+        println("super= $supert supert is KClass<*> = ${supert.classifier is KClass<*>} isInterface= ${supert.isInterface}")
+    }
+
+    println("\n=============BATAS #1==============\n")
+
+    val supertypeSeq= AC::class.supertypesJvm(true)
+
+    for((i, supert) in supertypeSeq.withIndex()){
+        println("i= $i super= $supert isInterface= ${supert.isInterface}")
+    }
+
+    println("\n=============BATAS #2==============\n")
+
+    for( supert in supertypeSeq){
+        println("super= $supert isInterface= ${supert.isInterface}")
+    }
+
+    println("\n=============BATAS==============\n")
+
+    for((i, supert) in AC::class.java.superInterfacesTree.withIndex()){
+        println("i= $i super= $supert isInterface= ${supert.isInterface}")
+    }
+
+    println("\n=============BATAS==============\n")
+
+    for((i, supert) in AC::class.java.superclassesTree.withIndex()){
+        println("i= $i super= $supert isInterface= ${supert.isInterface}")
+    }
+}
+
+
+val <T: Any> KClass<T>.isInterface
+    get()= this.java.isInterface
+
+val KType.isInterface
+    get()= (this.classifier as? KClass<*>)?.java?.isInterface
+
+/*
 /**
  * [onlyExtendedClass] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
+ *
+ * Fungsi ini msh bergantung dari Java Reflection.
  */
 fun Any.iterateSuperClass_k(onlyExtendedClass: Boolean= true, iterator: (KClass<*>) -> Unit){
 /*
@@ -38,11 +92,13 @@ fun Any.iterateSuperClass_k(onlyExtendedClass: Boolean= true, iterator: (KClass<
 //    Log.e("iterateSuperClass_k", "iterateSuperClass_k() LOLOS BRO")
 
     if(onlyExtendedClass){
-        val supertype= this::class.supertypes.first() //super yg berupa class pasti ada di awal deklarasi.
+        println()
+        val supertype= this::class.supertypes.find { (it.classifier as? KClass<*>)?.isInterface ?: false } //.first() //super yg berupa class pasti ada di awal deklarasi.
 //        Log.e("iterateSuperClass_k", "iterateSuperClass_k() supertype.classifier= ${(supertype.classifier as KClass<*>).simpleName}")
 //        throw Exception()
-        iterator(supertype.classifier as KClass<*>)
-        supertype.classifier!!.iterateSuperClass_k(onlyExtendedClass, iterator)
+        if(supertype != null)
+            iterator(supertype.classifier as KClass<*>)
+        supertype?.classifier!!.iterateSuperClass_k(onlyExtendedClass, iterator)
     } else{
         for(supertype in this::class.supertypes){
 //            Log.e("iterateSuperClass_k", "!!!onlyExtendedClass iterateSuperClass_k() supertype.classifier= ${(supertype.classifier as KClass<*>).simpleName}")
@@ -51,20 +107,83 @@ fun Any.iterateSuperClass_k(onlyExtendedClass: Boolean= true, iterator: (KClass<
         }
     }
 }
+ */
 
-fun Any.iterateSealedClass(iterator: (Class<*>) -> Unit){
+/**
+ * [onlyExtendedClass] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
+ * Fungsi ini mendefinisikan supertype sbg interface berdasarkan refleksi Java.
+ *
+ * Fungsi ini msh bergantung dari Java Reflection.
+ */
+fun KClass<*>.supertypesJvm(onlyExtendedClass: Boolean= false): NestedSequence<KType>{
+    return object : NestedSequence<KType>{
+        override fun iterator(): NestedIterator<KType>
+            = object: NestedIteratorImpl<KType>(supertypes){
+            override fun getIterator(now: KType): Iterator<KType>?{
+                return if((now.classifier as? KClass<*>)?.simpleName == K_CLASS_BASE_NAME) null
+                else (now.classifier as? KClass<*>)?.supertypes?.iterator() //Jika (now.classifier as? KClass<*>)?.simpleName menghasilkan null, maka cabang ini tetap aman.
+            }
+
+            override fun skip(now: KType): Boolean
+                    = ((now.classifier as? KClass<*>)?.isInterface ?: false) && onlyExtendedClass
+        }
+    }
+}
+
+/**
+ * [onlyExtendedClass] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
+ * Fungsi ini mendefinisikan supertype sbg interface berdasarkan anotasi framework SiFrame,
+ * yaitu tipe data yg memiliki anotasi [Interface].
+ */
+fun KClass<*>.supertypesSif(onlyExtendedClass: Boolean= false): NestedSequence<KType>{
+    return object : NestedSequence<KType>{
+        override fun iterator(): NestedIterator<KType>
+            = object: NestedIteratorImpl<KType>(supertypes){
+            override fun getIterator(now: KType): Iterator<KType>?{
+                return if((now.classifier as? KClass<*>)?.simpleName == K_CLASS_BASE_NAME) null
+                else (now.classifier as? KClass<*>)?.supertypes?.iterator() //Jika (now.classifier as? KClass<*>)?.simpleName menghasilkan null, maka cabang ini tetap aman.
+            }
+
+            override fun skip(now: KType): Boolean
+                    = ((now.classifier as? KClass<*>)?.findAnnotation<Interface>() != null)
+                    && onlyExtendedClass
+        }
+    }
+}
+
+val KClass<*>.supertypesTree: NestedSequence<KType>
+    get()= object : NestedSequence<KType>{
+        override fun iterator(): NestedIterator<KType>
+            = object: NestedIteratorImpl<KType>(supertypes){
+            override fun getIterator(now: KType): Iterator<KType>?{
+                return if((now.classifier as? KClass<*>)?.simpleName == K_CLASS_BASE_NAME) null
+                else (now.classifier as? KClass<*>)?.supertypes?.iterator() //Jika (now.classifier as? KClass<*>)?.simpleName menghasilkan null, maka cabang ini tetap aman.
+            }
+        }
+    }
+
+val KClass<*>.sealedSubClassesTree: NestedSequence<KClass<*>>
+    get()= object : NestedSequence<KClass<*>>{
+        override fun iterator(): NestedIterator<KClass<*>>
+            = object: NestedIteratorImpl<KClass<*>>(this@sealedSubClassesTree){
+            override fun getIterator(now: KClass<*>): Iterator<KClass<*>>?
+                    = now.sealedSubclasses.iterator()
+        }
+    }
+
+fun KClass<*>.iterateSealedClass(iterator: (Class<*>) -> Unit){
     for(clazz in this::class.sealedSubclasses){
         iterator(clazz.java)
     }
 }
-fun Any.findSealedSubclass(iterator: (Class<*>) -> Boolean): Class<*>?{
+fun KClass<*>.findSealedSubclass(iterator: (Class<*>) -> Boolean): Class<*>?{
     for(clazz in this::class.sealedSubclasses){
         if(iterator(clazz.java))
             return clazz.java
     }
     return null
 }
-
+/*
 /**
  * [isQualifiedName] -true jika nama yg diambil adalah nama lengkap dimulai dari sealed super class
  *                    hingga kelas ini yg dipidahkan oleh titik (.).
@@ -72,6 +191,7 @@ fun Any.findSealedSubclass(iterator: (Class<*>) -> Boolean): Class<*>?{
  * @return -null jika kelas ini gak punya [KClass.simpleName]
  *         -[KClass.simpleName] jika ternyata kelas ini gak punya sealed super class.
  */
+@Deprecated("Gunakan [KClass<*>.getSealedClassName] agar lebih sesuai konteks", ReplaceWith("KClass<*>.getSealedClassName"))
 fun Any.getSealedClassName(isQualifiedName: Boolean= true): String?{
     Log.e("getSealedClassName", ".getSealedClassName() MAULAI")
     val thisName= if(this is KClass<*>) this.simpleName
@@ -100,6 +220,59 @@ fun Any.getSealedClassName(isQualifiedName: Boolean= true): String?{
         thisNameRes
     }
 }
+ */
+
+/**
+ * [isQualifiedName] -true jika nama yg diambil adalah nama lengkap dimulai dari sealed super class
+ *                    hingga kelas ini yg dipidahkan oleh titik (.).
+ *                   -false jika nama yg diambil hanyalah nama kelas ini.
+ * @return -null jika kelas ini gak punya [KClass.simpleName]
+ *         -[KClass.simpleName] jika ternyata kelas ini gak punya sealed super class.
+ */
+fun KClass<*>.getSealedClassName(isQualifiedName: Boolean= true): String?{
+    Log.e("getSealedClassName", ".getSealedClassName() MAULAI")
+    return this.simpleName.notNullTo { thisName ->
+        var thisNameRes= thisName
+        if(isQualifiedName){
+//            Log.e("getSealedClassName", ".getSealedClassName() QUALIFIED MAULAI")
+            var superName= ""
+            var isSealedSuperFound= false
+            for(supertype in this.supertypesTree){
+                val clazz= (supertype.classifier as? KClass<*>)
+                if(clazz != null){
+                    superName= clazz.simpleName!! +"." +superName
+                    if(clazz.isSealed){
+                        isSealedSuperFound= true
+                        break
+                    }
+                }
+            }
+/*
+            this.iterateSuperClass_k { clazz ->
+                try{
+                    superName= clazz.simpleName!! +"." +superName
+                    if(clazz.isSealed){
+                        isSealedSuperFound= true
+                        return@iterateSuperClass_k
+                    }
+                }
+                catch (e: KotlinNullPointerException){ return@iterateSuperClass_k }
+            }
+ */
+//            Log.e("getSealedClassName", ".getSealedClassName() QUALIFIED SELESAI")
+            if(isSealedSuperFound)
+                thisNameRes= superName +thisNameRes
+        }
+        Log.e("getSealedClassName", "thisNameRes= $thisNameRes")
+        thisNameRes
+    }
+}
+
+/**
+ * <14 Juli 2020> => Versi baru fungsi inline yg kecil.
+ */
+inline fun <reified T: Any> new(noinline defParamValFunc: ((param: KParameter) -> Any?)?= null): T?
+    = new(T::class, defParamValFunc)
 
 /**
  * Digunakan untuk meng-instatiate instance baru menggunakan Kotlin Reflection.
@@ -110,10 +283,13 @@ fun Any.getSealedClassName(isQualifiedName: Boolean= true): String?{
  * Nilai default suatu [KParameter] tidak diperoleh dari fungsi di dalam
  * framework ini disebabkan karena [KParameter] bkn merupakan tipe primitif atau
  * tidak terdefinisi pada fungsi [defaultPrimitiveValue].
+ *
+ * <14 Juli 2020> => Tidak jadi inline karena fungsi ini besar. Sbg gantinya, fungsi [new] di atas
+ *   adalah inline namun dg kode yg kecil.
  */
-inline fun <reified T> new(noinline defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
+fun <T: Any> new(clazz: KClass<T>, defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
     //1. Cari constructor dg parameter tersedikit.
-    val constrs= T::class.constructors
+    val constrs= clazz.constructors //T::class.constructors
     var constr: KFunction<T>? = null //constrs.first()
     var minParams= Int.MAX_VALUE
     for(cons in constrs){
@@ -168,6 +344,7 @@ inline fun <reified T> new(noinline defParamValFunc: ((param: KParameter) -> Any
     return constr.call(*defParamVal.toTypedArray())
 }
 
+inline fun <reified T: Any> defaultPrimitiveValue(): T?= defaultPrimitiveValue(T::class)
 /**
  * Digunakan untuk mendapatkan nilai default dari suatu tipe data yg ada pada [clazz].
  * Nilai default dapat diperoleh jika tipe data pada [clazz] merupakan tipe primitif

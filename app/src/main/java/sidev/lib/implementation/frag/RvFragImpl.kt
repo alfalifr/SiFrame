@@ -21,7 +21,7 @@ class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
         get() = R.layout.comp_nav_arrow
 
     override val isTopContainerNestedInRv: Boolean
-        get() = false
+        get() = true
     override val isBottomContainerNestedInRv: Boolean
         get() = true
 

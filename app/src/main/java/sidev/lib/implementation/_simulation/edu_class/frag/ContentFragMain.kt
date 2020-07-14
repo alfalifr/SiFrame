@@ -24,8 +24,8 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.mvp.MvpDrawerVpFrag
 //import sidev.lib.android.siframe.presenter.Presenter
 import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil.setBgColor
-import sidev.lib.android.siframe.tool.util._ViewUtil.setColor
+import sidev.lib.android.siframe.tool.util._ViewUtil.setBgColorRes
+import sidev.lib.android.siframe.tool.util._ViewUtil.setColorRes
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -99,7 +99,7 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
 
     override fun _initStartDrawerView(startDrawerView: View) {
         loge("_initStartDrawerView()")
-        setBgColor(startDrawerView, R.color.putih)
+        setBgColorRes(startDrawerView, R.color.putih)
         startDrawerView.ll_reload_container.setOnClickListener { downloadPageList() }
 
         sideNavAdp= PageNavAdp(context!!, null)
@@ -133,7 +133,7 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
             act.setActBarTitle(module.name)
             act.actBarViewContainer.findViewById<ImageView>(_Config.ID_IV_BACK).notNull { iv ->
                 iv.setImageResource(R.drawable.ic_hamburger)
-                setColor(iv, R.color.putih)
+                setColorRes(iv, R.color.putih)
                 iv.rotation= 0f
                 iv.setOnClickListener { slideDrawer(DrawerBase.Type.DRAWER_START) }
             }

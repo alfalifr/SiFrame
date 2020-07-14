@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.android.siframe.intfc.listener.Listener
+import sidev.lib.android.siframe.intfc.prop.TagProp
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -128,8 +130,14 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         }
  */
     var isMultiSelectionEnabled= false
+    /**
+     * Indeks [dataList] scr langsung tanpa pemrosesan.
+     */
     var selectedItemPos_list: ArrayList<Int>?= null
         protected set
+    /**
+     * Indeks [dataList] scr langsung tanpa pemrosesan.
+     */
     var selectedItemPos_single= -1
         protected set
 
@@ -213,12 +221,18 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
                 ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
             else View.GONE
+
+            if(!isItemClickEnabled)
+                holder.itemView.isClickable= false
+
             __bindVH(holder, position, data) //dataInd
             bindVH(holder, position, data)
-            holder.itemView.setOnClickListener { v ->
-                selectItem(dataInd!!, onlyShownItem = false) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
-                onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
-            }
+
+            if(isItemClickEnabled)
+                holder.itemView.setOnClickListener { v ->
+                    selectItem(position, onlyShownItem = true) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
+                    onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
+                }
         } //dataList!![dataInd]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
                 // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.
@@ -285,6 +299,18 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     }
 
     /**
+     * Fungsi yg digunakan untuk mendapatkan index yg sudah diproses sehingga programmer
+     * tidak perlu lagi melakukan pengecekan terhadap [onlyShownItem]. FUngsi ini mengurus
+     * masalah itu.
+     *
+     * @param pos dapat berupa posisi adapter (data yg terlihat) maupun indeks [dataList] scr langsung.
+     */
+    fun getDataProcessedIndex(pos: Int, onlyShownItem: Boolean): Int?{
+        return if(onlyShownItem) getDataShownIndex(pos)
+            else getDataIndex(pos)
+    }
+
+    /**
      * Dg anggapan bahwa elemen di dalam
      * @param list tidak boleh null
      *
@@ -302,7 +328,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 //                            Log.e("SimpleAbsRVA", "i= $i posFromList= $posFromList isListAlreadyFiltered[posFromList]= ${isListAlreadyFiltered[posFromList]}")
                             if(!isListAlreadyFiltered[posFromList])
                                 if(selectFilterFun!!(dataFromList, dataFromInput, posFromList)){
-                                    selectItem(posFromList, onlyShownItem = false)
+                                    selectItem(posFromList, isIndexProcessed = true)
                                     isListAlreadyFiltered[posFromList]= true
                                     break
                                 }
@@ -311,7 +337,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                     for(data in list){
                         val pos= dataList!!.indexOf(data)
                         if(pos >= 0)
-                            selectItem(pos, onlyShownItem = false)
+                            selectItem(pos, isIndexProcessed = true)
                     }
                 }
             } else {
@@ -342,21 +368,21 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                 viewIndex= key
         }
  */
-        selectItem(pos, onlyShownItem = false)
+        selectItem(pos, isIndexProcessed = true)
         return pos
     }
     /**
-     * <28 Juni 2020> => Fungsi hanya untuk data yg terlihat karena erat kaitannya dg view.
-     *
-     * @param pos adalah indeks view yg terlihat saja, bkn indeks [dataList] scr utuh.
-     *   Namun, untuk kasus scr internal framework ini, [pos] dapat berupa indeks [dataList] scr utuh,
-     *   karena dalam fungsi ini sudah dicek untuk masalah indeks pengambilan data dari [dataList]
-     *   yg didapat dari [pos].
+     * @param pos adalah posisi mentah dari keseluruhan view yg tampil di adapter.
+     * @param isIndexProcessed true jika @param [pos] yg diinputkan adalah posisi yg sudah menunjukan
+     *   indeks [dataList] scr langsung
      */
-    open fun selectItem(pos: Int, v: View?= null, onlyShownItem: Boolean= true){
-        val dataInd= if(onlyShownItem) getDataShownIndex(pos)
-            else pos
-        if(dataInd == null) return
+    open fun selectItem(pos: Int, v: View?= null, onlyShownItem: Boolean= true, isIndexProcessed: Boolean= false){
+        val dataInd= if(isIndexProcessed) pos
+            else getDataProcessedIndex(pos, onlyShownItem) ?: return
+/*
+        val dataInd= (if(onlyShownItem) getDataShownIndex(pos)
+            else getDataIndex(pos)) ?: return
+ */
 
         if(!isMultiSelectionEnabled){
             val isSelectedBefore= selectedItemPos_single >= 0
@@ -364,8 +390,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             if(isSelectedBefore){
                 onItemSelectedListener?.onUnSelectItem(
                     selectedItemView,
-                    selectedItemPos_single,
-                    getDataAt(selectedItemPos_single, false)!!
+                    pos, //<14 Juli 2020> => untuk menunjukan pos sebenarnya di adapter.
+                    getDataAtProcessedIndex(selectedItemPos_single)!!
+//                    selectedItemPos_single,
+//                    getDataAt(selectedItemPos_single, false)!!
                 )
                 selectedItemView_before= selectedItemView
                 selectedItemView= null
@@ -376,13 +404,16 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                  * maka berarti bahwa user tersebut ingin me-unselect item tersebut.
                  */
                 if(selectedItemPos_single != dataInd){ //pos <9 Juli 2020> => agar [selectedItemPos_single] sesuai [dataList] scr full.
-                    selectedItemView= v ?: getView(dataInd)
+                    selectedItemView= v ?: getView(pos) //untuk menunjukan pos sebenarnya di adapter.
                     selectedItemPos_single= dataInd
 //                    Log.e("SIMPLE_RV_ADP", "selectedItemView == null = ${selectedItemView == null}")
+//                    loge("pos= $pos dataInd= $dataInd getDataAt(dataInd, false) = ${getDataAt(dataInd, false)} getDataAtProcessedIndex(pos) = ${getDataAtProcessedIndex(dataInd)}")
                     onItemSelectedListener?.onSelectItem(
                         selectedItemView,
-                        dataInd,
-                        getDataAt(dataInd, false)!!
+                        pos, //<14 Juli 2020> => untuk menunjukan pos sebenarnya di adapter.
+//                        dataInd,
+                        getDataAtProcessedIndex(dataInd)!!
+//                        getDataAt(dataInd, false)!!
                     )
                 } else{
                     selectedItemPos_single= -1
@@ -405,22 +436,26 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             if(selectedItemPos_list == null)
                 selectedItemPos_list= ArrayList()
 
-            selectedItemView= v ?: getView(dataInd)
+            selectedItemView= v ?: getView(pos)
 
             val isPosNotExisting= selectedItemPos_list!!.indexOf(dataInd) < 0
             if(isPosNotExisting){
                 selectedItemPos_list!!.add(dataInd)
                 onItemSelectedListener?.onSelectItem(
                     selectedItemView,
-                    dataInd,
-                    getDataAt(dataInd, false)!!
+                    pos, //untuk menunjukan pos sebenarnya di adapter.
+                    getDataAtProcessedIndex(dataInd)!!
+//                    dataInd,
+//                    getDataAt(dataInd, false)!!
                 )
             } else{
                 selectedItemPos_list!!.removeAt(dataInd)
                 onItemSelectedListener?.onUnSelectItem(
                     selectedItemView,
-                    dataInd,
-                    getDataAt(dataInd, false)!!
+                    pos, //untuk menunjukan pos sebenarnya di adapter.
+                    getDataAtProcessedIndex(dataInd)!!
+//                    dataInd,
+//                    getDataAt(dataInd, false)!!
                 )
             }
 
@@ -439,14 +474,28 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         }
     }
     fun resetItemSelection(){
-        if(selectedItemPos_single >= 0){
-            onItemSelectedListener?.onUnSelectItem(
-                selectedItemView,
-                selectedItemPos_single,
-                getDataAt(selectedItemPos_single)!!
-            )
-            selectedItemPos_single= -1
-            selectedItemView= null
+        if(!isMultiSelectionEnabled){
+            if(selectedItemPos_single >= 0){
+                onItemSelectedListener?.onUnSelectItem(
+                    selectedItemView,
+                    selectedItemPos_single,
+                    getDataAt(selectedItemPos_single)!!
+                )
+                selectedItemPos_single= -1
+                selectedItemView= null
+            }
+        } else{
+            //<14 Juli 2020> <selesai:0> => Msh blum ditest!!!.
+            if(selectedItemPos_list != null){
+                for(selectedInd in selectedItemPos_list!!){
+                    onItemSelectedListener?.onUnSelectItem(
+                        getView(selectedInd),
+                        selectedInd,
+                        getDataAtProcessedIndex(selectedInd)!!
+                    )
+                }
+                selectedItemPos_list!!.clear()
+            }
         }
     }
 
@@ -489,13 +538,19 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         return rv?.layoutManager?.findViewByPosition(pos)
     }
 
-
+    protected fun getDataAtProcessedIndex(pos: Int): D?{
+        return try{ dataList?.get(pos) } catch (e: Exception){ null }
+    }
     override fun getDataAt(pos: Int, onlyShownItem: Boolean): D?{
         return if(pos in 0 until itemCount) //(dataList?.size ?: 0))
             try{
                 dataList?.get(
+                    getDataProcessedIndex(pos, onlyShownItem)!!
+/*
+                    <14 Juli 2020> => Definisi lama.
                     if(!onlyShownItem) getDataIndex(pos)!!
                     else getDataShownIndex(pos)!!
+ */
                 )
             } catch (e: Exception){ null }
         else
@@ -741,7 +796,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      *
      * <29 Juni 2020> => Fungsi ini hanya digunakan untuk sort dataList scr keseluruhan.
      *                   Fungsi ini tidak terbatas oleh ukuran filteredIndMap.
-     *                   Untuk masalah integrasi data, fungsi getShownInd() mengurus masalah itu.
+     *                   Untuk masalah integrasi data, fungsi [getShownInd]() mengurus masalah itu.
      *                   Pada definisi ini, sortedIndMap selalu berukuran sama dg dataList.
      *
      */
@@ -897,6 +952,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     var onItemUnSelectedFun: ((contentView: View?, pos: Int, data: D) -> Unit)?= null
     protected open var onItemSelectedListener: OnItemSelectedListener<D>?
         = object : OnItemSelectedListener<D> {
+        override var tag: Any?= null
         override fun onSelectItem(v: View?, pos: Int, data: D) {
             showCheckIndicator(isCheckIndicatorShown, pos)
             onItemSelectedFun?.invoke(v, pos, data)
@@ -907,13 +963,31 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             onItemUnSelectedFun?.invoke(v, pos, data)
         }
     }
-    interface OnItemSelectedListener<D>{
+    interface OnItemSelectedListener<D>: Listener{
+        /**
+         * @param pos merupakan posisi yg terlihat pada adapter.
+         *   [pos] belum tentu menunjukan indeks sebenarnya dari [dataList].
+         */
         fun onSelectItem(v: View?, pos: Int, data: D)
+        /**
+         * @param pos merupakan posisi yg terlihat pada adapter.
+         *   [pos] belum tentu menunjukan indeks sebenarnya dari [dataList].
+         */
         fun onUnSelectItem(v: View?, pos: Int, data: D)
     }
 
+    var isItemClickEnabled= true
+        set(v){
+            field= v
+            notifyDataSetChanged_()
+        }
     var onItemClickListener: OnItemClickListener?= null
-    abstract inner class OnItemClickListener{
+    abstract inner class OnItemClickListener: Listener{
+        override var tag: Any?= null
+        /**
+         * @param pos merupakan posisi yg terlihat pada adapter.
+         *   [pos] belum tentu menunjukan indeks sebenarnya dari [dataList].
+         */
         abstract fun onClickItem(v: View?, pos: Int, data: D)
     }
     fun setOnItemClickListener(l: (v: View?, pos: Int, data: D) -> Unit){

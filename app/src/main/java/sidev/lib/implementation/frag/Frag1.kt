@@ -17,7 +17,7 @@ class Frag1 : ActBarFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag1"
-        _ViewUtil.setBgColor(layoutView, R.color.ijoRumputMuda)
+        _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumputMuda)
         arguments
     }
 }

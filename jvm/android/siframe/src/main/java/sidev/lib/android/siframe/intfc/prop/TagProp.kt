@@ -1,5 +1,5 @@
 package sidev.lib.android.siframe.intfc.prop
 
-interface TagProp {
-    val tag: String?
+interface TagProp<T> {
+    val tag: T?
 }

@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.intfc.listener
 import android.view.View
 
 
-interface OnClickListListener {
+interface OnClickListListener: Listener {
     companion object{
         val DEFAULT_ID= 0
     }

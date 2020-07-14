@@ -4,7 +4,7 @@ import android.util.Log
 import java.lang.NullPointerException
 import kotlin.Exception
 
-fun <T> T.iff(func: (T) -> Boolean): Boolean{
+inline fun <T> T.iff(func: (T) -> Boolean): Boolean{
     return func(this)
 }
 
@@ -12,8 +12,7 @@ fun <T> T.iff(func: (T) -> Boolean): Boolean{
  * Mirip dg [notNull] namun terdapat cast untuk input lambda.
  */
 inline fun <T1, reified T2> T1?.asNotNull(f: (T2) -> Unit): T1? {
-    if(this is T2)
-        f(this)
+    if(this is T2) f(this)
     return this
 }
 /**
@@ -49,30 +48,28 @@ inline fun <T1, reified T2, O> T1?.asntNotNullTo(f: () -> O): O? {
     else null
 }
 
-fun <T> T?.notNull(f: (T) -> Unit): T? {
-    if(this != null)
-        f(this)
+inline fun <T> T?.notNull(f: (T) -> Unit): T? {
+    if(this != null) f(this)
     return this
 }
 
 /**
  * Bkn merupakan fungsi chaining.
  */
-fun <I, O> I?.notNullTo(f: (I) -> O): O? {
+inline fun <I, O> I?.notNullTo(f: (I) -> O): O? {
     return if(this != null) f(this)
     else null
 }
 
-fun <T> T?.isNull(f: () -> Unit): T? {
-    if(this == null)
-        f()
+inline fun <T> T?.isNull(f: () -> Unit): T? {
+    if(this == null) f()
     return this
 }
 
 /**
  * Bkn merupakan fungsi chaining.
  */
-fun <I, O> I?.isNullTo(f: () -> O): O? {
+inline fun <I, O> I?.isNullTo(f: () -> O): O? {
     return if(this == null) f()
     else null
 }

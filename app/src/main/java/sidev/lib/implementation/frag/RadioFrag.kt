@@ -2,11 +2,12 @@ package sidev.lib.implementation.frag
 
 import android.view.View
 import android.widget.RadioGroup
+import androidx.core.view.children
 import kotlinx.android.synthetic.main.page_rg.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.withIndex
+//import sidev.lib.android.siframe.tool.util.`fun`.withIndex
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.notNull
 
@@ -24,7 +25,7 @@ class RadioFrag : Frag(){
 
         layoutView.findViewByType<RadioGroup>().notNull { rg ->
             loge("rg.id == R.id.rg => ${rg.id == R.id.rg}")
-            for((i, child) in rg.withIndex()){
+            for((i, child) in rg.children.withIndex()){
                 val clsName= child::class.java.simpleName
                 loge("rg clsName= $clsName i= $i")
                 loge("child= ${child.findViewById<View>(R.id.tv)}")

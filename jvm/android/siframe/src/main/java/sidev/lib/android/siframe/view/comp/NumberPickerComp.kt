@@ -68,8 +68,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                         if(num == data.upperBorder) inBorderColorId
                         else enabledColorId
 
-                    _ViewUtil.setBgColor(ivMinus, ivMinusColorId)
-                    _ViewUtil.setBgColor(ivPlus, ivPlusColorId)
+                    _ViewUtil.setBgColorRes(ivMinus, ivMinusColorId)
+                    _ViewUtil.setBgColorRes(ivPlus, ivPlusColorId)
 
                     if(!isInternalEdit){
                         val numRange= data.lowerBorder .. data.upperBorder
@@ -85,8 +85,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                     data.number= num
                 } else{
                     data.number= data.lowerBorder
-                    _ViewUtil.setBgColor(ivMinus, inBorderColorId)
-                    _ViewUtil.setBgColor(ivPlus, enabledColorId)
+                    _ViewUtil.setBgColorRes(ivMinus, inBorderColorId)
+                    _ViewUtil.setBgColorRes(ivPlus, enabledColorId)
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -106,8 +106,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
             val etNumber= view.findView(etNumberId) ?: view.findViewByType<EditText>()!!
             //.findViewById<ModEt>(R.id.iv_plus)!!
 
-            _ViewUtil.setBgColor(ivMinus, colorId)
-            _ViewUtil.setBgColor(ivPlus, colorId)
+            _ViewUtil.setBgColorRes(ivMinus, colorId)
+            _ViewUtil.setBgColorRes(ivPlus, colorId)
 
             ivMinus.isEnabled= enable
             ivPlus.isEnabled= enable

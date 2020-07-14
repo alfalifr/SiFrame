@@ -34,9 +34,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import org.jetbrains.anko.layoutInflater
-import org.jetbrains.anko.textColorResource
-import org.jetbrains.anko.windowManager
+import org.jetbrains.anko.*
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.PictModel
@@ -193,7 +191,7 @@ object  _ViewUtil{
             tv[i].setTextColor(ContextCompat.getColor(context, color))
         }
     }
-
+/*
     /**
      * Untuk mengambil warna sesuai nilai asli yang diambil dari <code>colorResId</code>
      * @param colorResId --> R.color...
@@ -203,8 +201,9 @@ object  _ViewUtil{
         return if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             c.resources.getColor(colorResId)
         else
-            c.resources.getColor(colorResId, null)
+            c.resources.getColor(colorResId, c.theme)
     }
+ */
 
     // Untuk Fade Out View
     fun fadeOut(vararg views : View, duration : Long= 1000) {
@@ -307,12 +306,13 @@ object  _ViewUtil{
     }
 
 
-    fun setColor(iv: ImageView, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+    fun setColorRes(iv: ImageView, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
         val color= _ResUtil.getColor(iv.context, colorId)
         DrawableCompat.setTint(iv.drawable, color)
 //        iv.drawable.colorFilter = BlendModeColorFilter(color, blendMode) //Masih error karena masalah kompatibilitas API
     }
-    fun setBgColor(v: View, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+
+    fun setBgColorRes(v: View, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
         val color= _ResUtil.getColor(v.context, colorId)
         try{
             DrawableCompat.setTint(v.background, color)
@@ -589,7 +589,7 @@ object  _ViewUtil{
             getDefView(compView, getIv).notNull { iv -> iv.setImageResource(imgRes) }
         }
         fun setIvTint(compView: View, @ColorRes colorRes: Int){
-            getDefView(compView, getIv).notNull { iv -> setColor(iv, colorRes) }
+            getDefView(compView, getIv).notNull { iv -> setColorRes(iv, colorRes) }
         }
 
         fun showPassword(compView: View, show: Boolean= true){
@@ -622,7 +622,7 @@ object  _ViewUtil{
         }
         fun setBtnSolid(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_RECT_ROUND_EDGE) //R.drawable.shape_solid_square_round_edge_fill
-            setBgColor(btn, _ColorRes.COLOR_PRIMARY_DARK)
+            setBgColorRes(btn, _ColorRes.COLOR_PRIMARY_DARK)
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.TEXT_LIGHT))
         }
 
@@ -801,9 +801,9 @@ object  _ViewUtil{
                 _ResUtil.getDimen(c, _ConfigBase.DIMEN_ACT_BAR_HEIGHT).toInt()
             )
  */
-            setColor(bg, _ColorRes.COLOR_PRIMARY_DARK)
-            setColor(ivBack, _ColorRes.COLOR_LIGHT)
-            setColor(ivAction, _ColorRes.COLOR_LIGHT)
+            setColorRes(bg, _ColorRes.COLOR_PRIMARY_DARK)
+            setColorRes(ivBack, _ColorRes.COLOR_LIGHT)
+            setColorRes(ivAction, _ColorRes.COLOR_LIGHT)
             tvTitle.textColorResource= _ColorRes.TEXT_LIGHT
 
             ivAction.setImageBitmap(null) //Secara default, gambar iv_action tidak ada.
@@ -818,7 +818,7 @@ object  _ViewUtil{
             val tvDesc= overlay.findViewById<TextView>(_Config.ID_TV_DESC)
 
             iv.setImageResource(_Config.DRAW_IC_WARNING)
-            setColor(iv, _ColorRes.RED)
+            setColorRes(iv, _ColorRes.RED)
             tvTitle.text= "Mohon Maaf"
             tvDesc.text= "Aplikasi telah kadaluwarsa.\nMohon update ke versi terbaru."
 

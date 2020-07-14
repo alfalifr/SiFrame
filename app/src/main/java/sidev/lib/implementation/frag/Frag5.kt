@@ -8,7 +8,6 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
@@ -19,7 +18,7 @@ class Frag5 : Frag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag5"
-        _ViewUtil.setBgColor(layoutView, R.color.ijoRumput)
+        _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumput)
         (layoutView.btn as Button).text= "Ke CrashFrag"
         layoutView.btn.visibility= View.VISIBLE
         layoutView.btn.setOnClickListener { startSingleFragAct_config<CrashFrag>() }
