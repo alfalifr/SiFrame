@@ -1,6 +1,9 @@
 package sidev.lib.android.siframe.arch.intent_state
 
+import android.view.View
 import sidev.lib.android.siframe.arch.type.Mvi
+import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
+import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner
 import sidev.lib.universal.`fun`.classSimpleName
 import sidev.lib.universal.tool.util.StringUtil
 
@@ -40,3 +43,14 @@ internal const val INTENT_EQUIVALENT_REQ_CODE= "equivalentReqCode"
  * Jika tidak sama, dpat menyebabkan malfungsi pada framework ini.
  */
 internal const val INTENT_IS_RESULT_TEMPORARY= "isResultTemporary"
+
+
+/**
+ * Kelas ViewIntent yg digunakan scr internal dalam framework ini untuk memberikan
+ * sinyal berupa [Register] untuk melakukan [AutoRestoreViewClient.registerAutoRestoreView]
+ * dan [ExtractAll] untuk melakukan [AutoRestoreViewOwner.extractAllViewContent].
+ */
+sealed class AutoRestoreIntent{
+    data class Register(val id: String, val view: View): AutoRestoreIntent()
+    object ExtractAll: AutoRestoreIntent()
+}

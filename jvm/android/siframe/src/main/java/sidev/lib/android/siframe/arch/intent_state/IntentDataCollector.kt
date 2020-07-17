@@ -35,7 +35,7 @@ class IntentDataCollector<I: ViewIntent>(var intentConverter: IntentConverter<I>
         val key= I::class.getSealedClassName()!!
         var viewIntentObj= `access$intentObj`!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new<I>(defParamValFunc)!!
+            viewIntentObj= new(I::class, defParamValFunc= defParamValFunc)!!
             `access$intentObj`!![key]= viewIntentObj
         }
         return viewIntentObj.equivalentReqCode
@@ -57,7 +57,7 @@ class IntentDataCollector<I: ViewIntent>(var intentConverter: IntentConverter<I>
         var viewIntentObj= `access$intentObj`!![key]
         var viewIntentField= `access$intentObjFieldMap`!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new<I2>(defObjValInit)!!
+            viewIntentObj= new(I2::class, defParamValFunc = defObjValInit)!!
             viewIntentField= viewIntentObj.getAllFields(justPublic = false)
             `access$intentObj`!![key]= viewIntentObj
             if(viewIntentField != null)

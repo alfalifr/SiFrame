@@ -1,17 +1,21 @@
 package sidev.lib.android.siframe.arch.intent_state
 
 import android.content.Context
+import android.view.View
+import androidx.annotation.CallSuper
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
 import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
 import sidev.lib.android.siframe.arch.type.Mvi
+import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.exception.RuntimeExc
+import sidev.lib.android.siframe.tool.ViewContentExtractor
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import kotlin.reflect.KParameter
 
 abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
-    Mvi,
+    Mvi, AutoRestoreViewOwner,
 //    PresenterDependent<MviPresenter<S>>,
     PresenterCallbackCommon {
     var view: MviView<S, I> = view
@@ -33,6 +37,8 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
  */
                 //antara ViewIntent dan reqCode.
     protected var intentPropGetter: IntentPropGetter?= null
+    override val viewContentExtractor: ViewContentExtractor by lazy { ViewContentExtractor() }
+
 //        internal set
 //    protected var intentObj: HashMap<String, ViewIntent>?= null
 
@@ -185,7 +191,24 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         loge("$viewName berhasil di-restore ke state sebelumnya.")
         loge("previousState= $currentViewState")
     }
-/*
+
+    @CallSuper
+    override fun registerAutoRestoreView(id: String, v: View) {
+        viewContentExtractor.registerView(id, v)
+    }
+
+    /**
+     * Digunakan untuk mengesktrak semua view yg telah disimpan di dalam [viewContentExtractor].
+     * Fungsi ini harus dipanggil sesaat sebelum activity dihancurkan karena fungsi ini
+     * akan memanggil [ViewContentExtractor.clearAllSavedViews].
+     */
+    @CallSuper
+    override fun extractAllViewContent() {
+        viewContentExtractor.extractAllViewContent()
+        viewContentExtractor.clearAllSavedViews()
+    }
+
+    /*
     @Deprecated("Gak dipake pada konteks MVI di kelas ini")
     override val presenter: MviPresenter<S>?= null
  */

@@ -1,6 +1,7 @@
 package sidev.lib.universal.`fun`
 
 import kotlin.collections.ArrayList
+import kotlin.reflect.KClass
 
 /*
 ===============
@@ -383,3 +384,62 @@ fun <T> Array<T>.copyGrowExponentially(factor: Int, collIn: MutableCollection<T>
                 newList.add(this[e])
     return newList
 }
+
+
+fun <T> newIterator(vararg element: T): Iterator<T> = element.iterator()
+
+
+/** Sama seperti [first] sekaligus mengahpus element pertama */
+fun <T> MutableList<T>.takeFirst(): T = if(isEmpty()) throw NoSuchElementException("List is Empty") else removeAt(0)
+
+/** Sama seperti [firstOrNull] sekaligus mengahpus element pertama
+ *  Di Kotlin sama seperti [removeFirstOrNull].
+ * */
+fun <T> MutableList<T>.takeFirstOrNull(): T? = if(isEmpty()) null else removeAt(0)
+
+/** Sama seperti [last] sekaligus mengahpus element pertama */
+fun <T> MutableList<T>.takeLast(): T = if(isEmpty()) throw NoSuchElementException("List is Empty") else removeAt(lastIndex)
+
+/** Sama seperti [lastOrNull] sekaligus mengahpus element pertama */
+fun <T> MutableList<T>.takeLastOrNull(): T? = if(isEmpty()) null else removeAt(lastIndex)
+
+/**
+ * @return true jika [element] tidak terdapat sebelumnya di list ini.
+ * Fungsi ini menggunakan standard equals().
+ */
+inline fun <T> MutableList<T>.addIfAbsent(element: T, chekcFun: ((existingElement: T) -> Boolean)= {true}): Boolean{
+    prinw("addIfAbsent element= $element")
+    for(e in this){
+        prinw("element= $element e == element => ${e == element}")
+    }
+    val existingElementIndex= indexOf(element)
+    var canAdd= if(existingElementIndex < 0) true
+        else !chekcFun(this[existingElementIndex])
+    prinw("size= $size existingElementIndex= $existingElementIndex canAdd= $canAdd")
+    if(canAdd)
+        this.add(element)
+    return canAdd
+}
+
+
+
+
+val Array<*>.string: String
+    get(){
+        var str= "${this::class.simpleName}("
+        for(e in this){
+            str += e.toString() +", "
+        }
+        str= str.removeSuffix(", ")
+        return "$str)"
+    }
+
+val Collection<*>.string: String
+    get(){
+        var str= "${this::class.simpleName}("
+        for(e in this){
+            str += e.toString() +", "
+        }
+        str= str.removeSuffix(", ")
+        return "$str)"
+    }

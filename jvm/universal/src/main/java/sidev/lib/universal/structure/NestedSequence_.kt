@@ -7,6 +7,6 @@ import sidev.lib.universal.annotation.Interface
  * sequence turunan (nested sequence).
  */
 @Interface
-interface NestedSequence<T>: Sequence<T>{
-    override fun iterator(): NestedIterator<*, T>
+interface NestedSequence_<T>: Sequence<T>{
+    override fun iterator(): NestedIterator_<T>
 }

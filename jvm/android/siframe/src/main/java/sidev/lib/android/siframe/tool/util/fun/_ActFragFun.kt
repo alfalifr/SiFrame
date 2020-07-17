@@ -37,11 +37,11 @@ fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     context?.toast(msg, length)
 }
 
-fun Context.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment){
+fun Context.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment, tag: String= fragment::class.java.name){
     when(this){
         is AppCompatActivity -> {
             val fragTrans= supportFragmentManager.beginTransaction()
-            fragTrans.replace(fragContainerId, fragment)
+            fragTrans.replace(fragContainerId, fragment, tag)
             fragTrans.commit()
         }
 /*

@@ -21,6 +21,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
+import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
@@ -46,6 +47,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
 //    MviView<State>,
 //    PresenterCallback<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     BackBtnBase {
+    var isActivitySavedInstanceStateNull= true
+        private set
 
     final override var currentState: LifecycleBase.State= super<ActFragBase>.currentState
         internal set
@@ -109,6 +112,11 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
+        isActivitySavedInstanceStateNull= savedInstanceState == null
+        if(!isActivitySavedInstanceStateNull && this is SingleFragActBase){
+            //Anggapannya tidak mungkin fragment null karena sudah diinit di awal.
+//            fragment= supportFragmentManager.findFragmentByTag(fragTag)!!
+        }
         setStyle(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
@@ -150,10 +158,14 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     @CallSuper
     override fun onDestroy() {
+        if(this is AutoRestoreViewClient)
+            extractAllViewContent()
+
         super.onDestroy()
         isExpired= true
         presenter= null
         currentState= LifecycleBase.State.DESTROYED
+
 //        onDestroyListenerQueue.iterateRunQueue(null)
         loge("Activity ${this::class.java.simpleName} is destroyed!!!")
     }

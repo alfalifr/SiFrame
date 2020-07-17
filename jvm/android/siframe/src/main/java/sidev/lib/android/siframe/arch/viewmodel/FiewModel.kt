@@ -31,7 +31,7 @@ import sidev.lib.universal.`fun`.*
  *      untuk penyimpanan dalam arsitektur pada framework yg tidak membutuhkan observasi.
  *
  */
-abstract class FiewModel //(val vmBase: ViewModelBase)
+open class FiewModel //(val vmBase: ViewModelBase)
     : ViewModel(), ArchViewModel, Mvvm
 //    InteractivePresenterDependentCommon<Presenter>,
 //    InterruptableLinkBase,

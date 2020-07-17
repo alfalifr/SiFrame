@@ -23,7 +23,7 @@ class IntentPropGetter: Mvi {
         val key= I::class.getSealedClassName()!!
         var viewIntentObj= `access$intentObj`!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new<I>(defParamValFunc)!!
+            viewIntentObj= new(I::class, defParamValFunc = defParamValFunc)!!
             `access$intentObj`!![key]= viewIntentObj
         }
         return viewIntentObj.equivalentReqCode
@@ -37,7 +37,7 @@ class IntentPropGetter: Mvi {
         val key= I::class.getSealedClassName()!!
         var viewIntentObj= `access$intentObj`!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new<I>(defParamValFunc)!!
+            viewIntentObj= new(I::class, defParamValFunc = defParamValFunc)!!
             `access$intentObj`!![key]= viewIntentObj
         }
         return viewIntentObj.isResultTemporary

@@ -1,8 +1,9 @@
 package sidev.lib.android.siframe.arch.view
 
 import android.app.Activity
+import android.view.View
 import androidx.fragment.app.Fragment
-import sidev.lib.android.siframe.arch._obj.MviFiewModel
+import sidev.lib.android.siframe.arch._obj.InternalFiewModel
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
@@ -12,11 +13,14 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import java.lang.Exception
 
 interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
-    MviInteractivePresenterDependent<Presenter, I>, ExpirableBase {
+    MviInteractivePresenterDependent<Presenter, I>,
+    AutoRestoreViewClient,
+    ExpirableBase {
     companion object{
 //        val KEY_VM_MVI_STATE_PROS= "_internal_vm_mvi_state_pros" -> StateProcessor disimpan pada referensi presenter.
         val KEY_VM_MVI_STATE_PRESENTER= "_internal_vm_mvi_state_presenter"
@@ -56,7 +60,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
                 (this.asNotNullTo { act: Activity -> act }
                     ?: this.asNotNullTo { frag: Fragment -> frag.activity ?: frag })
                     .asNotNullTo { view: ViewModelBase ->
-                        view.getViewModel(MviFiewModel::class.java)
+                        view.getViewModel(InternalFiewModel::class.java)
                     }.notNull { vm ->
                         vm.addValue(KEY_VM_MVI_STATE_PRESENTER, presenter)
                     }
@@ -116,7 +120,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         return (this.asNotNullTo { act: Activity -> act }
             ?: this.asNotNullTo { frag: Fragment -> frag.activity ?: frag})
             .asNotNullTo { view: ViewModelBase ->
-                view.getViewModel(MviFiewModel::class.java)
+                view.getViewModel(InternalFiewModel::class.java)
             }.notNullTo { vm ->
                 vm.get<Presenter>(KEY_VM_MVI_STATE_PRESENTER)
                     .notNullTo { presenter ->
@@ -160,6 +164,30 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
             onNoCurrentState()
 
         return isSuccess
+    }
+
+    override fun registerAutoRestoreView(id: String, v: View) {
+        loge("registerAutoRestoreView() mulai")
+        presenter?.callback.asNotNull { statePros: StateProcessor<*, *> ->
+            loge("presenter?.callback as StateProcessor")
+            statePros.registerAutoRestoreView(id, v)
+        }
+    }
+
+    /**
+     * Fungsi dipanggil sesaat sebelum view dihancurkan atau saat onDestroy
+     */
+    override fun extractAllViewContent() {
+        loge("extractAllViewContent() mulai")
+
+        val calname= presenter?.callback?.classSimpleName()
+        val calnull= presenter?.callback == null
+        loge("calnull= $calnull calname= $calname")
+
+        presenter?.callback.asNotNull { statePros: StateProcessor<*, *> ->
+            loge("presenter?.callback as StateProcessor")
+            statePros.extractAllViewContent()
+        }
     }
 
     /**

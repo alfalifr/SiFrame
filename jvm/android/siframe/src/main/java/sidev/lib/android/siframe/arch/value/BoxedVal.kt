@@ -1,9 +1,13 @@
 package sidev.lib.android.siframe.arch.value
 
+import android.util.SparseArray
+import com.google.gson.Gson
+import java.lang.Exception
+
 /**
  * Versi ringan untuk wadah suatu nilai.
  */
-class BoxedVal<T>{
+open class BoxedVal<T>{
     var value: T?= null
 
     override fun equals(other: Any?): Boolean {
@@ -13,7 +17,8 @@ class BoxedVal<T>{
 
     fun copy(): BoxedVal<T>{
         val box= BoxedVal<T>()
-        box.value= value
+//        val aa= SparseArra
+        box.value= value//try{ Gson()(value as Object).clone() as? T } catch (e: Exception){ value }
         return box
     }
 }

@@ -20,6 +20,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
+import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
@@ -172,10 +173,14 @@ abstract class Frag : Fragment(),
     }
 
     override fun onDestroy() {
+        if(this is AutoRestoreViewClient)
+            extractAllViewContent()
+
         super.onDestroy()
         isExpired= true
         presenter= null
         currentState= LifecycleBase.State.DESTROYED
+
         loge("Fragment ${this::class.java.simpleName} is destroyed!!!")
     }
 /*

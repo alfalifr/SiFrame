@@ -5,10 +5,12 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.PropertyAccessExc
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
+import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
@@ -27,6 +29,11 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     override val _prop_ctx: Context
 
     var fragment: Fragment
+    /**
+     * Berguna untuk mengambil fragment saat Activity di-recreate karena screen rotation
+     * sehingga [fragment] tidak di-instantiate 2x.
+     */
+//    val fragTag: BoxedVal<String>
     val fragContainerId: Int
         get()= _Config.ID_FR_CONTAINER //.ID_VG_CONTENT_CONTAINER
 //    val supportFm: FragmentManager
@@ -45,7 +52,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     override fun ___initSideBase() {
 //        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         __initFrag()
-        giveFrag()
+//        giveFrag()
 /*
         <12 Juli 2020> => Sementara dikomen karena dirasa belum kepake.
         /**
@@ -68,19 +75,26 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
      * Digunakan saat Fragment lateinit. Biasanya saat pemanggilan pada fungsi [startSingleFragAct]
      */
     fun __initFrag(){
-        _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
-            .notNull { fragName ->
-                fragment= ReflexUtil.newInstance(fragName)
-            }
+        try{ fragment::class } //Hanya sbg pengecekan kalau fragment sebelumnya udah diinit.
+                // Metode ini digunakan untuk menanggulangi 2x instansiasi fragment.
+        catch(e: UninitializedPropertyAccessException){
+            if(this is Act && !this.isActivitySavedInstanceStateNull) return
 
-        try{
-            __attachFrag()
-        } catch (e: UninitializedPropertyAccessException){
-            throw PropertyAccessExc(
-                kind = PropertyAccessExc.Kind.Uninitialized,
-                propertyName = "fragment",
-                ownerName = this::class.java.simpleName
-            )
+            _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
+                .notNull { fragName ->
+                    fragment= ReflexUtil.newInstance(fragName)
+                    giveFrag()
+                }
+
+            try{ __attachFrag()
+                giveFrag()
+            } catch (e: UninitializedPropertyAccessException){
+                throw PropertyAccessExc(
+                    kind = PropertyAccessExc.Kind.Uninitialized,
+                    propertyName = "fragment",
+                    ownerName = this::class.java.simpleName
+                )
+            }
         }
     }
 

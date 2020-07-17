@@ -3,6 +3,7 @@ package sidev.lib.implementation.frag
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.page_rv_btn.view.*
+import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.support.v4.sendSMS
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.presenter.Presenter
@@ -40,6 +41,8 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
     override fun _initView(layoutView: View) {
         rvAdp= ContentAdp(context!!)
         rvAdp.rv= layoutView.rv
+        registerAutoRestoreView("et", layoutView.et)
+        registerAutoRestoreView("iv", layoutView.iv)
         (layoutView.btn as Button).text= "Login"
         layoutView.btn.setOnClickListener { sendRequest(ContentFragIntent.Login("kinap oy")) }
         layoutView.srl.setOnRefreshListener { sendRequest(ContentFragIntent.DownloadData) }
@@ -47,6 +50,7 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 
     override fun onNoCurrentState() {
         sendRequest(ContentFragIntent.DownloadData)
+        layoutView.iv.imageResource= R.drawable.ic_arrow_thick
     }
 
     override fun onInterruptedWhenBusy() {

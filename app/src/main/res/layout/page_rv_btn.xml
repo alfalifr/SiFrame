@@ -7,7 +7,22 @@
     <RelativeLayout
         android:id="@+id/rl_top_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+        <EditText
+            android:id="@+id/et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/putih"/>
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_below="@id/et"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_profile"/>
+    </RelativeLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl"

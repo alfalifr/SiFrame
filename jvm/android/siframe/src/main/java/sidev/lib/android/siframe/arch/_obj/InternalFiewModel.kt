@@ -7,7 +7,10 @@ import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 
 /**
+ * Kelas [FiewModel] yg sederhana. Tujuannya adalah sebagai tempat penyimpanan
+ * dalam framework ini.
+ *
  * Kelas ini hanya digunakan untuk menyimpan data [StateProcessor] pada arsitektur MVI
  * dan tidak melakukan obervasi apapun terhadap data yg disimpan di kelas ini.
  */
-class MviFiewModel : FiewModel()
+class InternalFiewModel : FiewModel()

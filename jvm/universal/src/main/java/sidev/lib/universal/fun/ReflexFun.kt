@@ -1,9 +1,7 @@
 package sidev.lib.universal.`fun`
 
 import android.util.Log
-import sidev.lib.universal.structure.NestedIterator
-import sidev.lib.universal.structure.NestedIteratorImpl
-import sidev.lib.universal.structure.NestedSequence
+import sidev.lib.universal.structure.*
 //import sidev.lib.android.siframe.model.FK_M
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -86,11 +84,11 @@ val Class<*>.superclassesTree: Sequence<Class<*>>
     }
 
 val Class<*>.superInterfacesTree: NestedSequence<Class<*>>
-    get()= object : NestedSequence<Class<*>>{
-        override fun iterator(): NestedIterator<Class<*>>
-            = object: NestedIteratorImpl<Class<*>>(this@superInterfacesTree){
-            override fun getIterator(now: Class<*>): Iterator<Class<*>>? {
-                val int= now.interfaces
+    get()= object : NestedSequence<Class<*>> {
+        override fun iterator(): NestedIteratorSimple<Class<*>>
+            = object: NestedIteratorSimpleImpl<Class<*>>(this@superInterfacesTree){
+            override fun getOutputIterator(nowInput: Class<*>): Iterator<Class<*>>? {
+                val int= nowInput.interfaces
                 return if(int.isNotEmpty()) int.iterator()
                 else null
             }

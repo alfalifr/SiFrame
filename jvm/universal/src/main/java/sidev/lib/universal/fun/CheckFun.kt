@@ -4,6 +4,17 @@ import android.util.Log
 import java.lang.NullPointerException
 import kotlin.Exception
 
+/**
+ * Cara aman untuk mendapatkan  nilai dari `lateinit var` dari `this.extension` [I].
+ * @return nilai apapun yg dikembalikan oleh [func],
+ *   null jika ternyata terdapat akses `lateinit var` yg belum diinit.
+ */
+inline fun <I, O> I.getLateinit(func: I.() -> O): O?{
+    return try{ func() }
+    catch (e: UninitializedPropertyAccessException){ null }
+}
+
+
 inline fun <T> T.iff(func: (T) -> Boolean): Boolean{
     return func(this)
 }
