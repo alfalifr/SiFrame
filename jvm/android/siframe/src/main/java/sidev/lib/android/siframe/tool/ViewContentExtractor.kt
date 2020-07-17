@@ -67,9 +67,9 @@ open class ViewContentExtractor{
                 map[Content.BG_DRAWABLE]= view.background
             }
 
-            val ori= map[Content.ORIENTATION]
-            loge("ori == Configuration.ORIENTATION_PORTRAIT => ${ori == Configuration.ORIENTATION_PORTRAIT}")
-            loge("ori == Configuration.ORIENTATION_LANDSCAPE => ${ori == Configuration.ORIENTATION_LANDSCAPE}")
+//            val ori= map[Content.ORIENTATION]
+//            loge("ori == Configuration.ORIENTATION_PORTRAIT => ${ori == Configuration.ORIENTATION_PORTRAIT}")
+//            loge("ori == Configuration.ORIENTATION_LANDSCAPE => ${ori == Configuration.ORIENTATION_LANDSCAPE}")
             when(view){
                 is ImageView -> map[Content.DRAWABLE]= view.drawable
                 is TextView -> map[Content.TEXT]= view.text.toString()
@@ -113,23 +113,23 @@ open class ViewContentExtractor{
                     when(content.key){
                         Content.SIZE -> {
                             val size= content.value as Size
-                            val isOnScreenRotation=
-                                contents[Content.ORIENTATION] != view.context.resources.configuration.orientation
+//                            val isOnScreenRotation= false
+//                                contents[Content.ORIENTATION] != view.context.resources.configuration.orientation
                             val lp= view.layoutParams
 
-                            loge("isOnScreenRotation= $isOnScreenRotation contents[Content.ORIENTATION] == null => ${contents[Content.ORIENTATION] == null}")
+//                            loge("isOnScreenRotation= $isOnScreenRotation contents[Content.ORIENTATION] == null => ${contents[Content.ORIENTATION] == null}")
                             loge("size= $size")
 
                             if(lp.width != ViewGroup.LayoutParams.MATCH_PARENT
                                 && lp.width != ViewGroup.LayoutParams.WRAP_CONTENT){
-                                lp.width= if(!isOnScreenRotation) size.width
-                                        else size.height
+                                lp.width= size.width
+//                                    if(!isOnScreenRotation) size.width else size.height
                             }
 
                             if(lp.height != ViewGroup.LayoutParams.MATCH_PARENT
                                 && lp.height != ViewGroup.LayoutParams.WRAP_CONTENT){
-                                lp.height= if(!isOnScreenRotation) size.height
-                                    else size.width
+                                lp.height= size.height
+//                                    if(!isOnScreenRotation) size.height else size.width
                             }
                         }
                         Content.BG_DRAWABLE -> {

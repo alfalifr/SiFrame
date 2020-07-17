@@ -28,6 +28,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 
@@ -113,13 +114,14 @@ abstract class Act : AppCompatActivity(), Inheritable,
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         isActivitySavedInstanceStateNull= savedInstanceState == null
-        if(!isActivitySavedInstanceStateNull && this is SingleFragActBase){
-            //Anggapannya tidak mungkin fragment null karena sudah diinit di awal.
-//            fragment= supportFragmentManager.findFragmentByTag(fragTag)!!
-        }
         setStyle(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
+
+        if(!isActivitySavedInstanceStateNull && this is SingleFragActBase){
+            //Anggapannya tidak mungkin fragment null karena sudah diinit di awal.
+            fragment= supportFragmentManager.findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)!!
+        }
 
 //        lifecycle.addObserver(this)
 //        Log.e("SimpleAbsAct", "onCreate isViewInitFirst= $isViewInitFirst name= ${this::class.java.simpleName}")

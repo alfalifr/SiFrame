@@ -15,10 +15,15 @@ open class BoxedVal<T>{
         else this === other
     }
 
+    override fun hashCode(): Int {
+        return value?.hashCode() ?: super.hashCode()
+    }
+/*
     fun copy(): BoxedVal<T>{
         val box= BoxedVal<T>()
 //        val aa= SparseArra
         box.value= value//try{ Gson()(value as Object).clone() as? T } catch (e: Exception){ value }
         return box
     }
+ */
 }

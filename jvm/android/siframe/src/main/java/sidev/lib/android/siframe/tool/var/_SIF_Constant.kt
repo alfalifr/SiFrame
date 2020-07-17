@@ -7,6 +7,10 @@ import android.view.View
  * Untuk val yg berawalan dg _ merupakan suffix.
  */
 object _SIF_Constant{
+    internal object Internal{
+        val TAG_SINGLE_FRAG_ACT= "_sif_tag_single_frag_act_"
+    }
+
     val DIRECTION_UP= View.FOCUS_UP
     val DIRECTION_DOWN= View.FOCUS_DOWN
 

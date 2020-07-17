@@ -99,7 +99,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     }
 
     fun __attachFrag(){
-        _prop_ctx.commitFrag(fragContainerId, fragment)
+        _prop_ctx.commitFrag(fragContainerId, fragment, _SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
         if(this is ActFragBase)
             fragment.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
         if(isTitleFragBased)

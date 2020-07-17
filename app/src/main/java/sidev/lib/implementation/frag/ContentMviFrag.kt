@@ -41,8 +41,10 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
     override fun _initView(layoutView: View) {
         rvAdp= ContentAdp(context!!)
         rvAdp.rv= layoutView.rv
+
         registerAutoRestoreView("et", layoutView.et)
         registerAutoRestoreView("iv", layoutView.iv)
+
         (layoutView.btn as Button).text= "Login"
         layoutView.btn.setOnClickListener { sendRequest(ContentFragIntent.Login("kinap oy")) }
         layoutView.srl.setOnRefreshListener { sendRequest(ContentFragIntent.DownloadData) }
