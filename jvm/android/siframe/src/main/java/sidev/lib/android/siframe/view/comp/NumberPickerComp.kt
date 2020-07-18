@@ -30,12 +30,14 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     open val ivPlusId: Int= _Config.ID_IV_PLUS
     open val ivMinusId: Int= _Config.ID_IV_MINUS
 
-    var defaultLowerBorder: Int= 0
-    var defaultUpperBorder: Int= Int.MAX_VALUE
+    open var defaultLowerBorder: Int= 0
+    open var defaultUpperBorder: Int= Int.MAX_VALUE
 
-    var enabledColorId= _ColorRes.COLOR_PRIMARY_DARK
-    var disabledColorId= _ColorRes.COLOR_DISABLED
-    var inBorderColorId= _ColorRes.COLOR_IMMUTABLE
+    open var enabledColorId= _ColorRes.COLOR_PRIMARY_DARK
+    open var disabledColorId= _ColorRes.COLOR_DISABLED
+    open var inBorderColorId= _ColorRes.COLOR_IMMUTABLE
+
+    var onNumberChangeListener: ((position: Int, oldNumber: Int, newNumber: Int) -> Unit)?= null
 
 
     override fun initData(position: Int, inputData: I?): NumberPickerData?
@@ -82,11 +84,15 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                             isInternalEdit= false
                         }
                     }
+                    val oldNumber= data.number
                     data.number= num
+                    onNumberChangeListener?.invoke(position, oldNumber, num)
                 } else{
+                    val oldNumber= data.number
                     data.number= data.lowerBorder
                     _ViewUtil.setBgColorRes(ivMinus, inBorderColorId)
                     _ViewUtil.setBgColorRes(ivPlus, enabledColorId)
+                    onNumberChangeListener?.invoke(position, oldNumber, data.lowerBorder)
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
