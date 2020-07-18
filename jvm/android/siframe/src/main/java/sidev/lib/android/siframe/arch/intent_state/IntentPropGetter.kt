@@ -3,6 +3,7 @@ package sidev.lib.android.siframe.arch.intent_state
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.universal.`fun`.getSealedClassName
 import sidev.lib.universal.`fun`.new
+import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
 /**
@@ -15,38 +16,41 @@ import kotlin.reflect.KParameter
 class IntentPropGetter: Mvi {
     private var intentObj: HashMap<String, ViewIntent>?= null
 
-    inline fun <reified I: ViewIntent> getEquivReqCode(
-        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    fun <I: ViewIntent> getEquivReqCode(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
     ): String{
-        if(`access$intentObj` == null)
-            `access$intentObj` = HashMap()
-        val key= I::class.getSealedClassName()!!
-        var viewIntentObj= `access$intentObj`!![key]
+        if(intentObj == null) intentObj = HashMap()
+
+        val key= intentClass.getSealedClassName()!!
+        var viewIntentObj= intentObj!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new(I::class, defParamValFunc = defParamValFunc)!!
-            `access$intentObj`!![key]= viewIntentObj
+            viewIntentObj= new(intentClass, defParamValFunc = defParamValFunc)!!
+            intentObj!![key]= viewIntentObj
         }
         return viewIntentObj.equivalentReqCode
     }
 
-    inline fun <reified I: ViewIntent> getResultIsTemporary(
-        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    fun <I: ViewIntent> getResultIsTemporary(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
     ): Boolean{
-        if(`access$intentObj` == null)
-            `access$intentObj` = HashMap()
-        val key= I::class.getSealedClassName()!!
-        var viewIntentObj= `access$intentObj`!![key]
+        if(intentObj == null) intentObj = HashMap()
+
+        val key= intentClass.getSealedClassName()!!
+        var viewIntentObj= intentObj!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new(I::class, defParamValFunc = defParamValFunc)!!
-            `access$intentObj`!![key]= viewIntentObj
+            viewIntentObj= new(intentClass, defParamValFunc = defParamValFunc)!!
+            intentObj!![key]= viewIntentObj
         }
         return viewIntentObj.isResultTemporary
     }
-
+/*
     @PublishedApi
     internal var `access$intentObj`: HashMap<String, ViewIntent>?
         get() = intentObj
         set(value) {
             intentObj = value
         }
+ */
 }

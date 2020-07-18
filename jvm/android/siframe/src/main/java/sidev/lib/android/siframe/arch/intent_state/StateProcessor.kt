@@ -12,6 +12,7 @@ import sidev.lib.android.siframe.exception.RuntimeExc
 import sidev.lib.android.siframe.tool.ViewContentExtractor
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
+import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
 abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
@@ -76,12 +77,13 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
         }
     }
 
-    inline fun <reified I: ViewIntent> getEquivReqCode(
-        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    fun <I: ViewIntent> getEquivReqCode(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
     ): String{
-        if(`access$intentPropGetter` == null)
-            `access$intentPropGetter`= IntentPropGetter()
-        return `access$intentPropGetter`!!.getEquivReqCode<I>(defParamValFunc)
+        if(intentPropGetter == null)
+            intentPropGetter= IntentPropGetter()
+        return intentPropGetter!!.getEquivReqCode(intentClass, defParamValFunc)
     }
 
 
@@ -220,11 +222,12 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
     override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
         postResult(reqCode, resCode, null, true, e, msg)
     }
-
+/*
     @PublishedApi
     internal var `access$intentPropGetter`: IntentPropGetter?
         get() = intentPropGetter
         set(v){
             intentPropGetter= v
         }
+ */
 }

@@ -28,7 +28,7 @@ class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
                 }catch (e:Exception){}
                 state
             }
-            getEquivReqCode<ContentFragIntent.Login>() -> {
+            getEquivReqCode(ContentFragIntent.Login::class) -> {
                 val state= ContentFragState.Login(isSucces = resCode == Const.RES_OK,
                     isError = isError, errorMsg = errorMsg ?: "Error login bro")
                 if(!isError)
@@ -44,7 +44,7 @@ class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
             ContentFragIntent.DownloadData.equivalentReqCode -> {
                 ContentFragState.DownloadData(true)
             }
-            getEquivReqCode<ContentFragIntent.Login>() -> {
+            getEquivReqCode(ContentFragIntent.Login::class) -> {
                 ContentFragState.Login(true)
             }
             else -> null

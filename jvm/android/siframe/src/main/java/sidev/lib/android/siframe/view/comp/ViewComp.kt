@@ -13,9 +13,11 @@ import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.`fun`.InitPropFun
+import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.isIdIn
+import sidev.lib.universal.`fun`.isNull
 //import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.`fun`.notNull
 
@@ -70,8 +72,10 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
         set(v){
             field= v
             if(v != null)
-                for((i, view) in viewIterator.withIndex())
-                    setComponentEnabled(i, view, v)
+                for((i, view) in viewIterator.withIndex()){
+                    val compView= if(isCompIdValid) view.findViewById<View>(compId) else view
+                    setComponentEnabled(i, compView, v)
+                }
         }
 
     val savedDataCount: Int
@@ -169,10 +173,12 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
         if(isCompIdValid)
             v.findViewById<View>(compId).notNull {
                 it.visibility= if(isCompVisible) View.VISIBLE else View.GONE
-            }
+            }.isNull { isCompIdValid= false }
+
+        val compView= if(isCompIdValid) v.findViewById<View>(compId) else v
         if(isEnabled != null)
-            setComponentEnabled(position, v, isEnabled!!)
-        bindComponent(position, v, valueBox, inputData)
+            setComponentEnabled(position, compView, isEnabled!!)
+        bindComponent(position, compView, valueBox, inputData)
     }
 
     /**

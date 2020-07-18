@@ -1,9 +1,6 @@
 package sidev.lib.universal.`fun`
 
 import kotlin.reflect.KClass
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.full.superclasses
 
 
 interface A
@@ -140,15 +137,15 @@ fun main(args: Array<String>){
     println("Array<Int>::class == Array<String>::class => ${Array<Int>::class == Array<String>::class}")
     val acObj= AC()
     println("AAD data= ${new<AAD>()}")
-*/
+* /
     println("\n=============BATAS nestedPropertiesTree ==============\n")
     for((i, prop) in AC::class.nestedPropertiesTree.withIndex())
         println("i= $i prop name= $prop ") //val= ${try{ prop.forcedGet(acObj as AC)}}
-/*
+/ *
     println("\n=============BATAS propertiesTree_simple ==============\n")
     for((i, prop) in AC::class.propertiesTree_.withIndex())
         println("i= $i prop name= ${prop.name} ") //val= ${try{ prop.forcedGet(acObj as AC)}}
-// */
+// * /
     println("\n=============BATAS declaredPropertiesTree ==============\n")
     for((i, prop) in AC::class.declaredPropertiesTree.withIndex())
         println("i= $i prop name= ${prop.name} ") //val= ${try{ prop.forcedGet(acObj as AC)}}
@@ -202,7 +199,7 @@ fun main(args: Array<String>){
     oldAc.poin.x= 100
 
     newAc= oldAc.clone(true)
-/*
+/ *
     { clazz, param ->
         prine("Poin param= $param nmae= ${param.name} kind= ${param.kind}")
         when(clazz){
@@ -219,7 +216,7 @@ fun main(args: Array<String>){
             else -> null
         }
     }
-// */
+// * /
     oldAc.poin.x= 70
     oldAc.poin.y= 7
     oldAc.poin.aa_diPoin.aa_= 17
@@ -235,7 +232,7 @@ fun main(args: Array<String>){
         }
     }
 
-/*
+/ *
     oldAc.aa_
     newAc.aa_
     oldAc.poin.aa_diPoin.aa_
@@ -244,7 +241,7 @@ fun main(args: Array<String>){
     oldAc.poin.y
     newAc.poin.x
     newAc.poin.y
- */
+ * /
 
     println("\n=============BATAS clone() ==============\n")
     println("oldAc.poin.x= ${oldAc.poin.x} oldAc.poin.y= ${oldAc.poin.y} newAc.poin.x= ${newAc.poin.x} newAc.poin.y= ${newAc.poin.y}")
@@ -252,4 +249,10 @@ fun main(args: Array<String>){
     println("oldAc.aa_= ${oldAc.aa_} newAc.aa_= ${newAc.aa_}")
     println("oldAc.poinConstr.x= ${oldAc.poinConstr.x} oldAc.poinConstr.y= ${oldAc.poinConstr.y} newAc.poinConstr.x= ${newAc.poinConstr.x} newAc.poinConstr.y= ${newAc.poinConstr.y}")
     println("oldAc.poinLate.x= ${oldAc.poinLate.x} oldAc.poinLate.y= ${oldAc.poinLate.y} newAc.poinLate?.x= ${newAc.getLateinit { poinLate.x }} newAc.poinLate?.y= ${newAc.getLateinit { poinLate.y }}")
+ */
+
+    println("\n============= BATAS sealedSubclasses ==============\n")
+    for((i, sub) in AA::class.sealedSubclassesTree.withIndex()){
+        println("i= $i sub sealed= $sub")
+    }
 }

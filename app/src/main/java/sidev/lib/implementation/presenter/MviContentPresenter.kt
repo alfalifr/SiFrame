@@ -34,7 +34,7 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
     override fun processRequest(reqCode: String, data: Map<String, Any>?) {
         when(reqCode){
             REQ_GET_CONTENT -> getContent()
-            getEquivReqCode<ContentFragIntent.Login>() -> {
+            getEquivReqCode(ContentFragIntent.Login::class) -> {
                 val uname= try{ data!![DATA_UNAME] as String } catch (e: Exception){ "sriname" }
                 login(uname)
             }

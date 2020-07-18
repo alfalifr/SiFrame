@@ -329,10 +329,10 @@ val KClass<*>.classesTree: NestedSequence<KClass<*>>
         }
     }
 
-val KClass<*>.sealedSubClassesTree: NestedSequence<KClass<*>>
+val KClass<*>.sealedSubclassesTree: NestedSequence<KClass<*>>
     get()= object : NestedSequence<KClass<*>>{
         override fun iterator(): NestedIteratorSimple<KClass<*>>
-                = object: NestedIteratorSimpleImpl<KClass<*>>(this@sealedSubClassesTree){
+                = object: NestedIteratorSimpleImpl<KClass<*>>(this@sealedSubclassesTree){
             override fun getOutputIterator(nowInput: KClass<*>): Iterator<KClass<*>>?
                     = nowInput.sealedSubclasses.iterator()
         }

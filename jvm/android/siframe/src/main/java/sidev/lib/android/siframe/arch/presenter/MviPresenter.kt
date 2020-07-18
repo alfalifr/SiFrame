@@ -7,6 +7,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.classSimpleName
 import sidev.lib.universal.`fun`.isNull
+import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
 abstract class MviPresenter<S: ViewState>(
@@ -17,20 +18,22 @@ abstract class MviPresenter<S: ViewState>(
         private set
 
 
-    inline fun <reified I: ViewIntent> getEquivReqCode(
-        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    fun <I: ViewIntent> getEquivReqCode(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
     ): String{
-        if(`access$intentPropGetter` == null)
-            `access$intentPropGetter`= IntentPropGetter()
-        return `access$intentPropGetter`!!.getEquivReqCode<I>(defParamValFunc)
+        if(intentPropGetter == null) intentPropGetter= IntentPropGetter()
+
+        return intentPropGetter!!.getEquivReqCode(intentClass, defParamValFunc)
     }
 
-    inline fun <reified I: ViewIntent> getResultIsTemporary(
-        noinline defParamValFunc: ((KParameter) -> Any?)?= null
+    fun <I: ViewIntent> getResultIsTemporary(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
     ): Boolean{
-        if(`access$intentPropGetter` == null)
-            `access$intentPropGetter`= IntentPropGetter()
-        return `access$intentPropGetter`!!.getResultIsTemporary<I>(defParamValFunc)
+        if(intentPropGetter == null) intentPropGetter= IntentPropGetter()
+
+        return intentPropGetter!!.getResultIsTemporary(intentClass, defParamValFunc)
     }
 
 
@@ -58,13 +61,14 @@ abstract class MviPresenter<S: ViewState>(
             callback= null
         }
     }
-
+/*
     @PublishedApi
     internal var `access$intentPropGetter`: IntentPropGetter?
         get() = intentPropGetter
         set(v){
             intentPropGetter= v
         }
+ */
 }
 
 /*
