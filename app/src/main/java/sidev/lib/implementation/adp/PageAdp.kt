@@ -25,14 +25,17 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
 
     override fun initData(position: Int, inputData: Page?): NumberPickerData?{
             val no= inputData!!.no %6
-            val lowerBorder= (inputData.no +1) %3
-            val upperBorder= inputData.no +2
+            val lowerBorder= if(position == 2) 0 else (inputData.no +1) %3
+            val upperBorder= if(position == 2) 0 else inputData.no +2
             return NumberPickerData(no, lowerBorder, upperBorder)
         }
     }
 
     init{
         numberPicker.setupWithRvAdapter(this)
+        numberPicker.onNumberChangeListener= { pos, old, new ->
+            loge("pos= $pos oldNumber= $old new= $new")
+        }
     }
 // */
     override fun bindVH(vh: SimpleViewHolder, pos: Int, data: Page) {

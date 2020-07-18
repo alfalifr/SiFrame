@@ -92,7 +92,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                     data.number= data.lowerBorder
                     _ViewUtil.setBgColorRes(ivMinus, inBorderColorId)
                     _ViewUtil.setBgColorRes(ivPlus, enabledColorId)
-                    onNumberChangeListener?.invoke(position, oldNumber, data.lowerBorder)
+                    onNumberChangeListener?.invoke(position, oldNumber, data.number)
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -149,8 +149,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
      */
     fun setLowerNumberAt(pos: Int, lowerBorder: Int): Boolean{
         return getDataAt(pos).notNullTo {
-            it.lowerBorder= if(lowerBorder < it.upperBorder) lowerBorder
-                else it.upperBorder -1
+            it.lowerBorder= if(lowerBorder <= it.upperBorder) lowerBorder
+                else it.upperBorder
             getViewAt(pos).notNull { v ->
                 //Jika view disimpan, maka assign saja [it.number] ke view
                 //  agar warna [ivMinus] dan [ivPlus] bisa menyesuaikan perubahan border.
@@ -158,7 +158,6 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                     .notNull { et ->
                         et.hint= it.lowerBorder.toString()
                         et.setText(it.number.toString())
-                        loge("setLowerNumberAt($pos) lowerBorder= $lowerBorder assigned= ${it.lowerBorder}")
                     }
             }
             true
@@ -170,8 +169,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
      */
     fun setUpperNumberAt(pos: Int, upperBorder: Int): Boolean{
         return getDataAt(pos).notNullTo {
-            it.upperBorder= if(upperBorder > it.lowerBorder) upperBorder
-                else it.lowerBorder +1
+            it.upperBorder= if(upperBorder >= it.lowerBorder) upperBorder
+                else it.lowerBorder
             getViewAt(pos).notNull { v ->
                 //Jika view disimpan, maka assign saja [it.number] ke view
                 //  agar warna [ivMinus] dan [ivPlus] bisa menyesuaikan perubahan border.
