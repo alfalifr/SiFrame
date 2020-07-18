@@ -124,8 +124,7 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
             override fun next(): D? = next
         }
 
-
-    fun getDataAt(pos: Int): D?= mData[pos].value
+    fun getDataAt(pos: Int): D?= mData[pos]?.value
     fun getViewAt(pos: Int): View?= mView?.get(pos)
 
     /**
