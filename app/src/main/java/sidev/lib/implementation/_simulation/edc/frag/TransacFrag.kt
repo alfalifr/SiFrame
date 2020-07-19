@@ -11,6 +11,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.arch.viewmodel.LifeData
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -22,7 +23,7 @@ import sidev.lib.implementation._simulation.edc.model.Transaction
 import sidev.lib.implementation._simulation.edc.util.Edc_Const
 import sidev.lib.universal.`fun`.*
 
-class TransacFrag : RvFrag<TransacAdp>(), TopMiddleBottomBase{
+class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
     override var topContainer: View?= null
     override var middleContainer: View?= null
     override var bottomContainer: View?= null

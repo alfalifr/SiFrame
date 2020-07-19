@@ -4,6 +4,7 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
+import sidev.lib.android.siframe.adapter.SimpleRvAdp
 //import sidev.lib.android.siframe.intfc.customview.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
@@ -14,7 +15,9 @@ import sidev.lib.implementation.frag.*
 import sidev.lib.universal.`fun`.classSimpleName
 
 class ViewPagerAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
-//    override var isVpTitleFragBased: Boolean= true
+//    override val rvAdp: SimpleRvAdp<*, *>?= null
+
+    //    override var isVpTitleFragBased: Boolean= true
     override var vpFragList: Array<Frag> =
         arrayOf(
             Frag1(),

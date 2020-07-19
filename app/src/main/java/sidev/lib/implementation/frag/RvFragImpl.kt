@@ -1,7 +1,9 @@
 package sidev.lib.implementation.frag
 
 import android.view.View
+import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -10,7 +12,7 @@ import sidev.lib.implementation.adp.StrAdp
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
+class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
     override var topContainer: View?= null
     override var middleContainer: View?= null
     override var bottomContainer: View?= null
@@ -70,5 +72,8 @@ class RvFragImpl : RvFrag<StrAdp>(), TopMiddleBottomBase{
 
     override fun _initBottomView(bottomView: View) {
         loge("_initBottomView() MULAI")
+        bottomView.iv_arrow_forth.setOnClickListener {
+            loge("this.bottomView != null => ${this.bottomView != null}")
+        }
     }
 }

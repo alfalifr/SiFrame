@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
+import sidev.lib.android.siframe.intfc.prop.RvAdpProp
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 
@@ -13,6 +14,17 @@ interface TopMiddleBottomBase: LifecycleSideBase {
     var topContainer: View?
     var middleContainer: View?
     var bottomContainer: View?
+
+    /**
+     * Cara mudah untuk mengambil [topView] tanpa harus mengkonversi [topContainer] ke ViewGroup.
+     * Selain itu, variabel ini juga berguna bagi [NestedTopMiddleBottomBase] karena [topView]
+     * tidak berada di [topContainer].
+     */
+    val topView: View?
+        get()= topContainer.asNotNullTo { vg: ViewGroup -> vg.getChildAt(0) }
+    /** Dokumentasi sama dg [topView]. */
+    val bottomView: View?
+        get()= bottomContainer.asNotNullTo { vg: ViewGroup -> vg.getChildAt(0) }
 
     val topContainerId: Int
         get()= _Config.ID_RL_TOP_CONTAINER
@@ -23,17 +35,6 @@ interface TopMiddleBottomBase: LifecycleSideBase {
     val rvId: Int
         get()= _Config.ID_RV
 
-    /**
-     * <10 Juli 2020> => Untuk sementara, [RecyclerView] yg dimaksud
-     * adalah rv yg adapaternya menggunakan [SimpleRvAdp].
-     */
-    val isTopContainerNestedInRv
-        get()= false
-    val isMiddleContainerNestedInRv
-        get()= false
-    val isBottomContainerNestedInRv
-        get()= false
-
     val topLayoutId: Int
         get()= _Config.INT_EMPTY
     val middleLayoutId: Int
@@ -41,6 +42,71 @@ interface TopMiddleBottomBase: LifecycleSideBase {
     val bottomLayoutId: Int
         get()= _Config.INT_EMPTY
 
+
+    fun __initTopMiddleBottomView(layoutView: View){
+        topContainer= try{ layoutView.findViewById(topContainerId) } catch (e: Exception){ null }
+        middleContainer= try{ layoutView.findViewById(middleContainerId) } catch (e: Exception){ null }
+        bottomContainer= try{ layoutView.findViewById(bottomContainerId) } catch (e: Exception){ null }
+
+        val c= layoutView.context
+        if(topContainer != null){
+            c.inflate(topLayoutId, topContainer as ViewGroup)
+                .notNull { v ->
+                    (topContainer as ViewGroup).addView(v)
+ /*
+                    <10 Juli 2020> => tidak ada scrollView lagi.
+                    this.asNotNull { rvFrag: RvFrag<*> ->
+                        //Jika kelas ini [RvFrag], maka cek apakah [topContainer] berada
+                        // di dalam [NestedScrollView].
+                        topContainer!!.findViewByType<NestedScrollView>(_SIF_Constant.DIRECTION_UP)
+                            .notNull {
+                                //Jika ada di dalam [NestedScrollView], maka scroll hingga ke atas.
+                                // Hal ini dilatar-belakangi karena view pada screen menscroll
+                                // ke posisi item pertama [RecyclerView] pada [RvFrag].
+                                topContainer!!.addOnGlobalLayoutListener {
+                                    rvFrag.fullScroll(View.FOCUS_UP)
+                                }
+                            }
+                    }
+// */
+                    _initTopView(v)
+                }
+        }
+
+        if(middleContainer != null){
+            c.inflate(middleLayoutId, middleContainer as ViewGroup)
+                .notNull { v ->
+                    (middleContainer as ViewGroup).addView(v)
+                    _initMiddleView(v)
+                }
+        }
+/*
+        /**
+         * Variabel apakah [bottomContainer] udah diisi.
+         * Var ini berguna jika saat [isBottomContainerNestedInRv] == true dan [bottomLayoutId]
+         * berhasil di inflate, namun ternyata [rv] yg ditemukan menggunakan [findViewByType]
+         * berukuran kecil tidak sampe se-screen (it.y >= _ViewUtil.getScreenHeight(act)),
+         * maka [bottomViewHasBeenAdded] jadi false.
+         */
+ */
+        if(bottomContainer != null){
+            c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
+                .notNull { v ->
+                    (bottomContainer as ViewGroup).addView(v)
+                    _initBottomView(v)
+                }
+        }
+        //initTopView()
+    }
+
+    fun _initTopView(topView: View)
+    fun _initMiddleView(middleView: View)
+    fun _initBottomView(bottomView: View)
+}
+
+
+
+/*
     fun __initTopMiddleBottomView(layoutView: View){
         topContainer= try{ layoutView.findViewById(topContainerId) } catch (e: Exception){ null }
         middleContainer= try{ layoutView.findViewById(middleContainerId) } catch (e: Exception){ null }
@@ -55,7 +121,8 @@ interface TopMiddleBottomBase: LifecycleSideBase {
                 try{ c.resources.getResourceName(layoutId)!! }
                 catch (e: Exception){ "<layoutId>" }
 
-            layoutView.findViewByType<RecyclerView>()
+            (layoutView.findViewById(rvId)
+                ?: layoutView.findViewByType<RecyclerView>())
                 .notNull { rv ->
                     rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
                         c.inflate(topLayoutId).notNull { topView ->
@@ -121,7 +188,8 @@ interface TopMiddleBottomBase: LifecycleSideBase {
                 try{ c.resources.getResourceName(layoutId)!! }
                 catch (e: Exception){ "<layoutId>" }
 
-            layoutView.findViewByType<RecyclerView>().notNull { rv ->
+            (layoutView.findViewById(rvId)
+                ?: layoutView.findViewByType<RecyclerView>()).notNull { rv ->
                 rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
                     c.inflate(bottomLayoutId).notNull { bottomView ->
                         rv.addOnGlobalLayoutListener {
@@ -162,8 +230,4 @@ interface TopMiddleBottomBase: LifecycleSideBase {
         }
         //initTopView()
     }
-
-    fun _initTopView(topView: View)
-    fun _initMiddleView(middleView: View)
-    fun _initBottomView(bottomView: View)
-}
+ */

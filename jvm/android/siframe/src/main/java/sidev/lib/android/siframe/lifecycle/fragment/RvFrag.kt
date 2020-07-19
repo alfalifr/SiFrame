@@ -10,13 +10,14 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.intfc.listener.RvScrollListener
+import sidev.lib.android.siframe.intfc.prop.RvAdpProp
 import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 
 //import sidev.lib.android.siframe.tool.util.`fun`.loge
 
-abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
+abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
     final override val layoutId: Int
         get() = _Config.LAYOUT_RV //R.layout.content_abs_rv
 
@@ -37,7 +38,7 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(){
  */
     lateinit var rv: RecyclerView
         protected set
-    lateinit var rvAdp: R //RvAdp<*, *>
+    override lateinit var rvAdp: R //RvAdp<*, *>
         protected set
     lateinit var pb: ProgressBar
         protected set
