@@ -2,15 +2,49 @@ package sidev.lib.android.siframe.tool.util.`fun`
 
 import android.util.SparseArray
 import android.util.SparseIntArray
+import androidx.core.util.containsValue
 
 
-fun <T> SparseArray<T>.keys(): List<Int>{
-    val keys= ArrayList<Int>()
-    for(i in 0 until this.size()){
-        keys.add(this.keyAt(i))
+fun <T> SparseArray<T>.addLast(element: T) = append(keys.last() +1, element)
+fun SparseIntArray.addLast(element: Int= keys.last() +1) = append(keys.last() +1, element)
+
+val <T> SparseArray<T>.keys: Sequence<Int>
+    get()= object: Sequence<Int>{
+        override fun iterator(): Iterator<Int>
+            = object : Iterator<Int>{
+            private var index= 0
+            override fun hasNext(): Boolean = index < size()
+            override fun next(): Int = keyAt(index++)
+        }
     }
-    return keys
-}
+val SparseIntArray.keys: Sequence<Int>
+    get()= object: Sequence<Int>{
+        override fun iterator(): Iterator<Int>
+            = object : Iterator<Int>{
+            private var index= 0
+            override fun hasNext(): Boolean = index < size()
+            override fun next(): Int = keyAt(index++)
+        }
+    }
+val <T> SparseArray<T>.values: Sequence<T>
+    get()= object: Sequence<T>{
+        override fun iterator(): Iterator<T>
+            = object : Iterator<T>{
+            private var index= 0
+            override fun hasNext(): Boolean = index < size()
+            override fun next(): T = valueAt(index++)
+        }
+    }
+val SparseIntArray.values: Sequence<Int>
+    get()= object: Sequence<Int>{
+        override fun iterator(): Iterator<Int>
+            = object : Iterator<Int>{
+            private var index= 0
+            override fun hasNext(): Boolean = index < size()
+            override fun next(): Int = valueAt(index++)
+        }
+    }
+
 
 operator fun <T> SparseArray<T>.iterator(): Iterator<Pair<Int, T>> {
     return object : Iterator<Pair<Int, T>>{
@@ -28,6 +62,8 @@ operator fun <T> SparseArray<T>.iterator(): Iterator<Pair<Int, T>> {
         }
     }
 }
+
+
 //Anggap key urut walau urutan assign tidak urut.
 operator fun SparseIntArray.iterator(): Iterator<Pair<Int, Int>> {
     return object : Iterator<Pair<Int, Int>>{

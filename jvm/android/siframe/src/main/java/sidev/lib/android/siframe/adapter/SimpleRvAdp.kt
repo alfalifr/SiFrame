@@ -49,7 +49,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
                 else ArrayList()
             onUpdateDataListener?.onUpdateData(copiedList, -1, DataUpdateKind.SET)
  */
-//            notifyDataSetChanged_()
+            notifyDataSetChanged_()
         }
 
     var headerView: View?= null

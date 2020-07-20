@@ -13,6 +13,7 @@ import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.listener.Listener
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
+import sidev.lib.android.siframe.tool.util.`fun`.addLast
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
@@ -47,7 +48,6 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                 if(dataList != null) ArrayList(dataList!!)
                 else ArrayList()
             onUpdateDataListener?.onUpdateData(copiedList, -1, DataUpdateKind.SET)
-
 //            notifyDataSetChanged_()
         }
 
@@ -1034,25 +1034,32 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         }
     }
 
-    open fun createEmptyData(): D?{
-        return null
+    open fun createEmptyData(): D? = null
+
+    /** <20 Juli 2020> => Data yg ditambah dapat ditampilkan atau tidak tergantung [isAddedVisible]. */
+    fun addData(data: D, pos: Int= dataList?.size ?: 0, isAddedVisible: Boolean){
+        super.addData(data, pos)
+        if(isAddedVisible){
+            contentArranger.resultInd.addLast(pos)
+            notifyDataSetChanged_()
+        }
     }
 
     /**
      * <28 Juni 2020> => Data yg dimasukkan tidak akan terlihat scr default.
      *                   Data yg dimasukkan juga tidak terdaftar pada mapping indeks yg ada.
+     *
+     * <20 Juli 2020> => Data yg ditambah dapat ditampilkan atau tidak tergantung [isAddedVisible].
      */
     @CallSuper
-    open fun addEmptyData(pos: Int= dataList?.size ?: 0, initValFun: ((initData: D) -> D) ?= null): D?{
-        var emptyData= createEmptyData()
-        if(initValFun != null && emptyData != null)
-            emptyData= initValFun(emptyData)
+    open fun addEmptyData(defaultData: D?= null, pos: Int= dataList?.size ?: 0, isAddedVisible: Boolean= true): D?{
+        val emptyData= createEmptyData() ?: defaultData
         return if(emptyData != null){
-            addData(emptyData, pos)
-//            Log.e("BoundProductSendAdp_Lessee", "_addEmptyData Di dalam")
+            addData(emptyData, pos, isAddedVisible)
+            notifyDataSetChanged_()
             emptyData
-        } else{
-//            Log.e("BoundProductSendAdp_Lessee", "_addEmptyData dataList.size= ${dataList?.size}")
+        } else {
+            loge("addEmptyData() data yg ditambahkan null, sehingga diabaikan")
             null
         }
     }

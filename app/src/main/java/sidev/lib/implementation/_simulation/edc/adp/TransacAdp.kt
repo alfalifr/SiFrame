@@ -79,9 +79,9 @@ class TransacAdp(c: Context) : RvAdp<Transaction, LinearLm>(c){
             }
 
             Edc_Const.STATUS_TRANSACTION_REJECTED -> {
-                if(isOrder)
-                    v.tv_title_right.text= "Kadaluwarsa"
-                else {
+//                if(isOrder)
+//                    v.tv_title_right.text= "Kadaluwarsa"
+//                else {
                     val transStrAdd=
                         if(transactionType == BELI) "Ditolak"
                         else "Menolak"
@@ -89,7 +89,7 @@ class TransacAdp(c: Context) : RvAdp<Transaction, LinearLm>(c){
                     v.iv_indicator_right.visibility = View.VISIBLE
                     v.iv_indicator_right.setImageDrawable(ctx.resources.getDrawable(R.drawable.ic_cross))
                     v.iv_indicator_right.setColorFilter(ContextCompat.getColor(ctx, R.color.merah), android.graphics.PorterDuff.Mode.SRC_IN)
-                }
+//                }
                 v.tv_title_right.setTextColor(ctx.resources.getColor(R.color.merah))
             }
 

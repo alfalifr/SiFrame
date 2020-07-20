@@ -1,5 +1,6 @@
 package sidev.lib.universal.`fun`
 
+import sidev.lib.universal._cob.model.dum_transaction
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
 import kotlin.reflect.full.declaredMemberProperties
@@ -100,7 +101,7 @@ AD(a= 0)
     for(prop in AD::class.contrustorPropertiesTree){
         prin("prop= ${prop}")
     }
- */
+ * /
 
     val constrTree= AD::class.contructorsTree.iterator()
     for(i in 0 until 20)
@@ -121,6 +122,8 @@ AD(a= 0)
     println("\n=============BATAS classesTree ==============\n")
     for((i, prop) in AD::class.classesTree.withIndex())
         prin("i= $i prop= $prop")
+
+ */
 
 
 /*
@@ -192,7 +195,7 @@ AD(a= 0)
     println("\n=============BATAS propertiesTree_simple ==============\n")
     for((i, prop) in AC::class.propertiesTree_.withIndex())
         println("i= $i prop name= ${prop.name} ") //val= ${try{ prop.forcedGet(acObj as AC)}}
-// */
+// * /
     println("\n=============BATAS declaredPropertiesTree ==============\n")
     for((i, prop) in AC::class.declaredPropertiesTree.withIndex())
         println("i= $i prop name= ${prop.name} ") //val= ${try{ prop.forcedGet(acObj as AC)}}
@@ -302,7 +305,7 @@ AD(a= 0)
     for((i, sub) in AA::class.sealedSubclassesTree.withIndex()){
         println("i= $i sub sealed= $sub")
     }
-// */
+// * /
 
     println("\n============= BATAS CachedSequence ==============\n")
     val strSeq= sequenceOf("Aku", "Mau", "Makan")
@@ -318,7 +321,7 @@ AD(a= 0)
     val indexKamu= lazySeq.indexOf("Kamu")
     val ke4= lazySeq[4]
     prin("indexMau= $indexMau ke4= $ke4 containsAku= $containsAku containsKamu= $containsKamu indexKamu= $indexKamu")
- */
+ * /
 
     println("\n============= BATAS CachedSequence.iterator() ==============\n")
     for((i, data) in lazySeq.withIndex()){
@@ -394,6 +397,22 @@ AD(a= 0)
         prin("data= $data")
     }
 //    En.to
+
+ */
+
+ */
+
+    val transac= dum_transaction.last()
+    println("\n============= BATAS Transac.nestedImplementedPropertiesValueMapTree ==============\n")
+    for((i, valMap) in transac.nestedImplementedPropertiesValueMapTree.withIndex())
+        println("Transac i= $i prop= ${valMap.first} value= ${valMap.second}")
+
+    println("\n============= BATAS Transac.declaredMemberProperties CLONE ==============\n")
+    val transacClone= transac.clone()
+    for((i, valMap) in transacClone.implementedPropertiesValueMapTree.withIndex())
+        println("Transac i= $i prop= ${valMap.first} value= ${valMap.second}")
+
+    prin("\n\n transacClone.commodity?.name= ${transacClone.commodity?.name}")
 }
 
 

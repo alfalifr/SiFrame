@@ -2,6 +2,8 @@ package sidev.lib.implementation._simulation.edc.frag
 
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
@@ -14,6 +16,7 @@ import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.tool.dialog.DialogListView
 import sidev.lib.implementation.R
@@ -93,12 +96,30 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
                 iv.setOnClickListener { popup.show() }
             }
         }
-        val transList= dum_transaction.copyGrowExponentially(8) //dum_transaction.toArrayList()
+        val transList= dum_transaction.copyGrowIncremental(3) //dum_transaction.toArrayList()
         rvAdp.dataList= transList as ArrayList
         timeEnd= System.currentTimeMillis()
         timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
         totalData.value= rvAdp.dataList?.size ?: 0
         shownData.value= rvAdp.itemCount
+
+        inflate(R.layout._sif_comp_btn_action).asNotNull { btn: Button ->
+            layoutView.asNotNull { vg: ViewGroup -> vg.addView(btn) }
+            btn.text= "Tambah data"
+            btn.setOnClickListener {
+                for((i, valMap) in transList.last().implementedPropertiesValueMapTree.withIndex()){
+                    loge("TransacFrag i= $i prop= ${valMap.first} value= ${valMap.second}")
+                }
+                val oldData= transList.last()
+                val newData= oldData.clone()
+                newData.commodity?.name= "Beras Uhuy"
+
+//                rvAdp.addData(newData, isAddedVisible = true)
+                rvAdp.addEmptyData(newData)
+                loge("TransacFrag rvAdp.addData newData= $newData")
+                loge("TransacFrag newData.commodity?.name= ${newData.commodity?.name} oldData.commodity?.name= ${oldData.commodity?.name} transList.size= ${transList.size}")
+            }
+        }
 
         loge("Current elapsed time= $timeElapsed sec")
     }

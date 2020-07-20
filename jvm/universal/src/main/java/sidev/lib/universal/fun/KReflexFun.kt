@@ -61,7 +61,7 @@ val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
         var minParamCount= constr.parameters.size
         //<20 Juli 2020> => Konstruktor dg jml param tersedikit belum tentu merupakan konstruktor dg jml param wajib paling sedikit.
         for(constrItr in constructors){
-            prine("leastRequiredParamConstructor class= $simpleName constrItr.parameters.size= ${constrItr.parameters.size}")
+//            prine("leastRequiredParamConstructor class= $simpleName constrItr.parameters.size= ${constrItr.parameters.size}")
             if(minParamCount > constrItr.parameters.size){
                 constr= constrItr
                 minParamCount= constrItr.parameters.size
@@ -283,6 +283,17 @@ val KType.isInterface
 
 val <T: Any> KClass<T>.isPrimitive: Boolean
     get()= this.javaPrimitiveType != null
+
+/**
+ * Mengindikasikan bahwa data dg tipe `this.extension` [KClass] ini aman untuk di-copy scr langsung
+ * tanpa harus di-instantiate agar tidak menyebabkan masalah yg berkaitan dg referential.
+ *
+ * Contoh tipe data yg aman untuk di-copy scr langsung tanpa harus di-instantiate adalah
+ * tipe data primitif dan String. Jika ada tipe data lain yg immutable, tipe data tersebut juga
+ * copy-safe.
+ */
+val <T: Any> KClass<T>.isCopySafe: Boolean
+    get()= isPrimitive || this == String::class
 
 
 /**
@@ -814,7 +825,7 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
 //            prine("clone() prop= $prop value= $value value.clazz.isPrimitive= ${value?.clazz?.isPrimitive} bool=${!isDeepClone || value == null || value.clazz.isPrimitive}")
             prop.asNotNull { mutableProp: KMutableProperty1<T, Any?> ->
 //                prine(" masukkkk... clone() prop= $prop value= $value value.clazz.isPrimitive= ${value?.clazz?.isPrimitive} bool=${!isDeepClone || value == null || (value.clazz.isPrimitive && constr.parameters.find { it.isPropertyLike(mutableProp, true) } == null)}")
-                if(!isDeepClone || value == null || value.clazz.isPrimitive){
+                if(!isDeepClone || value == null || value.clazz.isCopySafe){
                     if(constr.parameters.find { it.isPropertyLike(mutableProp, true) } == null)
                     //Jika ternyata [mutableProp] terletak di konstruktor dan sudah di-instansiasi,
                     // itu artinya programmer sudah memberikan definisi nilainya sendiri saat intansiasi,
@@ -853,7 +864,8 @@ inline fun <reified T: Any> new(constructorParamClass: Array<KClass<*>>?= null, 
  * <14 Juli 2020> => Tidak jadi inline karena fungsi ini besar. Sbg gantinya, fungsi [new] di atas
  *   adalah inline namun dg kode yg kecil.
  */
-fun <T: Any> new(clazz: KClass<T>, constructorParamClass: Array<KClass<*>>?= null, defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
+fun <T: Any> new(clazz: KClass<T>, constructorParamClass: Array<KClass<*>>?= null,
+                 defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
     if(clazz.isPrimitive)
         return defaultPrimitiveValue(clazz)
 
@@ -887,7 +899,6 @@ fun <T: Any> new(clazz: KClass<T>, constructorParamClass: Array<KClass<*>>?= nul
                 try{ defaultPrimitiveValue(typeClass)!! } //Jika ternyata gak opsional, maka coba cari nilai default.
                 catch (e: Exception){
                     prine("newInstance(): paramName= ${param.name} nilai param tidak terdefinisi!")
-//                    Log.e("newInstance()", "paramName= ${param.name} nilai param tidak terdefinisi!")
                     null
                 }
             }
