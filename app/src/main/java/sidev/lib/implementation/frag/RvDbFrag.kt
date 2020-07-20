@@ -27,6 +27,8 @@ class RvDbFrag : RvFrag<PageAdp>(){
                 lp.setMargins(40, 40, 40, 40)
                 btn.layoutParams= lp
                 btn.setOnClickListener {
+                    rvAdp.numberPicker.isCompVisible= rvAdp.numberPicker.isCompVisible.not()
+                    loge("rvAdp.numberPicker.isCompVisible= ${rvAdp.numberPicker.isCompVisible} rvAdp.numberPicker.isViewSaved= ${rvAdp.numberPicker.isViewSaved}")
 ///*
                     loge("number print numAt size= ${rvAdp.numberPicker.savedDataCount}")
                     for((i, number) in rvAdp.numberPicker.dataIterator().withIndex()){

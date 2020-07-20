@@ -3,6 +3,7 @@ package sidev.lib.universal.structure.collection.iterator
 abstract class SkippableIteratorImpl<T>(private val startIterator: Iterator<T>) :
     SkippableIterator<T> {
     constructor(startInputIterable: Iterable<T>): this(startInputIterable.iterator())
+//    constructor(toOtherIterator: Iterator<BoxedVal<D>>) : this()
 
     private var now: T?= null
     private var nextState: Int= -1 //-1 blum diketahui, 0 tidak ada lagi iterasi, 1 lanjut.

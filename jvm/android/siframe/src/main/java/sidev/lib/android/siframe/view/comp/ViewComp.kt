@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.view.comp
 
 import android.content.Context
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +14,14 @@ import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.universal.structure.data.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.`fun`.InitPropFun
+import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.isIdIn
-import sidev.lib.universal.`fun`.isNull
+import sidev.lib.universal.`fun`.*
 //import sidev.lib.universal.`fun`.iterator
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl
 
 /**
  * Komponen yg digunakan sbg wadah paket view yg memiliki operasi uniknya masing-masing.
@@ -29,14 +32,21 @@ import sidev.lib.universal.`fun`.notNull
  * Tujuan utama dari kelas [ViewComp] ini adalah untuk memanajemen data/object yg banyak
  * yg dapat berubah scr dinamis yg biasanya terdapat pada adapter.
  *
+ * Kelas ini menyimpan 2 komponen, yaitu data dg tipe [D] yg disimpan dalam [mData]
+ * dan view yg dibind yg disimpan di [mView]. Isi dari [mData] dan [mView] sama" dapat didaur ulang
+ * atau dihapus saat [onRecycle] dipanggil. Namun, untuk daur ulang [mData] adalah opsional
+ * sedangkan untuk [mView] adalah wajib karena tujuan dari kelas ini hanya sebatas bind data,
+ * bkn penyimpanan view. Sementara penyimpanan [mData] adalah wajib sedangkan untuk [mView] opsional.
+ *
  * @param D adalah tipe data yg akan dimanage oleh kelas [ViewComp] ini.
  * @param I adalah tipe data inputan dari [RecyclerView.Adapter].
  */
-abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
-    final override var isInit: Boolean= false
+abstract class ViewComp<D, I>(val ctx: Context) {
+//    final override var isInit: Boolean= false
 
     abstract val viewLayoutId: Int
     private val mData= SparseArray<BoxedVal<D>>()
+    /** Yg disimpan adalah view dg id [compId], atau view yg data dari [onBind] scr penuh jika [compId] tidak ditemukan. */
     private var mView: SparseArray<View>?= null
     open val isDataRecycled= false
     open val isViewSaved= false
@@ -53,14 +63,18 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
      */
     @IdRes
     open val compId: Int= _Config.INT_EMPTY
-    private var isCompIdValid= true
+//    private var isCompIdValid= true
     var isCompVisible= true
         set(v){
             field= v
             val vis= if(v) View.VISIBLE
                 else View.GONE
-            for(view in viewIterator)
-                view.visibility= vis
+            if(isViewSaved){
+                for(view in viewIterator)
+                    view.visibility= vis
+            } else{
+                rvAdp?.notifyDataSetChanged_() //Agar view yg gak disave dibind.
+            }
         }
 
     /**
@@ -70,11 +84,14 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
     var isEnabled: Boolean?= null
         set(v){
             field= v
-            if(v != null)
-                for((i, view) in viewIterator.withIndex()){
-                    val compView= if(isCompIdValid) view.findViewById<View>(compId) else view
-                    setComponentEnabled(i, compView, v)
+            if(v != null){
+                if(isViewSaved){
+                    for((i, view) in viewIterator.withIndex())
+                        setComponentEnabled(i, view, v)
+                } else{
+                    rvAdp?.notifyDataSetChanged_() //Agar view yg gak disave dibind.
                 }
+            }
         }
 
     val savedDataCount: Int
@@ -95,16 +112,23 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
 
     /** Iterator view yg disimpan di dalam [ViewComp] ini. */
     val viewIterator: Iterator<View>
-            = object: Iterator<View>{
+        get()= mView?.iterator()?.toOtherIterator { it.second } ?: newIteratorSimple()
+/*
+            get()= object: Iterator<View>{
         private var innerIterator= mView?.iterator()
         override fun hasNext(): Boolean= innerIterator?.hasNext() == true
         override fun next(): View = innerIterator!!.next().second
     }
+ */
 
     /**
      * @param skipNulls true jika data pada [mData] tidak akan di
      */
     fun dataIterator(skipNulls: Boolean= true): Iterator<D?>
+        = object: SkippableIteratorImpl<D?>(mData.iterator().toOtherIterator { it.second.value }){
+        override fun skip(now: D?): Boolean = now == null && skipNulls
+    }
+/*
         = object: Iterator<D?>{
             private var innerIterator= mData.iterator()
             private var next: D?= null
@@ -122,6 +146,7 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
             }
             override fun next(): D? = next
         }
+ */
 
     fun getDataAt(pos: Int): D?= mData[pos]?.value
     fun getViewAt(pos: Int): View?= mView?.get(pos)
@@ -130,7 +155,7 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].
      */
     fun setupWithRvAdapter(rvAdp: SimpleRvAdp<*, *>?){
-        initProp { isCompIdValid= compId isIdIn ctx }
+//        initProp { isCompIdValid= compId isIdIn ctx }
         if(rvAdp != null){
             onBindViewListener= { holder, pos, dataInput ->
                 val dataInputRes= rvAdpInputDataConverter?.invoke(dataInput)
@@ -162,18 +187,17 @@ abstract class ViewComp<D, I>(val ctx: Context): InitPropFun {
             mData[position]= valueBox
         }
 
+        /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
+//        if(isCompIdValid)
+        val compView= v.findView<View>(compId).notNull {
+            it.visibility= if(isCompVisible) View.VISIBLE else View.GONE
+        } ?: v //.isNull { isCompIdValid= false }
+
         if(isViewSaved){
             if(mView == null) mView= SparseArray()
-            mView!![position]= v
+            mView!![position]= compView //v.findView(compId) ?: v
         }
 
-        /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
-        if(isCompIdValid)
-            v.findViewById<View>(compId).notNull {
-                it.visibility= if(isCompVisible) View.VISIBLE else View.GONE
-            }.isNull { isCompIdValid= false }
-
-        val compView= if(isCompIdValid) v.findViewById<View>(compId) else v
         if(isEnabled != null)
             setComponentEnabled(position, compView, isEnabled!!)
         bindComponent(position, compView, valueBox, inputData)

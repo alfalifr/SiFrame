@@ -396,7 +396,15 @@ fun <T> Array<T>.copyGrowExponentially(factor: Int, collIn: MutableCollection<T>
 }
 
 
-fun <T> newIterator(vararg element: T): Iterator<T> = element.iterator()
+fun <I, O> newIterator(vararg element: I, mapping: ((I) -> O)?= null): Iterator<O>{
+    return if(mapping != null) element.iterator().toOtherIterator(mapping)
+    else element.iterator() as Iterator<O>
+} //= element.iterator()
+
+
+fun <T> newIteratorSimple(vararg element: T): Iterator<T> = element.iterator()
+
+
 
 
 /** Sama seperti [first] sekaligus mengahpus element pertama */
@@ -531,6 +539,23 @@ fun <T> Sequence<T>.cut(other: Iterable<T>): Sequence<T>
 
 fun <K, V> Pair<K, V>.toMutableMapEntry(): MutableMap.MutableEntry<K, V> = MutableMapEntry(first, second)
 fun <K, V> Pair<K, V>.toMapEntry(): Map.Entry<K, V> = MapEntry(first, second)
+
+
+fun <I, O> Sequence<I>.toOtherSequence(mapping: (I) -> O): Sequence<O>
+    = object: Sequence<O>{
+    override fun iterator(): Iterator<O>
+        = object: Iterator<O>{
+        private val originItr= this@toOtherSequence.iterator()
+        override fun hasNext(): Boolean = originItr.hasNext()
+        override fun next(): O = mapping(originItr.next())
+    }
+}
+
+fun <I, O> Iterator<I>.toOtherIterator(mapping: (I) -> O): Iterator<O>
+    = object: Iterator<O>{
+    override fun hasNext(): Boolean = this@toOtherIterator.hasNext()
+    override fun next(): O = mapping(this@toOtherIterator.next())
+}
 
 
 val Array<*>.string: String

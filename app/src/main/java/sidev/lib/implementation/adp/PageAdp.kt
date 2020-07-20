@@ -22,6 +22,10 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
     val sqlite= PageSqlite(c)
 ///*
     val numberPicker= object: NumberPickerComp<Page>(c){
+    override val isViewSaved: Boolean
+        get() = false
+    override val compId: Int
+        get() = R.id.comp_num_picker
 
     override fun initData(position: Int, inputData: Page?): NumberPickerData?{
             val no= inputData!!.no %6

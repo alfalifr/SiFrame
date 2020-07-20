@@ -378,12 +378,12 @@ AD(a= 0)
 
     println("\n============= BATAS Enum.contrustorsTree ==============\n")
     enumValues<En>()
-    for(data in En.A::class.contructorsTree.toList()){
+    for(data in En.A::class.contructorsTree){
         prin("pair data= $data")
     }
 
     println("\n============= BATAS Enum.declaredMemberProperties ==============\n")
-    for(prop in Enum::class.declaredMemberProperties)
+    for(prop in En::class.declaredMemberProperties)
         println("Enum prop= $prop")
 
     println("\n============= BATAS Seq.minus ==============\n")
