@@ -1,4 +1,4 @@
-package sidev.lib.universal.structure
+package sidev.lib.universal.structure.collection.iterator
 
 import android.view.ViewGroup
 import sidev.lib.universal.annotation.Interface

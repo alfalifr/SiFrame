@@ -6,6 +6,9 @@ import kotlin.Exception
 
 /**
  * Cara aman untuk mendapatkan  nilai dari `lateinit var` dari `this.extension` [I].
+ * Perlu dicatat bahwa properti `lateinit var` yg diambil adalah properti di dalam `this.extension` [I],
+ * sehingga pemanggilan fungsi ini dilakukan bkn setelah akses properti `lateinit var`, namun sebelum itu.
+ *
  * @return nilai apapun yg dikembalikan oleh [func],
  *   null jika ternyata terdapat akses `lateinit var` yg belum diinit.
  */

@@ -10,11 +10,10 @@ import android.widget.ImageView
 import sidev.lib.android.siframe.R
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.arch.value.BoxedVal
+import sidev.lib.universal.structure.data.BoxedVal
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.universal.`fun`.notNull

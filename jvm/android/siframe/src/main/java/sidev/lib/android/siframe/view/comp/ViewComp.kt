@@ -10,10 +10,9 @@ import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.android.siframe.arch.value.BoxedVal
+import sidev.lib.universal.structure.data.BoxedVal
 import sidev.lib.android.siframe.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.`fun`.InitPropFun
-import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.isIdIn

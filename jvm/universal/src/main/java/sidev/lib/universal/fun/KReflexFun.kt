@@ -2,7 +2,8 @@ package sidev.lib.universal.`fun`
 
 import sidev.lib.universal.`val`.StringLiteral
 import sidev.lib.universal.annotation.Interface
-import sidev.lib.universal.structure.*
+import sidev.lib.universal.structure.collection.iterator.*
+import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import java.io.Serializable
 import java.lang.Exception
 import java.lang.reflect.InvocationTargetException
@@ -32,9 +33,7 @@ val KParameter.isInConstructor: Boolean
 
 fun KParameter.isPropertyLike(prop: KProperty<*>, isInConstructorKnown: Boolean= false): Boolean{
     return if(isInConstructorKnown || isInConstructor){
-        val res= name == prop.name && type.classifier == prop.returnType.classifier
-        prine("isPropertyLike param name= $name res= $res prop= $prop")
-        res
+        name == prop.name && type.classifier == prop.returnType.classifier
     } else false
 }
 
@@ -43,12 +42,14 @@ fun KParameter.isPropertyLike(prop: KProperty<*>, isInConstructorKnown: Boolean=
 val <T: Any> KClass<T>.leastParamConstructor: KFunction<T>
     get(){
         var constr= constructors.first()
+
         var minParamCount= constr.parameters.size
         for(constrItr in constructors){
             if(minParamCount > constrItr.parameters.size){
                 constr= constrItr
                 minParamCount= constrItr.parameters.size
             }
+            if(minParamCount == 0) break //Karena gakda fungsi yg jumlah parameternya krg dari 0
         }
         return constr
     }
@@ -58,7 +59,7 @@ val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
     get(){
         var constr= constructors.first()
         var minParamCount= constr.parameters.size
-
+        //<20 Juli 2020> => Konstruktor dg jml param tersedikit belum tentu merupakan konstruktor dg jml param wajib paling sedikit.
         for(constrItr in constructors){
             prine("leastRequiredParamConstructor class= $simpleName constrItr.parameters.size= ${constrItr.parameters.size}")
             if(minParamCount > constrItr.parameters.size){
@@ -67,6 +68,7 @@ val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
                 for(param in constrItr.parameters)
                     if(param.isOptional) minParamCount--
             }
+            if(minParamCount == 0) break //Karena gakda fungsi yg jumlah parameternya krg dari 0
         }
         val paramList= ArrayList<KParameter>()
         for(param in constr.parameters)
@@ -93,6 +95,46 @@ fun <T: Any> KClass<T>.findConstructorWithParam(vararg paramClass: KClass<*>): K
     }
     throw NoSuchMethodException("Tidak ada konstruktor \"$qualifiedName\" dg parameter \"${paramClass.string}\"")
 }
+
+/** Mengambil semua konstruktor yg tersedia mulai dari `this.extension` [KClass] hingga superclass. */
+val KClass<*>.contructorsTree: NestedSequence<KFunction<*>>
+    get()= object : NestedSequence<KFunction<*>>{
+        override fun iterator(): NestedIterator<KClass<*>, KFunction<*>>
+                = object : NestedIteratorImpl<KClass<*>, KFunction<*>>(this@contructorsTree.classesTree.iterator()){
+            override val tag: String
+                get() = "contrustorsTree"
+
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KFunction<*>>? = nowInput.constructors.iterator()
+            override fun getInputIterator(nowOutput: KFunction<*>): Iterator<KClass<*>>? = null
+        }
+    }
+
+/** Mengambil semua parameter yg tersedia dari [contructorsTree]. */
+val KClass<*>.contructorParamsTree: NestedSequence<KParameter>
+    get()= object : NestedSequence<KParameter>{
+        override fun iterator(): NestedIterator<KFunction<*>, KParameter> //!!!<20 Juli 2020> => Blum bisa pake NestedIterator.
+                = object : NestedIteratorImpl<KFunction<*>, KParameter>(this@contructorParamsTree.contructorsTree.iterator()){
+            override val tag: String
+                get() = "contructorParamsTree"
+
+            override fun getOutputIterator(nowInput: KFunction<*>): Iterator<KParameter>? = nowInput.parameters.iterator()
+            override fun getInputIterator(nowOutput: KParameter): Iterator<KFunction<*>>? = null
+        }
+    }
+
+/** Mengambil semua parameter konstruktor yg diambil dari [contructorParamsTree] yg merupakan properti. */
+val KClass<*>.contructorPropertiesTree: Sequence<KProperty1<*, *>>
+    get()= object : Sequence<KProperty1<*, *>>{
+        override fun iterator(): Iterator<KProperty1<*, *>>
+                = object : SkippableIteratorImpl<KProperty1<*, *>>(this@contructorPropertiesTree.implementedPropertiesTree.iterator()){
+            val constrsParams= this@contructorPropertiesTree.contructorParamsTree.asCached()
+
+            override fun skip(now: KProperty1<*, *>): Boolean
+                    = constrsParams.find { it.isPropertyLike(now, true) } == null
+        }
+    }
+// */
+
 
 
 
@@ -150,6 +192,44 @@ fun <R> KCallable<R>.forcedCall(vararg args: Any?): R?{
         null
     }
 }
+
+
+
+
+/*
+==========================
+Enum
+==========================
+ */
+/** Mengambil semua enum anggota `this.extension` [Enum] [Enum.ordinal] dan [Enum.name]. */
+inline fun <reified E: Enum<E>> ordinalNamePairs(): Array<Pair<Int, String>>{
+    val vals= enumValues<E>()
+    return Array(vals.size){ Pair(vals[it].ordinal, vals[it].name) }
+}
+/** Mengubah semua enum anggota `this.extension` [Enum] menjadi array. */
+inline fun <reified E: Enum<E>, reified A> Enum<E>.toArray(init: (E) -> A): Array<A>{
+    val vals= enumValues<E>()
+    return Array(vals.size){init(vals[it])}
+}
+/** Mengambil data Enum yg berada pada konstruktor. Selain di konstruktor tidak diambil. */
+val <E: Enum<E>> E.data: Sequence<Pair<KProperty1<*, *>, Any?>>
+    get(){
+        val constrProps=
+            (this::class.contructorPropertiesTree - Enum::class.declaredMemberProperties).iterator()
+        return object : Sequence<Pair<KProperty1<*, *>, Any?>>{
+            override fun iterator(): Iterator<Pair<KProperty1<*, *>, Any?>>
+                    = object : Iterator<Pair<KProperty1<*, *>, Any?>>{
+                override fun hasNext(): Boolean = constrProps.hasNext()
+
+                override fun next(): Pair<KProperty1<*, *>, Any?> {
+                    val next= constrProps.next()
+                    val value= (next as KProperty1<E, *>).forcedGet(this@data)
+                    return Pair(next, value)
+                }
+            }
+        }
+    }
+
 /*
 /**
  * [onlyExtendedClass] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
@@ -244,8 +324,9 @@ Inheritance Tree
  *
  * Fungsi ini msh bergantung dari Java Reflection.
  */
-fun KClass<*>.supertypesJvm(onlyExtendedClass: Boolean= false): NestedSequence<KType>{
-    return object : NestedSequence<KType>{
+fun KClass<*>.supertypesJvm(onlyExtendedClass: Boolean= false): NestedSequence<KType> {
+    return object :
+        NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
                 = object: NestedIteratorSimpleImpl<KType>(supertypes){
 
@@ -265,8 +346,9 @@ fun KClass<*>.supertypesJvm(onlyExtendedClass: Boolean= false): NestedSequence<K
  * Fungsi ini mendefinisikan supertype sbg interface berdasarkan anotasi framework SiFrame,
  * yaitu tipe data yg memiliki anotasi [Interface].
  */
-fun KClass<*>.supertypesSif(onlyExtendedClass: Boolean= false): NestedSequence<KType>{
-    return object : NestedSequence<KType>{
+fun KClass<*>.supertypesSif(onlyExtendedClass: Boolean= false): NestedSequence<KType> {
+    return object :
+        NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
                 = object: NestedIteratorSimpleImpl<KType>(supertypes){
 
@@ -283,7 +365,8 @@ fun KClass<*>.supertypesSif(onlyExtendedClass: Boolean= false): NestedSequence<K
 }
 
 val KClass<*>.supertypesTree: NestedSequence<KType>
-    get()= object : NestedSequence<KType>{
+    get()= object :
+        NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
                 = object: NestedIteratorSimpleImpl<KType>(supertypes){
             override fun getOutputIterator(nowInput: KType): Iterator<KType>? {
@@ -293,7 +376,8 @@ val KClass<*>.supertypesTree: NestedSequence<KType>
         }
     }
 val KClass<*>.superclassesTree: NestedSequence<KClass<*>>
-    get()= object : NestedSequence<KClass<*>>{
+    get()= object :
+        NestedSequence<KClass<*>> {
         override fun iterator(): NestedIteratorSimple<KClass<*>>
                 = object: NestedIteratorSimpleImpl<KClass<*>>(superclasses){
             override fun getOutputIterator(nowInput: KClass<*>): Iterator<KClass<*>>? {
@@ -305,7 +389,8 @@ val KClass<*>.superclassesTree: NestedSequence<KClass<*>>
 
 /** Sama seperti [supertypesTree] namun termasuk `this.extension` [KClass]. */
 val KClass<*>.typesTree: NestedSequence<KType>
-    get()= object : NestedSequence<KType>{
+    get()= object :
+        NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
                 = object: NestedIteratorSimpleImpl<KType>(this@typesTree.createType()){
             override fun getOutputIterator(nowInput: KType): Iterator<KType>? {
@@ -316,9 +401,10 @@ val KClass<*>.typesTree: NestedSequence<KType>
     }
 /** Sama seperti [superclassesTree] namun termasuk `this.extension` [KClass]. */
 val KClass<*>.classesTree: NestedSequence<KClass<*>>
-    get()= object : NestedSequence<KClass<*>>{
+    get()= object :
+        NestedSequence<KClass<*>> {
         override fun iterator(): NestedIteratorSimple<KClass<*>>
-                = object: NestedIteratorSimpleImpl<KClass<*>>(newIterator(this@classesTree)){
+                = object: NestedIteratorSimpleImpl<KClass<*>>(this@classesTree){
             override val tag: String
                 get() = "classesTree"
 
@@ -330,7 +416,8 @@ val KClass<*>.classesTree: NestedSequence<KClass<*>>
     }
 
 val KClass<*>.sealedSubclassesTree: NestedSequence<KClass<*>>
-    get()= object : NestedSequence<KClass<*>>{
+    get()= object :
+        NestedSequence<KClass<*>> {
         override fun iterator(): NestedIteratorSimple<KClass<*>>
                 = object: NestedIteratorSimpleImpl<KClass<*>>(this@sealedSubclassesTree){
             override fun getOutputIterator(nowInput: KClass<*>): Iterator<KClass<*>>?
@@ -422,7 +509,8 @@ Properties Tree
  * berupa object.
  */
 val KClass<*>.nestedPropertiesTree: NestedSequence<KProperty1<*, *>>
-    get()= object : NestedSequence<KProperty1<*, *>>{
+    get()= object :
+        NestedSequence<KProperty1<*, *>> {
         override fun iterator(): NestedIteratorSimple<KProperty1<*, *>>
             = object: NestedIteratorSimpleImpl<KProperty1<*, *>>(memberProperties){
             override fun getOutputIterator(nowInput: KProperty1<*, *>): Iterator<KProperty1<*, *>>?
@@ -435,7 +523,8 @@ val KClass<*>.nestedPropertiesTree: NestedSequence<KProperty1<*, *>>
  * berupa object.
  */
 val KClass<*>.declaredPropertiesTree: NestedSequence<KProperty1<*, *>>
-    get()= object : NestedSequence<KProperty1<*, *>>{
+    get()= object :
+        NestedSequence<KProperty1<*, *>> {
         override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
             = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
             override val tag: String
@@ -450,7 +539,8 @@ val KClass<*>.declaredPropertiesTree: NestedSequence<KProperty1<*, *>>
 
 /** Sama dengan [declaredPropertiesTree], ditambah isi dari properti jika properti merupakan object. */
 val KClass<*>.nestedDeclaredPropertiesTree: NestedSequence<KProperty1<*, *>>
-    get()= object : NestedSequence<KProperty1<*, *>>{
+    get()= object :
+        NestedSequence<KProperty1<*, *>> {
         override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
             = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
             override val tag: String
@@ -465,7 +555,8 @@ val KClass<*>.nestedDeclaredPropertiesTree: NestedSequence<KProperty1<*, *>>
 
 /** Sama dengan [declaredPropertiesTree], namun tidak termasuk abstract property. */
 val KClass<*>.implementedPropertiesTree: NestedSequence<KProperty1<*, *>>
-    get()= object : NestedSequence<KProperty1<*, *>>{
+    get()= object :
+        NestedSequence<KProperty1<*, *>> {
         override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
                 = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
             override val tag: String
@@ -480,7 +571,8 @@ val KClass<*>.implementedPropertiesTree: NestedSequence<KProperty1<*, *>>
 
 /** Sama dengan [nestedDeclaredPropertiesTree], namun tidak termasuk abstract property. */
 val KClass<*>.nestedImplementedPropertiesTree: NestedSequence<KProperty1<*, *>>
-    get()= object : NestedSequence<KProperty1<*, *>>{
+    get()= object :
+        NestedSequence<KProperty1<*, *>> {
         override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
             = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
             override val tag: String
@@ -537,7 +629,8 @@ val Any.implementedPropertiesValue: Sequence<Any?>
 
 /** Sama dengan [implementedPropertiesValueMap], beserta properti dari properti. */
 val Any.nestedImplementedPropertiesValueMap: NestedSequence<Pair<KProperty1<*, *>, Any?>>
-    get()= object : NestedSequence<Pair<KProperty1<*, *>, Any?>>{
+    get()= object :
+        NestedSequence<Pair<KProperty1<*, *>, Any?>> {
         override fun iterator(): NestedIteratorSimple<Pair<KProperty1<*, *>, Any?>>
             = object : NestedIteratorSimpleImpl<Pair<KProperty1<*, *>, Any?>>(
                 this@nestedImplementedPropertiesValueMap.implementedPropertiesValueMap.iterator()
@@ -576,9 +669,7 @@ val Any.implementedPropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>
                 = object: Iterator<Pair<KProperty1<*, *>, Any?>>{
             private val declaredPropsItr= this@implementedPropertiesValueMapTree::class.implementedPropertiesTree.iterator()
 
-            override fun hasNext(): Boolean
-                = declaredPropsItr.asNotNullTo { itr: NestedIteratorImpl<*, *> -> itr.hasNext(true) }
-                    ?: declaredPropsItr.hasNext()
+            override fun hasNext(): Boolean = declaredPropsItr.hasNext()
 
             override fun next(): Pair<KProperty1<*, *>, Any?> {
                 val prop= declaredPropsItr.next()
@@ -594,7 +685,8 @@ val Any.implementedPropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>
 ///*
 /** Sama dg [implementedPropertiesValueMapTree], beserta semua properti dari properti, termasuk yg `private`. */
 val Any.nestedImplementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<*, *>, Any?>>
-    get()= object: NestedSequence<Pair<KProperty1<*, *>, Any?>>{
+    get()= object:
+        NestedSequence<Pair<KProperty1<*, *>, Any?>> {
         override fun iterator(): NestedIteratorSimple<Pair<KProperty1<*, *>, Any?>>
             = object: NestedIteratorSimpleImpl<Pair<KProperty1<*, *>, Any?>>(
                 this@nestedImplementedPropertiesValueMapTree.implementedPropertiesValueMapTree.iterator()

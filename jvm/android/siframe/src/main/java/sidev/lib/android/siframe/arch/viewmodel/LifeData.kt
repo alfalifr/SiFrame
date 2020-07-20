@@ -8,12 +8,13 @@ import androidx.lifecycle.Observer
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.listener.OnFailLifecycleBoundListener
-import sidev.lib.android.siframe.intfc.prop.TagProp
+import sidev.lib.universal.structure.prop.TagProp
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.runWithParamTypeSafety
 
 //Nullable karena kemungkinan user pingin ada kondisi saat value == null
-open class LifeData<T> : MutableLiveData<T>(), ExpirableBase, TagProp<String> {
+open class LifeData<T> : MutableLiveData<T>(), ExpirableBase,
+    TagProp<String> {
     final override val isExpired: Boolean
         get() = !hasObservers()
 

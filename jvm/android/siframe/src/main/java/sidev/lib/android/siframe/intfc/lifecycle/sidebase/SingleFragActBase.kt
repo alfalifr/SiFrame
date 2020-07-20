@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.exception.PropertyAccessExc
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase

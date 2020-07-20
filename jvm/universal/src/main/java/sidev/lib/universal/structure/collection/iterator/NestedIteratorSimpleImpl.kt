@@ -1,4 +1,4 @@
-package sidev.lib.universal.structure
+package sidev.lib.universal.structure.collection.iterator
 
 import android.view.ViewGroup
 
@@ -9,7 +9,9 @@ import android.view.ViewGroup
  * Iterasi dilakukan menggunakan metode DEPTH-FIRST PRE-ORDER.
  */
 abstract class NestedIteratorSimpleImpl<T>(startIterator: Iterator<T>?)
-    : NestedIteratorImpl<T, T>(startIterator), NestedIteratorSimple<T>, SkippableIterator<T>{
+    : NestedIteratorImpl<T, T>(startIterator),
+    NestedIteratorSimple<T>,
+    SkippableIterator<T> {
     constructor(startIterable: Iterable<T>): this(startIterable.iterator())
     constructor(start: T): this((start as? Iterable<T>)?.iterator()){
         this.start= start

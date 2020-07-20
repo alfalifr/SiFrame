@@ -1,6 +1,7 @@
 package sidev.lib.universal.structure
 
 import android.view.ViewGroup
+import sidev.lib.universal.structure.collection.iterator.SkippableIterator
 
 /**
  * Digunakan untuk melakukan iterasi terhadap data yg memiliki banyak keturunan.
@@ -9,7 +10,8 @@ import android.view.ViewGroup
  * Iterasi dilakukan menggunakan metode DEPTH-FIRST PRE-ORDER.
  */
 abstract class NestedIterator_Impl<T>(private val startIterator: Iterable<T>?)
-    : NestedIterator_<T>, SkippableIterator<T>{
+    : NestedIterator_<T>,
+    SkippableIterator<T> {
     constructor(start: T): this(start as? Iterable<T>){
         this.start= start
     }

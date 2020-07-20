@@ -21,7 +21,9 @@ import sidev.lib.android.siframe.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.universal.`fun`.notNullTo
-import sidev.lib.universal.structure.*
+import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
+import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
+import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import java.lang.ClassCastException
 
 
@@ -62,7 +64,8 @@ fun View.iterateChildren(func: (child: View) -> Unit){
  * Menggunakan metode Depth-First Pre-Order.
  */
 val View.childrenTree: NestedSequence<View>
-    get()= object : NestedSequence<View> {
+    get()= object :
+        NestedSequence<View> {
         override fun iterator(): NestedIteratorSimple<View>
             = object: NestedIteratorSimpleImpl<View>(this@childrenTree){
             override fun getOutputIterator(nowInput: View): Iterator<View>? {

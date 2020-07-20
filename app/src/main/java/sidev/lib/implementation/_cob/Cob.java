@@ -101,6 +101,10 @@ public class Cob {
         int defa= KReflexFunKt.defaultPrimitiveValue(KReflexFunKt.getKClass(int.class));
         System.out.println("default int= " +defa);
     }
+    A[] a = A.valueOf();
+    A as= Enum<A>{
+
+    }
 }
 /*
 class B extends A{
@@ -115,3 +119,7 @@ interface Y extends S{}
 interface X{}
 interface Z extends S, X{}
 // */
+
+enum A{
+    AA
+}

@@ -1,5 +1,11 @@
 package sidev.lib.universal.`fun`
 
+import sidev.lib.universal.structure.collection.iterator.NestedIteratorImpl
+import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl
+import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
+import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
+import sidev.lib.universal.structure.data.MapEntry
+import sidev.lib.universal.structure.data.MutableMapEntry
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 
@@ -231,10 +237,14 @@ fun <T> Any.get(pos: Int): T? {
     }
 }
 
+val Map<*, *>.indices: IntRange
+    get()= 0 until size
+
 fun Any.indices(): IntRange? {
     return when(this){
         is Array<*> -> this.indices
         is Collection<*> -> this.indices
+        is Map<*, *> -> this.indices
         else -> null
     }
 }
@@ -423,6 +433,105 @@ inline fun <T> MutableList<T>.addIfAbsent(element: T, chekcFun: ((existingElemen
 
 
 
+fun <T> Iterator<IndexedValue<T>>.toPairIterator(): Iterator<Pair<Int, T>>
+    = object : Iterator<Pair<Int, T>>{
+        override fun hasNext(): Boolean = this@toPairIterator.hasNext()
+        override fun next(): Pair<Int, T>{
+            val next= this@toPairIterator.next()
+            return Pair(next.index, next.value)
+        }
+    }
+
+/** Menjadikan nilai pada `this.extension` [Iterator] sbg `value` dg `key` yg dipetakan oleh [func]. */
+fun <K, V> Iterator<V>.withKey(func: (value: V) -> K): Iterator<Pair<K, V>>
+    = object : Iterator<Pair<K, V>>{
+    override fun hasNext(): Boolean = this@withKey.hasNext()
+
+    override fun next(): Pair<K, V>{
+        val next= this@withKey.next()
+        val key= func(next)
+        return Pair(key, next)
+    }
+}
+/** Menjadikan nilai pada `this.extension` [Iterator] sbg `key` dg `value` yg dipetakan oleh [func]. */
+fun <K, V> Iterator<K>.withValue(func: (key: K) -> V): Iterator<Pair<K, V>>
+    = object : Iterator<Pair<K, V>>{
+    override fun hasNext(): Boolean = this@withValue.hasNext()
+
+    override fun next(): Pair<K, V>{
+        val next= this@withValue.next()
+        val value= func(next)
+        return Pair(next, value)
+    }
+}
+
+/** Menjadikan nilai pada `this.extension` [Iterator] sbg `value` dg `key` yg dipetakan oleh [func]. */
+fun <K, V> Iterator<V>.withKeyIndexed(func: (index: Int, value: V) -> K): Iterator<Pair<K, V>>
+    = object : Iterator<Pair<K, V>>{
+    private var index= 0
+    override fun hasNext(): Boolean = this@withKeyIndexed.hasNext()
+
+    override fun next(): Pair<K, V>{
+        val next= this@withKeyIndexed.next()
+        val key= func(index++, next)
+        return Pair(key, next)
+    }
+}
+/** Menjadikan nilai pada `this.extension` [Iterator] sbg `key` dg `value` yg dipetakan oleh [func]. */
+fun <K, V> Iterator<K>.withValueIndexed(func: (index: Int, key: K) -> V): Iterator<Pair<K, V>>
+    = object : Iterator<Pair<K, V>>{
+    private var index= 0
+    override fun hasNext(): Boolean = this@withValueIndexed.hasNext()
+
+    override fun next(): Pair<K, V>{
+        val next= this@withValueIndexed.next()
+        val value= func(index++, next)
+        return Pair(next, value)
+    }
+}
+
+
+fun <T> cachedSequenceOf(vararg elements: T): CachedSequence<T> = CachedSequence(elements.iterator())
+fun <K, V> lazaMapOf(vararg elements: Pair<K, V>): LazyHashMap<K, V> = LazyHashMap(elements.iterator())
+
+fun <T> Sequence<T>.asCached(): CachedSequence<T> = CachedSequence(this)
+fun <T> Iterator<T>.asCached(): CachedSequence<T> = CachedSequence(this)
+
+operator fun <T> Sequence<T>.minus(other: Sequence<T>): Sequence<T> = cut(other)
+operator fun <T> Sequence<T>.minus(other: Iterator<T>): Sequence<T> = cut(other)
+operator fun <T> Sequence<T>.minus(other: Iterable<T>): Sequence<T> = cut(other)
+
+fun <T> Sequence<T>.cut(other: Sequence<T>): Sequence<T>
+    = object : Sequence<T>{
+    override fun iterator(): Iterator<T>
+        = object : SkippableIteratorImpl<T>(this@cut.iterator()){
+        val otherAsCached= other.asCached()
+        override fun skip(now: T): Boolean = now in otherAsCached
+    }
+}
+
+fun <T> Sequence<T>.cut(other: Iterator<T>): Sequence<T>
+    = object : Sequence<T>{
+    override fun iterator(): Iterator<T>
+        = object : SkippableIteratorImpl<T>(this@cut.iterator()){
+        val otherAsCached= other.asCached()
+        override fun skip(now: T): Boolean = now in otherAsCached
+    }
+}
+
+fun <T> Sequence<T>.cut(other: Iterable<T>): Sequence<T>
+    = object : Sequence<T>{
+    override fun iterator(): Iterator<T>
+        = object : SkippableIteratorImpl<T>(this@cut.iterator()){
+//        val otherAsCached= other
+        override fun skip(now: T): Boolean = now in other
+    }
+}
+
+
+fun <K, V> Pair<K, V>.toMutableMapEntry(): MutableMap.MutableEntry<K, V> = MutableMapEntry(first, second)
+fun <K, V> Pair<K, V>.toMapEntry(): Map.Entry<K, V> = MapEntry(first, second)
+
 
 val Array<*>.string: String
     get(){
@@ -443,3 +552,5 @@ val Collection<*>.string: String
         str= str.removeSuffix(", ")
         return "$str)"
     }
+
+//fun <K, V> Map.Entry<K, V>.toString(): String = "$key=$value"

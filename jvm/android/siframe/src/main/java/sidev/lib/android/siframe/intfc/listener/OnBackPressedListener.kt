@@ -1,7 +1,5 @@
 package sidev.lib.android.siframe.intfc.listener
 
-import sidev.lib.android.siframe.intfc.prop.TagProp
-
 interface OnBackPressedListener: Listener {
     /**
      * Digunakan saat programmer ingin menghilangkan listener dari daftar yg sebelumnya ditambahkan

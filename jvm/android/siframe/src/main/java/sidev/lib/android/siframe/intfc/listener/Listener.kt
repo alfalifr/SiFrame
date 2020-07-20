@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.listener
 
-import sidev.lib.android.siframe.intfc.prop.TagProp
+import sidev.lib.universal.structure.prop.TagProp
 
 /**
  * Interface dasar dari semua listener yg ada pada framework ini.

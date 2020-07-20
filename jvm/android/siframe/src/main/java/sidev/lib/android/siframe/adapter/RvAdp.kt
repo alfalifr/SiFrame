@@ -11,7 +11,6 @@ import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.exception.TypeExc
 import sidev.lib.android.siframe.intfc.listener.Listener
-import sidev.lib.android.siframe.intfc.prop.TagProp
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.android.siframe.tool.util.`fun`.loge
