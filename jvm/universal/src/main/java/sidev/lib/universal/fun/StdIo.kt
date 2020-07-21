@@ -7,7 +7,7 @@ object IoConfig{
     const val PRINT_DEBUG= PRINT && false
     const val PRINT_RESULT= PRINT && false
     const val PRINT_WARNING= PRINT && false
-    const val PRINT_ERROR= PRINT && false
+    const val PRINT_ERROR= PRINT && true
 }
 
 fun prind(any: Any){

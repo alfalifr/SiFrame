@@ -7,8 +7,8 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 /**
  * INterface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
-interface InteractivePresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterCallback<R>>
-    : PresenterDependent<P, R, C>, InterruptableBase, ExpirableBase {
+interface InteractivePresenterDependent<P: ArchPresenter<R, *>, R> //C: PresenterCallback<R>
+    : PresenterDependent, InterruptableBase, ExpirableBase {
 //    var callbackCtx: Context?
 //    val presenter: P?
 
@@ -17,7 +17,7 @@ interface InteractivePresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterC
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)
-            presenter?.postRequest(reqCode, map)
+            (presenter as? P)?.postRequest(reqCode, map)
         }
     }
     @CallSuper
@@ -25,7 +25,7 @@ interface InteractivePresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterC
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)
-            presenter?.postRequest(reqCode, map)
+            (presenter as? P)?.postRequest(reqCode, map)
         }
     }
     @CallSuper
@@ -33,7 +33,7 @@ interface InteractivePresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterC
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)
-            presenter?.postRequest(reqCode, map)
+            (presenter as? P)?.postRequest(reqCode, map)
         }
     }
 /*

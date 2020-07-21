@@ -107,12 +107,13 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
             }
 
             val map= getIntentDataMap(intent)
-
-            if(presenter !is MviPresenter<*>){
+/*
+            if(presenter !is MviPresenter<*, *>){
                 stateProcessor?.postPreResult(reqCode, map, intent.isResultTemporary)
                 loge("postRequest() presenter !is MviPresenter<*> \n reqCode= $reqCode isResultTemproray= ${intent.isResultTemporary}")
             }
-
+ */
+            stateProcessor?.postPreResult(intent, map)
             presenter?.postRequest(reqCode, map)
         }.isNull {
             val clsName= this.classSimpleName()

@@ -8,6 +8,7 @@ import org.jetbrains.anko.support.v4.sendSMS
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
+import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.fragment.mvi.MviFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -30,7 +31,7 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 
     lateinit var rvAdp: ContentAdp
 
-    override fun initPresenter(): Presenter? = MviContentPresenter(null)
+    override fun initPresenter(): MviPresenter<ContentFragState, ContentFragIntent>? = MviContentPresenter(null)
     override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>?
             = ContentFragStatePros(this)
 /*

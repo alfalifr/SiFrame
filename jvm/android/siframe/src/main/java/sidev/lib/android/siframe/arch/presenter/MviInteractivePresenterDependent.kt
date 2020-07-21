@@ -4,6 +4,7 @@ import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
+import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.asNotNullTo
@@ -13,8 +14,8 @@ import sidev.lib.universal.`fun`.isNull
 /**
  * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
-interface MviInteractivePresenterDependent<P: Presenter, I: ViewIntent>
-    : InteractivePresenterDependent<P, String, PresenterCallback<String>> {
+interface MviInteractivePresenterDependent<P: MviPresenter<*, I>, I: ViewIntent>
+    : InteractivePresenterDependent<P, I> { // StateProcessor<ViewState, I>
 //    var callbackCtx: Context?
 //    val presenter: P?
 
@@ -90,12 +91,14 @@ interface MviInteractivePresenterDependent<P: Presenter, I: ViewIntent>
         //Jika tidak, maka init saja intentConverter-nya.
         // Jika callback merupakan StateProcessor tapi tidak punya intentConverter,
         // maka init saja intentConverter-nya.
+/*
         .isNull {
             intentConverter= IntentConverter(this, presenter)
             presenter?.callback.asNotNull { sp: StateProcessor<*, I> ->
                 intentConverter!!.stateProcessor= sp
             }
         }
+ */
     }
 /*
     @CallSuper

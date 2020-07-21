@@ -11,6 +11,49 @@ import sidev.lib.universal.`fun`.new
 
 class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
     : StateProcessor<ContentFragState, ContentFragIntent>(view){
+    override fun processPreState(
+        intent: ContentFragIntent,
+        additionalData: Map<String, Any>?
+    ): ContentFragState? {
+        return when(intent){
+            is ContentFragIntent.DownloadData -> {
+                ContentFragState.DownloadData(true)
+            }
+            is ContentFragIntent.Login -> {
+                ContentFragState.Login(true)
+            }
+            else -> null
+        }
+    }
+
+    override fun processState(
+        intent: ContentFragIntent,
+        resCode: Int,
+        data: Map<String, Any>?,
+        isError: Boolean,
+        exc: Exception?,
+        errorMsg: String?
+    ): ContentFragState? {
+        return when(intent){
+            is ContentFragIntent.DownloadData -> {
+                val state= ContentFragState.DownloadData(isError = isError, errorMsg = errorMsg)
+                try{
+                    state.rvDataList= data!![Const.DATA_CONTENT] as ArrayList<Content>
+                }catch (e:Exception){}
+                state
+            }
+            is ContentFragIntent.Login -> {
+                val state= ContentFragState.Login(isSucces = resCode == Const.RES_OK,
+                    isError = isError, errorMsg = errorMsg ?: "Error login bro")
+                if(!isError)
+                    state.toastMsg= "Berhasil Login bro!!!"
+                state
+            }
+            else -> null
+        }
+    }
+
+    /*
     override fun processState(
         reqCode: String,
         resCode: Int,
@@ -50,4 +93,6 @@ class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
             else -> null
         }
     }
+
+     */
 }

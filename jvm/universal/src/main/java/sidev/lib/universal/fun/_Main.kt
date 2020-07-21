@@ -1,13 +1,28 @@
 package sidev.lib.universal.`fun`
 
 import sidev.lib.universal._cob.model.dum_transaction
+import sidev.lib.universal.annotation.AnnotatedFunctionClass
+import sidev.lib.universal.annotation.Rename
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
+import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.superclasses
+import kotlin.reflect.jvm.internal.impl.descriptors.annotations.Annotated
+import kotlin.reflect.jvm.internal.impl.descriptors.annotations.AnnotationDescriptor
+
+annotation class Ano
+annotation class Anotasi<T: Number, O>(val a: Int= 1) //: Ano()
+
+fun anot(){
+    val aa: Annotation
+    val a= A::class.annotations.first()
+}
 
 
+@Anotasi<Int, String>
 interface A
 interface Y
 interface X: Y{
@@ -54,10 +69,15 @@ sealed class AA: AA_(){
     val dDariAA= D()
 }
 sealed class AB: AA(){
-    private val ab= "ok"
+    protected val ab= "ok"
     private val ab_2= "ok"
+    var ab_3= 6
 }
-class AC(val poinConstr: Poin): Z, Y, X, AB(){
+
+annotation class FunAnot(val a: Int= 101)
+
+@Anotasi<Int, Char>
+class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
     val ac= "ppop"
     private val acPriv= "aaa"
     override val a: Boolean
@@ -66,13 +86,18 @@ class AC(val poinConstr: Poin): Z, Y, X, AB(){
         get() = "as"
     var poin= Poin(1, 2)
     lateinit var poinLate: Poin //= Poin(1, 2)
-    fun someFun(x: Int){}
+
+    @Anotasi<Int, Any> @FunAnot(10)
+    fun someFun(x: Int) = prin("\n\n ==== Halo dari AC.someFun() x= $x ==== \n\n")
+    @Anotasi<Int, Any> @FunAnot(2)
+    fun someOtherFun(x: Int, az: Int) = prin("\n\n ==== Halo dari AC.someOtherFun() x= $x az= $az ==== \n\n")
 }
 
-class Poin(var x: Int= 13, var y: Int, z: Int= 10){
-    var aa_diPoin= AA_()
+class Poin(var x: Int= 13, var y: Int, @property:Rename("az") var z: Int= 10){
+    @Rename("aa_aa_diPoin") var aa_diPoin= AA_()
 }
 
+@Anotasi<Int, Char>
 class Bool{
     val bool= true
 }
@@ -90,6 +115,26 @@ class AD(val a: Int= 2, val b: Int= 15): AD_(a, 9){
 
 
 fun main(args: Array<String>){
+
+    println("\n============= BATAS Anotasi ==============\n")
+    val anoIns= AC(Poin(y=10))
+    for((i, anotasi) in Anotasi::class.typeParameters.withIndex()){
+        prin("i= $i anotasi= $anotasi")
+        for((u, bound) in anotasi.upperBounds.withIndex()){
+            prin("--u= $u anotasi= $bound")
+        }
+    }
+
+    val poin= Poin(y= 11)
+    anoIns.callAnnotatedFunctionWithParamContainer(FunAnot::class, poin){ it.a == 2 }
+//    val aaaaa= Anotasi<Int, String>(1)
+
+    val ano1= AC::class.findAnnotation<Anotasi<Int, *>>()
+    val ano2= Bool::class.findAnnotation<Anotasi<Int, Char>>()
+    val ano3= AC::class.findAnnotation<Anotasi<Int, Boolean>>()
+
+    prin("ano1 == ano2 => ${ano1 == ano2} ano2 == ano3 => ${ano2 == ano3} ano3 == ano1 => ${ano3 == ano1}")
+
 //    Class.forName("").kotlin.java.isInterface
 AD(a= 0)
     println("\n=============BATAS constructors ==============\n")
@@ -401,7 +446,7 @@ AD(a= 0)
  */
 
  */
-
+/*
     val transac= dum_transaction.last()
     println("\n============= BATAS Transac.nestedImplementedPropertiesValueMapTree ==============\n")
     for((i, valMap) in transac.nestedImplementedPropertiesValueMapTree.withIndex())
@@ -413,6 +458,14 @@ AD(a= 0)
         println("Transac i= $i prop= ${valMap.first} value= ${valMap.second}")
 
     prin("\n\n transacClone.commodity?.name= ${transacClone.commodity?.name}")
+ */
+    val oldAc= AC(Poin(1, 2))
+    val newAc1= oldAc.clone()
+    val newAc2= oldAc.clone(false)
+
+    oldAc == newAc1
+    oldAc == newAc2
+    prin("oldAc == newAc1 = ${oldAc == newAc1} oldAc == newAc2= ${oldAc == newAc2}")
 }
 
 

@@ -1,15 +1,104 @@
 package sidev.lib.android.siframe.arch.presenter
 
+import androidx.annotation.RestrictTo
+import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.*
 import sidev.lib.android.siframe.arch.intent_state.INTENT_IS_RESULT_TEMPORARY
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.classSimpleName
-import sidev.lib.universal.`fun`.isNull
+import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.annotation.AnnotatedFunctionClassImpl
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
+
+abstract class MviPresenter<S: ViewState, I: ViewIntent>(
+    @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: StateProcessor<S, I>? //PresenterCallback<I>?): Presenter(){
+): AnnotatedFunctionClassImpl(), ArchPresenter<I, StateProcessor<S, I>> {
+    final override lateinit var reqCode: I
+        private set
+/*
+    private var intentPropGetter: IntentPropGetter?= null
+
+    fun <I: ViewIntent> getEquivReqCode(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
+    ): String{
+        if(intentPropGetter == null) intentPropGetter= IntentPropGetter()
+
+        return intentPropGetter!!.getEquivReqCode(intentClass, defParamValFunc)
+    }
+
+    fun <I: ViewIntent> getResultIsTemporary(
+        intentClass: KClass<I>,
+        defParamValFunc: ((KParameter) -> Any?)?= null
+    ): Boolean{
+        if(intentPropGetter == null) intentPropGetter= IntentPropGetter()
+
+        return intentPropGetter!!.getResultIsTemporary(intentClass, defParamValFunc)
+    }
+ */
+
+    final override fun postRequest(reqCode: I, data: Map<String, Any>?) {
+        this.reqCode= reqCode
+        onPreRequest(reqCode, data)
+        super.postRequest(reqCode, data)
+    }
+
+    /**
+     * Sesuai namanya, param data diubah namanya jadi [additionalData] karena data request
+     * dapat disertakan di dalam [reqCode] yg berupa [ViewIntent].
+     */
+    abstract override fun processRequest(reqCode: I, additionalData: Map<String, Any>?)
+
+    /*
+    final override fun postRequest(reqCode: String, data: Map<String, Any>?) {
+        onPreRequest(reqCode, data)
+        super.postRequest(reqCode, data)
+    }
+ */
+
+    fun onPreRequest(reqCode: I, additionalData: Map<String, Any>?){
+        doWhenLinkNotExpired {
+            callback?.postPreResult(reqCode, additionalData)
+/*
+            callback.asNotNull { sp: StateProcessor<S, I> ->
+                //Dg anggapan setiap request pada arsitektur MVI dalam framework ini
+                // selalu memberikan info ttg apakah state yg dihasilkan dari request
+                // bersifat sementara atau tidak.
+/*
+                val isStateTemporary=
+                    try{ data!![INTENT_IS_RESULT_TEMPORARY] as Boolean }
+                    catch (e: Exception){ false }
+ */
+                sp.postPreResult(reqCode, additionalData)
+            }
+ */
+            //(callback as? StateProcessor<S, *>)?.postPreResult(reqCode, data, )
+        }.isNull {
+            val clsName= this.classSimpleName()
+            val callbackName= callback?.classSimpleName()
+            loge("$clsName.onPreRequest() callback= $callbackName.isExpired == TRUE")
+            callback= null
+        }
+    }
+
+    /** @return `true` jika operasi fungsi yg di-anotasi ditemukan dan berhasil dipanggil, `false` sebaliknya. */
+    protected fun callAnnotatedViewIntentFun(intent: I): Boolean
+        = callAnnotatedFunctionWithParamContainer(ViewIntentFunction::class, intent) { it.clazz == intent::class } != null
+
+/*
+    @PublishedApi
+    internal var `access$intentPropGetter`: IntentPropGetter?
+        get() = intentPropGetter
+        set(v){
+            intentPropGetter= v
+        }
+ */
+}
+
+
+/*
 abstract class MviPresenter<S: ViewState>(
     callback: StateProcessor<S, *>? //PresenterCallback<I>?): Presenter(){
 ): Presenter(callback), Mvi {
@@ -70,6 +159,8 @@ abstract class MviPresenter<S: ViewState>(
         }
  */
 }
+
+ */
 
 /*
 abstract class MviPresenter<S: ViewState, I: ViewIntent>(

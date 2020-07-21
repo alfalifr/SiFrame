@@ -1,5 +1,6 @@
 package sidev.lib.implementation.presenter
 
+import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
@@ -15,13 +16,38 @@ import sidev.lib.universal.`fun`.copyGrowTimely
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>?) : MviPresenter<ContentFragState>(c){
+class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>?)
+    : MviPresenter<ContentFragState, ContentFragIntent>(c){
     companion object{
         val REQ_GET_CONTENT= "get_content"
         val REQ_LOGIN= "login"
         val DATA_UNAME= "uname"
     }
 
+    override fun checkDataIntegrity(
+        reqCode: ContentFragIntent,
+        direction: ArchPresenter.Direction,
+        data: Map<String, Any>?
+    ): Boolean {
+        return when(reqCode){
+            else -> true
+        }
+    }
+
+    override fun processRequest(reqCode: ContentFragIntent, additionalData: Map<String, Any>?) {
+        callAnnotatedViewIntentFun(reqCode)
+/*
+        when(reqCode){
+            is ContentFragIntent.DownloadData /*REQ_GET_CONTENT*/ -> getContent()
+            is ContentFragIntent.Login -> {
+                val uname= reqCode.uname //try{ data!![DATA_UNAME] as String } catch (e: Exception){ "sriname" }
+                login(uname)
+            }
+        }
+ */
+    }
+
+/*
     override fun checkDataIntegrity(
         reqCode: String,
         direction: ArchPresenter.Direction,
@@ -40,7 +66,8 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
             }
         }
     }
-
+ */
+    @ViewIntentFunction(ContentFragIntent.Login::class)
     fun login(uname: String){
         ThreadUtil.delayRun(3000){
             if(uname == "uname")
@@ -53,6 +80,7 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
         }
     }
 
+    @ViewIntentFunction(ContentFragIntent.DownloadData::class)
     fun getContent(){
         loge("getContent()")
         ThreadUtil.delayRun(3000){

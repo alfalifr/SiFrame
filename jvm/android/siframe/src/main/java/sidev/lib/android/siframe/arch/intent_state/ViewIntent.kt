@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.arch.intent_state
 
 import android.view.View
+import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner
@@ -13,7 +14,13 @@ import sidev.lib.universal.tool.util.StringUtil
  *
  */
 //@Keep -> Dari proguard-rules.pro aja biar bisa nambah opsi ,allowoptimization,allowshrinking
-abstract class ViewIntent: Mvi{
+
+/**
+ * <21 Juli 2020> => Untuk pengemebangan ke depannya. Digunakan untuk [ArchPresenter.postSucc] dan [ArchPresenter.postFail].
+ */
+open class IntentResult: Mvi
+
+open class ViewIntent: Mvi{
     open val equivalentReqCode: String
         = StringUtil.toSnakeCase(this.classSimpleName(), true) //this.getSealedClassName(true)!!
 
@@ -23,9 +30,17 @@ abstract class ViewIntent: Mvi{
      * sehingga saat fungsi [StateProcessor.restoreCurrentState] dipanggil [ViewState] hasil
      * [ViewIntent] ini tidak ditampilkan pada layar.
      */
-    open val isResultTemporary: Boolean
-        = false
+    open val isResultTemporary: Boolean = false
 //    fun getReqCode()= equivalentReqCode
+
+    final override fun equals(other: Any?): Boolean
+        = if(other is ViewIntent) equivalentReqCode == other.equivalentReqCode
+        else super.equals(other)
+
+    final override fun hashCode(): Int = equivalentReqCode.hashCode()
+
+    override fun toString(): String
+        = "${this::class.simpleName ?: "ViewIntent"} equivalentReqCode= $equivalentReqCode, isResultTemporary= $isResultTemporary"
 }
 
 /*

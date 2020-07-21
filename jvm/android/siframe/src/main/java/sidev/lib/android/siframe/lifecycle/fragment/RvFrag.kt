@@ -6,6 +6,7 @@ import android.widget.ProgressBar
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlinx.android.synthetic.main._sif_page_rv.view.*
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
@@ -42,6 +43,11 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
         protected set
     lateinit var pb: ProgressBar
         protected set
+    var noDataTxt: String= "Tidak ada data"
+        set(v){
+            field= v
+            layoutView.tv_no_data.text= v
+        }
 
     var onRefreshListener: (() -> Unit)?= null
 
@@ -96,6 +102,11 @@ abstract class RvFrag<R: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
     fun showRefresh(show: Boolean= true){
         layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL)
             .isRefreshing= show
+    }
+
+    fun showNoData(show: Boolean= true){
+        layoutView.tv_no_data.visibility= if(show) View.VISIBLE
+        else View.GONE
     }
 
     /**

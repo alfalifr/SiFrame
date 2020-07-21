@@ -13,13 +13,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
+import sidev.lib.android.siframe.arch.presenter.PresenterDependent
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
@@ -38,7 +38,7 @@ import sidev.lib.universal.`fun`.classSimpleName
 abstract class Frag : Fragment(),
     FragBase,
     ViewModelBase,
-    PresenterDependentCommon<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
+    PresenterDependent, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     LifecycleSideBase // Hanya sbg cetaka agar kelas ini dapat memanggil ___initSideBase()
 { //RepositoryCallback {
 
@@ -82,10 +82,12 @@ abstract class Frag : Fragment(),
         }
  */
     final override lateinit var _vmProvider: ViewModelProvider
+
     //    override val vmStoreOwner: ViewModelStoreOwner= this
 //    override val lifecycleOwner: LifecycleOwner= this
+    final override var presenter: ArchPresenter<*, *>?= null
 
-    final override var presenter: Presenter?= null
+    //    final override var presenter: Presenter?= null
 
     /**
      * Dipakai untuk judul pada TabLayout yang dipasang pada ViewPager

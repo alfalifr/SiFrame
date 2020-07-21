@@ -13,14 +13,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.arch.intent_state.ViewIntent
+import sidev.lib.android.siframe.arch.intent_state.ViewState
+import sidev.lib.android.siframe.arch.presenter.*
 import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.presenter.PresenterDependentCommon
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
@@ -43,7 +44,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
     ViewModelBase, //Scr default, smua Activity pada framework ini menggunakan MVP dan MVVM.
                    //Knp kok gak bisa default MVP atau MVI?. Karena MVVM merupakan arsitektur bawaan
                    //framework Android
-    PresenterDependentCommon<Presenter>, //Karena MVP maupun MVI sama-sama bergantung pada presenter.
+//    PresenterDependentCommon<Presenter>, //Karena MVP maupun MVI sama-sama bergantung pada presenter.
+    PresenterDependent,
 //    MvpView,
 //    MviView<State>,
 //    PresenterCallback<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
@@ -101,10 +103,12 @@ abstract class Act : AppCompatActivity(), Inheritable,
     open val isViewInitFirst= true
 
     final override lateinit var _vmProvider: ViewModelProvider
+
     //    override val vmStoreOwner: ViewModelStoreOwner= this
 //    override val lifecycleOwner: LifecycleOwner= this
 
-    final override var presenter: Presenter?= null
+    final override var presenter: ArchPresenter<*, *>?= null
+    //    final override var presenter: Presenter?= null
 //    override var callbackCtx: Context?= this
 
 
@@ -197,7 +201,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     override fun ___initRootBase(vararg args: Any) {
         super<ViewModelBase>.___initRootBase(*args)
-        presenter= if(this is MviView<*, *>) __initMviPresenter()
+        presenter= if(this is MviView<*, *>) __initMviPresenter() //as MviPresenter<ViewState, ViewIntent>
             else initPresenter()
         super<ActFragBase>.___initRootBase(*args)
 

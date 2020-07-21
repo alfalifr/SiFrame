@@ -41,7 +41,8 @@ fun KParameter.isPropertyLike(prop: KProperty<*>, isInConstructorKnown: Boolean=
 /** Mengambil konstruktor dg jumlah parameter paling sedikit. */
 val <T: Any> KClass<T>.leastParamConstructor: KFunction<T>
     get(){
-        var constr= constructors.first()
+        var constr= try{ constructors.first() }
+        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (konstruktor private)") }
 
         var minParamCount= constr.parameters.size
         for(constrItr in constructors){
@@ -57,7 +58,8 @@ val <T: Any> KClass<T>.leastParamConstructor: KFunction<T>
 /** Mirip dg [leastParamConstructor], namun param opsional tidak disertakan. Nullable tetap disertakan. */
 val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
     get(){
-        var constr= constructors.first()
+        var constr= try{ constructors.first() }
+        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (konstruktor private)") }
         var minParamCount= constr.parameters.size
         //<20 Juli 2020> => Konstruktor dg jml param tersedikit belum tentu merupakan konstruktor dg jml param wajib paling sedikit.
         for(constrItr in constructors){
@@ -143,6 +145,31 @@ val KClass<*>.contructorPropertiesTree: Sequence<KProperty1<*, *>>
 KCallable - Call - Set - Get
 ==========================
  */
+
+/**
+ * Cara aman untuk memanggil [KCallable.callBy].
+ *
+ * Fungsi ini melakukan pengecekan terhadap tipe argumen, nullabilitas, dan opsionalitasnya
+ * sehingga meminimalisir terjadi error saat pemanggilan [KCallable].
+ */
+fun <R> KCallable<R>.callBySafely(args: Map<KParameter, Any?>): R{
+    val newArgs= HashMap<KParameter, Any?>()
+    for(param in parameters){
+        var value= args[param]
+        if(value == null){
+            if(param.isOptional) continue
+            if(!param.type.isMarkedNullable)
+                throw IllegalArgumentException("Nilai argumen param: \"$param\" tidak boleh null")
+        } else if(param.type.classifier != value::class){
+            if(param.isOptional) continue
+            if(param.type.isMarkedNullable) value= null
+            else throw IllegalArgumentException("Tipe param: \"$param\" adalah ${param.type.classifier}, namun argumen bertipe ${value::class}")
+        }
+        newArgs[param]= value
+    }
+    return callBy(newArgs)
+}
+
 
 /** @return [O] jika operasi get berhasil, null jika refleksi dilarang. */
 fun <I, O> KProperty1<I, O>.forcedGet(receiver: I): O?{

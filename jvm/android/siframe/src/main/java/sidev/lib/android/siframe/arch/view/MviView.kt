@@ -4,12 +4,11 @@ import android.app.Activity
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.arch._obj.InternalFiewModel
-import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.presenter.MviInteractivePresenterDependent
-import sidev.lib.android.siframe.arch.presenter.Presenter
+import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependent
+import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
@@ -18,7 +17,7 @@ import sidev.lib.universal.`fun`.*
 import java.lang.Exception
 
 interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
-    MviInteractivePresenterDependent<Presenter, I>,
+    InteractivePresenterDependent<MviPresenter<S, I>, I>,
     AutoRestoreViewClient,
     ExpirableBase {
     companion object{
@@ -28,23 +27,24 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
 //        val KEY_VM_MVI_STATE_STATUS= "_internal_vm_mvi_state_status"
     }
     var currentViewState: S?
-    override var intentConverter: IntentConverter<I>?
-    override fun initPresenter(): Presenter?
+///    override var intentConverter: IntentConverter<I>?
+    override fun initPresenter(): MviPresenter<S, I>?
     fun initStateProcessor(): StateProcessor<S, I>?
-
+/*
     /**
      * Berguna jika programmer ingin memakai pendekatan MVI murni, yaitu pass intent
      * sbg turunan kelas ViewIntent, bkn string.
      */
     fun initIntentCoverter(presenter: Presenter): IntentConverter<I>? = null
+ */
 
-    fun __initMviPresenter(): Presenter?{
+    fun __initMviPresenter(): MviPresenter<S, I>?{
         return getVmData()
             ?: initPresenter().notNullTo { presenter ->
             initStateProcessor().notNull { stateProcessor ->
                 stateProcessor.view= this
                 presenter.callback= stateProcessor
-
+/*
                 initIntentCoverter(presenter).notNull { intentConverter ->
                     this.intentConverter= intentConverter
                     intentConverter.expirableView= this
@@ -53,6 +53,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
 //                    loge("statePros is changed MviView")
 //                    stateProcessor.intentConverter= intentConverter
                 }
+ */
 
                 //<5 Juli 2020> => Yg disimpan adalah Presenternya karena sudah mencakup
                 // referensi ke StateProcessor.
@@ -115,18 +116,18 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         }
     }
 
-    private fun getVmData(): Presenter?{
+    private fun getVmData(): MviPresenter<S, I>?{
         // Prioritas Activity dulu. Jika ternyata null, baru Fragment.
         return (this.asNotNullTo { act: Activity -> act }
             ?: this.asNotNullTo { frag: Fragment -> frag.activity ?: frag})
             .asNotNullTo { view: ViewModelBase ->
                 view.getViewModel(InternalFiewModel::class.java)
             }.notNullTo { vm ->
-                vm.get<Presenter>(KEY_VM_MVI_STATE_PRESENTER)
+                vm.get<MviPresenter<S, I>>(KEY_VM_MVI_STATE_PRESENTER)
                     .notNullTo { presenter ->
                         presenter.value?.callback.asNotNull { sp: StateProcessor<S, I> ->
                             sp.view= this
-                            intentConverter= sp.intentConverter
+//                            intentConverter= sp.intentConverter aa
                         }
                         presenter.value
                     }

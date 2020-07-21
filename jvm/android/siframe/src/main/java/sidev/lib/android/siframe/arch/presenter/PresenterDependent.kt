@@ -3,9 +3,9 @@ package sidev.lib.android.siframe.arch.presenter
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 
-interface PresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterCallback<R>>: ExpirableBase {
+interface PresenterDependent: ExpirableBase { //P: ArchPresenterRoot, R, C: PresenterCallback<R>
 //    var callbackCtx: Context?
-    val presenter: P?
+    val presenter: ArchPresenter<*, *>?
 /*
     @CallSuper
     fun downloadData(reqCode: String, vararg data: Pair<String, Any>) {
@@ -27,7 +27,7 @@ interface PresenterDependent<P: ArchPresenter<R, C>, R, C: PresenterCallback<R>>
     }
  */
 
-    fun initPresenter(): P? {
+    fun initPresenter(): ArchPresenter<*, *>? {
         return null
     }
 }

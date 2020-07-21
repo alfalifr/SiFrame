@@ -48,7 +48,7 @@ class ContentMvpFrag : MvpFrag(){
         if(includeRv){
             layoutView.rv.visibility= if(show) View.GONE
                 else View.VISIBLE
-            layoutView.tv_no_data.visibility= if(show) View.GONE
+            layoutView.tv_no_data.visibility= if(show || rvAdp.dataList != null) View.GONE
                 else View.VISIBLE
         }
     }
