@@ -6,7 +6,6 @@ import sidev.lib.universal.annotation.renamedName
 import sidev.lib.universal.structure.collection.iterator.*
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import java.io.Serializable
-import java.lang.Exception
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.*
 import kotlin.reflect.full.*
@@ -43,7 +42,7 @@ fun KParameter.isPropertyLike(prop: KProperty<*>, isInConstructorKnown: Boolean=
 val <T: Any> KClass<T>.leastParamConstructor: KFunction<T>
     get(){
         var constr= try{ constructors.first() }
-        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (konstruktor private)") }
+        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (interface, abstract, anonymous class, atau null)") }
 
         var minParamCount= constr.parameters.size
         for(constrItr in constructors){
@@ -60,7 +59,7 @@ val <T: Any> KClass<T>.leastParamConstructor: KFunction<T>
 val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
     get(){
         var constr= try{ constructors.first() }
-        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (interface)") }
+        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$this\" tidak punya konstruktor (interface, abstract, anonymous class, atau null)") }
         var minParamCount= constr.parameters.size
         //<20 Juli 2020> => Konstruktor dg jml param tersedikit belum tentu merupakan konstruktor dg jml param wajib paling sedikit.
         for(constrItr in constructors){
@@ -85,11 +84,13 @@ val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
 
 /** Mengambil konstruktor dg param yg memiliki tipe data sesuai [paramClass]. Jika tidak ketemu, maka throw [NoSuchMethodException]. */
 fun <T: Any> KClass<T>.findConstructorWithParam(vararg paramClass: KClass<*>): KFunction<T>{
+    if(!isInstantiable) throw NoSuchElementException("Kelas \"$this\" tidak punya konstruktor (interface, abstract, anonymous class, atau null)")
+
     for(constr in constructors){
         var paramClassMatch= true
         if(constr.parameters.size == paramClass.size){
-            for((i, param) in constr.parameters.withIndex()){
-                paramClassMatch= paramClassMatch && param.type.classifier == paramClass[i]
+            for(param in constr.parameters){
+                paramClassMatch= paramClassMatch && param.type.classifier == paramClass[param.index]
             }
         } else continue
 
@@ -306,8 +307,11 @@ Inheritance
 val <T: Any> KClass<T>.isInterface: Boolean
     get()= this.java.isInterface
 
-val KType.isInterface
-    get()= (this.classifier as? KClass<*>)?.java?.isInterface
+val <T: Any> KClass<T>.isInstantiable: Boolean
+    get()= constructors.isNotEmpty()
+
+val KType.isInterface: Boolean
+    get()= (this.classifier as? KClass<*>)?.isInterface ?: false
 
 val <T: Any> KClass<T>.isPrimitive: Boolean
     get()= this.javaPrimitiveType != null
@@ -865,13 +869,17 @@ New Instance
  * @param [isDeepClone] `true` jika seluruh nilai properti yg berupa `object` di-instantiate
  *   menjadi `instance` yg baru. Operasi deep-clone juga berlaku terhadap properti yg dimiliki properti.
  *   [isDeepClone] `false` jika clone hanya dilakukan pada `this.extension` tidak termasuk properti.
+ *
+ * @return instance dg tipe [T] yg baru atau instance `this.extension` yg sama jika `this.extension`
+ *   tidak punya konstruktor karena berupa interface, abstract, atau anonymous class.
  */
 fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T{
     val valueMapTree= implementedPropertiesValueMapTree
     //Berguna untuk mengecek apakah `KProperty` merupakan properti dg mengecek kesamaannya dg `KParameter` di contrustor.
-    val constr= this::class.leastRequiredParamConstructor
+    val constr= try{ this::class.leastRequiredParamConstructor }
+    catch (e: Exception){ return this }
 
-    val newInstance= new(this::class){ paramOfNew ->
+    val newInstance= new(this::class, constructor = constr){ paramOfNew ->
         (constructorParamValFunc ?: { clazz, param ->
 //            prine("clazz.simpleName = ${clazz.simpleName} param= $param")
             if(constr.parameters.find { it == param } != null){
@@ -905,11 +913,14 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
 }
 
 
+
 /**
  * <14 Juli 2020> => Versi baru fungsi inline yg kecil.
  */
-inline fun <reified T: Any> new(constructorParamClass: Array<KClass<*>>?= null, noinline defParamValFunc: ((param: KParameter) -> Any?)?= null): T?
-    = new(T::class, constructorParamClass, defParamValFunc)
+inline fun <reified T: Any> new(constructorParamClass: Array<KClass<*>>?= null,
+                                constructor: KFunction<T>? = null,
+                                noinline defParamValFunc: ((param: KParameter) -> Any?)?= null): T?
+    = new(T::class, constructorParamClass, constructor, defParamValFunc)
 
 /**
  * Digunakan untuk meng-instatiate instance baru menggunakan Kotlin Reflection.
@@ -929,7 +940,8 @@ inline fun <reified T: Any> new(constructorParamClass: Array<KClass<*>>?= null, 
  * <14 Juli 2020> => Tidak jadi inline karena fungsi ini besar. Sbg gantinya, fungsi [new] di atas
  *   adalah inline namun dg kode yg kecil.
  */
-fun <T: Any> new(clazz: KClass<T>, constructorParamClass: Array<KClass<*>>?= null,
+fun <T: Any> new(clazz: KClass<out T>, constructorParamClass: Array<KClass<*>>?= null,
+                 constructor: KFunction<T>? = null,
                  defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
     if(clazz.isPrimitive)
         return defaultPrimitiveValue(clazz)
@@ -946,8 +958,11 @@ fun <T: Any> new(clazz: KClass<T>, constructorParamClass: Array<KClass<*>>?= nul
         }
     }
  */
-    val constr = if(constructorParamClass.isNullOrEmpty()) clazz.leastRequiredParamConstructor
-        else clazz.findConstructorWithParam(*constructorParamClass)
+    val constr = constructor ?:
+        try {
+            if (constructorParamClass.isNullOrEmpty()) clazz.leastRequiredParamConstructor
+            else clazz.findConstructorWithParam(*constructorParamClass)
+        } catch (e: Exception){ return null } //Kelas udah gak bisa di-instantiate.
 
     val params=  constr.parameters
     val defParamVal= HashMap<KParameter, Any?>()

@@ -75,13 +75,13 @@ sealed class AB: AA(){
 annotation class FunAnot(val a: Int= 101)
 
 @Anotasi<Int, Char>
-abstract class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
+class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
     val ac= "ppop"
     private val acPriv= "aaa"
     override val a: Boolean
         get() = true
-//    override val x: String
-//        get() = "as"
+    override val x: String
+        get() = "as"
     var poin= Poin(1, 2)
     lateinit var poinLate: Poin //= Poin(1, 2)
 
@@ -124,13 +124,21 @@ class NoConstr private constructor()
 
 @Suppress("UNREACHABLE_CODE")
 fun main(args: Array<String>){
-///*
+/*
     println("\n============= BATAS Exc ==============\n")
     val err = try{ "aad".toInt(); null }
     catch (e: Exception){ e }
     val exc= Exc(err?.message, err)
     throw exc
 // */
+
+    println("\n============= BATAS List plus ==============\n")
+    val list= ArrayList<Int>()
+    list + 1 + 1 + 3 - 1 -3
+    for((i, e) in list.withIndex()){
+        prin("i= $i e= $e")
+    }
+
 
     println("\n============= BATAS memberProperties ==============\n")
     val asal= Asal()
@@ -141,10 +149,7 @@ fun main(args: Array<String>){
     prin("NoConstr::class.constructors.size = ${NoConstr::class.constructors.size}")
 
     println("\n============= BATAS memberProperties ==============\n")
-    val ac= object: AC(Poin(y=10)){
-        override val x: String
-            get() = "AA"
-    }
+    val ac= AC(Poin(y=10))
     for((i, prop) in ac::class.memberProperties.withIndex()){
         prin("i= $i prop= $prop")
     }
@@ -329,7 +334,7 @@ AD(a= 0)
     println("\n=============BATAS nestedImplementedPropertiesValueMapTree ==============\n")
     for((i, pairOfProp) in AC(Poin(1,2)).nestedImplementedPropertiesValueMapTree.withIndex())
         println("i= $i prop= ${pairOfProp.first} value= ${pairOfProp.second}") //val= ${try{ prop.forcedGet(acObj as AC)}}
-
+// */
     val oldAc= AC(Poin(2,3))
     var newAc= oldAc//.clone(true)
     oldAc.poin.x= 100
@@ -368,6 +373,12 @@ AD(a= 0)
         }
     }
 
+    println("\n=============BATAS javConstrs ==============\n")
+    val javConstrs= oldAc::class.java.constructors
+    for((i, constr) in javConstrs.withIndex()){
+        prin("i= $i, constr= $constr")
+    }
+
 /*
     oldAc.aa_
     newAc.aa_
@@ -396,18 +407,17 @@ AD(a= 0)
     println("\n============= BATAS CachedSequence ==============\n")
     val strSeq= sequenceOf("Aku", "Mau", "Makan")
     val strSeq2= sequenceOf("Kamu" , "Dan", "Dia")
-    val lazySeq= CachedSequence(strSeq)
-    lazySeq.add("Halo")
-    lazySeq.add("Bro")
-    lazySeq.addValueIterator(strSeq2.iterator())
-/*
+    val lazySeq= CachedSequence<String>()
+    lazySeq + "Halo" + "Bro"
+    lazySeq + strSeq + strSeq2
+///*
     val containsAku= lazySeq.contains("Aku")
     val containsKamu= lazySeq.contains("Kamu")
     val indexMau= lazySeq.indexOf("Mau")
     val indexKamu= lazySeq.indexOf("Kamu")
     val ke4= lazySeq[4]
     prin("indexMau= $indexMau ke4= $ke4 containsAku= $containsAku containsKamu= $containsKamu indexKamu= $indexKamu")
- * /
+// * /
 
     println("\n============= BATAS CachedSequence.iterator() ==============\n")
     for((i, data) in lazySeq.withIndex()){
@@ -422,8 +432,7 @@ AD(a= 0)
     lazyMap["Mau"]= 7
     lazyMap["Iya"]= 6
 
-    lazyMap.addIterator(pairSeq.iterator())
-    lazyMap.addIterator(pairSeq2.iterator())
+    lazyMap + pairSeq + pairSeq2
 
     println("\n============= BATAS LazyHashMap.iterator() ==============\n")
     for((i, data) in lazyMap.withIndex()){
@@ -484,9 +493,9 @@ AD(a= 0)
     }
 //    En.to
 
- */
+// */
 
- */
+// */
 /*
     val transac= dum_transaction.last()
     println("\n============= BATAS Transac.nestedImplementedPropertiesValueMapTree ==============\n")
@@ -500,16 +509,21 @@ AD(a= 0)
 
     prin("\n\n transacClone.commodity?.name= ${transacClone.commodity?.name}")
  */
+/*
     val oldAc= object: AC(Poin(1, 2)){
         override val x: String
             get() = "adad"
     }
+    val constrSize= oldAc::class.constructors.size
+    prine("constrSize= $constrSize")
+//    oldAc::class.createInstance()
     val newAc1= oldAc.clone()
     val newAc2= oldAc.clone(false)
 
     oldAc == newAc1
     oldAc == newAc2
     prin("oldAc == newAc1 = ${oldAc == newAc1} oldAc == newAc2= ${oldAc == newAc2}")
+ */
 }
 
 
