@@ -7,17 +7,17 @@ import sidev.lib.android.siframe.intfc.prop.CtxProp
 
 /**
  * Interface yg dapat dipanggil oleh ArchPresenter pada framework ini.
- * Parameter <T> merupakan tipe data reqCode.
+ * [Req] merupakan tipe data reqCode, [Res] tipe data resCode.
  */
-interface PresenterCallback<T>: ExpirableBase, CtxProp {
+interface PresenterCallback<Req, Res>: ExpirableBase, CtxProp {
 //    var callbackCtx: Context
 //    val presenter: P?
 
     /**
      * @return nilainya ditangkap oleh SifViewModel
      */
-    fun onPresenterSucc(reqCode: T, resCode: Int, data: Map<String, Any>?)
-    fun onPresenterFail(reqCode: T, resCode: Int, msg: String?= "", e: Exception?= null)
+    fun onPresenterSucc(request: Req, result: Res, data: Map<String, Any>?, resCode: Int= 0)
+    fun onPresenterFail(request: Req, result: Res?, msg: String?= "", e: Exception?= null, resCode: Int= 0)
 /*
     @CallSuper
     fun downloadData(reqCode: String, vararg data: Pair<String, Any>) {

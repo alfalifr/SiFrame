@@ -1,8 +1,6 @@
 package sidev.lib.universal.annotation
 
-import sidev.lib.universal.`fun`.callBySafely
-import sidev.lib.universal.`fun`.implementedPropertiesValueMap
-import sidev.lib.universal.`fun`.prine
+import sidev.lib.universal.`fun`.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -50,7 +48,7 @@ interface AnnotatedFunctionClass {
         return callAnnotatedFunction(annotationClass, checkFun){ param ->
             if(paramContainer != null){
                 var value: Any?= null
-                for(valMap in paramContainer.implementedPropertiesValueMap){
+                for(valMap in paramContainer.implementedAccesiblePropertiesValueMapTree){
                     if(valMap.first.renamedName == param.renamedName){
                         value= valMap.second
                         break

@@ -5,23 +5,25 @@ import android.view.View
 import androidx.annotation.CallSuper
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
 import sidev.lib.android.siframe.arch.presenter.PresenterCallback
-import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner
 import sidev.lib.android.siframe.arch.view.MviView
-import sidev.lib.android.siframe.exception.RuntimeExc
+import sidev.lib.universal.exception.RuntimeExc
 import sidev.lib.android.siframe.tool.ViewContentExtractor
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.exception.Exc
 import kotlin.reflect.KClass
+import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KParameter
+import kotlin.reflect.full.memberProperties
 
 
-abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
+abstract class StateProcessor<I: ViewIntent, R: IntentResult, S: ViewState<*>>(view: MviView<I, R, S>):
     Mvi, AutoRestoreViewOwner,
 //    PresenterDependent<MviPresenter<S>>,
-    PresenterCallback<I> {
-    var view: MviView<S, I> = view
+    PresenterCallback<I, R> {
+    var view: MviView<I, R, S> = view
         internal set(v){
             field= v
             intentConverter?.expirableView= v
@@ -59,8 +61,7 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
      * arsitektur MVI demi reaktivitas app.
      */
     abstract fun processPreState(intent: I, additionalData: Map<String, Any>?): S?
-    abstract fun processState(intent: I, resCode: Int, data: Map<String, Any>?,
-                              isError: Boolean, exc: Exception?, errorMsg: String?): S?
+    abstract fun processState(intent: I, result: R?, additionalData: Map<String, Any>?, e: Exc?): S?
 
 
     /**
@@ -113,11 +114,23 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
                 loge("StateProcessor.postPreResult() -> state == NULL")
             }
     }
-    fun postResult(intent: I, resCode: Int, data: Map<String, Any>?,
-                   isError: Boolean, exc: Exception?, errorMsg: String?){
-        processState(intent, resCode, data, isError, exc, errorMsg)
+    fun postResult(intent: I, result: R?, additionalData: Map<String, Any>?, e: Exc?){
+        processState(intent, result, additionalData, e)
             .notNull { state ->
                 state.isPreState= false
+                if(result != null){
+                    (state::class.memberProperties.find{
+                        val propFound= it is KMutableProperty<*>
+                                && it.name == STATE_RESULT
+                        if(propFound){
+                            if(it.returnType.classifier != result::class){
+                                loge("StateProcessor.processState() -> Tipe data dari resCode: \"${result::class.qualifiedName}\" tidak sama dg state.result: \"${state::class.qualifiedName}\", resCode diabaikan!")
+                                false
+                            } else true
+                        } else false
+                    } as? KMutableProperty<*>)?.setter?.forcedCall(state, result)
+                }
+                state.error= e
 //                currentStateIsPreState= false
                 postState(intent, state)
             }.isNull {
@@ -215,13 +228,21 @@ abstract class StateProcessor<S: ViewState, I: ViewIntent>(view: MviView<S, I>):
     override val presenter: MviPresenter<S>?= null
  */
 
-    override fun onPresenterSucc(reqCode: I, resCode: Int, data: Map<String, Any>?) {
-        postResult(reqCode, resCode, data, false, null, null)
+    final override fun onPresenterSucc(request: I, result: R, data: Map<String, Any>?, resCode: Int) {
+        postResult(request, result, data, null)
     }
 
-    override fun onPresenterFail(reqCode: I, resCode: Int, msg: String?, e: Exception?) {
-        postResult(reqCode, resCode, null, true, e, msg)
+    final override fun onPresenterFail(
+        request: I,
+        result: R?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int
+    ) {
+        val error= createErrorSimple(msg, e, resCode)
+        postResult(request, result, null, error)
     }
+
 /*
     @PublishedApi
     internal var `access$intentPropGetter`: IntentPropGetter?

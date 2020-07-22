@@ -3,18 +3,15 @@ package sidev.lib.android.siframe.arch.presenter
 import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.*
-import sidev.lib.android.siframe.arch.intent_state.INTENT_IS_RESULT_TEMPORARY
-import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.annotation.AnnotatedFunctionClassImpl
-import kotlin.reflect.KClass
-import kotlin.reflect.KParameter
+import java.lang.Exception
 
 
-abstract class MviPresenter<S: ViewState, I: ViewIntent>(
-    @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: StateProcessor<S, I>? //PresenterCallback<I>?): Presenter(){
-): AnnotatedFunctionClassImpl(), ArchPresenter<I, StateProcessor<S, I>> {
+abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
+    @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: StateProcessor<I, R, S>? //PresenterCallback<I>?): Presenter(){
+): AnnotatedFunctionClassImpl(), ArchPresenter<I, R, StateProcessor<I, R, S>> {
     final override lateinit var reqCode: I
         private set
 /*
@@ -39,17 +36,17 @@ abstract class MviPresenter<S: ViewState, I: ViewIntent>(
     }
  */
 
-    final override fun postRequest(reqCode: I, data: Map<String, Any>?) {
-        this.reqCode= reqCode
-        onPreRequest(reqCode, data)
-        super.postRequest(reqCode, data)
+    final override fun postRequest(request: I, data: Map<String, Any>?) {
+        this.reqCode= request
+        onPreRequest(request, data)
+        super.postRequest(request, data)
     }
 
     /**
      * Sesuai namanya, param data diubah namanya jadi [additionalData] karena data request
-     * dapat disertakan di dalam [reqCode] yg berupa [ViewIntent].
+     * dapat disertakan di dalam [request] yg berupa [ViewIntent].
      */
-    abstract override fun processRequest(reqCode: I, additionalData: Map<String, Any>?)
+    abstract override fun processRequest(request: I, additionalData: Map<String, Any>?)
 
     /*
     final override fun postRequest(reqCode: String, data: Map<String, Any>?) {
@@ -87,7 +84,16 @@ abstract class MviPresenter<S: ViewState, I: ViewIntent>(
     protected fun callAnnotatedViewIntentFun(intent: I): Boolean
         = callAnnotatedFunctionWithParamContainer(ViewIntentFunction::class, intent) { it.clazz == intent::class } != null
 
-/*
+
+    final override fun postSucc(result: R, data: Map<String, Any>?, resCode: Int, request: I?) {
+        super.postSucc(result, data, resCode, request)
+    }
+
+    final override fun postFail(result: R?, msg: String?, e: Exception?, resCode: Int, request: I?) {
+        super.postFail(result, msg, e, resCode, request)
+    }
+
+    /*
     @PublishedApi
     internal var `access$intentPropGetter`: IntentPropGetter?
         get() = intentPropGetter

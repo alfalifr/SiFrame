@@ -7,6 +7,7 @@ import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.presenter.Presenter
 //import sidev.lib.android.siframe.arch.presenter.PresenterCallback
 import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon
+import sidev.lib.android.siframe.arch.presenter.PresenterCallbackCommon_
 //import sidev.lib.android.siframe.presenter.Presenter
 //import sidev.lib.android.siframe.presenter.PresenterCallback
 import sidev.lib.android.siframe.tool.util._StorageUtil
@@ -20,17 +21,17 @@ import sidev.lib.universal.tool.util.ThreadUtil
 
 class PageContentPres(c: PresenterCallbackCommon) : Presenter(c){
     override fun checkDataIntegrity(
-        reqCode: String,
+        request: String,
         direction: ArchPresenter.Direction,
         data: Map<String, Any>?
     ): Boolean {
-        return when(reqCode){
+        return when(request){
             else -> true
         }
     }
 
-    override fun processRequest(reqCode: String, data: Map<String, Any>?) {
-        when(reqCode){
+    override fun processRequest(request: String, data: Map<String, Any>?) {
+        when(request){
             Edu_Class_Const.REQ_GET_PAGE -> {
                 val moduleId= data!![Edu_Class_Const.DATA_MODULE_ID] as String
                 getPage(moduleId)

@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.lifecycle.fragment.mvi
 
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
+import sidev.lib.android.siframe.arch.intent_state.IntentResult
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
@@ -14,8 +15,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari Fragment
  */
-abstract class MviFrag<S: ViewState, I: ViewIntent> : Frag(), MviView<S, I>{
+abstract class MviFrag<I: ViewIntent, R: IntentResult, S: ViewState<*>> : Frag(), MviView<I, R, S>{
     override var currentViewState: S?= null
 //    override var intentConverter: IntentConverter<I>?= null
-    abstract override fun initPresenter(): MviPresenter<S, I>? //Knp kok di kelas ini di-abstract padahal sblumnya tidak?
+    abstract override fun initPresenter(): MviPresenter<I, R, S>? //Knp kok di kelas ini di-abstract padahal sblumnya tidak?
 }

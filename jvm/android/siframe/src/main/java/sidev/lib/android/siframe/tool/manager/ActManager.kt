@@ -2,7 +2,7 @@ package sidev.lib.android.siframe.tool.manager
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
-import sidev.lib.android.siframe.exception.IllegalAccessExc
+import sidev.lib.universal.exception.IllegalAccessExc
 import sidev.lib.android.siframe.tool.ActLifecycleObs
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.loge

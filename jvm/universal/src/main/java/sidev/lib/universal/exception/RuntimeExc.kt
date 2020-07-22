@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe.exception
+package sidev.lib.universal.exception
 
 open class RuntimeExc(relatedClass: Class<*>?= RuntimeExc::class.java,
                       commonMsg: String= "Terjadi kesalahan saat runtime.",

@@ -31,7 +31,7 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
     /**
      * Berguna jika [presenter] bkn merupakan tipe data [MviPresenter], terutama saat preState.
      */
-    var stateProcessor: StateProcessor<*, I>?= null
+    var stateProcessor: StateProcessor<I, *, *>?= null
         set(v){
             if(field != null)
                 field!!.intentConverter= null

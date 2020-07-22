@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.lifecycle.activity.mvi
 
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
+import sidev.lib.android.siframe.arch.intent_state.IntentResult
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
@@ -10,11 +11,11 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
 
-abstract class MviBarContentNavAct_ViewPager<F: Frag, S: ViewState, I: ViewIntent>
-    : BarContentNavAct_ViewPager<F>(), MviView<S, I> { //ViewPagerActBase<F>
+abstract class MviBarContentNavAct_ViewPager<F: Frag, I: ViewIntent, R: IntentResult, S: ViewState<*>>
+    : BarContentNavAct_ViewPager<F>(), MviView<I, R, S> { //ViewPagerActBase<F>
     override var currentViewState: S?= null
 //    override var intentConverter: IntentConverter<I>?= null
-    abstract override fun initPresenter(): MviPresenter<S, I>?
+    abstract override fun initPresenter(): MviPresenter<I, R, S>?
 }
 /*
 abstract class MviBarContentNavAct_ViewPager<F: Frag>

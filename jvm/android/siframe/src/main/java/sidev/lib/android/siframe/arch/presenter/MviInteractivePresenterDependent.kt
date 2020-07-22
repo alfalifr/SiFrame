@@ -14,8 +14,8 @@ import sidev.lib.universal.`fun`.isNull
 /**
  * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
-interface MviInteractivePresenterDependent<P: MviPresenter<*, I>, I: ViewIntent>
-    : InteractivePresenterDependent<P, I> { // StateProcessor<ViewState, I>
+interface MviInteractivePresenterDependent<I: ViewIntent, P: MviPresenter<I, *, *>>
+    : InteractivePresenterDependent<I, P> { // StateProcessor<ViewState, I>
 //    var callbackCtx: Context?
 //    val presenter: P?
 
@@ -84,7 +84,7 @@ interface MviInteractivePresenterDependent<P: MviPresenter<*, I>, I: ViewIntent>
         loge("IntentConverter == NULL, meng-init IntentConverter")
         //Cek dulu apakah callback presenternya berupa StateProcessor.
         // Jika iya, maka ambil intentConverter-nya.
-        presenter?.callback.asNotNullTo { sp: StateProcessor<*, I> ->
+        presenter?.callback.asNotNullTo { sp: StateProcessor<I, *, *> ->
             intentConverter= sp.intentConverter
             intentConverter
         }

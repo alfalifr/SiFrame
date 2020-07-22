@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
-import sidev.lib.android.siframe.exception.ResourceNotFoundExc
+import sidev.lib.universal.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate

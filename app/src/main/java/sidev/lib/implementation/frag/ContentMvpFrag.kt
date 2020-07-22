@@ -8,7 +8,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.mvp.MvpFrag
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp
-import sidev.lib.implementation.intent_state.ContentFragIntent
 import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.util.Const
@@ -57,9 +56,14 @@ class ContentMvpFrag : MvpFrag(){
         toast("Msh jalan bro :(")
     }
 
-    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {
+    override fun onPresenterSucc(
+        request: String,
+        result: Int,
+        data: Map<String, Any>?,
+        resCode: Int
+    ) {
         showPb(false)
-        when(reqCode){
+        when(request){
             ContentPresenter.REQ_LOGIN -> {
                 if(resCode == Const.RES_OK)
                     toast("Login Berhasil bro!!!")
@@ -68,16 +72,23 @@ class ContentMvpFrag : MvpFrag(){
             }
             ContentPresenter.REQ_GET_CONTENT -> {
                 val data= try{ data!![Const.DATA_CONTENT] as ArrayList<Content> }
-                    catch (e: Exception){ null }
+                catch (e: Exception){ null }
                 rvAdp.dataList= data
                 layoutView.tv_no_data.visibility= if(data.isNullOrEmpty()) View.VISIBLE
-                    else View.GONE
+                else View.GONE
             }
         }
     }
-    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
+
+    override fun onPresenterFail(
+        request: String,
+        result: Int?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int
+    ) {
         showPb(false)
-        val msg= when(reqCode){
+        val msg= when(request){
             ContentPresenter.REQ_LOGIN -> "Terjadi kesalahan saat login :( \n msg= $msg"
             ContentPresenter.REQ_GET_CONTENT -> "Terjadi kesalahan saat download data :( \n msg= $msg"
             else -> "Terjadi kesalahan mboh pas ngapain :("

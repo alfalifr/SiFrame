@@ -1,7 +1,6 @@
 package sidev.lib.android.siframe.view.comp
 
 import android.content.Context
-import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.universal.structure.data.BoxedVal
-import sidev.lib.android.siframe.exception.ResourceNotFoundExc
-import sidev.lib.android.siframe.intfc.`fun`.InitPropFun
+import sidev.lib.universal.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.isIdIn
 import sidev.lib.universal.`fun`.*
 //import sidev.lib.universal.`fun`.iterator
 import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl

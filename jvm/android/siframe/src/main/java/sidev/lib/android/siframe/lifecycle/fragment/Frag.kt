@@ -85,7 +85,7 @@ abstract class Frag : Fragment(),
 
     //    override val vmStoreOwner: ViewModelStoreOwner= this
 //    override val lifecycleOwner: LifecycleOwner= this
-    final override var presenter: ArchPresenter<*, *>?= null
+    final override var presenter: ArchPresenter<*, *, *>?= null
 
     //    final override var presenter: Presenter?= null
 
@@ -197,12 +197,12 @@ abstract class Frag : Fragment(),
     override fun ___initRootBase(vararg args: Any) {
         super<ViewModelBase>.___initRootBase(*args)
 
-        presenter= if(this is MviView<*, *>) __initMviPresenter()
+        presenter= if(this is MviView<*, *, *>) __initMviPresenter()
             else initPresenter()
 
         super<FragBase>.___initRootBase(*args)
 
-        if(this is MviView<*, *>)
+        if(this is MviView<*, *, *>)
             restoreCurrentState(true)
     }
 // */

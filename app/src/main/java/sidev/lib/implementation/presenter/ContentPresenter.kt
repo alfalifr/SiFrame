@@ -1,20 +1,14 @@
 package sidev.lib.implementation.presenter
 
-import sidev.lib.android.siframe.arch.presenter.ArchPresenter
-import sidev.lib.android.siframe.arch.presenter.MviPresenter
-import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.presenter.PresenterCallback
+import sidev.lib.android.siframe.arch.presenter.*
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation._cob.contentList
-import sidev.lib.implementation.intent_state.ContentFragIntent
-import sidev.lib.implementation.intent_state.ContentFragState
 import sidev.lib.implementation.util.Const
-import sidev.lib.universal.`fun`.copyGrowExponentially
 import sidev.lib.universal.`fun`.copyGrowTimely
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
+class ContentPresenter(c: PresenterCallback<String, Int>?) : Presenter(c){
     companion object{
         val REQ_GET_CONTENT= "get_content"
         val REQ_LOGIN= "login"
@@ -22,22 +16,23 @@ class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
     }
 
     override fun checkDataIntegrity(
-        reqCode: String,
+        request: String,
         direction: ArchPresenter.Direction,
         data: Map<String, Any>?
     ): Boolean {
-        return when(reqCode){
+        return when(request){
             else -> true
         }
     }
-    override fun processRequest(reqCode: String, data: Map<String, Any>?) {
-        when(reqCode){
+    override fun processRequest(request: String, data: Map<String, Any>?) {
+        when(request){
             REQ_GET_CONTENT -> getContent()
             REQ_LOGIN -> {
                 val uname= try{ data!![DATA_UNAME] as String } catch (e: Exception){ "sriname" }
                 login(uname)
             }
         }
+//        postSucc("1", null)
     }
 
     fun login(uname: String){
@@ -45,7 +40,7 @@ class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
             if(uname == "uname")
                 postSucc(Const.RES_OK, null)
             else
-                postFail(0, "Uname != uname :( uname= $uname")
+                postFail(0, msg= "Uname != uname :( uname= $uname")
         }
         ThreadUtil.delayRun(5000){
             postFail(0, "Error login bro dari presenter")
@@ -58,6 +53,7 @@ class ContentPresenter(c: PresenterCallback<String>?) : Presenter(c){
             loge("getContent() ThreadUtil.delayRun(3000)")
             postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(8)))
         }
+
 /*
         ThreadUtil.delayRun(5000){
             loge("getContent() ThreadUtil.delayRun(3000)")

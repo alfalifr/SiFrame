@@ -3,7 +3,11 @@ package sidev.lib.android.siframe.arch.presenter
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.type.Mvp
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.clazz
+import sidev.lib.universal.exception.TypeExc
 import java.lang.Exception
+import kotlin.reflect.full.memberFunctions
 
 /*
 <27 Juni 2020> => Perubahan nama dari Presenter menjadi Repository. Perubahan nama menjadi Repository
@@ -36,10 +40,26 @@ import java.lang.Exception
  * digunakan pada berbagai arsitektur.
  */
 abstract class Presenter(
-    @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: PresenterCallback<String>?
-): ArchPresenter<String, PresenterCallback<String>> {
+    callback: PresenterCallback<String, Int>?
+): ArchPresenter<String, Int?, PresenterCallback<String, Int?>> {
     final override var reqCode: String= ""
         private set
+
+    @Suppress("UNCHECKED_CAST")
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    final override var callback: PresenterCallback<String, Int?>?
+            = if(callback != null) callback as PresenterCallback<String, Int?> else null
+/*
+        set(v){
+            if(v != null){
+                if(v.clazz.memberFunctions.find { it.name == "onPresenterSucc" }!!
+                        .parameters.find { it.name == "result" }!!
+                        .type.isMarkedNullable)
+                    throw TypeExc(msg = "Tipe data Presenter(\"${this::class.simpleName}\").PresenterCallback harus PresenterCallback<String, **Int**>, bukan PresenterCallback<String, **Int?**>")
+            }
+            field= v
+        }
+ */
 /*
     val ctx: Context
         get()= App.ctx
@@ -50,28 +70,36 @@ abstract class Presenter(
     /**
      * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest().
      */
-    abstract override fun processRequest(reqCode: String, data: Map<String, Any>?)
+    abstract override fun processRequest(request: String, data: Map<String, Any>?)
 
     /**
      * Untuk mengecek integritas data yang didapat dari presenter.
      */
-    abstract override fun checkDataIntegrity(reqCode: String, direction: ArchPresenter.Direction, data: Map<String, Any>?): Boolean
+    abstract override fun checkDataIntegrity(request: String, direction: ArchPresenter.Direction, data: Map<String, Any>?): Boolean
 
     @CallSuper
-    override fun postRequest(reqCode: String, data: Map<String, Any>?) {
-        this.reqCode= reqCode
-        super.postRequest(reqCode, data)
+    override fun postRequest(request: String, data: Map<String, Any>?) {
+        this.reqCode= request
+        super.postRequest(request, data)
     }
 
-    final override fun postSucc(resCode: Int, data: Map<String, Any>?, reqCode: String?) {
-        super.postSucc(resCode, data, reqCode)
+
+    final override fun postSucc(result: Int?, data: Map<String, Any>?, resCode: Int, request: String?) {
+        super.postSucc(result, data, resCode, request)
     }
 
-    final override fun postFail(resCode: Int, msg: String?, e: Exception?, reqCode: String?) {
-        super.postFail(resCode, msg, e, reqCode)
+    final override fun postFail(
+        result: Int?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int,
+        request: String?
+    ) {
+        super.postFail(result, msg, e, resCode, request)
     }
 
-/*
+
+    /*
     /**
      * Semua instance PresenterCallback harus manggil ini kalo mau request ke presenter.
      */

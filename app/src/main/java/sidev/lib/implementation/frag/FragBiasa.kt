@@ -9,11 +9,12 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
-import sidev.lib.implementation.intent_state.ContentFragIntent
-import sidev.lib.implementation.intent_state.ContentFragState
+import sidev.lib.implementation.intent_state.CFIntent
+import sidev.lib.implementation.intent_state.CFRes
+import sidev.lib.implementation.intent_state.CFState
 
 
-class FragBiasa : Fragment(), MviView<ContentFragState, ContentFragIntent>{
+class FragBiasa : Fragment(), MviView<CFIntent, CFRes, CFState<*>>{
 //    override var intentConverter: IntentConverter<ContentFragIntent>?= null
     override var isBusy: Boolean= false
     override var busyOfWhat: String= InterruptableBase.DEFAULT_BUSY_OF_WHAT
@@ -21,20 +22,19 @@ class FragBiasa : Fragment(), MviView<ContentFragState, ContentFragIntent>{
         get() = context
     override var presenter: Presenter?= null
     override var isExpired: Boolean= false
-    override var currentViewState: ContentFragState?= null
-
+    override var currentViewState: CFState<*>?= null
 
     override fun onNoCurrentState() {}
 
-    override fun initPresenter(): MviPresenter<ContentFragState, ContentFragIntent>? {
+    override fun initPresenter(): MviPresenter<CFIntent, CFRes, CFState<*>>? {
         TODO("Not yet implemented")
     }
 
-    override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>? {
+    override fun initStateProcessor(): StateProcessor<CFIntent, CFRes, CFState<*>>? {
         TODO("Not yet implemented")
     }
 
-    override fun render(state: ContentFragState) {
+    override fun render(state: CFState<*>) {
         TODO("Not yet implemented")
     }
 }

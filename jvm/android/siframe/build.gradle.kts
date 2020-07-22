@@ -104,6 +104,9 @@ dependencies {
 
     //Gson
     implementation("com.google.code.gson:gson:2.8.6")
+//    implementation(kotlinModule("reflect", "1.3.72"))
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 }
 // */
 

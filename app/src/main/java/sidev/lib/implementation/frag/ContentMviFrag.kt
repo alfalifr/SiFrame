@@ -4,26 +4,20 @@ import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.page_rv_btn.view.*
 import org.jetbrains.anko.imageResource
-import org.jetbrains.anko.support.v4.sendSMS
-import sidev.lib.android.siframe.arch.intent_state.IntentConverter
-import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.intent_state.StateProcessor
+import sidev.lib.android.siframe.arch.intent_state.*
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
-import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.fragment.mvi.MviFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp
-import sidev.lib.implementation.intent_state.ContentFragIntent
-import sidev.lib.implementation.presenter.ContentPresenter
-import sidev.lib.implementation.intent_state.ContentFragState
-import sidev.lib.implementation.intent_state.processor.ContentFragIntentConverter
+import sidev.lib.implementation.intent_state.*
 import sidev.lib.implementation.intent_state.processor.ContentFragStatePros
 import sidev.lib.implementation.presenter.MviContentPresenter
 
-class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
-//    override val vmBase: ViewModelBase= this
+class ContentMviFrag : MviFrag<CFIntent, CFRes, CFState<*>>(){
+
+    //    override val vmBase: ViewModelBase= this
     override val layoutId: Int
         get() = R.layout.page_rv_btn
     override val isInterruptable: Boolean
@@ -31,8 +25,9 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
 
     lateinit var rvAdp: ContentAdp
 
-    override fun initPresenter(): MviPresenter<ContentFragState, ContentFragIntent>? = MviContentPresenter(null)
-    override fun initStateProcessor(): StateProcessor<ContentFragState, ContentFragIntent>?
+
+    override fun initPresenter(): MviPresenter<CFIntent, CFRes, CFState<*>>? = MviContentPresenter(null)
+    override fun initStateProcessor(): StateProcessor<CFIntent, CFRes, CFState<*>>?
             = ContentFragStatePros(this)
 /*
     override fun initIntentCoverter(presenter: Presenter): IntentConverter<ContentFragIntent>?
@@ -47,12 +42,12 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
         registerAutoRestoreView("iv", layoutView.iv)
 
         (layoutView.btn as Button).text= "Login"
-        layoutView.btn.setOnClickListener { sendRequest(ContentFragIntent.Login("kinap oy")) }
-        layoutView.srl.setOnRefreshListener { sendRequest(ContentFragIntent.DownloadData) }
+        layoutView.btn.setOnClickListener { sendRequest(ContentFragConf.Intent.Login("kinap oy")) }
+        layoutView.srl.setOnRefreshListener { sendRequest(ContentFragConf.Intent.DownloadData) }
     }
 
     override fun onNoCurrentState() {
-        sendRequest(ContentFragIntent.DownloadData)
+        sendRequest(ContentFragConf.Intent.DownloadData)
         layoutView.iv.imageResource= R.drawable.ic_arrow_thick
     }
 
@@ -60,6 +55,47 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
         toast("Harap tunggu hingga proses pada layar selesai.")
     }
 
+    override fun render(state: CFState<*>) {
+        when(state){
+            is ContentFragConf.State.DownloadData -> {
+                layoutView.rv.visibility= if(state.isLoading) View.GONE
+                else View.VISIBLE
+                layoutView.tv_no_data.visibility= if(state.isLoading) View.GONE
+                else View.VISIBLE
+                layoutView.pb.visibility= if(state.isLoading
+                    && state.error == null) View.VISIBLE
+                else View.GONE
+
+                layoutView.srl.isRefreshing= state.isLoading
+                        && state.error == null
+
+                if(!state.isPreState){
+                    layoutView.tv_no_data.visibility=
+                        if(state.result?.rvDataList.isNullOrEmpty()) View.VISIBLE
+                        else View.GONE
+
+                    rvAdp.dataList= state.result?.rvDataList
+                }
+            }
+            is ContentFragConf.State.Login -> {
+                loge("render() isPreState= ${state.isPreState} state.isError= ${state.error != null}")
+                layoutView.srl.isRefreshing= state.isLoading
+                        && state.error == null
+                if(!state.isPreState && state.error == null){
+                    loge("render() !!isPreState TOAST state.toastMsg!!= ${state.toastMsg!!}")
+                    if(state.result?.isSuccess == false)
+                        toast(state.toastMsg!!)
+                    else
+                        toast("Apapun alasannya, yg penting login berhasil")
+                }
+            }
+        }
+        if(state.error != null)
+            toast(state.error!!.message!!)
+//        state.isPreState= false
+    }
+
+/*
     override fun render(state: ContentFragState) {
         when(state){
             is ContentFragState.DownloadData -> {
@@ -99,4 +135,5 @@ class ContentMviFrag : MviFrag<ContentFragState, ContentFragIntent>(){
             toast(state.errorMsg!!)
 //        state.isPreState= false
     }
+ */
 }

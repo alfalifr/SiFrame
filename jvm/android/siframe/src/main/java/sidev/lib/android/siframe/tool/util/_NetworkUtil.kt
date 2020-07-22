@@ -6,13 +6,12 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonRequest
 import com.android.volley.toolbox.StringRequest
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
-import sidev.lib.android.siframe.exception.NetworkExc
+import sidev.lib.universal.exception.NetworkExc
 import sidev.lib.universal.tool.util.ThreadUtil
 
 object _NetworkUtil{

@@ -3,13 +3,50 @@ package sidev.lib.implementation.intent_state.processor
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.implementation.intent_state.ContentFragIntent
-import sidev.lib.implementation.model.Content
-import sidev.lib.implementation.intent_state.ContentFragState
-import sidev.lib.implementation.util.Const
-import sidev.lib.universal.`fun`.new
+import sidev.lib.implementation.intent_state.*
+import sidev.lib.universal.exception.Exc
 
-class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
+class ContentFragStatePros(view: MviView<CFIntent, CFRes, CFState<*>>)
+    : StateProcessor<CFIntent, CFRes, CFState<*>>(view){
+    override fun processPreState(
+        intent: CFIntent,
+        additionalData: Map<String, Any>?
+    ): CFState<*>? {
+        return when(intent){
+            is ContentFragConf.Intent.DownloadData -> {
+                ContentFragConf.State.DownloadData(true)
+            }
+            is ContentFragConf.Intent.Login -> {
+                ContentFragConf.State.Login(true)
+            }
+        }
+    }
+
+    override fun processState(
+        intent: CFIntent,
+        result: CFRes?,
+        additionalData: Map<String, Any>?,
+        e: Exc?
+    ): CFState<*>? {
+        return when(intent){
+            is ContentFragConf.Intent.DownloadData -> {
+                ContentFragConf.State.DownloadData()
+            }
+            is ContentFragConf.Intent.Login -> {
+                val res= result as? ContentFragConf.Result.Login
+                loge("res?.isSuccess = ${res?.isSuccess}")
+                val msg= e?.message ?: res?.msg
+/*
+                    ?: if(res?.isSuccess == true) "Berhasil Login bro!!!"
+                    else "Gagal login"
+ */
+                ContentFragConf.State.Login(toastMsg = msg)
+            }
+        }
+    }
+}
+/*
+class ContentFragStatePros(view: MviView<ContentFragIntent, ContentFragResult, ContentFragState<*>>)
     : StateProcessor<ContentFragState, ContentFragIntent>(view){
     override fun processPreState(
         intent: ContentFragIntent,
@@ -96,3 +133,4 @@ class ContentFragStatePros(view: MviView<ContentFragState, ContentFragIntent>)
 
      */
 }
+ */

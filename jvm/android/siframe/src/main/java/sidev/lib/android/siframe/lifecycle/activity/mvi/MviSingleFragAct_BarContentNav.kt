@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.lifecycle.activity.mvi
 
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
+import sidev.lib.android.siframe.arch.intent_state.IntentResult
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
@@ -11,9 +12,9 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_BarContentNav
 
 //import sidev.kuliah.agradia.R
 
-abstract class MviSingleFragAct_BarContentNav<S: ViewState, I: ViewIntent>
-    : SingleFragAct_BarContentNav(), MviView<S, I>{
+abstract class MviSingleFragAct_BarContentNav<I: ViewIntent, R: IntentResult, S: ViewState<*>>
+    : SingleFragAct_BarContentNav(), MviView<I, R, S>{
     override var currentViewState: S?= null
 //    override var intentConverter: IntentConverter<I>?= null
-    abstract override fun initPresenter(): MviPresenter<S, I>?
+    abstract override fun initPresenter(): MviPresenter<I, R, S>?
 }

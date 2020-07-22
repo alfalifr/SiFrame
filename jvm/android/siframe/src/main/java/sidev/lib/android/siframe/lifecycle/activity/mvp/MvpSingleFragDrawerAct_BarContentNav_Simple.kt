@@ -7,6 +7,10 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragDrawerAct_BarConte
 open class MvpSingleFragDrawerAct_BarContentNav_Simple: SingleFragDrawerAct_BarContentNav_Simple(),
     MvpView {
     override fun initPresenter(): Presenter?= null
-    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
-    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
+
+    override fun onPresenterSucc(request: String, result: Int,
+        data: Map<String, Any>?, resCode: Int) {}
+
+    override fun onPresenterFail(request: String, result: Int?,
+        msg: String?, e: Exception?, resCode: Int) {}
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.arch._obj.InternalFiewModel
+import sidev.lib.android.siframe.arch.intent_state.IntentResult
 import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
@@ -16,8 +17,8 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.*
 import java.lang.Exception
 
-interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
-    InteractivePresenterDependent<MviPresenter<S, I>, I>,
+interface MviView<I: ViewIntent, R: IntentResult, S: ViewState<*>>: ArchView, Mvi,
+    InteractivePresenterDependent<I, MviPresenter<I, R, S>>,
     AutoRestoreViewClient,
     ExpirableBase {
     companion object{
@@ -28,8 +29,8 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
     }
     var currentViewState: S?
 ///    override var intentConverter: IntentConverter<I>?
-    override fun initPresenter(): MviPresenter<S, I>?
-    fun initStateProcessor(): StateProcessor<S, I>?
+    override fun initPresenter(): MviPresenter<I, R, S>?
+    fun initStateProcessor(): StateProcessor<I, R, S>?
 /*
     /**
      * Berguna jika programmer ingin memakai pendekatan MVI murni, yaitu pass intent
@@ -38,7 +39,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
     fun initIntentCoverter(presenter: Presenter): IntentConverter<I>? = null
  */
 
-    fun __initMviPresenter(): MviPresenter<S, I>?{
+    fun __initMviPresenter(): MviPresenter<I, R, S>?{
         return getVmData()
             ?: initPresenter().notNullTo { presenter ->
             initStateProcessor().notNull { stateProcessor ->
@@ -116,16 +117,16 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         }
     }
 
-    private fun getVmData(): MviPresenter<S, I>?{
+    private fun getVmData(): MviPresenter<I, R, S>?{
         // Prioritas Activity dulu. Jika ternyata null, baru Fragment.
         return (this.asNotNullTo { act: Activity -> act }
             ?: this.asNotNullTo { frag: Fragment -> frag.activity ?: frag})
             .asNotNullTo { view: ViewModelBase ->
                 view.getViewModel(InternalFiewModel::class.java)
             }.notNullTo { vm ->
-                vm.get<MviPresenter<S, I>>(KEY_VM_MVI_STATE_PRESENTER)
+                vm.get<MviPresenter<I, R, S>>(KEY_VM_MVI_STATE_PRESENTER)
                     .notNullTo { presenter ->
-                        presenter.value?.callback.asNotNull { sp: StateProcessor<S, I> ->
+                        presenter.value?.callback.asNotNull { sp: StateProcessor<I, R, S> ->
                             sp.view= this
 //                            intentConverter= sp.intentConverter aa
                         }
@@ -152,7 +153,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
      */
     fun restoreCurrentState(isInit: Boolean= false): Boolean{
         val isSuccess=
-            presenter?.callback.asNotNullTo { stateProcessor: StateProcessor<S, I> ->
+            presenter?.callback.asNotNullTo { stateProcessor: StateProcessor<I, R, S> ->
                 try{
                     stateProcessor.restoreCurrentState()
                     true
@@ -169,7 +170,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
 
     override fun registerAutoRestoreView(id: String, v: View) {
         loge("registerAutoRestoreView() mulai")
-        presenter?.callback.asNotNull { statePros: StateProcessor<*, *> ->
+        presenter?.callback.asNotNull { statePros: StateProcessor<I, R, S> ->
             loge("presenter?.callback as StateProcessor")
             statePros.registerAutoRestoreView(id, v)
         }
@@ -185,7 +186,7 @@ interface MviView<S: ViewState, I: ViewIntent>: ArchView, Mvi,
         val calnull= presenter?.callback == null
         loge("calnull= $calnull calname= $calname")
 
-        presenter?.callback.asNotNull { statePros: StateProcessor<*, *> ->
+        presenter?.callback.asNotNull { statePros: StateProcessor<I, R, S> ->
             loge("presenter?.callback as StateProcessor")
             statePros.extractAllViewContent()
         }

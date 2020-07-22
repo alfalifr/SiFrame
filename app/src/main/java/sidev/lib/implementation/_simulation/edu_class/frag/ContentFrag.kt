@@ -172,9 +172,14 @@ class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
             dialogWarning= dialog
     }
 
-    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {
+    override fun onPresenterSucc(
+        request: String,
+        result: Int,
+        data: Map<String, Any>?,
+        resCode: Int
+    ) {
         showPb(false)
-        when(reqCode){
+        when(request){
             Edu_Class_Const.REQ_GET_CONTENT -> {
                 if(resCode == Edu_Class_Const.RES_OK){
                     val data= data!![Edu_Class_Const.DATA_CONTENT] as ArrayList<Content>
@@ -199,7 +204,11 @@ class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
         }
     }
 
-    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
-
-    }
+    override fun onPresenterFail(
+        request: String,
+        result: Int?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int
+    ) {}
 }

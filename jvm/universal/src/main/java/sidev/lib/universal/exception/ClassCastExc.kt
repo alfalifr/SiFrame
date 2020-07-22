@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe.exception
+package sidev.lib.universal.exception
 
 open class ClassCastExc(
     relatedClass: Class<*>?= ClassCastExc::class.java,

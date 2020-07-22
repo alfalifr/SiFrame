@@ -5,7 +5,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 
 interface PresenterDependent: ExpirableBase { //P: ArchPresenterRoot, R, C: PresenterCallback<R>
 //    var callbackCtx: Context?
-    val presenter: ArchPresenter<*, *>?
+    val presenter: ArchPresenter<*, *, *>?
 /*
     @CallSuper
     fun downloadData(reqCode: String, vararg data: Pair<String, Any>) {
@@ -27,7 +27,7 @@ interface PresenterDependent: ExpirableBase { //P: ArchPresenterRoot, R, C: Pres
     }
  */
 
-    fun initPresenter(): ArchPresenter<*, *>? {
+    fun initPresenter(): ArchPresenter<*, *, *>? {
         return null
     }
 }

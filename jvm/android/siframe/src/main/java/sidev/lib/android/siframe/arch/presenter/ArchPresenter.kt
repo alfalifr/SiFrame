@@ -1,9 +1,10 @@
 package sidev.lib.android.siframe.arch.presenter
 
 import android.content.Context
+import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.type.Mvp
 import sidev.lib.android.siframe.arch.view.MvpView
-import sidev.lib.android.siframe.exception.DataIntegrityExc
+import sidev.lib.universal.exception.DataIntegrityExc
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
@@ -23,15 +24,18 @@ import java.lang.Exception
  * <3 Juli 2020> => Sementara, parameter T dan C belum memiliki pengaruh signifikan pada fitur.
  *                  Namun, parameter tersebut memungkinkan programmer untuk memiliki tipe data
  *                  yg digunakan sbg requestCode.
+ *
+ * [Req] adalah tipe data yg digunakan untuk mengirim request,
+ * [Res] adalah tipe data yg digunakan sebagai hasil respon dari [Req].
  */
-interface ArchPresenter<T, C: PresenterCallback<T>>: ExpirableLinkBase {
+interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLinkBase {
     enum class Direction{
         IN, OUT
     }
     override val expirable: ExpirableBase?
         get() = callback
     var callback: C?
-    val reqCode: T?
+    val reqCode: Req?
     /**
      * Diassert karena [ctx] digunakan hanya saat callback tidak sama dengan null.
      */
@@ -42,21 +46,21 @@ interface ArchPresenter<T, C: PresenterCallback<T>>: ExpirableLinkBase {
     /**
      * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest().
      */
-    fun processRequest(reqCode: T, data: Map<String, Any>?)
+    fun processRequest(request: Req, data: Map<String, Any>?)
 
     /**
      * Untuk mengecek integritas data yang didapat dari presenter.
      */
-    fun checkDataIntegrity(reqCode: T, direction: Direction, data: Map<String, Any>?): Boolean
+    fun checkDataIntegrity(request: Req, direction: Direction, data: Map<String, Any>?): Boolean
 
     /**
      * Semua instance PresenterCallback harus manggil ini kalo mau request ke presenter.
      */
-    fun postRequest(reqCode: T, data: Map<String, Any>?= null){
+    fun postRequest(request: Req, data: Map<String, Any>?= null){
 //        this.reqCode= reqCode
         doWhenLinkNotExpired {
-            if(checkDataIntegrity(reqCode, Direction.OUT, data))
-                processRequest(reqCode, data)
+            if(checkDataIntegrity(request, Direction.OUT, data))
+                processRequest(request, data)
             else
                 DataIntegrityExc(this::class.java, "Pengecekan keluar di presenter")
         }.isNull {
@@ -68,23 +72,27 @@ interface ArchPresenter<T, C: PresenterCallback<T>>: ExpirableLinkBase {
     }
 
     /**
-     * @param reqCode dapat digunakan untuk operasi presenter yg berbarengan sehingga this.reqCode dapat berganti sebelum
+     * @param request dapat digunakan untuk operasi presenter yg berbarengan sehingga this.reqCode dapat berganti sebelum
      *      dipass ke PresenterCallback
+     *
+     * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
+     * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
-    fun postSucc(resCode: Int, data: Map<String, Any>?, reqCode: T?= null){
+    fun postSucc(result: Res, data: Map<String, Any>?= null, resCode: Int= 0, request: Req?= null){
         doWhenLinkNotExpired {
-            val sentReqCode= reqCode ?: this.reqCode!!
+            val sentReqCode= request ?: this.reqCode!!
             if(checkDataIntegrity(sentReqCode, Direction.IN, data))
                 callback.asNotNull { c: MvpView ->
                     val innerSentReqCode= try{ sentReqCode as String }
-                        catch (e: ClassCastException){
-                            loge("reqCode bkn String, memanggil reqCode.toString()= $sentReqCode")
-                            sentReqCode.toString()
-                        }
-                    c.onPresenterRes(innerSentReqCode, resCode, data,
+                    catch (e: ClassCastException){
+                        loge("reqCode bkn String, memanggil reqCode.toString()= $sentReqCode")
+                        sentReqCode.toString()
+                    }
+//                    loge("sentReqCode= $sentReqCode result= $result")
+                    c.onPresenterRes(innerSentReqCode, result as? Int ?: resCode, data,
                         false, null, null)
-                }.asntNotNull<PresenterCallback<T>, MvpView> {
-                    callback!!.onPresenterSucc(sentReqCode, resCode, data)
+                }.asntNotNull<PresenterCallback<Req, Res>, MvpView> {
+                    callback!!.onPresenterSucc(sentReqCode, result, data, resCode)
                 }
             else
                 DataIntegrityExc(this::class.java, "Pengecekan masuk di presenter")
@@ -95,19 +103,24 @@ interface ArchPresenter<T, C: PresenterCallback<T>>: ExpirableLinkBase {
             callback= null
         }
     }
-    fun postFail(resCode: Int, msg: String?= null, e: Exception?= null, reqCode: T?= null){
+
+    /**
+     * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
+     * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
+     */
+    fun postFail(result: Res?= null, msg: String?= null, e: Exception?= null, resCode: Int= 0, request: Req?= null){
         doWhenLinkNotExpired {
-            val sentReqCode= reqCode ?: this.reqCode!!
+            val sentReqCode= request ?: this.reqCode!!
             callback.asNotNull { c: MvpView ->
                 val innerSentReqCode= try{ sentReqCode as String }
                     catch (e: ClassCastException){
                         loge("reqCode bkn String, memanggil reqCode.toString()= $sentReqCode")
                         sentReqCode.toString()
                     }
-                c.onPresenterRes(innerSentReqCode, resCode, null,
+                c.onPresenterRes(innerSentReqCode, result as? Int ?: resCode, null,
                     true, msg, e)
-            }.asntNotNull<PresenterCallback<T>, MvpView> {
-                callback!!.onPresenterFail(sentReqCode, resCode, msg, e)
+            }.asntNotNull<PresenterCallback<Req, Res>, MvpView> {
+                callback!!.onPresenterFail(sentReqCode, result, msg, e, resCode)
             }
         }.isNull {
             val clsName= this.classSimpleName()

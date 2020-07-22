@@ -9,7 +9,7 @@ import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.universal.exception.TypeExc
 import sidev.lib.android.siframe.intfc.listener.Listener
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger

@@ -4,20 +4,15 @@ import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
-import sidev.lib.android.siframe.arch.presenter.Presenter
-import sidev.lib.android.siframe.arch.presenter.PresenterCallback
-import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation._cob.contentList
-import sidev.lib.implementation.intent_state.ContentFragIntent
-import sidev.lib.implementation.intent_state.ContentFragState
-import sidev.lib.implementation.util.Const
+import sidev.lib.implementation.intent_state.*
 import sidev.lib.universal.`fun`.copyGrowTimely
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>?)
-    : MviPresenter<ContentFragState, ContentFragIntent>(c){
+class MviContentPresenter(c: StateProcessor<CFIntent, CFRes, CFState<*>>?)
+    : MviPresenter<CFIntent, CFRes, CFState<*>>(c){
     companion object{
         val REQ_GET_CONTENT= "get_content"
         val REQ_LOGIN= "login"
@@ -25,17 +20,17 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
     }
 
     override fun checkDataIntegrity(
-        reqCode: ContentFragIntent,
+        request: CFIntent,
         direction: ArchPresenter.Direction,
         data: Map<String, Any>?
     ): Boolean {
-        return when(reqCode){
+        return when(request){
             else -> true
         }
     }
 
-    override fun processRequest(reqCode: ContentFragIntent, additionalData: Map<String, Any>?) {
-        callAnnotatedViewIntentFun(reqCode)
+    override fun processRequest(request: CFIntent, additionalData: Map<String, Any>?) {
+        callAnnotatedViewIntentFun(request)
 /*
         when(reqCode){
             is ContentFragIntent.DownloadData /*REQ_GET_CONTENT*/ -> getContent()
@@ -67,25 +62,25 @@ class MviContentPresenter(c: StateProcessor<ContentFragState, ContentFragIntent>
         }
     }
  */
-    @ViewIntentFunction(ContentFragIntent.Login::class)
+    @ViewIntentFunction(ContentFragConf.Intent.Login::class)
     fun login(uname: String){
         ThreadUtil.delayRun(3000){
             if(uname == "uname")
-                postSucc(Const.RES_OK, null)
+                postSucc(ContentFragConf.Result.Login(true), null)
             else
-                postFail(0, "Uname != uname :( uname= $uname")
+                postSucc(ContentFragConf.Result.Login(false, "Uname != uname :( uname= $uname")) //"Uname != uname :( uname= $uname"
         }
         ThreadUtil.delayRun(5000){
-            postFail(0, "Error login bro dari presenter")
+            postFail(msg= "Error login bro dari presenter")
         }
     }
 
-    @ViewIntentFunction(ContentFragIntent.DownloadData::class)
+    @ViewIntentFunction(ContentFragConf.Intent.DownloadData::class)
     fun getContent(){
         loge("getContent()")
         ThreadUtil.delayRun(3000){
             loge("getContent() ThreadUtil.delayRun(3000)")
-            postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(10)))
+            postSucc(ContentFragConf.Result.DownloadData(contentList.toArrayList().copyGrowTimely(10) as ArrayList))
         }
 /*
         ThreadUtil.delayRun(5000){

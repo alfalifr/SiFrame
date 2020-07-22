@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe.exception
+package sidev.lib.universal.exception
 
 open class ResourceNotFoundExc(
     relatedClass: Class<*>?= ResourceNotFoundExc::class.java,

@@ -8,7 +8,7 @@ import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependentCom
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.arch.view.ArchView
-import sidev.lib.android.siframe.exception.RuntimeExc
+import sidev.lib.universal.exception.RuntimeExc
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
@@ -344,24 +344,30 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
         }
     }
 
+
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {
+    override fun onPresenterSucc(
+        request: String,
+        result: Int,
+        data: Map<String, Any>?,
+        resCode: Int
+    ) {
 //        val key= mReqKeyMap[reqCode]
-        val liveData= mData[reqCode]
+        val liveData= mData[request]
         try{ liveData!! }
         catch (e: KotlinNullPointerException){
-            throw RuntimeExc(detailMsg = "reqCode: \"$reqCode\" tidak memiliki lifeData atau sama dg null")
+            throw RuntimeExc(detailMsg = "reqCode: \"$request\" tidak memiliki lifeData atau sama dg null")
         }
 
-        mOwner[reqCode]!!.asNotNull { view: ArchView ->
+        mOwner[request]!!.asNotNull { view: ArchView ->
             view.isBusy= false
             view.busyOfWhat= InterruptableBase.DEFAULT_BUSY_OF_WHAT
             interruptable= view
-            mOwnerIsOnPreLoad[reqCode]= false
+            mOwnerIsOnPreLoad[request]= false
         }
 
-        onRepoRes(reqCode, resCode, data, liveData)
-        if(mDataIsTemporary[reqCode]!!)
+        onRepoRes(request, resCode, data, liveData)
+        if(mDataIsTemporary[request]!!)
             liveData.setValue(null, false)
 
         isBusy= false
@@ -370,20 +376,25 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
                 mData.remove(reqCode)
  */
     }
-
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
+    override fun onPresenterFail(
+        request: String,
+        result: Int?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int
+    ) {
 //        if(vmBase.lifecycle.currentState == Lifecycle.State.DESTROYED) return
-        val owner= mOwner[reqCode]!!
+        val owner= mOwner[request]!!
 
         owner.asNotNull { view: ArchView ->
             view.isBusy= false
             view.busyOfWhat= InterruptableBase.DEFAULT_BUSY_OF_WHAT
             interruptable= view
-            mOwnerIsOnPreLoad[reqCode]= false
+            mOwnerIsOnPreLoad[request]= false
         }
 
-        mData[reqCode].notNull { data ->
+        mData[request].notNull { data ->
             data.postOnFail(owner, resCode, msg, e)
 /*
             if(mIsDataTemporary[reqCode] == true)
@@ -393,6 +404,7 @@ abstract class ObsFiewModel(val vmBase: ViewModelBase)
 
         isBusy= false
     }
+
 
     override fun onInterruptedWhenBusy() {
         App.ctx.toast("sabar bro dari vm")

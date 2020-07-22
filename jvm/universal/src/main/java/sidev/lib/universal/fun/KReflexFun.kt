@@ -2,6 +2,7 @@ package sidev.lib.universal.`fun`
 
 import sidev.lib.universal.`val`.StringLiteral
 import sidev.lib.universal.annotation.Interface
+import sidev.lib.universal.annotation.renamedName
 import sidev.lib.universal.structure.collection.iterator.*
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import java.io.Serializable
@@ -59,7 +60,7 @@ val <T: Any> KClass<T>.leastParamConstructor: KFunction<T>
 val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
     get(){
         var constr= try{ constructors.first() }
-        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (konstruktor private)") }
+        catch (e: NoSuchElementException){ throw NoSuchElementException("Kelas \"$qualifiedName\" tidak punya konstruktor (interface)") }
         var minParamCount= constr.parameters.size
         //<20 Juli 2020> => Konstruktor dg jml param tersedikit belum tentu merupakan konstruktor dg jml param wajib paling sedikit.
         for(constrItr in constructors){
@@ -632,6 +633,23 @@ val KClass<*>.nestedImplementedPropertiesTree: NestedSequence<KProperty1<*, *>>
 Properties Tree - Value
 ==========================
  */
+/**
+ * Melakukan copy properti dari [source] ke [destination] yg memiliki nama dan tipe data yg sama.
+ *
+ * Fungsi ini berbeda [clone] karena hanya melakukan copy referential scr langsung tanpa melakukan
+ * instantiate. Operasi copy nilai hanya dilakukan pada permukaan.
+ */
+fun copySimilarProperty(source: Any, destination: Any){
+    for(valMap in source.implementedAccesiblePropertiesValueMapTree){
+        (destination.implementedAccesiblePropertiesValueMapTree.find {
+            it.first.renamedName == valMap.first.renamedName
+                    && it.first.returnType.classifier == valMap.first.returnType.classifier
+                    && it.first is KMutableProperty1<*, *>
+        }?.first as? KMutableProperty1<Any, Any?>)
+            ?.set(destination, valMap.second)
+    }
+}
+
 
 /** Mengambil semua properti berserta nilainya dari `this.extension` termasuk yg `private`. */
 val Any.implementedPropertiesValueMap: Sequence<Pair<KProperty1<*, *>, Any?>>
@@ -737,6 +755,26 @@ val Any.nestedImplementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<
         }
     }
 // */
+
+
+/** Sama dg [implementedPropertiesValueMapTree], namun tidak mengambil property yg `private`. */
+val Any.implementedAccesiblePropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>>
+    get()= object : Sequence<Pair<KProperty1<*, *>, Any?>>{
+        override fun iterator(): Iterator<Pair<KProperty1<*, *>, Any?>>
+                = object: Iterator<Pair<KProperty1<*, *>, Any?>>{
+            private val memberPropsItr=
+                this@implementedAccesiblePropertiesValueMapTree::class.memberProperties
+                    .asSequence().filterNot { it.isAbstract }.iterator()
+
+            override fun hasNext(): Boolean = memberPropsItr.hasNext()
+
+            override fun next(): Pair<KProperty1<*, *>, Any?> {
+                val prop= memberPropsItr.next()
+                val value= prop.getter.forcedCall(this@implementedAccesiblePropertiesValueMapTree)
+                return Pair(prop, value)
+            }
+        }
+    }
 
 
 

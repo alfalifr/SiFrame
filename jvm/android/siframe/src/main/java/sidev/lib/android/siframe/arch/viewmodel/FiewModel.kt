@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.arch.viewmodel
 import androidx.annotation.CallSuper
 import androidx.lifecycle.*
 import sidev.lib.android.siframe.arch.type.Mvvm
-import sidev.lib.android.siframe.exception.TypeExc
+import sidev.lib.universal.exception.TypeExc
 import sidev.lib.universal.`fun`.*
 
 /**

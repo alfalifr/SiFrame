@@ -16,8 +16,8 @@ import org.jetbrains.anko.layoutInflater
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
 //import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.android.siframe.exception.ClassCastExc
-import sidev.lib.android.siframe.exception.ParameterExc
+import sidev.lib.universal.exception.ClassCastExc
+import sidev.lib.universal.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.universal.`fun`.notNullTo

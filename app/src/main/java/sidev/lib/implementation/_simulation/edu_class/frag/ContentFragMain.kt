@@ -215,10 +215,15 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
         sideNavAdp.selectedPageInd= pos
     }
 
-    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {
+    override fun onPresenterSucc(
+        request: String,
+        result: Int,
+        data: Map<String, Any>?,
+        resCode: Int
+    ) {
         showVpPb(false)
         showSideNavPb(false)
-        when(reqCode){
+        when(request){
             Edu_Class_Const.REQ_GET_PAGE -> {
                 loge("onPresenterSucc() resCode == Const.RES_NO_PAGE => ${resCode == Edu_Class_Const.RES_NO_PAGE}")
                 if(resCode == Edu_Class_Const.RES_NO_PAGE)
@@ -250,10 +255,17 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
             }
         }
     }
-    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {
+
+    override fun onPresenterFail(
+        request: String,
+        result: Int?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int
+    ) {
         showVpPb(false)
         showSideNavPb(false)
-        when(reqCode){
+        when(request){
             Edu_Class_Const.REQ_GET_PAGE -> {
                 toast("Terjadi kesalahan download data page.\nHarap ulangi.")
                 showSideNavNoData(msg= Edu_Class_Const.MSG_LOAD_ERROR_PAGE)
@@ -261,4 +273,5 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
             else -> toast("Terjadi kesalahan.\nHarap ulangi halaman ini.")
         }
     }
+
 }

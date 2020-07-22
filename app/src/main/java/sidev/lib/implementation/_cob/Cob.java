@@ -17,8 +17,7 @@ import java.util.Set;
 
 import sidev.lib.android.siframe.adapter.RvAdp;
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent;
-import sidev.lib.implementation.intent_state.ContentFragIntent;
-import sidev.lib.implementation.intent_state.ContentFragState;
+import sidev.lib.implementation.intent_state.ContentFragConf;
 import sidev.lib.implementation.viewmodel.ContentVm;
 import sidev.lib.universal.fun.KReflexFunKt;
 //import sidev.lib.universal.fun.KReflexFunKt;
@@ -49,7 +48,7 @@ public class Cob {
 
         String[] aset= new String[set.size()];
         set.toArray(aset);
-        ContentFragIntent.DownloadData.INSTANCE.isResultTemporary();
+        ContentFragConf.Intent.DownloadData.INSTANCE.isResultTemporary();
         new ViewIntent(){
 
         };

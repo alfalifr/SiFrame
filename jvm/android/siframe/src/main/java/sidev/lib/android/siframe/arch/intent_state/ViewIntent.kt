@@ -15,11 +15,6 @@ import sidev.lib.universal.tool.util.StringUtil
  */
 //@Keep -> Dari proguard-rules.pro aja biar bisa nambah opsi ,allowoptimization,allowshrinking
 
-/**
- * <21 Juli 2020> => Untuk pengemebangan ke depannya. Digunakan untuk [ArchPresenter.postSucc] dan [ArchPresenter.postFail].
- */
-open class IntentResult: Mvi
-
 open class ViewIntent: Mvi{
     open val equivalentReqCode: String
         = StringUtil.toSnakeCase(this.classSimpleName(), true) //this.getSealedClassName(true)!!

@@ -3,13 +3,11 @@ package sidev.lib.universal.`fun`
 import sidev.lib.universal._cob.model.dum_transaction
 import sidev.lib.universal.annotation.AnnotatedFunctionClass
 import sidev.lib.universal.annotation.Rename
+import sidev.lib.universal.exception.Exc
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
 import kotlin.reflect.KClass
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.full.superclasses
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.internal.impl.descriptors.annotations.Annotated
 import kotlin.reflect.jvm.internal.impl.descriptors.annotations.AnnotationDescriptor
 
@@ -77,13 +75,13 @@ sealed class AB: AA(){
 annotation class FunAnot(val a: Int= 101)
 
 @Anotasi<Int, Char>
-class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
+abstract class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
     val ac= "ppop"
     private val acPriv= "aaa"
     override val a: Boolean
         get() = true
-    override val x: String
-        get() = "as"
+//    override val x: String
+//        get() = "as"
     var poin= Poin(1, 2)
     lateinit var poinLate: Poin //= Poin(1, 2)
 
@@ -113,11 +111,54 @@ class AD(val a: Int= 2, val b: Int= 15): AD_(a, 9){
     val aa: Int= 1
 }
 
+class Asal{
+    var a: Int= 10
+    var b= 0
+}
+class Tujuan{
+    val a: Int= 1
+    var b= "asad"
+}
 
+class NoConstr private constructor()
+
+@Suppress("UNREACHABLE_CODE")
 fun main(args: Array<String>){
+///*
+    println("\n============= BATAS Exc ==============\n")
+    val err = try{ "aad".toInt(); null }
+    catch (e: Exception){ e }
+    val exc= Exc(err?.message, err)
+    throw exc
+// */
+
+    println("\n============= BATAS memberProperties ==============\n")
+    val asal= Asal()
+    val tujuan= Tujuan()
+    copySimilarProperty(asal, tujuan)
+    prin("tujuan.a= ${tujuan.a} tujuan.b= ${tujuan.b}")
+    prin("A::class.constructors.size = ${A::class.constructors.size}")
+    prin("NoConstr::class.constructors.size = ${NoConstr::class.constructors.size}")
+
+    println("\n============= BATAS memberProperties ==============\n")
+    val ac= object: AC(Poin(y=10)){
+        override val x: String
+            get() = "AA"
+    }
+    for((i, prop) in ac::class.memberProperties.withIndex()){
+        prin("i= $i prop= $prop")
+    }
+    println("\n============= BATAS implementedAccesiblePropertiesValueMapTree ==============\n")
+    for((i, prop) in ac.implementedAccesiblePropertiesValueMapTree.withIndex()){
+        prin("i= $i prop= $prop")
+    }
+
+    println("\n============= BATAS implementedPropertiesValueMapTree ==============\n")
+    for((i, prop) in ac.implementedPropertiesValueMapTree.withIndex()){
+        prin("i= $i prop= $prop")
+    }
 
     println("\n============= BATAS Anotasi ==============\n")
-    val anoIns= AC(Poin(y=10))
     for((i, anotasi) in Anotasi::class.typeParameters.withIndex()){
         prin("i= $i anotasi= $anotasi")
         for((u, bound) in anotasi.upperBounds.withIndex()){
@@ -126,7 +167,7 @@ fun main(args: Array<String>){
     }
 
     val poin= Poin(y= 11)
-    anoIns.callAnnotatedFunctionWithParamContainer(FunAnot::class, poin){ it.a == 2 }
+    ac.callAnnotatedFunctionWithParamContainer(FunAnot::class, poin){ it.a == 2 }
 //    val aaaaa= Anotasi<Int, String>(1)
 
     val ano1= AC::class.findAnnotation<Anotasi<Int, *>>()
@@ -459,7 +500,10 @@ AD(a= 0)
 
     prin("\n\n transacClone.commodity?.name= ${transacClone.commodity?.name}")
  */
-    val oldAc= AC(Poin(1, 2))
+    val oldAc= object: AC(Poin(1, 2)){
+        override val x: String
+            get() = "adad"
+    }
     val newAc1= oldAc.clone()
     val newAc2= oldAc.clone(false)
 

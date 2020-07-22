@@ -107,7 +107,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
     //    override val vmStoreOwner: ViewModelStoreOwner= this
 //    override val lifecycleOwner: LifecycleOwner= this
 
-    final override var presenter: ArchPresenter<*, *>?= null
+    final override var presenter: ArchPresenter<*, *, *>?= null
     //    final override var presenter: Presenter?= null
 //    override var callbackCtx: Context?= this
 
@@ -201,11 +201,11 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     override fun ___initRootBase(vararg args: Any) {
         super<ViewModelBase>.___initRootBase(*args)
-        presenter= if(this is MviView<*, *>) __initMviPresenter() //as MviPresenter<ViewState, ViewIntent>
+        presenter= if(this is MviView<*, *, *>) __initMviPresenter() //as MviPresenter<ViewState, ViewIntent>
             else initPresenter()
         super<ActFragBase>.___initRootBase(*args)
 
-        if(this is MviView<*, *>)
+        if(this is MviView<*, *, *>)
             restoreCurrentState(true)
     }
 

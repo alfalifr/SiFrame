@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.lifecycle.activity.mvi
 
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
+import sidev.lib.android.siframe.arch.intent_state.IntentResult
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.intent_state.ViewState
@@ -18,10 +19,10 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
  * - Content (isi secara keseluruhan pada Activity),
  * - NavBar (bar yang ada di bawah Activity)
  */
-abstract class MviBarContentNavAct<S: ViewState, I: ViewIntent> : BarContentNavAct(), MviView<S, I>{
+abstract class MviBarContentNavAct<I: ViewIntent, R: IntentResult, S: ViewState<*>> : BarContentNavAct(), MviView<I, R, S>{
     override var currentViewState: S?= null
 //    override var intentConverter: IntentConverter<I>?= null
-    abstract override fun initPresenter(): MviPresenter<S, I>?
+    abstract override fun initPresenter(): MviPresenter<I, R, S>?
 }
 /*
 abstract class MviBarContentNavAct<S: State> : MviAct<S>(), InitActBarFun{
