@@ -23,9 +23,16 @@ class TransacAdp(c: Context) : RvAdp<Transaction, LinearLm>(c){
         override val compId: Int
             get() = R.id.comp_num_picker
 
-        override fun getDefaultInitNumber(dataPos: Int): Int
-            = this@TransacAdp.getDataAt(dataPos, false)?.sum
-            ?: super.getDefaultInitNumber(dataPos)
+        override var defaultLowerBorder: Int
+            get() = -1
+            set(value) {}
+
+        override fun getDefaultInitNumber(dataPos: Int, inputData: Transaction?): Int{
+            val dataTransac= inputData //this@TransacAdp.getDataAt(dataPos, false)
+            loge("getDefaultInitNumber dataPos= $dataPos inputData= $inputData dataTransac= $dataTransac")
+            Log.e("TransacAdp", "getDefaultInitNumber dataPos= $dataPos inputData= $inputData dataTransac= $dataTransac")
+            return dataTransac?.sum ?: -1
+        }
     }
     init{
         numPickerComp.setupWithRvAdapter(this)

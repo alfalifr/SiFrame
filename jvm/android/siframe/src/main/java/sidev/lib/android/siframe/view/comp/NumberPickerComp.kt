@@ -39,10 +39,10 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     var onNumberChangeListener: ((adpPos: Int, oldNumber: Int, newNumber: Int) -> Unit)?= null
 
     /** Dipanggil satu satu kali saat [initData] dipanggil untuk mengambil [NumberPickerData.number] yg awal. */
-    open fun getDefaultInitNumber(dataPos: Int): Int = defaultLowerBorder
+    open fun getDefaultInitNumber(dataPos: Int, inputData: I?): Int = defaultLowerBorder
 
     override fun initData(dataPos: Int, inputData: I?): NumberPickerData?
-        = NumberPickerData(getDefaultInitNumber(dataPos), defaultLowerBorder, defaultUpperBorder)
+        = NumberPickerData(getDefaultInitNumber(dataPos, inputData), defaultLowerBorder, defaultUpperBorder)
 
     override fun bindComponent(adpPos: Int, v: View,
                                valueBox: BoxedVal<NumberPickerData>,

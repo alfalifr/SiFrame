@@ -161,7 +161,9 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         else mAdditionalData.removeAt(dataPos)
     }
     fun getViewAt(dataPos: Int): View?= mView?.get(dataPos)
-    fun getInputDataAt(adpPos: Int): I?= try{ rvAdp?.getDataAt(adpPos) as? I } catch (e: ClassCastException){ null }
+    fun getInputDataAt(adpPos: Int, onlyShownItem: Boolean= true, isIndexProcessed: Boolean= false): I?
+            = try{ rvAdp?.getDataAt(adpPos, onlyShownItem, isIndexProcessed) as? I }
+            catch (e: ClassCastException){ null }
     /** Mengambil posisi sebenarnya dari data kesuluruhan yg terdapat pada [rvAdp]. */
     fun getDataPosition(adpPos: Int): Int{
         val positionFromAdp= rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
