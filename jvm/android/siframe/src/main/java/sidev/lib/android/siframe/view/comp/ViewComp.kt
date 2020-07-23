@@ -43,7 +43,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     abstract val viewLayoutId: Int
     private val mData= SparseArray<BoxedVal<D>>()
-    private val mAdditionalData: SparseArray<Any> by lazy{ SparseArray<Any>() }
+    private var mAdditionalData: SparseArray<Any>?= null //by lazy{ SparseArray<Any>() }
     /** Yg disimpan adalah view dg id [compId], atau view yg didapatkan dari [onBind] scr penuh jika [compId] tidak ditemukan. */
     private var mView: SparseArray<View>?= null
     open val isDataRecycled= false
@@ -97,7 +97,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     val savedDataCount: Int
         get()= mData.size()
     val savedAdditionalDataCount: Int
-        get()= mAdditionalData.size()
+        get()= mAdditionalData?.size() ?: 0
     val savedViewCount: Int
         get()= mView?.size() ?: 0
 
@@ -131,7 +131,9 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     }
     /** @param [skipNulls] true jika iterator yg dihasilkan tidak menampilkan data null pada [mData]. */
     fun additionalDataIterator(skipNulls: Boolean= true): Iterator<Any?>
-        = object: SkippableIteratorImpl<Any?>(mAdditionalData.iterator().toOtherIterator { it.second }){
+        = object: SkippableIteratorImpl<Any?>(
+        mAdditionalData?.iterator()?.toOtherIterator { it.second } ?: newIteratorSimple()
+    ){
         override fun skip(now: Any?): Boolean = now == null && skipNulls
     }
 /*
@@ -155,10 +157,13 @@ abstract class ViewComp<D, I>(val ctx: Context) {
  */
 
     fun getDataAt(dataPos: Int): D?= mData[dataPos]?.value
-    fun getAdditionalDataAt(dataPos: Int): Any?= mAdditionalData[dataPos]
+    fun getAdditionalDataAt(dataPos: Int): Any?= mAdditionalData?.get(dataPos)
     fun setAdditionalDataAt(dataPos: Int, additionalData: Any?){
-        if(additionalData != null) mAdditionalData[dataPos]= additionalData
-        else mAdditionalData.removeAt(dataPos)
+        if(additionalData != null) {
+            if(mAdditionalData == null)
+                mAdditionalData= SparseArray()
+            mAdditionalData!![dataPos]= additionalData
+        } else mAdditionalData?.removeAt(dataPos)
     }
     fun getViewAt(dataPos: Int): View?= mView?.get(dataPos)
     fun getInputDataAt(adpPos: Int, onlyShownItem: Boolean= true, isIndexProcessed: Boolean= false): I?
@@ -210,7 +215,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             valueBox.value= initData(dataPos, inputData)
             mData[dataPos]= valueBox
         }
-        val additionalData= mAdditionalData[dataPos]
+        val additionalData= mAdditionalData?.get(dataPos)
 
         /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
 //        if(isCompIdValid)
@@ -233,15 +238,15 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      */
     fun onRecycle(adpPos: Int, v: View){
         val dataPos= getDataPosition(adpPos)
-        val additionalData= mAdditionalData[dataPos]
+        val additionalData= mAdditionalData?.get(dataPos)
         if(isDataRecycled){
             mData[dataPos].notNull {
                 onDataRecycled(dataPos, it, additionalData)
                 mData.remove(dataPos, it)
             }
         }
-        if(isAdditionalDataRecycled)
-            mAdditionalData.remove(dataPos, additionalData)
+        if(additionalData != null && isAdditionalDataRecycled)
+            mAdditionalData?.remove(dataPos, additionalData)
         mView?.remove(dataPos, v)
     }
 

@@ -24,7 +24,7 @@ import sidev.lib.universal.`val`.Assignment
 open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
         get() = R.layout._sif_comp_number_picker
-//    override val isViewSaved: Boolean= false
+    override val isViewSaved: Boolean= true
 
     open val etNumberId: Int= _Config.ID_ET_NUMBER
     open val ivPlusId: Int= _Config.ID_IV_PLUS
