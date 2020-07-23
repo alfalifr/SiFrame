@@ -45,7 +45,9 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
         = NumberPickerData(getDefaultInitNumber(dataPos), defaultLowerBorder, defaultUpperBorder)
 
     override fun bindComponent(adpPos: Int, v: View,
-                               valueBox: BoxedVal<NumberPickerData>, inputData: I?) {
+                               valueBox: BoxedVal<NumberPickerData>,
+                               additionalData: Any?,
+                               inputData: I?) {
         val ivPlus= v.findViewById<ImageView>(ivPlusId)!!
         val ivMinus= v.findViewById<ImageView>(ivMinusId)!!
         val etNumber= v.findView(etNumberId) ?: v.findViewByType<ModEt>()!!

@@ -43,9 +43,12 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     abstract val viewLayoutId: Int
     private val mData= SparseArray<BoxedVal<D>>()
-    /** Yg disimpan adalah view dg id [compId], atau view yg data dari [onBind] scr penuh jika [compId] tidak ditemukan. */
+    private val mAdditionalData: SparseArray<Any> by lazy{ SparseArray<Any>() }
+    /** Yg disimpan adalah view dg id [compId], atau view yg didapatkan dari [onBind] scr penuh jika [compId] tidak ditemukan. */
     private var mView: SparseArray<View>?= null
     open val isDataRecycled= false
+    open val isAdditionalDataRecycled
+        get()= isDataRecycled
     open val isViewSaved= false
 
     /**
@@ -93,6 +96,8 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     val savedDataCount: Int
         get()= mData.size()
+    val savedAdditionalDataCount: Int
+        get()= mAdditionalData.size()
     val savedViewCount: Int
         get()= mView?.size() ?: 0
 
@@ -124,6 +129,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         = object: SkippableIteratorImpl<D?>(mData.iterator().toOtherIterator { it.second.value }){
         override fun skip(now: D?): Boolean = now == null && skipNulls
     }
+    /** @param [skipNulls] true jika iterator yg dihasilkan tidak menampilkan data null pada [mData]. */
+    fun additionalDataIterator(skipNulls: Boolean= true): Iterator<Any?>
+        = object: SkippableIteratorImpl<Any?>(mAdditionalData.iterator().toOtherIterator { it.second }){
+        override fun skip(now: Any?): Boolean = now == null && skipNulls
+    }
 /*
         = object: Iterator<D?>{
             private var innerIterator= mData.iterator()
@@ -145,6 +155,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
  */
 
     fun getDataAt(dataPos: Int): D?= mData[dataPos]?.value
+    fun getAdditionalDataAt(dataPos: Int): Any?= mAdditionalData[dataPos]
+    fun setAdditionalDataAt(dataPos: Int, additionalData: Any?){
+        if(additionalData != null) mAdditionalData[dataPos]= additionalData
+        else mAdditionalData.removeAt(dataPos)
+    }
     fun getViewAt(dataPos: Int): View?= mView?.get(dataPos)
     fun getInputDataAt(adpPos: Int): I?= try{ rvAdp?.getDataAt(adpPos) as? I } catch (e: ClassCastException){ null }
     /** Mengambil posisi sebenarnya dari data kesuluruhan yg terdapat pada [rvAdp]. */
@@ -190,6 +205,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             valueBox.value= initData(dataPos, inputData)
             mData[dataPos]= valueBox
         }
+        val additionalData= mAdditionalData[dataPos]
 
         /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
 //        if(isCompIdValid)
@@ -204,7 +220,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
         if(isEnabled != null)
             setComponentEnabled(adpPos, compView, isEnabled!!)
-        bindComponent(adpPos, compView, valueBox, inputData)
+        bindComponent(adpPos, compView, valueBox, additionalData, inputData)
     }
 
     /**
@@ -212,12 +228,15 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      */
     fun onRecycle(adpPos: Int, v: View){
         val dataPos= getDataPosition(adpPos)
+        val additionalData= mAdditionalData[dataPos]
         if(isDataRecycled){
             mData[dataPos].notNull {
-                onDataRecycled(dataPos, it)
+                onDataRecycled(dataPos, it, additionalData)
                 mData.remove(dataPos, it)
             }
         }
+        if(isAdditionalDataRecycled)
+            mAdditionalData.remove(dataPos, additionalData)
         mView?.remove(dataPos, v)
     }
 
@@ -248,8 +267,9 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     /**
      * Fungsi yg dipanggil saat [onRecycle] pada posisi [dataPos] dipanggil.
      * Param [dataPos] adalah posisi data yg sebenarnya yg terdapat pada [rvAdp].
+     * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
      */
-    open fun onDataRecycled(dataPos: Int, valueBox: BoxedVal<D>){}
+    open fun onDataRecycled(dataPos: Int, valueBox: BoxedVal<D>, additionalData: Any?){}
 
     /**
      * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
@@ -258,8 +278,9 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * @param valueBox adalah wadah untuk menyimpan data yg diambil dari
      *   input user pada view.
      * @param v adalah view hasil inflate dari [viewLayoutId].
+     * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
      */
-    abstract fun bindComponent(adpPos: Int, v: View, valueBox: BoxedVal<D>, inputData: I?)
+    abstract fun bindComponent(adpPos: Int, v: View, valueBox: BoxedVal<D>, additionalData: Any?, inputData: I?)
 
     /**
      * Fungsi yg digunakan untuk me-enabled atau tidak komponen view yg dikelola oleh kelas [ViewComp] ini.
