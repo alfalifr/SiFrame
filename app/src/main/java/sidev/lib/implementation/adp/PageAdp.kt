@@ -37,8 +37,8 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
 
     init{
         numberPicker.setupWithRvAdapter(this)
-        numberPicker.onNumberChangeListener= { pos, old, new ->
-            loge("pos= $pos oldNumber= $old new= $new")
+        numberPicker.onNumberChangeListener= { pos, old, new, assign ->
+            loge("pos= $pos oldNumber= $old new= $new assign= $assign")
         }
     }
 // */

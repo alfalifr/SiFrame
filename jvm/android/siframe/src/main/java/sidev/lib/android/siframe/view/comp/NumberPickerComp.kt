@@ -19,6 +19,7 @@ import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.`fun`.roundClosest
+import sidev.lib.universal.`val`.Assignment
 
 open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
@@ -36,7 +37,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     open var disabledColorId= _ColorRes.COLOR_DISABLED
     open var inBorderColorId= _ColorRes.COLOR_IMMUTABLE
 
-    var onNumberChangeListener: ((adpPos: Int, oldNumber: Int, newNumber: Int) -> Unit)?= null
+    var onNumberChangeListener: ((adpPos: Int, oldNumber: Int, newNumber: Int, assignment: Assignment) -> Unit)?= null
 
     /** Dipanggil satu satu kali saat [initData] dipanggil untuk mengambil [NumberPickerData.number] yg awal. */
     open fun getDefaultInitNumber(dataPos: Int, inputData: I?): Int = defaultLowerBorder
@@ -61,7 +62,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
         etNumber.inputType= InputType.TYPE_CLASS_NUMBER
         etNumber.hint= data.lowerBorder.toString()
         etNumber.addOnceTextChangedListener(object : TextWatcher{
-            var isInternalEdit= false
+            private var assignment= Assignment.INIT
+            private var isInternalEdit= false
             override fun afterTextChanged(s: Editable?) {
                 if(s?.isNotBlank() == true){
                     var num= s.toString().toInt()
@@ -89,13 +91,15 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                     }
                     val oldNumber= data.number
                     data.number= num
-                    onNumberChangeListener?.invoke(adpPos, oldNumber, num)
+                    onNumberChangeListener?.invoke(adpPos, oldNumber, num, assignment)
+                    assignment= Assignment.ASSIGN
                 } else{
                     val oldNumber= data.number
                     data.number= data.lowerBorder
                     _ViewUtil.setBgColorRes(ivMinus, inBorderColorId)
                     _ViewUtil.setBgColorRes(ivPlus, enabledColorId)
-                    onNumberChangeListener?.invoke(adpPos, oldNumber, data.number)
+                    onNumberChangeListener?.invoke(adpPos, oldNumber, data.number, assignment)
+                    assignment= Assignment.ASSIGN
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

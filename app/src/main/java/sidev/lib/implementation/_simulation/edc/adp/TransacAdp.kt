@@ -36,7 +36,7 @@ class TransacAdp(c: Context) : RvAdp<Transaction, LinearLm>(c){
     }
     init{
         numPickerComp.setupWithRvAdapter(this)
-        numPickerComp.onNumberChangeListener= { adpPos, oldNumber, newNumber ->
+        numPickerComp.onNumberChangeListener= { adpPos, oldNumber, newNumber, assignment ->
             val transac= numPickerComp.getInputDataAt(adpPos)
             transac?.sum= newNumber
             val comm= transac?.commodity
