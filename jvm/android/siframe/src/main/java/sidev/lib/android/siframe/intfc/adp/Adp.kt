@@ -9,7 +9,7 @@ import android.widget.Adapter
  * Interface dasar yg menunjukan bahwa suatu kelas adalah Adapter pada framework ini.
  */
 interface Adp{
-    fun isEmpty(): Boolean= getItemCount() == 0
+    fun isEmpty(): Boolean= getItemCount() <= 0
 //    fun getView(position: Int, convertView: View?, parent: ViewGroup?): View
     fun getView(pos: Int): View?
     fun getItem(pos: Int): Any?

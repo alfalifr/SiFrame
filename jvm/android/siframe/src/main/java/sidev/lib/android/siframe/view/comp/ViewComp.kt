@@ -163,10 +163,13 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     fun getViewAt(dataPos: Int): View?= mView?.get(dataPos)
     fun getInputDataAt(adpPos: Int): I?= try{ rvAdp?.getDataAt(adpPos) as? I } catch (e: ClassCastException){ null }
     /** Mengambil posisi sebenarnya dari data kesuluruhan yg terdapat pada [rvAdp]. */
-    fun getDataPosition(adpPos: Int): Int
-        = rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
-        ?: rvAdp?.getDataIndex(adpPos)
-        ?: adpPos
+    fun getDataPosition(adpPos: Int): Int{
+        val positionFromAdp= rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
+            ?: rvAdp?.getDataIndex(adpPos)
+            ?: adpPos
+        return if(positionFromAdp >= 0) positionFromAdp
+        else adpPos
+    }
 
     /**
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].

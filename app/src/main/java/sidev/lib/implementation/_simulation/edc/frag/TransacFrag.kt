@@ -99,7 +99,7 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
                 iv.setOnClickListener { popup.show() }
             }
         }
-        val transList= dum_transaction.copyGrowExponentially(4) //dum_transaction.toArrayList()
+        val transList= dum_transaction.toArrayList() //.copyGrowIncremental(4) //dum_transaction.toArrayList()
         rvAdp.dataList= transList as ArrayList
         timeEnd= System.currentTimeMillis()
         timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()

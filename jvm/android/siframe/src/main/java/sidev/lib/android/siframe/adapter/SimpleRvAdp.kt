@@ -234,12 +234,15 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      * bergeser / berkurang 1 dari indeks normal.
      *
      * @return indeks untuk [dataList].
-     *   Null jika [SimpleRvAdp] ini punya footer ([hasFooter] == true) dan [adpPos] == [getItemCount] -1.
+     *   Null jika [SimpleRvAdp] ini punya footer ([hasFooter] == true) dan [adpPos] == [getItemCount] -1
+     *   atau [adpPos] di luar indeks yg tersedia.
      */
     fun getDataIndex(adpPos: Int): Int?{
-        return if(adpPos == itemCount-1 && footerView != null) null
-        else if(headerView != null) adpPos -1
-        else adpPos
+        return if(adpPos in 0 until itemCount){
+            if(adpPos == itemCount-1 && footerView != null) null
+            else if(headerView != null) adpPos -1
+            else adpPos
+        } else null
     }
 
     //    override fun hasStableIds() = super<RecyclerView.Adapter>.hasStableIds()
@@ -568,10 +571,22 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     override fun getView(pos: Int): View?
         = rv?.layoutManager?.findViewByPosition(pos)
 
-
-    open fun getDataAt(pos: Int, onlyShownItem: Boolean= true): D?{
-        return try{ dataList?.get(getDataIndex(pos)!!) }
-        catch (e: KotlinNullPointerException){ null }
+    /**
+     * Digunakan untuk mengambil data yg akan ditampilkan pada [SimpleRvAdp] ini.
+     * Scr default, data yg diambil berasal dari [dataList], namun programmer dapat mendefinisikan
+     * sendiri dari mana data pada adapter ini diambil.
+     *
+     * Param [onlyShownItem] -> `true` jika data yg diambil hanya yg ditampilkan pada adapter,
+     *   -> `false` jika data yg diambil merupakan [dataList] scr utuh beserta data yg tidak ditampilkan.
+     * Param [isIndexProcessed] -> `true` maka [pos] tidak diproses lagi dan langsung digunakan untuk
+     *   mengambil data langsung dari [dataList],
+     *   -> `false` jika [pos] perlu diproses lagi agar dapat digunakan untuk mengambil data dari [dataList].
+     */
+    open fun getDataAt(pos: Int, onlyShownItem: Boolean= true, isIndexProcessed: Boolean= false): D?{
+        return if(!isIndexProcessed){
+            try{ dataList?.get(getDataIndex(pos)!!) }
+            catch (e: KotlinNullPointerException){ null }
+        } else dataList?.get(pos)
     }
 
 /*

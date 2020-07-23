@@ -50,6 +50,15 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             onUpdateDataListener?.onUpdateData(copiedList, -1, DataUpdateKind.SET)
 //            notifyDataSetChanged_()
         }
+    /**
+     * Berguna saat [dataList] tidak dipakai namun, programmer tetap ingin menunjukan
+     * bahwa rvAdp ini memiliki data yg lain.
+     *
+     * Properti ini dipakai oleh [RvAdpContentArranger] sbg definisi jml data scr utuh
+     * saat dilakukan [RvAdpContentArranger.reset].
+     */
+    open val dataListCount: Int
+        get()= dataList?.size ?: 0
 
     private var contentArranger= RvAdpContentArranger<D>()
 /*
@@ -287,6 +296,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      * yg dilakukan oleh [contentArranger].
      *
      * @param adpPos merupakan index itemView yg ditampilkan di adapter, bkn index dari {@link #dataList}.
+     *
+     * @return posisi index sebenarnya dari [dataList], -1 jika ternyata [adpPos]
      */
     fun getDataShownIndex(adpPos: Int): Int?{
         try{
@@ -540,20 +551,21 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     protected fun getDataAtProcessedIndex(pos: Int): D?{
         return try{ dataList?.get(pos) } catch (e: Exception){ null }
     }
-    override fun getDataAt(pos: Int, onlyShownItem: Boolean): D?{
-        return if(pos in 0 until itemCount) //(dataList?.size ?: 0))
-            try{
-                dataList?.get(
-                    getDataProcessedIndex(pos, onlyShownItem)!!
+    override fun getDataAt(pos: Int, onlyShownItem: Boolean, isIndexProcessed: Boolean): D?{
+        return if(!isIndexProcessed){
+            if(pos in 0 until itemCount) //(dataList?.size ?: 0))
+                try{
+                    dataList?.get(
+                        getDataProcessedIndex(pos, onlyShownItem)!!
 /*
                     <14 Juli 2020> => Definisi lama.
                     if(!onlyShownItem) getDataIndex(pos)!!
                     else getDataShownIndex(pos)!!
  */
-                )
-            } catch (e: Exception){ null }
-        else
-            null
+                    )
+                } catch (e: Exception){ null }
+            else null
+        } else dataList?.get(pos)
     }
 
     fun getSelectedData(): List<D>?{
