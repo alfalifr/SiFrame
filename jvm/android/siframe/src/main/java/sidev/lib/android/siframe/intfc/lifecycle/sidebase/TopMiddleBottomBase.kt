@@ -49,7 +49,10 @@ interface TopMiddleBottomBase: LifecycleSideBase {
         bottomContainer= try{ layoutView.findViewById(bottomContainerId) } catch (e: Exception){ null }
 
         val c= layoutView.context
-        if(topContainer != null){
+        val isTopLayoutNestedInRv=
+            this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isTopContainerNestedInRv }
+                ?: false
+        if(topContainer != null && !isTopLayoutNestedInRv){
             c.inflate(topLayoutId, topContainer as ViewGroup)
                 .notNull { v ->
                     (topContainer as ViewGroup).addView(v)
@@ -89,7 +92,10 @@ interface TopMiddleBottomBase: LifecycleSideBase {
          * maka [bottomViewHasBeenAdded] jadi false.
          */
  */
-        if(bottomContainer != null){
+        val isBottomLayoutNestedInRv=
+            this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isBottomContainerNestedInRv }
+                ?: false
+        if(bottomContainer != null && !isBottomLayoutNestedInRv){
             c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
                 .notNull { v ->
                     (bottomContainer as ViewGroup).addView(v)

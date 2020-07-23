@@ -5,6 +5,6 @@ import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.view.MvpView
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 
-abstract class MvpRvFrag<R: SimpleRvAdp<*, *>> : RvFrag<R>(), MvpView {
+abstract class MvpRvFrag<Adp: SimpleRvAdp<*, *>> : RvFrag<Adp>(), MvpView {
     abstract override fun initPresenter(): Presenter?
 }

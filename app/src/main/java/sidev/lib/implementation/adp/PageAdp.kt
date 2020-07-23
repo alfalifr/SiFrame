@@ -27,10 +27,10 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
     override val compId: Int
         get() = R.id.comp_num_picker
 
-    override fun initData(position: Int, inputData: Page?): NumberPickerData?{
+    override fun initData(dataPos: Int, inputData: Page?): NumberPickerData?{
             val no= inputData!!.no %6
-            val lowerBorder= if(position == 2) 0 else (inputData.no +1) %3
-            val upperBorder= if(position == 2) 0 else inputData.no +2
+            val lowerBorder= if(dataPos == 2) 0 else (inputData.no +1) %3
+            val upperBorder= if(dataPos == 2) 0 else inputData.no +2
             return NumberPickerData(no, lowerBorder, upperBorder)
         }
     }

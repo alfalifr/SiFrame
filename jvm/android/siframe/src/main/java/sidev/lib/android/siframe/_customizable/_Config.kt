@@ -122,6 +122,7 @@ object _Config {
     var ID_LL_BAR_ACT_CONTAINER= R.id.ll_bar_act_container
     var ID_LL_BAR_NAV_CONTAINER= R.id.bnv_bar_nav_container
     var ID_LL_SEARCH_CONTAINER_OUTER= R.id.ll_search_container_outer
+    var ID_LL_RV_CONTAINER= R.id.ll_rv_container
 
     var DRAW_IC_WARNING= R.drawable.ic_warning
     var DRAW_SHAPE_BORDER_ROUND= R.drawable.shape_border_round

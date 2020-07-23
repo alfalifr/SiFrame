@@ -411,8 +411,8 @@ AD(a= 0)
     lazySeq + "Halo" + "Bro"
     lazySeq + strSeq + strSeq2
 ///*
-    val containsAku= lazySeq.contains("Aku")
-    val containsKamu= lazySeq.contains("Kamu")
+    val containsAku= "Aku" in lazySeq //.contains("Aku")
+    val containsKamu= "Kamu" in lazySeq //.contains("Kamu")
     val indexMau= lazySeq.indexOf("Mau")
     val indexKamu= lazySeq.indexOf("Kamu")
     val ke4= lazySeq[4]

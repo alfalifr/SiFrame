@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
+import kotlinx.android.synthetic.main.bar_top_utility.view.*
 import kotlinx.android.synthetic.main.comp_performance_bar.view.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
@@ -31,6 +32,8 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
     override var middleContainer: View?= null
     override var bottomContainer: View?= null
 
+    override val topLayoutId: Int
+        get() = R.layout.bar_top_utility
     override val bottomLayoutId: Int
         get() = R.layout.comp_performance_bar
     override val isBottomContainerNestedInRv: Boolean
@@ -96,13 +99,13 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
                 iv.setOnClickListener { popup.show() }
             }
         }
-        val transList= dum_transaction.copyGrowIncremental(3) //dum_transaction.toArrayList()
+        val transList= dum_transaction.copyGrowExponentially(4) //dum_transaction.toArrayList()
         rvAdp.dataList= transList as ArrayList
         timeEnd= System.currentTimeMillis()
         timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
         totalData.value= rvAdp.dataList?.size ?: 0
         shownData.value= rvAdp.itemCount
-
+/*
         inflate(R.layout._sif_comp_btn_action).asNotNull { btn: Button ->
             layoutView.asNotNull { vg: ViewGroup -> vg.addView(btn) }
             btn.text= "Tambah data"
@@ -120,11 +123,22 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
                 loge("TransacFrag newData.commodity?.name= ${newData.commodity?.name} oldData.commodity?.name= ${oldData.commodity?.name} transList.size= ${transList.size}")
             }
         }
+ */
 
         loge("Current elapsed time= $timeElapsed sec")
     }
 
-    override fun _initTopView(topView: View) {}
+    override fun _initTopView(topView: View) {
+        loge("TransacFrag _initTopView()")
+        topView.btn.asNotNull { btn: Button ->
+            btn.text= "Print All Num Comp"
+            btn.setOnClickListener {
+                for((i, data) in rvAdp.numPickerComp.dataIterator().withIndex()){
+                    loge("Transac i= $i data= $data")
+                }
+            }
+        }
+    }
     override fun _initMiddleView(middleView: View) {}
 
     override fun _initBottomView(bottomView: View) {

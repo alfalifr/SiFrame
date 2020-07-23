@@ -19,7 +19,8 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
  * - Content (isi secara keseluruhan pada Activity),
  * - NavBar (bar yang ada di bawah Activity)
  */
-abstract class MviBarContentNavAct<I: ViewIntent, R: IntentResult, S: ViewState<*>> : BarContentNavAct(), MviView<I, R, S>{
+abstract class MviBarContentNavAct<I: ViewIntent, R: IntentResult, S: ViewState<*>>
+    : BarContentNavAct(), MviView<I, R, S>{
     override var currentViewState: S?= null
 //    override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): MviPresenter<I, R, S>?

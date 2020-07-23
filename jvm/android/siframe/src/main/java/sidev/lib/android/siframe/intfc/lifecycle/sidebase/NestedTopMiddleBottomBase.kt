@@ -110,5 +110,6 @@ interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{
 
             if(msg != null) loge(msg!!)
         }
+        super.__initTopMiddleBottomView(layoutView)
     }
 }

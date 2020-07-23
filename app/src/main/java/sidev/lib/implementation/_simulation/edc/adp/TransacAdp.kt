@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.comp_item_list_text_left_3_right_2.view.*
-import org.jetbrains.anko.startActivity
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
+import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.view.comp.NumberPickerComp
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edc.model.Transaction
 import sidev.lib.implementation._simulation.edc.util.Edc_Config
@@ -19,6 +19,28 @@ class TransacAdp(c: Context) : RvAdp<Transaction, LinearLm>(c){
     override val itemLayoutId: Int
         get() = R.layout.comp_item_list_text_left_3_right_2
 
+    val numPickerComp= object: NumberPickerComp<Transaction>(ctx){
+        override val compId: Int
+            get() = R.id.comp_num_picker
+
+        override fun getDefaultInitNumber(dataPos: Int): Int
+            = this@TransacAdp.getDataAt(dataPos, false)?.sum
+            ?: super.getDefaultInitNumber(dataPos)
+    }
+    init{
+        numPickerComp.setupWithRvAdapter(this)
+        numPickerComp.onNumberChangeListener= { adpPos, oldNumber, newNumber ->
+            val transac= numPickerComp.getInputDataAt(adpPos)
+            transac?.sum= newNumber
+            val comm= transac?.commodity
+
+            val priceStr= "Rp. ${Edc_Util.convertToFormattedValue(comm!!.price!! * newNumber.toLong())}"
+            val priceSumStr= "$priceStr / $newNumber unit"
+            getView(adpPos)?.tv_desc_2?.text= priceSumStr
+
+            loge("numPickerComp.onNumberChangeListener adpPos $adpPos oldNumber= $oldNumber newNumber= $newNumber")
+        }
+    }
 
     val BELI= Edc_Config.STR_BELI
     val JUAL= Edc_Config.STR_JUAL

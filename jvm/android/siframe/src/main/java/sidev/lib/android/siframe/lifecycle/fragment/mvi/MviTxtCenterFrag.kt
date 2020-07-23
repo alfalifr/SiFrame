@@ -10,7 +10,8 @@ import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.lifecycle.fragment.TxtCenterFrag
 
-abstract class MviTxtCenterFrag<I: ViewIntent, R: IntentResult, S: ViewState<*>> : TxtCenterFrag(), MviView<I, R, S>{
+abstract class MviTxtCenterFrag<I: ViewIntent, R: IntentResult, S: ViewState<*>>
+    : TxtCenterFrag(), MviView<I, R, S>{
     override var currentViewState: S?= null
 //    override var intentConverter: IntentConverter<I>?= null
     abstract override fun initPresenter(): MviPresenter<I, R, S>?

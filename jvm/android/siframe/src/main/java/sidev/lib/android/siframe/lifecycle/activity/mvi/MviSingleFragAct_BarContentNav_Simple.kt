@@ -9,8 +9,8 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_BarContentNav_
 
 //import sidev.kuliah.agradia.R
 
-open class MviSingleFragAct_BarContentNav_Simple: SingleFragAct_BarContentNav_Simple(),
-    MviView<ViewIntent, IntentResult, ViewState<*>>{
+open class MviSingleFragAct_BarContentNav_Simple
+    : SingleFragAct_BarContentNav_Simple(), MviView<ViewIntent, IntentResult, ViewState<*>>{
     override var currentViewState: ViewState<*>?= null
 //    override var intentConverter: IntentConverter<ViewIntent>?= null
     override fun initPresenter(): MviPresenter<ViewIntent, IntentResult, ViewState<*>>?= null

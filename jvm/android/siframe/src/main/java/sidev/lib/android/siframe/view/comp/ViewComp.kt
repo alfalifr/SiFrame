@@ -9,6 +9,7 @@ import androidx.core.util.remove
 import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.universal.structure.data.BoxedVal
 import sidev.lib.universal.exception.ResourceNotFoundExc
@@ -95,7 +96,8 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     val savedViewCount: Int
         get()= mView?.size() ?: 0
 
-    private var rvAdp: SimpleRvAdp<*, *>?= null
+    protected var rvAdp: SimpleRvAdp<*, *>?= null
+        private set //set lewat [setupWithRvAdapter].
     private var onBindViewListener: ((SimpleRvAdp<*, *>.SimpleViewHolder, Int, Any?) -> Unit)?= null
     private var onViewRecycledListener: ((SimpleRvAdp<*, *>.SimpleViewHolder) -> Unit)?= null
     /**
@@ -117,9 +119,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     }
  */
 
-    /**
-     * @param skipNulls true jika data pada [mData] tidak akan di
-     */
+    /** @param [skipNulls] true jika iterator yg dihasilkan tidak menampilkan data null pada [mData]. */
     fun dataIterator(skipNulls: Boolean= true): Iterator<D?>
         = object: SkippableIteratorImpl<D?>(mData.iterator().toOtherIterator { it.second.value }){
         override fun skip(now: D?): Boolean = now == null && skipNulls
@@ -144,8 +144,14 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         }
  */
 
-    fun getDataAt(pos: Int): D?= mData[pos]?.value
-    fun getViewAt(pos: Int): View?= mView?.get(pos)
+    fun getDataAt(dataPos: Int): D?= mData[dataPos]?.value
+    fun getViewAt(dataPos: Int): View?= mView?.get(dataPos)
+    fun getInputDataAt(adpPos: Int): I?= try{ rvAdp?.getDataAt(adpPos) as? I } catch (e: ClassCastException){ null }
+    /** Mengambil posisi sebenarnya dari data kesuluruhan yg terdapat pada [rvAdp]. */
+    fun getDataPosition(adpPos: Int): Int
+        = rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
+        ?: rvAdp?.getDataIndex(adpPos)
+        ?: adpPos
 
     /**
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].
@@ -173,14 +179,16 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     /**
      * Fungsi yg dipanggil saat sebuah [ViewComp] ditampilkan ke layar.
+     * Param [adpPos] adalah posisi yg ditampilkan pada [rvAdp], bkn posisi data keseluruhan yg sebenarnya.
      */
-    fun onBind(position: Int, v: View, inputData: I?){
-        var valueBox= mData[position]
+    fun onBind(adpPos: Int, v: View, inputData: I?){
+        val dataPos= getDataPosition(adpPos)
+        var valueBox= mData[dataPos]
 
         if(valueBox == null){
             valueBox= BoxedVal()
-            valueBox.value= initData(position, inputData)
-            mData[position]= valueBox
+            valueBox.value= initData(dataPos, inputData)
+            mData[dataPos]= valueBox
         }
 
         /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
@@ -191,52 +199,57 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
         if(isViewSaved){
             if(mView == null) mView= SparseArray()
-            mView!![position]= compView //v.findView(compId) ?: v
+            mView!![dataPos]= compView //v.findView(compId) ?: v
         }
 
         if(isEnabled != null)
-            setComponentEnabled(position, compView, isEnabled!!)
-        bindComponent(position, compView, valueBox, inputData)
+            setComponentEnabled(adpPos, compView, isEnabled!!)
+        bindComponent(adpPos, compView, valueBox, inputData)
     }
 
     /**
      * Fungsi yg dipanggil saat sebuah [ViewComp] dihancurkan.
      */
-    fun onRecycle(position: Int, v: View){
+    fun onRecycle(adpPos: Int, v: View){
+        val dataPos= getDataPosition(adpPos)
         if(isDataRecycled){
-            mData[position].notNull {
-                onDataRecycled(position, it)
-                mData.remove(position, it)
+            mData[dataPos].notNull {
+                onDataRecycled(dataPos, it)
+                mData.remove(dataPos, it)
             }
         }
-        mView?.remove(position, v)
+        mView?.remove(dataPos, v)
     }
 
     /**
-     * Digunakan untuk mendapat view dari layout [viewLayoutId] untuk posisi [position].
+     * Digunakan untuk mendapat view dari layout [viewLayoutId] untuk posisi [adpPos].
      * Fungsi ini juga akan melakukan pemanggilan fungsi [onBind].
+     * Param [adpPos] adalah posisi yg ditampilkan pada adapter, dalam konteks ini [rvAdp].
      */
-    fun inflateView(position: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View{
+    fun inflateView(adpPos: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View{
         val v= ctx.inflate(viewLayoutId, vg, attachToRoot)
             ?: throw ResourceNotFoundExc(resourceName = "viewLayoutId", msg = "Tidak dapat menginflate view")
 
-        onBind(position, v, null)
+        onBind(adpPos, v, null)
 
         return v
     }
 
     /**
-     * Fungsi yg dipanggil saat [onBind] pada posisi [position] dan kebetulan
-     * pada posisi [position] tidak ada data di dalam [mData]. Jika ternyata bind dilakukan
-     * saat sudah terdapat data pada [mData] pada posisi [position], maka fungsi ini
+     * Fungsi yg dipanggil saat [onBind] pada posisi [dataPos] dan kebetulan
+     * pada posisi [dataPos] tidak ada data di dalam [mData]. Jika ternyata bind dilakukan
+     * saat sudah terdapat data pada [mData] pada posisi [dataPos], maka fungsi ini
      * tidak dipanggil.
+     *
+     * Param [dataPos] adalah posisi data yg sebenarnya yg terdapat pada [rvAdp].
      */
-    abstract fun initData(position: Int, inputData: I?): D? //, valueBox: BoxedVal<D?>)
+    abstract fun initData(dataPos: Int, inputData: I?): D? //, valueBox: BoxedVal<D?>)
 
     /**
-     * Fungsi yg dipanggil saat [onRecycle] pada posisi [position] dipanggil.
+     * Fungsi yg dipanggil saat [onRecycle] pada posisi [dataPos] dipanggil.
+     * Param [dataPos] adalah posisi data yg sebenarnya yg terdapat pada [rvAdp].
      */
-    open fun onDataRecycled(position: Int, valueBox: BoxedVal<D>){}
+    open fun onDataRecycled(dataPos: Int, valueBox: BoxedVal<D>){}
 
     /**
      * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
@@ -246,7 +259,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      *   input user pada view.
      * @param v adalah view hasil inflate dari [viewLayoutId].
      */
-    abstract fun bindComponent(position: Int, v: View, valueBox: BoxedVal<D>, inputData: I?)
+    abstract fun bindComponent(adpPos: Int, v: View, valueBox: BoxedVal<D>, inputData: I?)
 
     /**
      * Fungsi yg digunakan untuk me-enabled atau tidak komponen view yg dikelola oleh kelas [ViewComp] ini.
@@ -254,7 +267,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      *
      * Komponen view didapat dari parameter [v] atau jika null, maka didapat dari fungsi [getViewAt].
      */
-    open fun setComponentEnabled(position: Int, v: View?= null, enable: Boolean= true){}
+    open fun setComponentEnabled(adpPos: Int, v: View?= null, enable: Boolean= true){}
 /*
     fun iterateSavedView(iterator: (View) -> Unit){
         if(mView != null)

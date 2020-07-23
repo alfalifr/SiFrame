@@ -90,6 +90,14 @@
                 android:textSize="@dimen/txt_sm"
                 android:textColor="@color/hitam"/>
 
+        <include
+            android:id="@+id/comp_num_picker"
+            layout="@layout/_sif_comp_number_picker"
+            android:layout_below="@id/tv_desc_2"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

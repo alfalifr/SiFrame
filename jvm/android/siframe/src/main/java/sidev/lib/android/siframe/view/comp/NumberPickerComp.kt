@@ -23,7 +23,7 @@ import sidev.lib.universal.`fun`.roundClosest
 open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
         get() = R.layout._sif_comp_number_picker
-    override val isViewSaved: Boolean= true
+//    override val isViewSaved: Boolean= false
 
     open val etNumberId: Int= _Config.ID_ET_NUMBER
     open val ivPlusId: Int= _Config.ID_IV_PLUS
@@ -36,13 +36,15 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     open var disabledColorId= _ColorRes.COLOR_DISABLED
     open var inBorderColorId= _ColorRes.COLOR_IMMUTABLE
 
-    var onNumberChangeListener: ((position: Int, oldNumber: Int, newNumber: Int) -> Unit)?= null
+    var onNumberChangeListener: ((adpPos: Int, oldNumber: Int, newNumber: Int) -> Unit)?= null
 
+    /** Dipanggil satu satu kali saat [initData] dipanggil untuk mengambil [NumberPickerData.number] yg awal. */
+    open fun getDefaultInitNumber(dataPos: Int): Int = defaultLowerBorder
 
-    override fun initData(position: Int, inputData: I?): NumberPickerData?
-        = NumberPickerData(defaultLowerBorder, defaultLowerBorder, defaultUpperBorder)
+    override fun initData(dataPos: Int, inputData: I?): NumberPickerData?
+        = NumberPickerData(getDefaultInitNumber(dataPos), defaultLowerBorder, defaultUpperBorder)
 
-    override fun bindComponent(position: Int, v: View,
+    override fun bindComponent(adpPos: Int, v: View,
                                valueBox: BoxedVal<NumberPickerData>, inputData: I?) {
         val ivPlus= v.findViewById<ImageView>(ivPlusId)!!
         val ivMinus= v.findViewById<ImageView>(ivMinusId)!!
@@ -85,13 +87,13 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                     }
                     val oldNumber= data.number
                     data.number= num
-                    onNumberChangeListener?.invoke(position, oldNumber, num)
+                    onNumberChangeListener?.invoke(adpPos, oldNumber, num)
                 } else{
                     val oldNumber= data.number
                     data.number= data.lowerBorder
                     _ViewUtil.setBgColorRes(ivMinus, inBorderColorId)
                     _ViewUtil.setBgColorRes(ivPlus, enabledColorId)
-                    onNumberChangeListener?.invoke(position, oldNumber, data.number)
+                    onNumberChangeListener?.invoke(adpPos, oldNumber, data.number)
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -101,8 +103,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
         etNumber.setText(data.number.toString())
     }
 
-    override fun setComponentEnabled(position: Int, v: View?, enable: Boolean) {
-        (v ?: getViewAt(position)).notNullTo { view ->
+    override fun setComponentEnabled(adpPos: Int, v: View?, enable: Boolean) {
+        (v ?: getViewAt(adpPos)).notNullTo { view ->
             val colorId= if(enable) enabledColorId
                 else disabledColorId
 
@@ -120,7 +122,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
 
             //Agar warna [ivMinus] dan [ivMinus] sesuai dg keadaan data.number.
             if(enable)
-                getDataAt(position).notNull { etNumber.setText(it.number.toString()) }
+                getDataAt(adpPos).notNull { etNumber.setText(it.number.toString()) }
 
             true
         }
