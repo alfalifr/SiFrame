@@ -22,6 +22,8 @@ import sidev.lib.universal.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.universal.`fun`.notNullTo
+import sidev.lib.universal.`fun`.plus
+import sidev.lib.universal.`fun`.toNumber
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
@@ -466,9 +468,9 @@ var TextView.txt: String
  * @return jml setelah ditambah [diff], null jika ternyata `this.extension` [TextView.getText]
  *   sebelumnya bkn merupakan Number.
  */
-infix fun TextView.addTxtNumberBy(diff: Int): Int?{
+infix fun TextView.addTxtNumberBy(diff: Number): Number?{
     return if(text.toString().isDigitsOnly()){
-        val res= text.toString().toInt() + diff
+        val res= text.toString().toNumber() +diff
         text= res.toString()
         res
     } else null
