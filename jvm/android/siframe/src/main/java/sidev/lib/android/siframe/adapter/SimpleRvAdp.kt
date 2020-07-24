@@ -239,9 +239,31 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     fun getDataIndex(adpPos: Int): Int?{
         return if(adpPos in 0 until itemCount){
-            if(adpPos == itemCount-1 && footerView != null) null
-            else if(headerView != null) adpPos -1
+            if(adpPos < itemCount -1){
+                if(headerView == null) adpPos
+                else adpPos -1
+            } else if(footerView != null) null
             else adpPos
+        } else null
+    }
+    /*
+            if(headerView == null) adpPos
+            else if(adpPos < itemCount -1 && headerView != null) adpPos -1
+//            else if(adpPos == itemCount-1 && footerView != null) null
+            else null
+     */
+
+    /**
+     * @return posisi data yg ditampilkan oleh adp [SimpleRvAdp] ini,
+     *   null jika [dataPos] IndexOutOfBound.
+     */
+    open fun getRawAdpPos(dataPos: Int): Int?{
+        return if(dataPos in 0 until itemCount){
+            if(dataPos < itemCount -1){
+                if(headerView == null) dataPos
+                else dataPos +1
+            } else if(footerView != null) null
+            else dataPos
         } else null
     }
 

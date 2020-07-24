@@ -14,6 +14,7 @@ import sidev.lib.android.siframe.intfc.listener.Listener
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.android.siframe.tool.util.`fun`.addLast
+import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
@@ -313,11 +314,32 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      * tidak perlu lagi melakukan pengecekan terhadap [onlyShownItem]. FUngsi ini mengurus
      * masalah itu.
      *
-     * @param pos dapat berupa posisi adapter (data yg terlihat) maupun indeks [dataList] scr langsung.
+     * @param adpPos dapat berupa posisi adapter (data yg terlihat) maupun indeks [dataList] scr langsung.
      */
-    fun getDataProcessedIndex(pos: Int, onlyShownItem: Boolean): Int?{
-        return if(onlyShownItem) getDataShownIndex(pos)
-            else getDataIndex(pos)
+    fun getDataProcessedIndex(adpPos: Int, onlyShownItem: Boolean): Int?{
+        return if(onlyShownItem) getDataShownIndex(adpPos)
+            else getDataIndex(adpPos)
+    }
+
+    /**
+     * @return posisi data yg ditampilkan oleh adp [SimpleRvAdp] ini,
+     *   null jika [dataPos] IndexOutOfBound.
+     */
+    final override fun getRawAdpPos(dataPos: Int): Int? {
+        return if(dataPos in 0 until itemCount){
+            if(dataPos == itemCount -1 && footerView != null) return null
+
+            //1. Mencari posisi yg ditampilkan berdasarkan [contentArranger.resultInd].
+            var foundAdpPos= 0
+            for((adpPos, innerDataPos) in contentArranger.resultInd){
+                if(innerDataPos == dataPos){
+                    foundAdpPos= adpPos
+                    break
+                }
+            }
+            //2. Seperti pada superclass, jika headerView != null, maka posisi data yg ditampilkan bergeser 1.
+            super.getRawAdpPos(foundAdpPos)
+        } else null
     }
 
     /**

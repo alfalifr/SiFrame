@@ -4,7 +4,10 @@ import sidev.lib.universal.exception.Exc
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
 
-
+/**
+ * Cara mudah untuk membuat kelas [Exc] dg [msg], [cause], dan [code] tertentu.
+ * @return null jika [msg], [cause], dan [code] semuanya tidak menunjukan gejala error.
+ */
 fun createErrorSimple(msg: String?= null, cause: Throwable?= null, code: Int= 1): Exc?{
     return if(msg == null && cause == null && code == 0) null
     else Exc(msg, cause, code)

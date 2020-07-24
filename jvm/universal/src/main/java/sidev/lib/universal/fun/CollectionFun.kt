@@ -620,22 +620,82 @@ operator fun <T> MutableList<T>.times(factor: Int): MutableList<T>{
 
 val Array<*>.string: String
     get(){
-        var str= "${this::class.simpleName}("
+        var str= "${this::class.simpleName}["
         for(e in this){
             str += e.toString() +", "
         }
         str= str.removeSuffix(", ")
-        return "$str)"
+        return "$str]"
     }
 
 val Collection<*>.string: String
     get(){
-        var str= "${this::class.simpleName}("
+        var str= "${this::class.simpleName}["
         for(e in this){
             str += e.toString() +", "
         }
         str= str.removeSuffix(", ")
-        return "$str)"
+        return "$str]"
     }
 
-//fun <K, V> Map.Entry<K, V>.toString(): String = "$key=$value"
+
+
+
+/*
+=============================
+Collection Operation
+=============================
+ */
+
+fun <T> Iterable<T>.findIndexed(predicate: (IndexedValue<T>) -> Boolean): IndexedValue<T>?{
+    for(vals in this.withIndex()){
+        if(predicate(vals))
+            return vals
+    }
+    return null
+}
+
+fun <T> Iterable<T>.findLastIndexed(predicate: (IndexedValue<T>) -> Boolean): IndexedValue<T>?{
+    var foundElement: IndexedValue<T>?= null
+    for(vals in this.withIndex()){
+        if(predicate(vals))
+            foundElement= vals
+    }
+    return foundElement
+}
+
+
+fun <T> Sequence<T>.findIndexed(predicate: (IndexedValue<T>) -> Boolean): IndexedValue<T>?{
+    for(vals in this.withIndex()){
+        if(predicate(vals))
+            return vals
+    }
+    return null
+}
+
+fun <T> Sequence<T>.findLastIndexed(predicate: (IndexedValue<T>) -> Boolean): IndexedValue<T>?{
+    var foundElement: IndexedValue<T>?= null
+    for(vals in this.withIndex()){
+        if(predicate(vals))
+            foundElement= vals
+    }
+    return foundElement
+}
+
+
+fun <T> Array<T>.findIndexed(predicate: (IndexedValue<T>) -> Boolean): IndexedValue<T>?{
+    for(vals in this.withIndex()){
+        if(predicate(vals))
+            return vals
+    }
+    return null
+}
+
+fun <T> Array<T>.findLastIndexed(predicate: (IndexedValue<T>) -> Boolean): IndexedValue<T>?{
+    var foundElement: IndexedValue<T>?= null
+    for(vals in this.withIndex()){
+        if(predicate(vals))
+            foundElement= vals
+    }
+    return foundElement
+}

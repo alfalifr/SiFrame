@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
+import androidx.core.text.isDigitsOnly
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.layoutInflater
@@ -459,6 +460,19 @@ var EditText.txt: String
 var TextView.txt: String
     set(v){ this.text= v }
     get()= this.text.toString()
+
+/**
+ * Menambah jml angka yg tertera pada [TextView.getText] sebanyak [diff].
+ * @return jml setelah ditambah [diff], null jika ternyata `this.extension` [TextView.getText]
+ *   sebelumnya bkn merupakan Number.
+ */
+infix fun TextView.addTxtNumberBy(diff: Int): Int?{
+    return if(text.toString().isDigitsOnly()){
+        val res= text.toString().toInt() + diff
+        text= res.toString()
+        res
+    } else null
+}
 
 
 val View.xStartInWindow: Int
