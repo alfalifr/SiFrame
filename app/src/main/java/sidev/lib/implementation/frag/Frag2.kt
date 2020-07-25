@@ -7,6 +7,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
 import sidev.lib.universal.`fun`.notNull
@@ -21,6 +22,7 @@ class Frag2 : Frag(){
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("Frag2 onActive pos= $pos")
         callingLifecycle.asNotNull { act: DrawerBase ->
             act.startDrawerContainer.asNotNull { v: View ->
                 _ViewUtil.setBgColorRes(v, R.color.ijo)

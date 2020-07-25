@@ -20,6 +20,7 @@ class Frag6 : Frag(){
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("Frag6 onActive pos= $pos")
         actSimple.asNotNull { act: ViewPagerBase<Frag> ->
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
 //            loge("Frag6 act.vp == act.lateVp => ${act.vp == act.lateVp}")

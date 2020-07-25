@@ -39,6 +39,10 @@ infix fun Number.roundClosest(range: IntRange): Number{
     else range.last
 }
 
+fun Number.isZero(): Boolean = this.compareTo(0) == 0
+fun Number.isNegative(): Boolean = this < 0
+fun Number.isPositive(): Boolean = this > 0
+
 
 /** Fungsi yg mengubah [String] menjadi [Number] apapun. */
 fun String.toNumber(): Number{

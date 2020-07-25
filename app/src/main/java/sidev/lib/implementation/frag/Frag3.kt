@@ -22,6 +22,7 @@ class Frag3 : Frag(){
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("Frag3 onActive pos= $pos")
         callingLifecycle.notNull { act ->
             val callName= act::class.java.simpleName
             loge("onActive() callName= $callName")

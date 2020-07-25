@@ -55,6 +55,7 @@ class Frag4 : DrawerFrag(){
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("Frag4 onActive pos= $pos")
 ///*
         actSimple.asNotNull { act: BarContentNavAct ->
             act.setActBarTitle("Frag 4 bro!!")

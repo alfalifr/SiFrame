@@ -2,8 +2,10 @@ package sidev.lib.implementation.frag
 
 import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 
 class Frag1 : ActBarFrag(){
@@ -19,5 +21,9 @@ class Frag1 : ActBarFrag(){
         layoutView.tv.text= "Frag1"
         _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumputMuda)
         arguments
+    }
+
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("Frag1 onActive pos= $pos")
     }
 }

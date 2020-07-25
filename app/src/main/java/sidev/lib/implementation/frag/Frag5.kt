@@ -25,6 +25,7 @@ class Frag5 : Frag(){
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("Frag5 onActive pos= $pos")
         callingLifecycle.asNotNull { act: ViewPagerBase<*> ->
             act.isVpTitleFragBased= false
             loge("onActive() act.isVpTitleFragBased= false")

@@ -237,8 +237,10 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         setFragListMark(initFragListMark())
 
         if(list != null) {
-            if(vpFragList[0].currentState.no >= LifecycleBase.State.CREATED.no)
+            if(vpFragList[0].currentState >= LifecycleBase.State.STARTED)
                 vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
+            else
+                vpFragList.firstOrNull()?.firstFragPageOnActivePosition= 0
         }
     }
 
