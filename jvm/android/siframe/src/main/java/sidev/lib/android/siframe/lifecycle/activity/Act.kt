@@ -138,6 +138,11 @@ abstract class Act : AppCompatActivity(), Inheritable,
         ___initSideBase()
 
         currentState= LifecycleBase.State.CREATED
+
+        if(this is ViewPagerBase<*>){
+            if(vpFragList[0].currentState.no >= LifecycleBase.State.CREATED.no)
+                vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
+        }
 /*
         if(isViewInitFirst){
             Log.e("SimpleAbsAct", "::layoutView.isInitialized ${::layoutView.isInitialized} name= ${this::class.java.simpleName}")

@@ -26,6 +26,7 @@ import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNullTo
 import sidev.lib.universal.`fun`.classSimpleName
@@ -141,6 +142,11 @@ abstract class Frag : Fragment(),
 //        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
         listener_onViewCreated?.onViewCreated_(view, savedInstanceState)
         currentState= LifecycleBase.State.CREATED
+
+        if(this is ViewPagerBase<*>){
+            if(vpFragList[0].currentState.no >= LifecycleBase.State.CREATED.no)
+                vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
+        }
     }
 
     override fun onAttach(context: Context) {

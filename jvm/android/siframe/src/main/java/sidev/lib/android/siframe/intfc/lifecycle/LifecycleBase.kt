@@ -6,7 +6,7 @@ interface LifecycleBase{
     val currentState: State
         get()= State.INITIALIZED
 
-    enum class State(val int: Int){
+    enum class State(val no: Int){
         /** Sama dg [Lifecycle.State.INITIALIZED] */
         INITIALIZED(0),
 

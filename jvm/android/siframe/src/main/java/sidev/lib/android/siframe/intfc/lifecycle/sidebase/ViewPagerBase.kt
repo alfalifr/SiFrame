@@ -236,8 +236,10 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
         setPageLimitInd(0, size)
         setFragListMark(initFragListMark())
 
-        if(list != null)
-            vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
+        if(list != null) {
+            if(vpFragList[0].currentState.no >= LifecycleBase.State.CREATED.no)
+                vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
+        }
     }
 
     fun getFragPos(frag: F): Int{

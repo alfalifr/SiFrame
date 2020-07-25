@@ -9,8 +9,7 @@ import sidev.lib.android.siframe.arch.viewmodel.FiewModel
  *  yg sblumnya digunakan untuk mengambil dari masing-masing LifecycleOwner, namun skrg definisinya adalah
  *  untuk Fragment, definisi [ViewModelBase.getViewModel] adalah ViewModel milik activity-nya.
  */
-interface ViewModelFragBase :
-    ViewModelBase {
+interface ViewModelFragBase : ViewModelBase {
 //    var activity: FragmentActivity?
 
     /**
