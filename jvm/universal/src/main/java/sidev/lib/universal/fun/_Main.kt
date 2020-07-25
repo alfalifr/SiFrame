@@ -569,6 +569,14 @@ enum class En(val a: Int, val pos: Int){
 }
 
 
+suspend fun aga(): Int{
+    return 1
+}
+
+fun asa(){
+}
+
+
 
 /*
 fun <T> Sequence<T>.cut(other: Sequence<T>): Sequence<T>{

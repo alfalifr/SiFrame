@@ -397,7 +397,7 @@ var RadioGroup.selectedInd: Int
         try{ (child as RadioButton).isChecked= true }
         catch (e: ClassCastException){
             throw ClassCastExc(
-                fromClass = child::class.java, toClass = RadioButton::class.java,
+                fromClass = child::class, toClass = RadioButton::class,
                 msg = "RadioGroup.getChildAt($v) bkn merupakan RadioButton."
             )
         }

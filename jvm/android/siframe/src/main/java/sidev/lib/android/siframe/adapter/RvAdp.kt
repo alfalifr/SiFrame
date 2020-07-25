@@ -1061,10 +1061,13 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             if(lm is LayoutManagerResp){
                 lm.onLayoutCompletedListener= onLayoutCompletedListener
 //                Log.e("SimpleAbsRVA", "lm is NOT thrown")
-            } else{
-                throw TypeExc(this::class.java, "lm is not LayoutManagerResp")
+            }
+/*
+            else{
+                throw TypeExc(this::class, "lm is not LayoutManagerResp")
 //                Log.e("SimpleAbsRVA", "lm is thrown")
             }
+ */
         }
     }
 

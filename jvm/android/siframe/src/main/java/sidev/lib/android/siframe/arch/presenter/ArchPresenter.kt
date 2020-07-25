@@ -62,7 +62,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
             if(checkDataIntegrity(request, Direction.OUT, data))
                 processRequest(request, data)
             else
-                DataIntegrityExc(this::class.java, "Pengecekan keluar di presenter")
+                DataIntegrityExc(this::class, "Pengecekan keluar di presenter")
         }.isNull {
             val clsName= this.classSimpleName()
             val callbackName= callback?.classSimpleName()
@@ -95,7 +95,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
                     callback!!.onPresenterSucc(sentReqCode, result, data, resCode)
                 }
             else
-                DataIntegrityExc(this::class.java, "Pengecekan masuk di presenter")
+                DataIntegrityExc(this::class, "Pengecekan masuk di presenter")
         }.isNull {
             val clsName= this.classSimpleName()
             val callbackName= callback?.classSimpleName()

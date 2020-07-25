@@ -301,7 +301,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
             footerViewType -> footerView
             else -> ctx.inflate(viewType, parent)
                 ?: throw ResourceNotFoundExc(
-                    relatedClass = this::class.java,
+                    relatedClass = this::class,
                     resourceName = "viewType: '$viewType' dari getItemViewType(Int, D)"
                 )
         }!!

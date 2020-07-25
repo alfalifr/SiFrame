@@ -37,7 +37,7 @@ object ActManager {
                 }
             }
         } else
-            throw IllegalAccessExc(this::class.java,
+            throw IllegalAccessExc(this::class,
                 "process() tidak boleh diakses selain dari SimpleAbsActFragView.registerActiveAct()")
     }
 
