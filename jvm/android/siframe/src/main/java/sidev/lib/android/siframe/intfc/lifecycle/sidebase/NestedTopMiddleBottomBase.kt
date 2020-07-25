@@ -74,6 +74,8 @@ interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{
                         ?: c.inflate(bottomLayoutId)
                     ).notNull { bottomView ->
                         rv.addOnGlobalLayoutListener {
+                            loge("globalLayoutListener TMB nested")
+                            loge("it.yEndInWindow >= it.screenHeight => ${it.yEndInWindow >= it.screenHeight} it.yEndInWindow= ${it.yEndInWindow} it.screenHeight= ${it.screenHeight}")
 //                            val bottom= it.yEndInWindow
 //                            val screenHeight= it.screenHeight //_ViewUtil.getScreenHeight(ctx)
 //                            val bool= bottom >= screenHeight
@@ -81,6 +83,10 @@ interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{
                             if(it.yEndInWindow >= it.screenHeight){
                                 adp.footerView= bottomView
                                 bottomContainer.asNotNull { vg: ViewGroup -> vg.removeAllViews() }
+                                _initBottomView(bottomView)
+                            } else if(bottomContainer != null){ //Ini udah di-init oleh super karena OnGlobalLayout dilakukan scr async.
+                                loge("globalLayoutListener TMB in nested")
+                                (bottomContainer as ViewGroup).addView(bottomView)
                                 _initBottomView(bottomView)
                             }
 /*

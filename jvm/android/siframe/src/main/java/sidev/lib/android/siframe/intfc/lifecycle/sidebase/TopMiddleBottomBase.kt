@@ -95,9 +95,11 @@ interface TopMiddleBottomBase: LifecycleSideBase {
         val isBottomLayoutNestedInRv=
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isBottomContainerNestedInRv }
                 ?: false
+
         if(bottomContainer != null && !isBottomLayoutNestedInRv){
             c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
                 .notNull { v ->
+                    loge("globalLayoutListener TMB")
                     (bottomContainer as ViewGroup).addView(v)
                     _initBottomView(v)
                 }

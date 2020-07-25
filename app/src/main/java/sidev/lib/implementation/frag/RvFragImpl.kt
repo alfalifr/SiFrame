@@ -1,11 +1,14 @@
 package sidev.lib.implementation.frag
 
 import android.view.View
+import android.view.ViewGroup
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
+import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
+import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.StrAdp
@@ -45,10 +48,10 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
             "Data 3",
             "Data 4",
             "Halo",
-            "Bro",
-            "Hoho"
+            "Bro"
 // /*
-            ,"Hihe 8",
+            ,"Hoho",
+            "Hihe 8",
             "Hihe",
             "Hihe 10",
             "Hihe 11",
@@ -63,6 +66,23 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
         )
         rvAdp.dataList= data.toArrayList() //ArrayList(data.toList())
 
+        layoutView.addOnGlobalLayoutListener {
+            loge("globalLayoutListener RVFragImpl")
+
+            for(i in 0 until rvAdp.itemCount){
+                loge("rvAdp.itemCount iteraste i= $i rvAdp.getDataAt(i)= ${rvAdp.getDataAt(i)} rvAdp.getDataProcessedIndex(i, true)= ${rvAdp.getDataProcessedIndex(i, true)}")
+            }
+            for((i, dataInd) in rvAdp.contentArranger.resultInd){
+                loge("rvAdp.itemCount iteraste i= $i dataInd = $dataInd")
+            }
+            for(i in 0 until rvAdp.itemCount){
+                val dataPos= rvAdp.getDataProcessedIndex(i, true)
+                val rawPos= if(dataPos != null) rvAdp.getRawAdpPos(dataPos) else null
+                loge("rvAdp.itemCount iteraste i= $i dataPos= $dataPos rawPos= $rawPos rawPos == i => ${rawPos == i}")
+            }
+            loge("rvAdp.footerView == null => ${rvAdp.footerView == null}")
+        }
+
         showLoading()
         ThreadUtil.delayRun(3000){
             scrollToPosition(6)
@@ -73,7 +93,7 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
     override fun _initBottomView(bottomView: View) {
         loge("_initBottomView() MULAI")
         bottomView.iv_arrow_forth.setOnClickListener {
-            loge("this.bottomView != null => ${this.bottomView != null}")
+            loge("this.bottomView != null => ${this.bottomView != null} rvAdp.footerView == null => ${rvAdp.footerView == null} (bottomContainer as? ViewGroup)?.childCount= ${(bottomContainer as? ViewGroup)?.childCount}")
         }
     }
 }

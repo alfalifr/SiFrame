@@ -239,11 +239,9 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     fun getDataIndex(adpPos: Int): Int?{
         return if(adpPos in 0 until itemCount){
-            if(adpPos < itemCount -1){
-                if(headerView == null) adpPos
-                else adpPos -1
-            } else if(footerView != null) null
-            else adpPos
+            if(adpPos == itemCount -1 && footerView != null) null
+            else if(headerView == null) adpPos
+            else adpPos -1
         } else null
     }
     /*
@@ -259,11 +257,9 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      */
     open fun getRawAdpPos(dataPos: Int): Int?{
         return if(dataPos in 0 until itemCount){
-            if(dataPos < itemCount -1){
-                if(headerView == null) dataPos
-                else dataPos +1
-            } else if(footerView != null) null
-            else dataPos
+            if(dataPos == itemCount -1 && footerView != null) null
+            else if(headerView == null) dataPos
+            else dataPos +1
         } else null
     }
 
