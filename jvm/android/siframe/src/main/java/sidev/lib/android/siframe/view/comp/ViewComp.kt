@@ -218,12 +218,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             mData[dataPos]= valueBox
         }
         val additionalData= mAdditionalData?.get(dataPos)
-
-        /** Diletakan sebelum [bindComponent]  agar programmer dapat menyesuaikan lagi visibilitas komponen. */
+        
 //        if(isCompIdValid)
-        val compView= v.findView<View>(compId).notNull {
-            it.visibility= if(isCompVisible) View.VISIBLE else View.GONE
-        } ?: v //.isNull { isCompIdValid= false }
+        val compView= v.findView(compId) ?: v
+//            .notNull { it.visibility= if(isCompVisible) View.VISIBLE else View.GONE }
+             //.isNull { isCompIdValid= false }
 
         if(isViewSaved){
             if(mView == null) mView= SparseArray()
