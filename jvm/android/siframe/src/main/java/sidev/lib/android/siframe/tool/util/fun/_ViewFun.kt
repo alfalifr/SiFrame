@@ -21,9 +21,7 @@ import sidev.lib.universal.exception.ClassCastExc
 import sidev.lib.universal.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
-import sidev.lib.universal.`fun`.notNullTo
-import sidev.lib.universal.`fun`.plus
-import sidev.lib.universal.`fun`.toNumber
+import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
@@ -262,44 +260,57 @@ fun Activity.changeView(vId: Int, layoutId: Int){
 }
 
 /**
- * @return view yang barusan diinflate dari id
- * @param layoutId
+ * Mengganti semua view isi semua `this.extension` [View] dg view yg memiliki [layoutId].
+ *
+ * @return -> [View] hasil inflate dari [layoutId],
+ *   -> null jika `this.extension` dan parent bkn merupakan [ViewGroup] atau jika [layoutId] tidak bisa di-inflate.
  */
-fun View.changeView(layoutId: Int): View {
-    val vg= when(this){
+fun View.changeView(layoutId: Int): View? {
+    return when(this){
         is ViewGroup -> this
-        else -> parent as ViewGroup
+        else -> parent as? ViewGroup
+    }.notNullTo { vg ->
+        context.inflate(layoutId, vg, false).notNullTo { inflatedView ->
+            vg.removeAllViews()
+            vg.addView(inflatedView)
+            inflatedView
+        }
     }
-    val v= LayoutInflater.from(context).inflate(layoutId, vg, false)
-    vg.removeAllViews()
-    vg.addView(v)
-    context.toast("containerView == null = ${v == null}")
-    return v
-}
-
-fun View.addView(layoutId: Int, index: Int?= null): View {
-    val vg= when(this){
-        is ViewGroup -> this
-        else -> parent as ViewGroup
-    }
-    val v= LayoutInflater.from(context).inflate(layoutId, vg, false)
-    val index= index ?: vg.childCount
-    vg.addView(v, index)
-    context.toast("containerView == null = ${v == null}")
-    return v
 }
 
 /**
- * @return jika berhasil di-detach dari parent
+ * @return -> [View] hasil inflate dari [layoutId],
+ *   -> null jika `this.extension` dan parent bkn merupakan [ViewGroup] atau jika [layoutId] tidak bisa di-inflate.
  */
-fun View.detachFromParent(): Boolean{
+fun View.addView(layoutId: Int, index: Int= -1): View? {
+    return when(this){
+        is ViewGroup -> this
+        else -> parent as? ViewGroup
+    }.notNullTo { vg ->
+        context.inflate(layoutId, vg, false).notNullTo { inflatedView ->
+            val innerIndex= index.notNegativeOr(vg.childCount) // ?: vg.childCount
+            vg.addView(inflatedView, innerIndex)
+            inflatedView
+        }
+    }
+}
+
+/** @return [ViewGroup] tempat `this.extension` menempel, null jika `this.extension` tidak menempel pada [ViewGroup]. */
+fun View.detachFromParent(): ViewGroup? {
     return when(val parent= this.parent){
         is ViewGroup -> {
             parent.removeView(this)
-            true
+            parent
         }
-        else -> false
+        else -> null
     }
+}
+
+/** @return [ViewGroup] yg menjadi tempat [v] menempel sebelumnya, null jika [v] sebelumnya tidak nempel pada ViewGroup apapun. */
+fun ViewGroup.forcedAddView(v: View): ViewGroup? {
+    val previousVg= v.detachFromParent()
+    addView(v)
+    return previousVg
 }
 
 

@@ -224,7 +224,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         val dataInd= getDataShownIndex(position)
         getDataAt(position).notNull { data ->
-            loge("data != null position= $position dataInd= $dataInd headerView == null= ${headerView == null}")
+//            loge("data != null position= $position dataInd= $dataInd headerView == null= ${headerView == null}")
             //<10 Juli 2020> => Dibuat jadi .notNull() agar saat bind header atau footer tidak dilakukan
             //  di dalam RvAdp ini.
             holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check

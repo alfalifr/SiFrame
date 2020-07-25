@@ -70,6 +70,7 @@ val Number.absoluteValue: Number
 Operator Overriding
 ========================
  */
+//operator fun <T: Number> T.plus(other: T): T = this + other
 /**
  * Bentuk generic dari plus() yg inputnya berupa [Number].
  * @return angka hasil operasi,

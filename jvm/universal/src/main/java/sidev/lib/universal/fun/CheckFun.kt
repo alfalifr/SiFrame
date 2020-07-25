@@ -213,3 +213,14 @@ inline fun <T, O> runWithParamTypeSafety(
             onExceptionIgnored?.invoke(e)
     }
 }
+
+
+/*
+======================
+Math Check Fun
+======================
+ */
+
+fun <T: Number> T.notNegativeOr(default: T): T = if(!isNegative()) this else default
+fun <T: Number> T.notPositiveOr(default: T): T = if(!isPositive()) this else default
+fun <T: Number> T.notZeroOr(default: T): T = if(!isZero()) this else default

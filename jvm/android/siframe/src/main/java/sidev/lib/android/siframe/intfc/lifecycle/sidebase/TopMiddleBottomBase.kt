@@ -2,11 +2,8 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.intfc.prop.RvAdpProp
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 
@@ -99,7 +96,6 @@ interface TopMiddleBottomBase: LifecycleSideBase {
         if(bottomContainer != null && !isBottomLayoutNestedInRv){
             c.inflate(bottomLayoutId, bottomContainer as ViewGroup)
                 .notNull { v ->
-                    loge("globalLayoutListener TMB")
                     (bottomContainer as ViewGroup).addView(v)
                     _initBottomView(v)
                 }

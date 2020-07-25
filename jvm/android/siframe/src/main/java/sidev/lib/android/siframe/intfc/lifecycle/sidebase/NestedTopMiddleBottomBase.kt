@@ -3,9 +3,7 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.intfc.prop.RvAdpProp
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
@@ -48,6 +46,7 @@ interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{
                         (topContainer.asNotNullTo { vg: ViewGroup -> vg.getChildAt(0) }
                             ?: c.inflate(topLayoutId)
                         ).notNull { topView ->
+                            topView.detachFromParent() //Agar tidak menimbulkan error saat di-attach di RvAdp.
                             adp.headerView= topView
                             topContainer.asNotNull { vg: ViewGroup -> vg.removeAllViews() }
                             _initTopView(topView)
@@ -74,19 +73,17 @@ interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{
                         ?: c.inflate(bottomLayoutId)
                     ).notNull { bottomView ->
                         rv.addOnGlobalLayoutListener {
-                            loge("globalLayoutListener TMB nested")
-                            loge("it.yEndInWindow >= it.screenHeight => ${it.yEndInWindow >= it.screenHeight} it.yEndInWindow= ${it.yEndInWindow} it.screenHeight= ${it.screenHeight}")
 //                            val bottom= it.yEndInWindow
 //                            val screenHeight= it.screenHeight //_ViewUtil.getScreenHeight(ctx)
 //                            val bool= bottom >= screenHeight
 //                            loge("bottom= $bottom screenHeight= $screenHeight bool= $bool")
                             if(it.yEndInWindow >= it.screenHeight){
+                                bottomView.detachFromParent() //Agar tidak menimbulkan error saat di-attach di RvAdp.
                                 adp.footerView= bottomView
                                 bottomContainer.asNotNull { vg: ViewGroup -> vg.removeAllViews() }
                                 _initBottomView(bottomView)
                             } else if(bottomContainer != null){ //Ini udah di-init oleh super karena OnGlobalLayout dilakukan scr async.
-                                loge("globalLayoutListener TMB in nested")
-                                (bottomContainer as ViewGroup).addView(bottomView)
+                                (bottomContainer as ViewGroup).forcedAddView(bottomView)
                                 _initBottomView(bottomView)
                             }
 /*
