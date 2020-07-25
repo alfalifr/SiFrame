@@ -61,7 +61,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     open val dataListCount: Int
         get()= dataList?.size ?: 0
 
-    /*TODO private*/ var contentArranger= RvAdpContentArranger<D>()
+    private var contentArranger= RvAdpContentArranger<D>()
 /*
     protected enum class IndexMapping{
         SORT, FILTER

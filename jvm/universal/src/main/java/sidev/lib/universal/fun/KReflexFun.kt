@@ -3,10 +3,10 @@ package sidev.lib.universal.`fun`
 import sidev.lib.universal.`val`.StringLiteral
 import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.annotation.Interface
-import sidev.lib.universal.annotation.Rename
 import sidev.lib.universal.annotation.renamedName
 import sidev.lib.universal.exception.ClassCastExc
 import sidev.lib.universal.exception.NonInstantiableTypeExc
+import sidev.lib.universal.exception.TypeExc
 import sidev.lib.universal.structure.collection.iterator.*
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import java.io.Serializable
@@ -195,14 +195,24 @@ fun <I, O> KProperty1<I, O>.forcedGet(receiver: I): O?{
         null
     }
 }
-/** @return true jika operasi set berhasil, false jika refleksi dilarang. */
+/** @return -> `true` jika operasi set berhasil,
+ *   -> `false` jika refleksi dilarang,
+ *   -> @throws [TypeExc] jika [value] yg dipass tidak sesuai tipe `this.extension`. */
 fun <I, O> KMutableProperty1<I, O>.forcedSet(receiver: I, value: O): Boolean{
     return try{
-        val oldIsAccesible= isAccessible
-        isAccessible= true
-        set(receiver, value)
-        isAccessible= oldIsAccesible
-        true
+        if(value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
+            || (value == null && returnType.isMarkedNullable)){
+            val oldIsAccesible= isAccessible
+            isAccessible= true
+            set(receiver, value)
+            isAccessible= oldIsAccesible
+            true
+        } else {
+            throw TypeExc(
+                expectedType = returnType.classifier as KClass<*>, actualType = value?.clazz,
+                msg = "Tidak dapat meng-assign value dg tipe tersebut ke properti: $this."
+            )
+        }
     } catch (e: IllegalCallableAccessException){ //Jika Kotlin melarang melakukan call melalui refleksi
         false
     } catch (e: InvocationTargetException){
@@ -401,27 +411,35 @@ val Any.clazz: KClass<*>
 
 /** Memiliki fungsi sama dg [isSuperclassOf] namun berguna untuk variabel generic tanpa batas atas Any. */
 fun <T1, T2> T1.isSuperClassOf(derived: T2): Boolean{
-    return try{ (this as Any)::class.isSuperclassOf((derived as Any)::class) }
-    catch (e: Exception){ false }
+    return try{
+        val thisClass= if(this !is KClass<*>) (this as Any)::class else this
+        val derivedClass= if(derived !is KClass<*>) (derived as Any)::class else derived
+        thisClass.isSuperclassOf(derivedClass)
+    } catch (e: Exception){ false }
 }
 /** Sama seperti [isSuperClassOf], namun @return `false` jika `this.extension` bertipe sama dg [derived]. */
 fun <T1, T2> T1.isExclusivelySuperClassOf(derived: T2): Boolean{
     return try{
-        (this as Any)::class.isSuperclassOf((derived as Any)::class)
-            && (this as Any)::class != (derived as Any)::class
+        val thisClass= if(this !is KClass<*>) (this as Any)::class else this
+        val derivedClass= if(derived !is KClass<*>) (derived as Any)::class else derived
+        thisClass.isSuperclassOf(derivedClass) && thisClass != derivedClass
     } catch (e: Exception){ false }
 }
 
 /** Memiliki fungsi sama dg [isSubclassOf] namun berguna untuk variabel generic tanpa batas atas Any. */
 fun <T1, T2> T1.isSubClassOf(base: T2): Boolean{
-    return try{ (this as Any)::class.isSubclassOf((base as Any)::class) }
-    catch (e: Exception){ false }
+    return try{
+        val thisClass= if(this !is KClass<*>) (this as Any)::class else this
+        val baseClass= if(base !is KClass<*>) (base as Any)::class else base
+        thisClass.isSubclassOf(baseClass)
+    } catch (e: Exception){ false }
 }
 /** Sama seperti [isSubClassOf], namun @return `false` jika `this.extension` bertipe sama dg [base]. */
 fun <T1, T2> T1.isExclusivelySubClassOf(base: T2): Boolean{
     return try{
-        (this as Any)::class.isSubclassOf((base as Any)::class)
-            && (this as Any)::class != (base as Any)::class
+        val thisClass= if(this !is KClass<*>) (this as Any)::class else this
+        val baseClass= if(base !is KClass<*>) (base as Any)::class else base
+        thisClass.isSubclassOf(baseClass) && thisClass != baseClass
     } catch (e: Exception){ false }
 }
 
@@ -786,13 +804,9 @@ val Any.implementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<*, *>,
             = object: NestedIteratorImpl<Any?, Pair<KProperty1<*, *>, Any?>>(
                 this@implementedPropertiesValueMapTree::class.declaredPropertiesTree.iterator()
             ){
-            override fun getOutputIterator(nowInput: Any?): Iterator<Pair<KProperty1<*, *>, Any?>>? {
-                TODO("Not yet implemented")
-            }
+            override fun getOutputIterator(nowInput: Any?): Iterator<Pair<KProperty1<*, *>, Any?>>? {}
 
-            override fun getInputIterator(nowOutput: Pair<KProperty1<*, *>, Any?>): Iterator<Any?>? {
-                TODO("Not yet implemented")
-            }
+            override fun getInputIterator(nowOutput: Pair<KProperty1<*, *>, Any?>): Iterator<Any?>? {}
         }
     }
 */

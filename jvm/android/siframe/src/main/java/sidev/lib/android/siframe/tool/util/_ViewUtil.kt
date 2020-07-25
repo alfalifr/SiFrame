@@ -221,22 +221,16 @@ object  _ViewUtil{
             alphaAnim.duration = duration
 //            alphaAnim.interpolator= AccelerateInterpolator() //.setInterpolator { it }
             alphaAnim.setAnimationListener(object : Animation.AnimationListener{
-                override fun onAnimationRepeat(animation: Animation?) {
-                    loge("ini method onAnimationRepeat")
-//                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
+                override fun onAnimationRepeat(animation: Animation?) {}
                 override fun onAnimationEnd(animation: Animation?) {
                     v.alpha= end
                     v.visibility = if(end > 0) View.VISIBLE
                         else View.GONE
                 }
-
                 override fun onAnimationStart(animation: Animation?) {
                     v.visibility = if(start > 0) View.VISIBLE
                         else View.GONE
                 }
-
             })
 //            v.animation = alphaAnim
             v.startAnimation(alphaAnim)

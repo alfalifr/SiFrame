@@ -58,7 +58,7 @@ open class FiewModel //(val vmBase: ViewModelBase)
 
     /*
     override var callbackCtx: Context
-        get() = TODO("Not yet implemented")
+        get() {}
         set(value) {}
  */
 

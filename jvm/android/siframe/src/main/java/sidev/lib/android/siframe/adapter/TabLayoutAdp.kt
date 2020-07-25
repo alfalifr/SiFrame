@@ -63,9 +63,7 @@ class TabLayoutAdp(tabLayout: TabLayout?, titleList: ArrayList<String>?){
 
             }
 
-            override fun onUnSelectItem(containerView: View?, pos: Int, data: String) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            override fun onUnSelectItem(containerView: View?, pos: Int, data: String) {}
         }
         tabLayout?.setupWithViewPager()
         vp?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
@@ -82,9 +80,7 @@ class TabLayoutAdp(tabLayout: TabLayout?, titleList: ArrayList<String>?){
                     tabLayout?.getTabAt(position)?.select()
             }
 
-            override fun onPageSelected(position: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            override fun onPageSelected(position: Int) {}
         })
  */
     }

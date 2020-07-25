@@ -94,6 +94,8 @@ dependencies {
     implementation(project("path" to ":jvm:universal"))
     implementation(project("path" to ":jvm:android:siframe"))
     implementation(project("path" to ":jvm:android:siframe:customizable"))
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4")
 }
 // */
 

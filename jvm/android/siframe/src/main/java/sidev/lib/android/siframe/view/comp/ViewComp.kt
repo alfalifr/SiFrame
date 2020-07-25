@@ -218,7 +218,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             mData[dataPos]= valueBox
         }
         val additionalData= mAdditionalData?.get(dataPos)
-        
+
 //        if(isCompIdValid)
         val compView= v.findView(compId) ?: v
 //            .notNull { it.visibility= if(isCompVisible) View.VISIBLE else View.GONE }
