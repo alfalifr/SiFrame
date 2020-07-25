@@ -1,8 +1,11 @@
 package sidev.lib.universal.`fun`
 
 import sidev.lib.universal.`val`.StringLiteral
+import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.annotation.Interface
 import sidev.lib.universal.annotation.renamedName
+import sidev.lib.universal.exception.ClassCastExc
+import sidev.lib.universal.exception.NonInstantiableTypeExc
 import sidev.lib.universal.structure.collection.iterator.*
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import java.io.Serializable
@@ -14,6 +17,7 @@ import kotlin.reflect.jvm.isAccessible
 
 const val K_CLASS_BASE_NAME= "KClassImpl"
 const val K_FUNCTION_CONSTRUCTOR_NAME_PREFIX= "fun <init>"
+val K_PROPERTY_ARRAY_SIZE_STRING= Array<Any>::size.toString()
 
 /*
 fun Any.findSealedSubclass(func: ()): Class{
@@ -327,10 +331,30 @@ val <T: Any> KClass<T>.isPrimitive: Boolean
 val <T: Any> KClass<T>.isCopySafe: Boolean
     get()= isPrimitive || this == String::class
 
-
 /**
- * Fungsi yg dapat dipanggil melalui Java.
+ * Menunjukan jika kelas `this.extension` ini merupakan anonymous karena di-extend
+ * oleh variabel lokal dan kelas yg di-extend bkn merupakan kelas abstract.
  */
+val <T: Any> KClass<T>.isShallowAnonymous: Boolean
+    get()= qualifiedName == null && supertypes.size == 1
+            && !(supertypes.first().classifier as KClass<*>).isAbstract
+
+val <T: Any> KClass<T>.isArray: Boolean
+    get()= if(toString() == Array<Any>::class.toString()) true
+        else when(this){
+        IntArray::class -> true
+        LongArray::class -> true
+        FloatArray::class -> true
+        DoubleArray::class -> true
+        CharArray::class -> true
+        ShortArray::class -> true
+        BooleanArray::class -> true
+        ByteArray::class -> true
+        else -> false
+    }
+
+
+/** Fungsi yg dapat dipanggil melalui Java. */
 fun <T: Any> getKClass(javaClass: Class<T>): KClass<T>
         = javaClass.kotlin
 
@@ -338,20 +362,31 @@ fun <T: Any> getKClass(javaClass: Class<T>): KClass<T>
 val Any.clazz: KClass<*>
     get()= this::class
 
+
 /** Memiliki fungsi sama dg [isSuperclassOf] namun berguna untuk variabel generic tanpa batas atas Any. */
 fun <T1, T2> T1.isSuperClassOf(derived: T2): Boolean{
-    val thisClass= this?.clazz
-    return if(thisClass != null){
-        derived?.clazz?.isSuperclassOf(thisClass) == true
-    } else false
+    return try{ (this as Any)::class.isSuperclassOf((derived as Any)::class) }
+    catch (e: Exception){ false }
+}
+/** Sama seperti [isSuperClassOf], namun @return `false` jika `this.extension` bertipe sama dg [derived]. */
+fun <T1, T2> T1.isExclusivelySuperClassOf(derived: T2): Boolean{
+    return try{
+        (this as Any)::class.isSuperclassOf((derived as Any)::class)
+            && (this as Any)::class != (derived as Any)::class
+    } catch (e: Exception){ false }
 }
 
 /** Memiliki fungsi sama dg [isSubclassOf] namun berguna untuk variabel generic tanpa batas atas Any. */
 fun <T1, T2> T1.isSubClassOf(base: T2): Boolean{
-    val thisClass= this?.clazz
-    return if(thisClass != null){
-        base?.clazz?.isSubclassOf(thisClass) == true
-    } else false
+    return try{ (this as Any)::class.isSubclassOf((base as Any)::class) }
+    catch (e: Exception){ false }
+}
+/** Sama seperti [isSubClassOf], namun @return `false` jika `this.extension` bertipe sama dg [base]. */
+fun <T1, T2> T1.isExclusivelySubClassOf(base: T2): Boolean{
+    return try{
+        (this as Any)::class.isSubclassOf((base as Any)::class)
+            && (this as Any)::class != (base as Any)::class
+    } catch (e: Exception){ false }
 }
 
 
@@ -666,7 +701,9 @@ val Any.implementedPropertiesValueMap: Sequence<Pair<KProperty1<*, *>, Any?>>
 
             override fun next(): Pair<KProperty1<*, *>, Any?> {
                 val prop= declaredPropsItr.next()
-                val value= prop.getter.forcedCall(this@implementedPropertiesValueMap)
+                val value= if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
+                    prop.getter.forcedCall(this@implementedPropertiesValueMap)
+                else (this@implementedPropertiesValueMap as Array<*>).size
                 return Pair(prop, value)
             }
         }
@@ -682,7 +719,9 @@ val Any.implementedPropertiesValue: Sequence<Any?>
 
             override fun next(): Any? {
                 val prop= declaredPropsItr.next()
-                return prop.getter.forcedCall(this@implementedPropertiesValue)
+                return if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
+                    prop.getter.forcedCall(this@implementedPropertiesValue)
+                else (this@implementedPropertiesValue as Array<*>).size
             }
         }
     }
@@ -733,9 +772,9 @@ val Any.implementedPropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>
 
             override fun next(): Pair<KProperty1<*, *>, Any?> {
                 val prop= declaredPropsItr.next()
-//                prine("implementedPropertiesValueMapTree next() prop= $prop")
-                val value= prop.getter.forcedCall(this@implementedPropertiesValueMapTree)
-//                prine("implementedPropertiesValueMapTree next() value= $value")
+                val value= if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
+                    prop.getter.forcedCall(this@implementedPropertiesValueMapTree)
+                else (this@implementedPropertiesValueMapTree as Array<*>).size
                 return Pair(prop, value)
             }
         }
@@ -774,7 +813,9 @@ val Any.implementedAccesiblePropertiesValueMapTree: Sequence<Pair<KProperty1<*, 
 
             override fun next(): Pair<KProperty1<*, *>, Any?> {
                 val prop= memberPropsItr.next()
-                val value= prop.getter.forcedCall(this@implementedAccesiblePropertiesValueMapTree)
+                val value= if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
+                    prop.getter.forcedCall(this@implementedAccesiblePropertiesValueMapTree)
+                else (this@implementedAccesiblePropertiesValueMapTree as Array<*>).size
                 return Pair(prop, value)
             }
         }
@@ -861,35 +902,70 @@ fun <T: Any> T.clone(constructorParamValFunc: ((KParameter) -> Any?)?= null): T{
 New Instance
 ==========================
  */
-
+/**
+ * Fungsi yg memiliki fungsi sama dg [clone], namun lebih runtime-safety karena tipe data
+ * yg di-clone dg tipe data tujuan berbeda. Hal tersebut berguna saat `this.extension`
+ * berupa [isShallowAnonymous] == true.
+ */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+fun <T: Any> Any.anyClone(isDeepClone: Boolean= true, constructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T{
+    return clone(isDeepClone, constructorParamValFunc) as T
+}
 /**
  * Digunakan untuk meng-clone object `this.extension` [T] sehingga menciptakan instance baru dg
  * nilai properti yg sama.
+ *
+ * Fungsi ini dapat meng-clone instance yg merupakan [isShallowAnonymous], namun tidak menjamin
+ * attribut overriding maupun attribut tambahan yg ada di dalamnya.
  *
  * @param [isDeepClone] `true` jika seluruh nilai properti yg berupa `object` di-instantiate
  *   menjadi `instance` yg baru. Operasi deep-clone juga berlaku terhadap properti yg dimiliki properti.
  *   [isDeepClone] `false` jika clone hanya dilakukan pada `this.extension` tidak termasuk properti.
  *
- * @return instance dg tipe [T] yg baru atau instance `this.extension` yg sama jika `this.extension`
- *   tidak punya konstruktor karena berupa interface, abstract, atau anonymous class.
+ * @return -> instance dg tipe [T] yg baru,
+ *   -> supertype dari `this.extension` [T] jika [T] merupakan [isShallowAnonymous],
+ *   -> throw [NonInstantiableTypeExc] jika tipe yg di-clone tidak memiliki kontruktor karena
+ *   berupa interface, abstract, atau anonymous class.
  */
+//@Suppress(SuppressLiteral.UNCHECKED_CAST)
 fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T{
     val valueMapTree= implementedPropertiesValueMapTree
     //Berguna untuk mengecek apakah `KProperty` merupakan properti dg mengecek kesamaannya dg `KParameter` di contrustor.
-    val constr= try{ this::class.leastRequiredParamConstructor }
-    catch (e: Exception){ return this }
+    var continueCreateNewInstance= true
+    var clazz= this::class
+    val constr= try{ clazz.leastRequiredParamConstructor }
+    catch (e: Exception){
+        if(clazz.isShallowAnonymous){
+            continueCreateNewInstance= false
+            clazz= this::class.supertypes.first().classifier as KClass<T>
+            clazz.leastRequiredParamConstructor
+        } else if(clazz.isCopySafe) return this
+        else throw NonInstantiableTypeExc(typeClass = this::class,
+                msg = "Tipe data tidak punya konstruktor dan bkn merupakan shallow-anonymous.")
+    }
 
-    val newInstance= new(this::class, constructor = constr){ paramOfNew ->
+    val newInsConstrParamValFunc= { paramOfNew: KParameter ->
         (constructorParamValFunc ?: { clazz, param ->
-//            prine("clazz.simpleName = ${clazz.simpleName} param= $param")
             if(constr.parameters.find { it == param } != null){
                 valueMapTree.find { pairValueMap -> param.isPropertyLike(pairValueMap.first) }
                     .notNullTo { it.second }
             } else null
-        }).invoke(this::class, paramOfNew)
-    } ?: return this
+        }).invoke(clazz, paramOfNew)
+    }
 
-//    prine("clone() sampai sini")
+    val newInstance= if(continueCreateNewInstance){
+        if(!clazz.isArray)
+            new(clazz, constructor = constr, defParamValFunc = newInsConstrParamValFunc)
+                ?: throw NonInstantiableTypeExc(typeClass = this::class,
+                    msg = "Tidak tersedia nilai default untuk di-pass ke konstruktor.")
+        else
+            arrayClone(isDeepClone, constructorParamValFunc) //as T
+    } else{
+        new(clazz.supertypes.first().classifier as KClass<out T>,  constructor = constr,
+            defParamValFunc = newInsConstrParamValFunc)
+            ?: throw NonInstantiableTypeExc(typeClass = this::class,
+                msg = "Tidak tersedia nilai default untuk di-pass ke konstruktor.")
+    }
 
     for(valueMap in valueMapTree){
         val prop= valueMap.first
@@ -909,8 +985,64 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
             }
         }
     }
+//    prine("newInstance::class= ${newInstance::class} this::class= ${this::class}")
+    if(newInstance.isExclusivelySuperClassOf(this))
+        prine("Kelas yg di-clone: \"${this::class}\" merupakan shallow-anonymous, newInstance yg di-return adalah superclass: \"${newInstance::class}\".")
     return newInstance
 }
+
+/**
+ * Meng-clone `this.extension` [Array] beserta elemen di dalamnya. Untuk clone elemen di dalamnya,
+ * apakah clone element dilakukan scr deep atau tidak bergantung dari [isElementDeepClone].
+ * Array hasil clone berisi element yg di-clone, atau element dg instance yg sama jika element
+ * tidak dapat di-instantiate.
+ */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+fun <T> Array<T>.deepClone(isElementDeepClone: Boolean= true, elementConstructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): Array<T>{
+    val newArray= this.clone()
+    for((i, e) in this.withIndex()){
+        if(e != null)
+            newArray[i]= try{ (e as Any).clone(isElementDeepClone, elementConstructorParamValFunc) }
+                catch (e: NonInstantiableTypeExc){ e } as T
+    }
+    return newArray
+}
+
+/**
+ * Meng-clone array berupa apapun itu.
+ * @return -> array baru hasil deepClone() jika `this.extension` berupa [Array],
+ *   -> array hasil clone() biasa jika `this.extension` berupa array primitif,
+ *   -> `this.extension` sendiri jika berupa array yg lain.
+ */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+fun <T: Any> T.arrayClone(isElementDeepClone: Boolean= true, elementConstructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T{
+    if(!this::class.isArray) throw ClassCastExc(fromClass = this::class, toClass = Array<Any>::class, msg = "Instance yg di-arrayClone() bkn array")
+
+    val res: Any = if(this::class.toString() == Array<Any>::class.toString())
+        (this as Array<*>).deepClone(isElementDeepClone, elementConstructorParamValFunc)
+    else when(this){
+        is IntArray -> clone()
+        is LongArray -> clone()
+        is FloatArray -> clone()
+        is DoubleArray -> clone()
+        is CharArray -> clone()
+        is ShortArray -> clone()
+        is BooleanArray -> clone()
+        is ByteArray -> clone()
+        else -> this
+    }
+    return res as T
+}
+
+/** Sama dg [IntArray.clone], namun agar serasi dg [Array.deepClone]. */
+fun IntArray.deepClone(): IntArray = clone()
+fun LongArray.deepClone(): LongArray = clone()
+fun FloatArray.deepClone(): FloatArray = clone()
+fun DoubleArray.deepClone(): DoubleArray = clone()
+fun CharArray.deepClone(): CharArray = clone()
+fun ShortArray.deepClone(): ShortArray = clone()
+fun BooleanArray.deepClone(): BooleanArray = clone()
+fun ByteArray.deepClone(): ByteArray = clone()
 
 
 
@@ -943,7 +1075,7 @@ inline fun <reified T: Any> new(constructorParamClass: Array<KClass<*>>?= null,
 fun <T: Any> new(clazz: KClass<out T>, constructorParamClass: Array<KClass<*>>?= null,
                  constructor: KFunction<T>? = null,
                  defParamValFunc: ((param: KParameter) -> Any?)?= null): T?{
-    if(clazz.isPrimitive)
+    if(clazz.isCopySafe)
         return defaultPrimitiveValue(clazz)
 
     //1. Cari constructor dg parameter tersedikit.
@@ -962,7 +1094,11 @@ fun <T: Any> new(clazz: KClass<out T>, constructorParamClass: Array<KClass<*>>?=
         try {
             if (constructorParamClass.isNullOrEmpty()) clazz.leastRequiredParamConstructor
             else clazz.findConstructorWithParam(*constructorParamClass)
-        } catch (e: Exception){ return null } //Kelas udah gak bisa di-instantiate.
+        } catch (e: Exception){
+            return if(!clazz.isShallowAnonymous) null //Kelas udah gak bisa di-instantiate.
+            else new(clazz.supertypes.first().classifier as KClass<out T>,
+                constructorParamClass, constructor, defParamValFunc)
+        }
 
     val params=  constr.parameters
     val defParamVal= HashMap<KParameter, Any?>()
@@ -1019,6 +1155,7 @@ inline fun <reified T: Any> defaultPrimitiveValue(): T?= defaultPrimitiveValue(T
  *
  * Fungsi ini tidak dapat menghasilkan nilai default dari Array<*>.
  */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
 fun <T: Any> defaultPrimitiveValue(clazz: KClass<T>): T?{
 
 //    Log.e("defaultPrimitiveValue()", "clazz.simpleName= ${clazz.simpleName} String.classSimpleName_k()= ${String::class.classSimpleName()}")

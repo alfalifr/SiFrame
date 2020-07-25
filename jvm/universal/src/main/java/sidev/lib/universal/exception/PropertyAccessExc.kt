@@ -1,7 +1,9 @@
 package sidev.lib.universal.exception
 
+import kotlin.reflect.KClass
+
 open class PropertyAccessExc(
-    relatedClass: Class<*>?= PropertyAccessExc::class.java,
+    relatedClass: KClass<*>?= PropertyAccessExc::class,
     kind: Kind= Kind.Null,
     ownerName: String?= "<owner>",
     propertyName: String?= "<properti>")

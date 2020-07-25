@@ -1,6 +1,8 @@
 package sidev.lib.universal.exception
 
-open class RuntimeExc(relatedClass: Class<*>?= RuntimeExc::class.java,
+import kotlin.reflect.KClass
+
+open class RuntimeExc(relatedClass: KClass<*>?= RuntimeExc::class,
                       commonMsg: String= "Terjadi kesalahan saat runtime.",
                       detailMsg: String= "")
     : Exc(relatedClass, commonMsg, detailMsg)

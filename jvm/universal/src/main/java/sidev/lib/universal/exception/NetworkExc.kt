@@ -1,4 +1,6 @@
 package sidev.lib.universal.exception
 
-open class NetworkExc(relatedClass: Class<*>?= NetworkExc::class.java, msg: String= "")
+import kotlin.reflect.KClass
+
+open class NetworkExc(relatedClass: KClass<*>?= NetworkExc::class, msg: String= "")
     : Exc(relatedClass, "Terjadi kesalahan jaringan.", msg)

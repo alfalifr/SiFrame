@@ -1,12 +1,14 @@
 package sidev.lib.universal.exception
 
+import kotlin.reflect.KClass
+
 open class ClassCastExc(
-    relatedClass: Class<*>?= ClassCastExc::class.java,
-    fromClass: Class<*>?= null,
-    toClass: Class<*>?= null,
+    relatedClass: KClass<*>?= ClassCastExc::class,
+    fromClass: KClass<*>?= null,
+    toClass: KClass<*>?= null,
     msg: String= "")
     : Exc(
         relatedClass,
-        "Tipe data \"${fromClass?.name}\" tidak dapat di-cast jadi \"${toClass?.name}\"",
+        "Tipe data \"${fromClass?.qualifiedName ?: fromClass?.java?.name}\" tidak dapat di-cast jadi \"${toClass?.qualifiedName ?: toClass?.java?.name}\"",
         msg
     )

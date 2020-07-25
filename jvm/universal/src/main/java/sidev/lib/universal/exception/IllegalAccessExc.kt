@@ -1,4 +1,6 @@
 package sidev.lib.universal.exception
 
-open class IllegalAccessExc(relatedClass: Class<*>?= IllegalAccessExc::class.java, msg: String= "")
+import kotlin.reflect.KClass
+
+open class IllegalAccessExc(relatedClass: KClass<*>?= IllegalAccessExc::class, msg: String= "")
     : Exc(relatedClass, "Terjadi kesalahan saat mengakses fungsi atau properti.", msg)

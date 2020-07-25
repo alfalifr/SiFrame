@@ -1,7 +1,9 @@
 package sidev.lib.universal.exception
 
+import kotlin.reflect.KClass
+
 open class ResourceNotFoundExc(
-    relatedClass: Class<*>?= ResourceNotFoundExc::class.java,
+    relatedClass: KClass<*>?= ResourceNotFoundExc::class,
     resourceName: String= "<resource>",
     msg: String= "")
     : Exc(relatedClass, """Resource: "$resourceName" tidak ditemukan.""", msg)

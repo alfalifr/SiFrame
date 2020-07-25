@@ -1,4 +1,6 @@
 package sidev.lib.universal.exception
 
-open class DataIntegrityExc(relatedClass: Class<*>?= DataIntegrityExc::class.java, msg: String= "")
+import kotlin.reflect.KClass
+
+open class DataIntegrityExc(relatedClass: KClass<*>?= DataIntegrityExc::class, msg: String= "")
     : Exc(relatedClass, "Integritas data bermasalah.", msg)

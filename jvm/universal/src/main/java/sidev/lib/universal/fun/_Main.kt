@@ -1,15 +1,11 @@
 package sidev.lib.universal.`fun`
 
-import sidev.lib.universal._cob.model.dum_transaction
+import com.google.gson.Gson
 import sidev.lib.universal.annotation.AnnotatedFunctionClass
 import sidev.lib.universal.annotation.Rename
-import sidev.lib.universal.exception.Exc
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
-import kotlin.reflect.KClass
 import kotlin.reflect.full.*
-import kotlin.reflect.jvm.internal.impl.descriptors.annotations.Annotated
-import kotlin.reflect.jvm.internal.impl.descriptors.annotations.AnnotationDescriptor
 
 annotation class Ano
 annotation class Anotasi<T: Number, O>(val a: Int= 1) //: Ano()
@@ -75,7 +71,7 @@ sealed class AB: AA(){
 annotation class FunAnot(val a: Int= 101)
 
 @Anotasi<Int, Char>
-class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
+open class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
     val ac= "ppop"
     private val acPriv= "aaa"
     override val a: Boolean
@@ -83,6 +79,7 @@ class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
     override val x: String
         get() = "as"
     var poin= Poin(1, 2)
+    var array= arrayOf(1, 2, 3)
     lateinit var poinLate: Poin //= Poin(1, 2)
 
     @Anotasi<Int, Any> @FunAnot(10)
@@ -124,6 +121,7 @@ class NoConstr private constructor()
 
 @Suppress("UNREACHABLE_CODE")
 fun main(args: Array<String>){
+    prin("A::class.isAbstract = ${A::class.isAbstract}")
 /*
     println("\n============= BATAS Exc ==============\n")
     val err = try{ "aad".toInt(); null }
@@ -162,6 +160,12 @@ fun main(args: Array<String>){
     for((i, prop) in ac.implementedPropertiesValueMapTree.withIndex()){
         prin("i= $i prop= $prop")
     }
+/*
+    println("\n============= BATAS nestedImplementedPropertiesValueMapTree ==============\n")
+    for((i, prop) in ac.nestedImplementedPropertiesValueMapTree.withIndex()){
+        prin("i= $i prop= $prop")
+    }
+ */
 
     println("\n============= BATAS Anotasi ==============\n")
     for((i, anotasi) in Anotasi::class.typeParameters.withIndex()){
@@ -335,14 +339,19 @@ AD(a= 0)
     for((i, pairOfProp) in AC(Poin(1,2)).nestedImplementedPropertiesValueMapTree.withIndex())
         println("i= $i prop= ${pairOfProp.first} value= ${pairOfProp.second}") //val= ${try{ prop.forcedGet(acObj as AC)}}
 // */
-    val oldAc= AC(Poin(2,3))
-    var newAc= oldAc//.clone(true)
+    val oldAc= object: AC(Poin(2,3)){
+
+    }
+    val oldAcSim= AC(Poin(y=12))
+
+//    var newAc= //oldAc.clone(true)
     oldAc.poin.x= 100
 
-    newAc= oldAc.clone(true)
+
+    val newAc= oldAc.clone<AC>(true)
 ///*
     { clazz, param ->
-        prine("Poin param= $param nmae= ${param.name} kind= ${param.kind}")
+//        prine("Poin clazz= $clazz simpleName= ${clazz.simpleName} param= $param nmae= ${param.name} kind= ${param.kind}")
         when(clazz){
             AC::class -> Poin(31, 41)
             Poin::class -> {
@@ -524,6 +533,30 @@ AD(a= 0)
     oldAc == newAc2
     prin("oldAc == newAc1 = ${oldAc == newAc1} oldAc == newAc2= ${oldAc == newAc2}")
  */
+
+    println("\n============= BATAS implementedPropertiesValueMap ==============\n")
+    val array= Array(2){ AC(Poin(y=10)) }
+    val intArray= IntArray(2)
+    val booleanArray= BooleanArray(2)
+    val newIntArray= intArray.arrayClone()// as IntArray
+
+    newIntArray[0]= 10
+
+    prin("intArray.size => ${intArray.size} newIntArray.size => ${newIntArray.size} intArray == newIntArray => ${intArray == newIntArray} intArray[0]= ${intArray[0]} newIntArray[0]= ${newIntArray[0]}")
+//    val a= array::size
+    val newArray= array.deepClone()
+//    array.copyOf()
+//    System.arraycopy(array, 0, newArray, 0, 2)
+
+    val oldArrAc= array[0]
+    val newArrAc= newArray[0]
+
+    val isArray= "adad"::class.isArray
+
+    prin("isArray= $isArray")
+    prin("Array<Int>::class == Array<String>::class => ${Array<Int>::class == Array<String>::class} Array<Int>::class= ${Array<Int>::class} oldArrAc == newArrAc => ${oldArrAc == newArrAc} array == newArray => ${array == newArray}")
+    for(prop in array.implementedPropertiesValueMap)
+        println("Array prop= $prop")
 }
 
 
