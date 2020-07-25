@@ -549,12 +549,14 @@ AD(a= 0)
 //    System.arraycopy(array, 0, newArray, 0, 2)
 
     val oldArrAc= array[0]
+    oldArrAc.poin.x= 11111
     val newArrAc= newArray[0]
 
     val isArray= "adad"::class.isArray
 
     prin("isArray= $isArray")
     prin("Array<Int>::class == Array<String>::class => ${Array<Int>::class == Array<String>::class} Array<Int>::class= ${Array<Int>::class} oldArrAc == newArrAc => ${oldArrAc == newArrAc} array == newArray => ${array == newArray}")
+    prin("oldArrAc.poin.x= ${oldArrAc.poin.x} newArrAc.poin.x= ${newArrAc.poin.x}")
     for(prop in array.implementedPropertiesValueMap)
         println("Array prop= $prop")
 }

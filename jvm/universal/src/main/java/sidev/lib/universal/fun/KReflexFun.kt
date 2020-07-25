@@ -3,6 +3,7 @@ package sidev.lib.universal.`fun`
 import sidev.lib.universal.`val`.StringLiteral
 import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.annotation.Interface
+import sidev.lib.universal.annotation.Rename
 import sidev.lib.universal.annotation.renamedName
 import sidev.lib.universal.exception.ClassCastExc
 import sidev.lib.universal.exception.NonInstantiableTypeExc
@@ -18,6 +19,7 @@ import kotlin.reflect.jvm.isAccessible
 const val K_CLASS_BASE_NAME= "KClassImpl"
 const val K_FUNCTION_CONSTRUCTOR_NAME_PREFIX= "fun <init>"
 val K_PROPERTY_ARRAY_SIZE_STRING= Array<Any>::size.toString()
+val K_CLASS_ENUM_STRING= Enum::class
 
 /*
 fun Any.findSealedSubclass(func: ()): Class{
@@ -225,6 +227,22 @@ fun <R> KCallable<R>.forcedCall(vararg args: Any?): R?{
         null
     }
 }
+/** @return [R] jika operasi call berhasil, null jika refleksi dilarang. */
+fun <R> KCallable<R>.forcedCallBy(args: Map<KParameter, Any?>): R?{
+    return try{
+        val oldIsAccesible= isAccessible
+        isAccessible= true
+        val value= callBy(args) //get(receiver)
+        isAccessible= oldIsAccesible
+        value
+    } catch (e: IllegalCallableAccessException){ //Jika Kotlin melarang melakukan call melalui refleksi
+        null
+    } catch (e: InvocationTargetException){
+        //Jika terjadi error secara internal pada refleksi Java.
+        // Biasanya terjadi pada operasi call melibatkan `lateinit var`
+        null
+    }
+}
 
 
 
@@ -329,7 +347,25 @@ val <T: Any> KClass<T>.isPrimitive: Boolean
  * copy-safe.
  */
 val <T: Any> KClass<T>.isCopySafe: Boolean
-    get()= isPrimitive || this == String::class
+    get()= isPrimitive || this == String::class || this.isSubclassOf(Enum::class)
+/*
+//        prine("isCopySafe @$this isPrimitive= $isPrimitive this == String::class= ${this == String::class} this.isSubclassOf(Enum::class)= ${this.isSubclassOf(Enum::class)} isKReflectionElement= $isKReflectionElement")
+        val res
+//                || isKReflectionElement
+        return res
+    }
+ */
+
+val <T> T.isKReflectionElement: Boolean
+    get()= when(this){
+        is KParameter -> true
+        is KCallable<*> -> true
+        is KClass<*> -> true
+        is KType -> true
+        is KTypeParameter -> true
+        is KClassifier -> true
+        else -> false
+    }
 
 /**
  * Menunjukan jika kelas `this.extension` ini merupakan anonymous karena di-extend
@@ -933,13 +969,14 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
     //Berguna untuk mengecek apakah `KProperty` merupakan properti dg mengecek kesamaannya dg `KParameter` di contrustor.
     var continueCreateNewInstance= true
     var clazz= this::class
+
     val constr= try{ clazz.leastRequiredParamConstructor }
     catch (e: Exception){
         if(clazz.isShallowAnonymous){
             continueCreateNewInstance= false
             clazz= this::class.supertypes.first().classifier as KClass<T>
             clazz.leastRequiredParamConstructor
-        } else if(clazz.isCopySafe) return this
+        } else if(clazz.isCopySafe || this.isKReflectionElement) return this
         else throw NonInstantiableTypeExc(typeClass = this::class,
                 msg = "Tipe data tidak punya konstruktor dan bkn merupakan shallow-anonymous.")
     }
@@ -974,7 +1011,7 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
 //            prine("clone() prop= $prop value= $value value.clazz.isPrimitive= ${value?.clazz?.isPrimitive} bool=${!isDeepClone || value == null || value.clazz.isPrimitive}")
             prop.asNotNull { mutableProp: KMutableProperty1<T, Any?> ->
 //                prine(" masukkkk... clone() prop= $prop value= $value value.clazz.isPrimitive= ${value?.clazz?.isPrimitive} bool=${!isDeepClone || value == null || (value.clazz.isPrimitive && constr.parameters.find { it.isPropertyLike(mutableProp, true) } == null)}")
-                if(!isDeepClone || value == null || value.clazz.isCopySafe){
+                if(!isDeepClone || value == null || value.clazz.isCopySafe || this.isKReflectionElement){
                     if(constr.parameters.find { it.isPropertyLike(mutableProp, true) } == null)
                     //Jika ternyata [mutableProp] terletak di konstruktor dan sudah di-instansiasi,
                     // itu artinya programmer sudah memberikan definisi nilainya sendiri saat intansiasi,
@@ -1144,7 +1181,7 @@ fun <T: Any> new(clazz: KClass<out T>, constructorParamClass: Array<KClass<*>>?=
         }
     }
  */
-    return constr.callBy(defParamVal)
+    return constr.forcedCallBy(defParamVal) //.forcedCall()//.callBy(defParamVal)
 }
 
 inline fun <reified T: Any> defaultPrimitiveValue(): T?= defaultPrimitiveValue(T::class)
