@@ -67,11 +67,9 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     var isCompVisible= true
         set(v){
             field= v
-            val vis= if(v) View.VISIBLE
-                else View.GONE
             if(isViewSaved){
-                for(view in viewIterator)
-                    view.visibility= vis
+                for((i, view) in viewIterator.withIndex())
+                    setComponentVisible(getAdpPosition(i), view, v)
             } else{
                 rvAdp?.notifyDataSetChanged_() //Agar view yg gak disave dibind.
             }
@@ -87,7 +85,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
             if(v != null){
                 if(isViewSaved){
                     for((i, view) in viewIterator.withIndex())
-                        setComponentEnabled(i, view, v)
+                        setComponentEnabled(getAdpPosition(i), view, v)
                 } else{
                     rvAdp?.notifyDataSetChanged_() //Agar view yg gak disave dibind.
                 }
@@ -169,14 +167,18 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     fun getInputDataAt(adpPos: Int, onlyShownItem: Boolean= true, isIndexProcessed: Boolean= false): I?
             = try{ rvAdp?.getDataAt(adpPos, onlyShownItem, isIndexProcessed) as? I }
             catch (e: ClassCastException){ null }
+
     /** Mengambil posisi sebenarnya dari data kesuluruhan yg terdapat pada [rvAdp]. */
-    fun getDataPosition(adpPos: Int): Int{
-        val positionFromAdp= rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
+    fun getDataPosition(adpPos: Int): Int
+        = (rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
             ?: rvAdp?.getDataIndex(adpPos)
-            ?: adpPos
-        return if(positionFromAdp >= 0) positionFromAdp
-        else adpPos
-    }
+            ?: adpPos)
+            .notNegativeOr(adpPos)
+
+    /** Mengambil posisi yg ditampilkan pada [rvAdp]. */
+    fun getAdpPosition(dataPos: Int): Int = (rvAdp?.getRawAdpPos(dataPos) ?: dataPos).notNegativeOr(dataPos)
+//        return if(positionFromAdp >= 0) positionFromAdp
+//        else adpPos
 
     /**
      * Fungsi ini dapat dipakai untuk memasang maupun mencopot [rvAdp].
@@ -230,6 +232,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
         if(isEnabled != null)
             setComponentEnabled(adpPos, compView, isEnabled!!)
+        setComponentVisible(adpPos, v, isCompVisible)
         bindComponent(adpPos, compView, valueBox, additionalData, inputData)
     }
 
@@ -296,9 +299,22 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * Fungsi yg digunakan untuk me-enabled atau tidak komponen view yg dikelola oleh kelas [ViewComp] ini.
      * Fungsi ini akan dipanggil setiap kali [onBind] dipanggil jika [isEnabled] != null.
      *
-     * Komponen view didapat dari parameter [v] atau jika null, maka didapat dari fungsi [getViewAt].
+     * View yg digunakan dalam fungsi ini dapat diperoleh baik dari param [v], atau jika null
+     * view dapat diperoleh dari fungsi [getViewAt].
      */
     open fun setComponentEnabled(adpPos: Int, v: View?= null, enable: Boolean= true){}
+
+    /**
+     * Digunakan untuk membuat [v] menjadi VISIBLE atau GONE tergantung dari [visible].
+     * Fungsi ini dipanggil scr default setiap kali [onBind] dipanggil dan menge-pass nilai [visible]
+     * dari [isCompVisible].
+     *
+     * View yg digunakan dalam fungsi ini dapat diperoleh baik dari param [v], atau jika null
+     * view dapat diperoleh dari fungsi [getViewAt].
+     */
+    open fun setComponentVisible(adpPos: Int, v: View?= null, visible: Boolean= true){
+        v?.visibility= if(visible) View.VISIBLE else View.GONE
+    }
 /*
     fun iterateSavedView(iterator: (View) -> Unit){
         if(mView != null)

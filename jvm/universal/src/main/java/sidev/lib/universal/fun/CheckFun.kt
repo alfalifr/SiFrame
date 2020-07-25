@@ -221,6 +221,7 @@ Math Check Fun
 ======================
  */
 
+fun <T: Number> T.isIndexNumberOr(default: T): T = notNegativeOr(default)
 fun <T: Number> T.notNegativeOr(default: T): T = if(!isNegative()) this else default
 fun <T: Number> T.notPositiveOr(default: T): T = if(!isPositive()) this else default
 fun <T: Number> T.notZeroOr(default: T): T = if(!isZero()) this else default
