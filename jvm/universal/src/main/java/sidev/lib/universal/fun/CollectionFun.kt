@@ -638,6 +638,42 @@ val Collection<*>.string: String
         return "$str]"
     }
 
+val IntArray.string: String
+    get(){
+        var str= "${this::class.simpleName}["
+        for(e in this){
+            str += e.toString() +", "
+        }
+        str= str.removeSuffix(", ")
+        return "$str]"
+    }
+val LongArray.string: String
+    get(){
+        var str= "${this::class.simpleName}["
+        for(e in this){
+            str += e.toString() +", "
+        }
+        str= str.removeSuffix(", ")
+        return "$str]"
+    }
+val DoubleArray.string: String
+    get(){
+        var str= "${this::class.simpleName}["
+        for(e in this){
+            str += e.toString() +", "
+        }
+        str= str.removeSuffix(", ")
+        return "$str]"
+    }
+val FloatArray.string: String
+    get(){
+        var str= "${this::class.simpleName}["
+        for(e in this){
+            str += e.toString() +", "
+        }
+        str= str.removeSuffix(", ")
+        return "$str]"
+    }
 
 
 
@@ -698,4 +734,44 @@ fun <T> Array<T>.findLastIndexed(predicate: (IndexedValue<T>) -> Boolean): Index
             foundElement= vals
     }
     return foundElement
+}
+
+
+fun <T: Number> Array<T>.isElementEmpty(): Boolean{
+    for(e in this)
+        if(!e.isZero())
+            return false
+    return true
+}
+fun <T: Number> Collection<T>.isElementEmpty(): Boolean{
+    for(e in this)
+        if(!e.isZero())
+            return false
+    return true
+}
+
+
+fun IntArray.isElementEmpty(): Boolean{
+    for(e in this)
+        if(!e.isZero())
+            return false
+    return true
+}
+fun LongArray.isElementEmpty(): Boolean{
+    for(e in this)
+        if(!e.isZero())
+            return false
+    return true
+}
+fun DoubleArray.isElementEmpty(): Boolean{
+    for(e in this)
+        if(!e.isZero())
+            return false
+    return true
+}
+fun FloatArray.isElementEmpty(): Boolean{
+    for(e in this)
+        if(!e.isZero())
+            return false
+    return true
 }

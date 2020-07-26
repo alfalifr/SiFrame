@@ -37,5 +37,6 @@ class Frag3 : Frag(){
             loge("act.getFragPos(this)= ${act.getFragPos(this)}")
 //            loge("Frag3 act.vp == act.lateVp => ${act.vp == act.lateVp}")
         }
+        loge("_prop_parentLifecycle == parentFragment => ${_prop_parentLifecycle == parentFragment} _prop_parentLifecycle= $_prop_parentLifecycle parentFragment= $parentFragment")
     }
 }

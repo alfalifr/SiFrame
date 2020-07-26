@@ -72,9 +72,11 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
             for(i in 0 until rvAdp.itemCount){
                 loge("rvAdp.itemCount iteraste i= $i rvAdp.getDataAt(i)= ${rvAdp.getDataAt(i)} rvAdp.getDataProcessedIndex(i, true)= ${rvAdp.getDataProcessedIndex(i, true)}")
             }
+/*
             for((i, dataInd) in rvAdp.contentArranger.resultInd){
                 loge("rvAdp.itemCount iteraste i= $i dataInd = $dataInd")
             }
+ */
             for(i in 0 until rvAdp.itemCount){
                 val dataPos= rvAdp.getDataProcessedIndex(i, true)
                 val rawPos= if(dataPos != null) rvAdp.getRawAdpPos(dataPos) else null

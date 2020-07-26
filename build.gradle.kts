@@ -7,7 +7,8 @@ val ScriptHandlerScope.kotlin_version
  */
 
 buildscript {
-    val kotlin_version = findProperty("kotlin_version")
+    val kotlin_version by extra("1.3.72")
+//    val kotlin_version = findProperty("kotlin_version")
     val anko_version= findProperty("anko_version")
 //    val kotlin_version= "1.3.72"
 //    val anko_version= "0.10.8"

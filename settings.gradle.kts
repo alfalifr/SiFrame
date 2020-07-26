@@ -1,3 +1,4 @@
+include(":jvm:android:viewrap")
 rootProject.name= "JVM_Lib"
 include(":app")
 include(":jvm:universal")

@@ -3,18 +3,16 @@ package sidev.lib.implementation.frag
 import android.content.Context
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.cob_page.view.*
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.textColor
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.android.siframe.view.ModEt
+import sidev.lib.android.viewrap.wrapWithBuffer
 import sidev.lib.implementation.R
 import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.tool.util.ThreadUtil
 
 class CobFrag : Frag(){
     override val layoutId: Int
@@ -36,7 +34,6 @@ class CobFrag : Frag(){
         this.asNotNull { c: Context ->
 
         }
-
         layoutView.btn.asNotNull { btn: Button ->
             val id= R.id.tv_id
             btn.text= "R.id.tv_id => isId? -> ${id isIdIn context!!}" //(R.dimen.drawer_horizontal_width_percent asDimenIn context!!).toString() //
@@ -49,6 +46,14 @@ class CobFrag : Frag(){
         layoutView.rl_top_container.isClickable= false
         layoutView.rl_top_container.isClickable= true
         layoutView.rl_top_container.setBgColorRes(R.color.colorPrimaryDark)
+
+
+        val wrapper= layoutView.rl_top_container.wrapWithBuffer()
+        wrapper.showBuffer()
+        ThreadUtil.delayRun(7000){
+//            wrapper.showAnimation(false)
+        }
+
 
 //        (layoutView as EditText).txt= "aku"
     }

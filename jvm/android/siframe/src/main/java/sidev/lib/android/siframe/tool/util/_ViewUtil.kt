@@ -41,6 +41,7 @@ import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
+import sidev.lib.universal.`fun`.string
 import sidev.lib.universal.tool.util.FileUtil
 import kotlin.math.abs
 
@@ -126,8 +127,12 @@ object  _ViewUtil{
     }
 
     fun setViewSize(view: View, width: Int, height: Int){
-        view.layoutParams.width= width
-        view.layoutParams.height= height
+        try{
+            view.layoutParams.width= width
+            view.layoutParams.height= height
+        } catch (e: NullPointerException){
+            view.layoutParams= ViewGroup.LayoutParams(width, height)
+        }
     }
 
     fun calculateColumnNumber(
@@ -267,8 +272,8 @@ object  _ViewUtil{
      *          array[0] -> width
      *          array[1] -> height
      */
-    fun getViewSize(act: Activity?, view: View): Array<Int>{
-        val res= Array(2){0}
+    fun getViewSize(act: Activity?, view: View): IntArray{
+        val res= IntArray(2)
         if(act != null){
 /*
             containerView.measure(View.MeasureSpec.makeMeasureSpec(parentView.getWidth(), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(MAX_HEIGHT, MeasureSpec.AT_MOST));

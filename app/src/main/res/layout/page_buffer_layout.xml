@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_margin="10dp"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView 1"/>
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_toRightOf="@id/tv1"
+        android:layout_margin="10dp"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView 1"/>
+
+    <RelativeLayout
+        android:layout_below="@id/tv2"
+        android:layout_margin="10dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv1"
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_arrow_wide"
+            android:tint="@color/ijo"/>
+        <ImageView
+            android:layout_toRightOf="@id/iv1"
+            android:layout_marginLeft="20dp"
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_arrow_wide"
+            android:tint="@color/ijo"/>
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_margin="10dp"
+            android:layout_below="@id/iv1"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:orientation="vertical"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

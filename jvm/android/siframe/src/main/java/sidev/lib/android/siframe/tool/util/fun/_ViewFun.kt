@@ -306,10 +306,26 @@ fun View.detachFromParent(): ViewGroup? {
     }
 }
 
+val View.indexInParent: Int
+    get()= parent.asNotNullTo { vg: ViewGroup -> vg.indexOfChild(this) } ?: -1
+
+/**
+ * Melepaskan semua immediate child view dari `this.extension` [ViewGroup].
+ * @return list semua immediate child, kosong jika `this.extension` tidak punya child view.
+ */
+fun ViewGroup.detachAllViews(): List<View>{
+    val views= ArrayList<View>()
+    for(view in children){
+        views += view
+        removeView(view)
+    }
+    return views
+}
+
 /** @return [ViewGroup] yg menjadi tempat [v] menempel sebelumnya, null jika [v] sebelumnya tidak nempel pada ViewGroup apapun. */
-fun ViewGroup.forcedAddView(v: View): ViewGroup? {
+fun ViewGroup.forcedAddView(v: View, index: Int= childCount): ViewGroup? {
     val previousVg= v.detachFromParent()
-    addView(v)
+    addView(v, index)
     return previousVg
 }
 
@@ -347,8 +363,15 @@ fun View.getActivity(): Activity?{
 val View.activity: Activity?
     get()= _ViewUtil.getActivity(this)
 
-var View.size: Array<Int>
+var View.size: IntArray
     get()= _ViewUtil.getViewSize(this.activity, this)
+    set(v){
+        if(v.size != 2)
+            throw ParameterExc(paramName = "View.size", detMsg = "IntArray yg diinputkan harus berukuran 2")
+        _ViewUtil.setViewSize(this, v[0], v[1])
+    }
+var View.LayoutParamSize: IntArray
+    get()= IntArray(2){if(it == 0) layoutParams.width else layoutParams.height }
     set(v){
         if(v.size != 2)
             throw ParameterExc(paramName = "View.size", detMsg = "IntArray yg diinputkan harus berukuran 2")
