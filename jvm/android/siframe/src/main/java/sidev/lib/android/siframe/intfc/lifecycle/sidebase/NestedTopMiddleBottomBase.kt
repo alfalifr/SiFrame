@@ -73,38 +73,25 @@ interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{
                         ?: c.inflate(bottomLayoutId)
                     ).notNull { bottomView ->
                         rv.addOnGlobalLayoutListener {
-//                            val bottom= it.yEndInWindow
-//                            val screenHeight= it.screenHeight //_ViewUtil.getScreenHeight(ctx)
-//                            val bool= bottom >= screenHeight
-//                            loge("bottom= $bottom screenHeight= $screenHeight bool= $bool")
-                            if(it.yEndInWindow >= it.screenHeight){
+/*
+                            val bottomRv= it.yEndInWindow
+                            val bottomViewSize= bottomView.size
+                            val bottomViewHeight= bottomView.height
+                            val screenHeight= it.screenHeight //_ViewUtil.getScreenHeight(ctx)
+                            val bottom= bottomRv +bottomViewSize[1] //_ViewUtil.getScreenHeight(ctx)
+                            val bool= bottom >= screenHeight
+                            loge("bottomRv= $bottomRv bottom= $bottom bottomViewHeight= $bottomViewHeight bottomViewSize= ${bottomViewSize.string} screenHeight= $screenHeight bool= $bool")
+ */
+                            if(it.yEndInWindow +bottomView.size[1] >= it.screenHeight){
                                 bottomView.detachFromParent() //Agar tidak menimbulkan error saat di-attach di RvAdp.
                                 adp.footerView= bottomView
                                 bottomContainer.asNotNull { vg: ViewGroup -> vg.removeAllViews() }
                                 _initBottomView(bottomView)
-                            } else if(bottomContainer != null){ //Ini udah di-init oleh super karena OnGlobalLayout dilakukan scr async.
+                            } else if(bottomContainer != null){ //Ini udah di-init oleh super karena OnGlobalLayout dilakukan scr trahir stlah kode di sini udah dieksekusi.
                                 (bottomContainer as ViewGroup).forcedAddView(bottomView)
                                 _initBottomView(bottomView)
                             }
-/*
-                            else{
-                                (bottomContainer as ViewGroup).addView(bottomView)
-                                _initBottomView(bottomView)
-                            }
- */
                         }
-/*
-                        //Ambil Context untuk pemanggilan fungsi [_ViewUtil.getScreenHeight].
-                        when(this){
-                            is Activity -> this
-                            is Fragment -> this.context
-                            else -> null
-                        }.notNull{ ctx ->
-                        }.isNull {
-                            adp.footerView= bottomView
-                            _initBottomView(bottomView)
-                        }
- */
                     }
                 }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
                     msg= "adater dari ${c.resources.getResourceName(rv.id)} bkn merupakan SimpleRvAdp"

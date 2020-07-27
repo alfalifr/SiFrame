@@ -20,10 +20,10 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
     override var middleContainer: View?= null
     override var bottomContainer: View?= null
 
-    override val bottomLayoutId: Int
-        get() = R.layout.comp_nav_arrow
     override val topLayoutId: Int
         get() = R.layout.comp_nav_arrow
+    override val bottomLayoutId: Int
+        get() = R.layout.comp_nav_arrow_tall
 
     override val isTopContainerNestedInRv: Boolean
         get() = true
@@ -50,9 +50,10 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
             "Halo",
             "Bro"
 // /*
-            ,"Hoho",
-            "Hihe 8",
-            "Hihe",
+            ,"Hoho"
+/*
+            ,"Hihe 8"
+            ,"Hihe",
             "Hihe 10",
             "Hihe 11",
             "Hihe",
