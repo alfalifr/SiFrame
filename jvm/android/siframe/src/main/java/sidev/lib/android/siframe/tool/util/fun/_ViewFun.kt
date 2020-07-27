@@ -503,11 +503,11 @@ var TextView.txt: String
  *   sebelumnya bkn merupakan Number.
  */
 infix fun TextView.addTxtNumberBy(diff: Number): Number?{
-    return if(text.toString().isDigitsOnly()){
+    return try{
         val res= text.toString().toNumber() +diff
         text= res.toString()
         res
-    } else null
+    } catch (e: NumberFormatException){ null }
 }
 
 
