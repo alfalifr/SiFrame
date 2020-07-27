@@ -231,7 +231,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
         if(isEnabled != null)
             setComponentEnabled(adpPos, compView, isEnabled!!)
-        setComponentVisible(adpPos, v, isCompVisible)
+        setComponentVisible(adpPos, compView, isCompVisible)
         bindComponent(adpPos, compView, valueBox, additionalData, inputData)
     }
 
