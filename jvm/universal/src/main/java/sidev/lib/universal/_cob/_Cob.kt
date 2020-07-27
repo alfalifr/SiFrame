@@ -1,6 +1,7 @@
 package sidev.lib.universal._cob
 
 import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.`val`.RoundMethod
 import kotlin.math.log10
 
 fun main(args: Array<String>) {
@@ -17,7 +18,7 @@ fun main(args: Array<String>) {
     prin("log10(123.0).toInt() +1= ${log10(123.0).toInt() +1}")
     prin("1234.5146.getNumberAtDigit(-4)= ${1234.5146.getNumberAtDigit(-4)}")
     prin("1234.getNumberAtDigit(-3)= ${1234.getNumberAtDigit(-3)}")
-    prin("1254.6178f.round(-2)= ${1254.6178f.round(-2)}")
+    prin("1254.6178f.round(-2, RoundMethod.FLOOR)= ${1254.6178f.round(-2, RoundMethod.FLOOR)}")
     prin("1234.round(-3)= ${1234.round(-3)}")
     prin("10.toString(2) = ${10.toString(2)} 10 shl 3 = ${10 shr 3} 10 shl 1 = ${10 shl 1}")
     prin("123.456.getDecimal()= ${123.456.getDecimal()}")

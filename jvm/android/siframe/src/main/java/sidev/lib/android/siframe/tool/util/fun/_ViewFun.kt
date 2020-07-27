@@ -22,6 +22,7 @@ import sidev.lib.universal.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.`val`.RoundMethod
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
@@ -502,9 +503,11 @@ var TextView.txt: String
  * @return jml setelah ditambah [diff], null jika ternyata `this.extension` [TextView.getText]
  *   sebelumnya bkn merupakan Number.
  */
-infix fun TextView.addTxtNumberBy(diff: Number): Number?{
+fun TextView.addTxtNumberBy(diff: Number, roundDigitPlace: Int?= null): Number?{
     return try{
-        val res= text.toString().toNumber() +diff
+        var res= text.toString().toNumber() +diff
+        if(roundDigitPlace != null)
+            res= res.round(roundDigitPlace, RoundMethod.FLOOR) //Dibulatkan ke bawah agar hasil penjumlahan angka akhir selalu aman.
         text= res.toString()
         res
     } catch (e: NumberFormatException){ null }
