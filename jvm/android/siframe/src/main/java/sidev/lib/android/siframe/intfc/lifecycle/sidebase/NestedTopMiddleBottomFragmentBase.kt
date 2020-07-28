@@ -78,6 +78,7 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                                 view.detachFromParent() // maka lepas bottomView dari kontainer awal.
                                 adp.footerView= view // dan ganti masukan ke adapter agar jadi nested
                             }
+                            _initBottomView(view)
                         }
                     }
                 }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{

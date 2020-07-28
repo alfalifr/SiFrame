@@ -101,7 +101,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     protected var rvAdp: SimpleRvAdp<*, *>?= null
         private set //set lewat [setupWithRvAdapter].
-    private var onBindViewListener: ((SimpleRvAdp<*, *>.SimpleViewHolder, Int, Any?) -> Unit)?= null
+    private var onBindViewListener: ((SimpleRvAdp<*, *>.SimpleViewHolder, Int, Any?, Boolean) -> Unit)?= null
     private var onViewRecycledListener: ((SimpleRvAdp<*, *>.SimpleViewHolder) -> Unit)?= null
     /**
      * Lambda ini digunakan untuk mengkoversi data dari [rvAdp] menjadi inputData dg tipe [I].
@@ -186,9 +186,11 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     fun setupWithRvAdapter(rvAdp: SimpleRvAdp<*, *>?){
 //        initProp { isCompIdValid= compId isIdIn ctx }
         if(rvAdp != null){
-            onBindViewListener= { holder, pos, dataInput ->
-                val dataInputRes= rvAdpInputDataConverter?.invoke(dataInput)
-                onBind(pos, holder.itemView, dataInputRes)
+            onBindViewListener= { holder, pos, dataInput, isHeaderFooter ->
+                if(!isHeaderFooter){
+                    val dataInputRes= rvAdpInputDataConverter?.invoke(dataInput)
+                    onBind(pos, holder.itemView, dataInputRes)
+                }
             }
             onViewRecycledListener= { holder ->
                 onRecycle(holder.adapterPosition, holder.itemView)

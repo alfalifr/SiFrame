@@ -181,8 +181,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
 //    abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
 //    abstract fun setupLayoutManager(): LM
-    override fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D?){
-        super.__bindVH(vh, pos, data)
+    override fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D?, isHeaderFooter: Boolean){
+        super.__bindVH(vh, pos, data, isHeaderFooter)
         val v= vh.itemView
 
         val proceedVis= if(!isMultiSelectionEnabled) pos == selectedItemPos_single
@@ -235,7 +235,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             if(!isItemClickEnabled)
                 holder.itemView.isClickable= false
 
-            __bindVH(holder, position, data) //dataInd
+            __bindVH(holder, position, data, true) //dataInd
             bindVH(holder, position, data)
 
             if(isItemClickEnabled)
@@ -243,7 +243,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                     selectItem(position, onlyShownItem = true) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
                     onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
                 }
-        }.isNull { __bindVH(holder, position, null) }
+        }.isNull { __bindVH(holder, position, null, false) }
         //dataList!![dataInd]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
                 // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.

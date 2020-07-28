@@ -276,10 +276,10 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
      * Param [data] dapat null jika bind yg dilakukan terjadi pada [headerView] dan [footerView].
      */
     @CallSuper
-    open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D?){
+    open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D?, isHeaderFooter: Boolean){
         if(onBindViewListener != null){
             for(l in onBindViewListener!!)
-                l(vh, pos, data)
+                l(vh, pos, data, isHeaderFooter)
         }
     }
 
@@ -323,10 +323,10 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
 //    @CallSuper
     override fun onBindViewHolder(holder: SimpleViewHolder, position: Int) {
         getDataAt(position).notNull { data ->
-            __bindVH(holder, position, data)
+            __bindVH(holder, position, data, false)
             bindVH(holder, position, data)
         }.isNull {
-            __bindVH(holder, position, null)
+            __bindVH(holder, position, null, true)
         }
     //dataList!![position]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
@@ -1166,15 +1166,15 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 */
 
-    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int, data: D?) -> Unit>?= null
-    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D?) -> Unit)
-            : (holder: SimpleViewHolder, position: Int, data: D?) -> Unit {
+    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int, data: D?, isHeaderFooter: Boolean) -> Unit>?= null
+    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D?, isHeaderFooter: Boolean) -> Unit)
+            : (holder: SimpleViewHolder, position: Int, data: D?, isHeaderFooter: Boolean) -> Unit {
         if(onBindViewListener == null)
             onBindViewListener= ArrayList()
         onBindViewListener!!.add(l)
         return l
     }
-    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D?) -> Unit){
+    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D?, isHeaderFooter: Boolean) -> Unit){
         onBindViewListener?.remove(l)
     }
     fun clearOnBindViewListener(){
