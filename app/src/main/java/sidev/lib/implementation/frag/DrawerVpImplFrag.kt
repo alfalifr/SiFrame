@@ -1,6 +1,9 @@
 package sidev.lib.implementation.frag
 
+import android.view.TextureView
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.comp_drawer_start_iv.view.*
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
@@ -33,9 +36,9 @@ class DrawerVpImplFrag : DrawerVpFrag<Frag>(), TopMiddleBottomBase{
     override var vpFragListStartMark: Array<Int>
         = arrayOf(0, 3, 4)
 
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_nav_arrow
@@ -49,14 +52,14 @@ class DrawerVpImplFrag : DrawerVpFrag<Frag>(), TopMiddleBottomBase{
 
     override fun _initStartDrawerView(startDrawerView: View) {
         startDrawerView.iv.imageResource= R.drawable.ic_profile
-        startDrawerView.tv.text= "_initStartDrawerView() ${this::class.java.simpleName}"
+        startDrawerView.findViewById<TextView>(R.id.tv).text= "_initStartDrawerView() ${this::class.java.simpleName}"
         _ViewUtil.setColorRes(startDrawerView.iv, _ColorRes.COLOR_LIGHT)
         _ViewUtil.setBgColorRes(startDrawerView, R.color.unguTua)
     }
 
     override fun _initEndDrawerView(endDrawerView: View) {
         endDrawerView.iv.imageResource= R.drawable.ic_cross_circle
-        endDrawerView.tv.text= "_initEndDrawerView() ${this::class.java.simpleName}"
+        endDrawerView.findViewById<TextView>(R.id.tv).text= "_initEndDrawerView() ${this::class.java.simpleName}"
         _ViewUtil.setColorRes(endDrawerView.iv, _ColorRes.RED)
         _ViewUtil.setBgColorRes(endDrawerView, R.color.ijoRumputMuda)
     }

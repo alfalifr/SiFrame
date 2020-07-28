@@ -54,6 +54,8 @@ class CobFrag : Frag(){
 //            wrapper.showAnimation(false)
         }
 
+        commitFrag(TopViewFrag(), fragContainerId = R.id.rl)
+
 
 //        (layoutView as EditText).txt= "aku"
     }

@@ -10,6 +10,7 @@ import android.view.View
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import sidev.lib.android.siframe.tool.util.`fun`.childrenTree
 import java.util.*
 
 object _ResUtil{
@@ -117,6 +118,15 @@ infix fun Int.asResPackageBy(c: Context): String = _ResUtil.getResPackageName(c,
 infix fun Int.asResTypeBy(c: Context): String = _ResUtil.getResTypeName(c, this)
 infix fun Int.asResEntryBy(c: Context): String = _ResUtil.getResEntryName(c, this)
 
+fun Int.isIdDuplicatedInView(v: View): Boolean{
+    var isIdFound= false
+    for(innerV in v.childrenTree)
+        if(this == innerV.id){
+            if(isIdFound) return true
+            isIdFound= true
+        }
+    return false
+}
 
 /**
  * Properti ini tidak akan @throws [Resources.NotFoundException].

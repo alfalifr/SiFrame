@@ -24,9 +24,9 @@ import sidev.lib.universal.`fun`.*
 
 class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
     //    lateinit var moduleId: String
-    override var bottomContainer: View?= null
-    override var middleContainer: View?= null
-    override var topContainer: View?= null
+    override var bottomContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var topContainer: ViewGroup?= null
 
     override val bottomLayoutId: Int
         get() = R.layout._simul_edu_comp_nav_forth_back

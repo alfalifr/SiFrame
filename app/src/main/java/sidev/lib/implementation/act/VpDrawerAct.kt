@@ -2,6 +2,8 @@ package sidev.lib.implementation.act
 
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.act_drawer.view.*
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
@@ -31,9 +33,9 @@ class VpDrawerAct : DrawerBarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBas
     override val endDrawerLayoutId: Int
         get() = _Config.INT_EMPTY
 
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_nav_arrow
@@ -58,7 +60,7 @@ class VpDrawerAct : DrawerBarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBas
     }
 
     override fun _initStartDrawerView(startDrawerView: View) {
-        startDrawerView.tv.text= "Ini teks sebenarnya dari StarDrawer"
+        startDrawerView.findViewById<TextView>(R.id.tv).text= "Ini teks sebenarnya dari StarDrawer"
         Log.e("VpDrawerAct", "_initStartDrawerView")
     }
     override fun _initEndDrawerView(endDrawerView: View) {

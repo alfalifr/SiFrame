@@ -16,6 +16,7 @@ import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 
@@ -270,10 +271,12 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
     abstract fun setupLayoutManager(context: Context): LM
     /**
-     * Fungsi ini digunakan untuk bind view yg bkn merupakan header atau footer.
+     * Fungsi bind internal. Fungsi ini digunakan untuk bind view yg ditampilkan pada adapter ini,
+     * termasuk [headerView] dan [footerView].
+     * Param [data] dapat null jika bind yg dilakukan terjadi pada [headerView] dan [footerView].
      */
     @CallSuper
-    open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D){
+    open fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D?){
         if(onBindViewListener != null){
             for(l in onBindViewListener!!)
                 l(vh, pos, data)
@@ -322,7 +325,10 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
         getDataAt(position).notNull { data ->
             __bindVH(holder, position, data)
             bindVH(holder, position, data)
-        } //dataList!![position]
+        }.isNull {
+            __bindVH(holder, position, null)
+        }
+    //dataList!![position]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")
 //        selectedItemView= holder.itemView
@@ -1160,13 +1166,15 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 */
 
-    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int, data: D) -> Unit>?= null
-    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D) -> Unit){
+    var onBindViewListener: ArrayList<(holder: SimpleViewHolder, position: Int, data: D?) -> Unit>?= null
+    fun addOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D?) -> Unit)
+            : (holder: SimpleViewHolder, position: Int, data: D?) -> Unit {
         if(onBindViewListener == null)
             onBindViewListener= ArrayList()
         onBindViewListener!!.add(l)
+        return l
     }
-    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D) -> Unit){
+    fun removeOnBindViewListener(l: (holder: SimpleViewHolder, position: Int, data: D?) -> Unit){
         onBindViewListener?.remove(l)
     }
     fun clearOnBindViewListener(){

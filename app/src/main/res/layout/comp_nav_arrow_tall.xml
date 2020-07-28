@@ -12,6 +12,14 @@
         android:layout_height="100dp"
         android:src="@drawable/ic_arrow"
         android:rotation="90"/>
+    <TextView
+        android:id="@+id/tv"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teks Asli"
+        android:textColor="@color/putih"
+        android:textSize="@dimen/normal_sm"/>
     <ImageView
         android:id="@+id/iv_arrow_forth"
         android:padding="10dp"

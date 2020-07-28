@@ -2,6 +2,7 @@ package sidev.lib.implementation._simulation.edc.frag
 
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
@@ -31,9 +32,9 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
 
     lateinit var rvAdp_old: TransacAdp_Old
 
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_performance_bar

@@ -16,6 +16,7 @@ import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.android.siframe.tool.util.`fun`.addLast
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.isNull
 import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
@@ -180,7 +181,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
 //    abstract fun bindVH(vh: SimpleViewHolder, pos: Int, data: D)
 //    abstract fun setupLayoutManager(): LM
-    override fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D){
+    override fun __bindVH(vh: SimpleViewHolder, pos: Int, data: D?){
         super.__bindVH(vh, pos, data)
         val v= vh.itemView
 
@@ -242,7 +243,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                     selectItem(position, onlyShownItem = true) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
                     onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
                 }
-        } //dataList!![dataInd]
+        }.isNull { __bindVH(holder, position, null) }
+        //dataList!![dataInd]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
                 // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.
 //        loge("bindVh() position= $position dataInd= $dataInd name= ${this::class.java.simpleName}")

@@ -1,6 +1,7 @@
 package sidev.lib.implementation.frag
 
 import android.view.View
+import android.view.ViewGroup
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
@@ -21,9 +22,9 @@ class VpImpl2Frag : VpFrag<Frag>(), TopMiddleBottomBase{
     override var vpFragListStartMark: Array<Int>
         = arrayOf(0, 3, 4)
 
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_nav_arrow

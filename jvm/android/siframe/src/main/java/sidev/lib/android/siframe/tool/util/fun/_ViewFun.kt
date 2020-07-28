@@ -505,9 +505,10 @@ var TextView.txt: String
  */
 fun TextView.addTxtNumberBy(diff: Number, roundDigitPlace: Int?= null): Number?{
     return try{
-        var res= text.toString().toNumber() +diff
-        if(roundDigitPlace != null)
-            res= res.round(roundDigitPlace, RoundMethod.FLOOR) //Dibulatkan ke bawah agar hasil penjumlahan angka akhir selalu aman.
+        val res= text.toString().toNumber()
+            +if(roundDigitPlace == null) diff
+            else diff.round(roundDigitPlace, RoundMethod.FLOOR) //Dibulatkan ke bawah agar hasil penjumlahan angka akhir selalu aman.
+
         text= res.toString()
         res
     } catch (e: NumberFormatException){ null }

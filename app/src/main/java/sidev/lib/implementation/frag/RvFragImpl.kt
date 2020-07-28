@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomFragmentBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
@@ -15,16 +17,21 @@ import sidev.lib.implementation.adp.StrAdp
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
-class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
+/*
     override val topLayoutId: Int
         get() = R.layout.comp_nav_arrow
     override val bottomLayoutId: Int
         get() = R.layout.comp_nav_arrow_tall
-
+// */
+///*
+    override val topFragment: Frag?= TopViewFrag()
+    override val bottomFragment: Frag?= BottomViewFrag()
+// */
     override val isTopContainerNestedInRv: Boolean
         get() = true
     override val isBottomContainerNestedInRv: Boolean
@@ -35,7 +42,7 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
             get() = _Config.ID_RL_TOP_CONTAINER_OUTSIDE
     // */
     override fun ___initSideBase() {}
-    override fun _initTopView(topView: View) {}
+    override fun _initTopView(topView: View) { loge("_initTopView() MULAI") }
     override fun _initMiddleView(middleView: View) {}
 
     override fun initRvAdp(): StrAdp = StrAdp(context!!, null)
@@ -49,10 +56,11 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomBase {
             "Data 4",
             "Halo",
             "Bro"
-// /*
+///*
             ,"Hoho"
 /*
             ,"Hihe 8"
+/// *
             ,"Hihe",
             "Hihe 10",
             "Hihe 11",

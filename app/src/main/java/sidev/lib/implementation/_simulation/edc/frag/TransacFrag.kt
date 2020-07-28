@@ -28,9 +28,9 @@ import sidev.lib.implementation._simulation.edc.util.Edc_Const
 import sidev.lib.universal.`fun`.*
 
 class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
     override val topLayoutId: Int
         get() = R.layout.bar_top_utility

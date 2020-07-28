@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -15,10 +17,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import org.jetbrains.anko.contentView
 import sidev.lib.android.siframe.tool.util._BitmapUtil
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
+import sidev.lib.android.siframe.tool.FragmentInstantiator
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe.tool.util.asResNameBy
+import sidev.lib.android.siframe.tool.util.isIdDuplicatedInView
+import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 
 
@@ -37,11 +44,33 @@ fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     context?.toast(msg, length)
 }
 
-fun Context.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment, tag: String= fragment::class.java.name){
+fun Context.commitFrag(fragment: Fragment,
+                       fragContainerView: ViewGroup?= null,
+                       @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
+                       tag: String= fragment::class.java.name){
     when(this){
-        is AppCompatActivity -> {
+        is FragmentActivity -> {
             val fragTrans= supportFragmentManager.beginTransaction()
-            fragTrans.replace(fragContainerId, fragment, tag)
+            val containerId= when {
+                fragContainerId != View.NO_ID -> fragContainerId
+                fragContainerView != null -> {
+                    if(fragContainerView.id == View.NO_ID)
+                        fragContainerView.id= View.generateViewId()
+                    fragContainerView.id
+                }
+                else -> View.NO_ID
+            }
+/*
+            this.contentView.notNull {
+                if(containerId.isIdDuplicatedInView(it) && fragContainerView != null){
+                    FragmentInstantiator.Builder(this, fragment::class).commit(fragContainerView)
+                    return
+                }
+            }
+ */
+            //TODO ilangi loge
+            loge("containerId == View.NO_ID => ${containerId == View.NO_ID} containerId= $containerId idName= ${try{containerId asResNameBy this} catch (e: Exception){null}} tag= $tag")
+            fragTrans.replace(containerId, fragment, tag)
             fragTrans.commit()
         }
 /*
@@ -53,8 +82,11 @@ fun Context.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment, tag: Str
  */
     }
 }
-fun Fragment.commitFrag(@IdRes fragContainerId: Int, fragment: Fragment){
-    activity?.commitFrag(fragContainerId, fragment)
+fun Fragment.commitFrag(fragment: Fragment,
+                        fragContainerView: ViewGroup?= null,
+                        @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
+                        tag: String= fragment::class.java.name){
+    activity?.commitFrag(fragment, fragContainerView, fragContainerId, tag)
 }
 
 

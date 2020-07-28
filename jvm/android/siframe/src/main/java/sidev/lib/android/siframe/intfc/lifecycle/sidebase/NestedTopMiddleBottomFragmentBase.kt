@@ -2,77 +2,52 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import sidev.lib.android.siframe.R
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 
-interface TopMiddleBottomBase: LifecycleSideBase {
-    var topContainer: ViewGroup?
-    var middleContainer: ViewGroup?
-    var bottomContainer: ViewGroup?
+interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, NestedTopMiddleBottomBase {
+    override val topLayoutId: Int
+        get() = super<TopMiddleBottomFragmentBase>.topLayoutId
+    override val bottomLayoutId: Int
+        get() = super<TopMiddleBottomFragmentBase>.bottomLayoutId
 
-    /**
-     * Cara mudah untuk mengambil [topView] tanpa harus mengkonversi [topContainer] ke ViewGroup.
-     * Selain itu, variabel ini juga berguna bagi [NestedTopMiddleBottomBase] karena [topView]
-     * tidak berada di [topContainer].
-     */
-    val topView: View?
-        get()= topContainer.asNotNullTo { vg: ViewGroup -> vg.getChildAt(0) }
-    /** Dokumentasi sama dg [topView]. */
-    val bottomView: View?
-        get()= bottomContainer.asNotNullTo { vg: ViewGroup -> vg.getChildAt(0) }
-
-    val topContainerId: Int
-        get()= _Config.ID_RL_TOP_CONTAINER
-    val middleContainerId: Int
-        get()= _Config.ID_RL_MIDDLE_CONTAINER
-    val bottomContainerId: Int
-        get()= _Config.ID_RL_BOTTOM_CONTAINER
-    val rvId: Int
-        get()= _Config.ID_RV
-
-    val topLayoutId: Int
-        get()= _Config.INT_EMPTY
-    val middleLayoutId: Int
-        get()= _Config.INT_EMPTY
-    val bottomLayoutId: Int
-        get()= _Config.INT_EMPTY
-
-    fun __initTopMiddleBottomViewContainer(layoutView: View){
-        topContainer= try{ layoutView.findViewById(topContainerId) } catch (e: Exception){ null }
-        middleContainer= try{ layoutView.findViewById(middleContainerId) } catch (e: Exception){ null }
-        bottomContainer= try{ layoutView.findViewById(bottomContainerId) } catch (e: Exception){ null }
-    }
-    fun __initTopMiddleBottomView(layoutView: View){
+    override fun __initTopMiddleBottomView(layoutView: View){
         __initTopMiddleBottomViewContainer(layoutView)
 
         val c= layoutView.context
-        val isTopLayoutNestedInRv=
-            this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isTopContainerNestedInRv }
-                ?: false
-        if(topContainer != null && !isTopLayoutNestedInRv){
-            c.inflate(topLayoutId, topContainer)
-                .notNull { v ->
-                    topContainer!!.addView(v)
- /*
-                    <10 Juli 2020> => tidak ada scrollView lagi.
-                    this.asNotNull { rvFrag: RvFrag<*> ->
-                        //Jika kelas ini [RvFrag], maka cek apakah [topContainer] berada
-                        // di dalam [NestedScrollView].
-                        topContainer!!.findViewByType<NestedScrollView>(_SIF_Constant.DIRECTION_UP)
-                            .notNull {
-                                //Jika ada di dalam [NestedScrollView], maka scroll hingga ke atas.
-                                // Hal ini dilatar-belakangi karena view pada screen menscroll
-                                // ke posisi item pertama [RecyclerView] pada [RvFrag].
-                                topContainer!!.addOnGlobalLayoutListener {
-                                    rvFrag.fullScroll(View.FOCUS_UP)
-                                }
-                            }
+        if(isTopContainerNestedInRv && topFragment != null && topContainer != null){
+            loge("Mulai operasi penambahan topLayoutId pada RecyclerView")
+            var msg: String?= null
+            val resName=
+                try{ c.resources.getResourceName(layoutId)!! }
+                catch (e: Exception){ "<layoutId>" }
+
+            (layoutView.findViewById(rvId)
+                ?: layoutView.findViewByType<RecyclerView>())
+                .notNull { rv ->
+                    rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
+                        c.commitFrag(topFragment!!, topContainer!!)
+                        //Di-init di awal karena fragmentManager tidak dapat menemukan id di kontainer di dalam rvAdp.
+                        // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
+
+                        topFragment!!.onViewCreatedListener= { view, bundle ->
+                            view.detachFromParent()
+                            adp.headerView= view
+                            _initTopView(view)
+                        }
+                    }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
+                        msg= "adater dari ${c.resources.getResourceName(rv.id)} bkn merupakan SimpleRvAdp"
                     }
-// */
-                    _initTopView(v)
-                }
+                }.isNull { msg= "layout: \"$resName\" tidak memiliki RecyclerView" }
+
+            if(msg != null) loge(msg!!)
         }
 
         if(middleContainer != null){
@@ -82,32 +57,38 @@ interface TopMiddleBottomBase: LifecycleSideBase {
                     _initMiddleView(v)
                 }
         }
-/*
-        /**
-         * Variabel apakah [bottomContainer] udah diisi.
-         * Var ini berguna jika saat [isBottomContainerNestedInRv] == true dan [bottomLayoutId]
-         * berhasil di inflate, namun ternyata [rv] yg ditemukan menggunakan [findViewByType]
-         * berukuran kecil tidak sampe se-screen (it.y >= _ViewUtil.getScreenHeight(act)),
-         * maka [bottomViewHasBeenAdded] jadi false.
-         */
- */
-        val isBottomLayoutNestedInRv=
-            this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isBottomContainerNestedInRv }
-                ?: false
 
-        if(bottomContainer != null && !isBottomLayoutNestedInRv){
-            c.inflate(bottomLayoutId, bottomContainer)
-                .notNull { v ->
-                    bottomContainer!!.addView(v)
-                    _initBottomView(v)
+        if(isBottomContainerNestedInRv && bottomFragment != null && bottomContainer != null){
+            loge("Mulai operasi penambahan bottomLayoutId pada RecyclerView")
+            var msg: String?= null
+            val resName=
+                try{ c.resources.getResourceName(layoutId)!! }
+                catch (e: Exception){ "<layoutId>" }
+
+            (layoutView.findViewById(rvId)
+                ?: layoutView.findViewByType<RecyclerView>()).notNull { rv ->
+                rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
+                    rv.addOnGlobalLayoutListener { //Diletakan di onGlobalLayout agar rv.yEndInWindow bisa keitung dulu.
+                        c.commitFrag(bottomFragment!!, bottomContainer!!)
+                        //Di-init di awal karena fragmentManager tidak dapat menemukan id di kontainer di dalam rvAdp.
+                        // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
+
+                        bottomFragment!!.onViewCreatedListener= { view, _ ->
+                            if(rv.yEndInWindow +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
+                                view.detachFromParent() // maka lepas bottomView dari kontainer awal.
+                                adp.footerView= view // dan ganti masukan ke adapter agar jadi nested
+                            }
+                        }
+                    }
+                }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
+                    msg= "adater dari ${c.resources.getResourceName(rv.id)} bkn merupakan SimpleRvAdp."
                 }
-        }
-        //initTopView()
-    }
+            }.isNull { msg= "layout: \"$resName\" tidak memiliki RecyclerView." }
 
-    fun _initTopView(topView: View)
-    fun _initMiddleView(middleView: View)
-    fun _initBottomView(bottomView: View)
+            if(msg != null) loge(msg!!)
+        }
+//        super<TopMiddleBottomFragmentBase>.__initTopMiddleBottomView(layoutView)
+    }
 }
 
 

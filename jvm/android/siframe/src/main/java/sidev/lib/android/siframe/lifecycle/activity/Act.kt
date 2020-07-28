@@ -117,6 +117,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
+        loge("Activity ${this::class.simpleName} onCreate()")
         isActivitySavedInstanceStateNull= savedInstanceState == null
         setStyle(this)
         super.onCreate(savedInstanceState)
@@ -155,21 +156,25 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     override fun onStart() {
         super.onStart()
+        loge("Activity ${this::class.simpleName} onStart()")
         currentState= LifecycleBase.State.STARTED
     }
 
     override fun onResume() {
         super.onResume()
+        loge("Activity ${this::class.simpleName} onResume()")
         currentState= LifecycleBase.State.ACTIVE
     }
 
     override fun onPause() {
         super.onPause()
+        loge("Activity ${this::class.simpleName} onPause()")
         currentState= LifecycleBase.State.PAUSED
     }
 
     @CallSuper
     override fun onDestroy() {
+        loge("Activity ${this::class.simpleName} onDestroy()")
         if(this is AutoRestoreViewClient)
             extractAllViewContent()
 

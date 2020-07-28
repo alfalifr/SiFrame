@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -55,8 +56,8 @@ abstract class Frag : Fragment(),
         get() = context!!
     override var _prop_parentLifecycle: ActFragBase?= null
         internal set
-    val actSimple
-        get() = activity as? Act
+    val actSimple: Act?
+        get() = activity as? Act ?: _prop_parentLifecycle as? Act
 //    val actBarContentNavAct
 //        get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
@@ -96,7 +97,7 @@ abstract class Frag : Fragment(),
     open val fragTitle= this::class.java.simpleName
 
     //=========Obj Listener
-    var listener_onViewCreated: OnViewCreatedListener?= null
+    var onViewCreatedListener: ((View, Bundle?) -> Unit)?= null//OnViewCreatedListener?= null
 
 
 
@@ -132,6 +133,11 @@ abstract class Frag : Fragment(),
 
         loge("drawer == null => ${drawer == null} isDrawer= $isDrawer")
  */
+
+        val act= try{ act }
+        catch (e: Exception){ if(_prop_parentLifecycle is Activity) _prop_parentLifecycle else null } as? Activity
+            ?: throw IllegalStateException("Fragment: \"${this::class.qualifiedName}\" tidak dapat di-init karena activity null. \nUntuk mengakomodasikan activity, pass nilai activity pada \"_prop_parentLifecycle\".")
+
         ___initRootBase(act, view)
         ___initSideBase()
 /*
@@ -140,7 +146,7 @@ abstract class Frag : Fragment(),
         _initView(view)
  */
 //        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
-        listener_onViewCreated?.onViewCreated_(view, savedInstanceState)
+        onViewCreatedListener?.invoke(view, savedInstanceState) //?.onViewCreated_(view, savedInstanceState)
         currentState= LifecycleBase.State.CREATED
 /*
         if(this is ViewPagerBase<*>){
@@ -159,14 +165,20 @@ abstract class Frag : Fragment(),
         loge("Fragment ${this::class.java.simpleName} is attached to activity!!!")
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        loge("Fragment ${this::class.simpleName} onCreate()")
+    }
 
     override fun onStart() {
         super.onStart()
+        loge("Fragment ${this::class.simpleName} onStart()")
         currentState= LifecycleBase.State.STARTED
     }
 
     override fun onResume() {
         super.onResume()
+        loge("Fragment ${this::class.simpleName} onResume()")
         currentState= LifecycleBase.State.ACTIVE
         if(firstFragPageOnActivePosition >= 0){
             onActive(_prop_parentLifecycle?.layoutView, _prop_parentLifecycle, firstFragPageOnActivePosition)
@@ -176,6 +188,7 @@ abstract class Frag : Fragment(),
 
     override fun onPause() {
         super.onPause()
+        loge("Fragment ${this::class.simpleName} onPause()")
         currentState= LifecycleBase.State.PAUSED
     }
 

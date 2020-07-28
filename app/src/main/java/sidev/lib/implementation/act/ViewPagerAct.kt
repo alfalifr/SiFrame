@@ -1,6 +1,7 @@
 package sidev.lib.implementation.act
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
@@ -30,9 +31,9 @@ class ViewPagerAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
     override var vpFragListStartMark: Array<Int> =
         arrayOf(0, 3, 4)
 
-    override var topContainer: View?= null
-    override var middleContainer: View?= null
-    override var bottomContainer: View?= null
+    override var topContainer: ViewGroup?= null
+    override var middleContainer: ViewGroup?= null
+    override var bottomContainer: ViewGroup?= null
 
     override val bottomLayoutId: Int
         get() = R.layout.comp_nav_arrow
