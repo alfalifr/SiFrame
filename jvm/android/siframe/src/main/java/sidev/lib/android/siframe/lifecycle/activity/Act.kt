@@ -27,11 +27,13 @@ import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.universal.`fun`.asNotNull
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
@@ -123,11 +125,6 @@ abstract class Act : AppCompatActivity(), Inheritable,
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
 
-        if(!isActivitySavedInstanceStateNull && this is SingleFragActBase){
-            //Anggapannya tidak mungkin fragment null karena sudah diinit di awal.
-            fragment= supportFragmentManager.findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)!!
-        }
-
 //        lifecycle.addObserver(this)
 //        Log.e("SimpleAbsAct", "onCreate isViewInitFirst= $isViewInitFirst name= ${this::class.java.simpleName}")
 //        val v=  findViewById<View>(android.R.id.content).rootView
@@ -155,20 +152,20 @@ abstract class Act : AppCompatActivity(), Inheritable,
     }
 
     override fun onStart() {
-        super.onStart()
         loge("Activity ${this::class.simpleName} onStart()")
+        super.onStart()
         currentState= LifecycleBase.State.STARTED
     }
 
     override fun onResume() {
-        super.onResume()
         loge("Activity ${this::class.simpleName} onResume()")
+        super.onResume()
         currentState= LifecycleBase.State.ACTIVE
     }
 
     override fun onPause() {
-        super.onPause()
         loge("Activity ${this::class.simpleName} onPause()")
+        super.onPause()
         currentState= LifecycleBase.State.PAUSED
     }
 
@@ -198,15 +195,19 @@ abstract class Act : AppCompatActivity(), Inheritable,
             attachActBarTitle(0)
             isActBarAttached= true
         }
+        frag.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
     }
     @CallSuper
     override fun onResumeFragments() {
         super.onResumeFragments()
+        frag.asNotNull { frag: Frag -> frag.onActive(layoutView, this, 0) }
+/*
         if(this !is ViewPagerBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
             && frag != null && frag is Frag){
 //            loge("onResumeFragments() onActive() caller")
             (frag as Frag).onActive(layoutView, this, 0) //pos di sini adalah untuk ViewPager.
         }
+ */
     }
 
 

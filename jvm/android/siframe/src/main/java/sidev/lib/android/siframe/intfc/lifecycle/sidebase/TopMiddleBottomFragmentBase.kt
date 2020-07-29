@@ -26,7 +26,7 @@ interface TopMiddleBottomFragmentBase: TopMiddleBottomBase {
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isTopContainerNestedInRv }
                 ?: false
         if(topFragment != null && topContainer != null && !isTopLayoutNestedInRv){
-            c.commitFrag(topFragment!!, topContainer as ViewGroup)
+            c.commitFrag(topFragment!!, topContainer!!)
             topFragment!!.onViewCreatedListener= { view, bundle -> _initTopView(view) }
         }
 
@@ -42,7 +42,7 @@ interface TopMiddleBottomFragmentBase: TopMiddleBottomBase {
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isBottomContainerNestedInRv }
                 ?: false
         if(bottomFragment != null && bottomContainer != null && !isBottomLayoutNestedInRv){
-            c.commitFrag(bottomFragment!!, bottomContainer as ViewGroup)
+            c.commitFrag(bottomFragment!!, bottomContainer!!)
             bottomFragment!!.onViewCreatedListener= { view, bundle -> _initBottomView(view) }
         }
     }

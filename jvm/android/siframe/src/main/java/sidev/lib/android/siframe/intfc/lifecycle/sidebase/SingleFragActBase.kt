@@ -77,7 +77,11 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
         try{ fragment::class } //Hanya sbg pengecekan kalau fragment sebelumnya udah diinit.
                 // Metode ini digunakan untuk menanggulangi 2x instansiasi fragment.
         catch(e: UninitializedPropertyAccessException){
-            if(this is Act && !this.isActivitySavedInstanceStateNull) return
+            if(this is Act && !this.isActivitySavedInstanceStateNull){
+                //Anggapannya tidak mungkin fragment null karena sudah diinit di awal.
+                fragment= supportFragmentManager.findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)!!
+                return
+            }
 
             _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->

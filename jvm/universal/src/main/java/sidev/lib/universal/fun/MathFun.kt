@@ -44,6 +44,11 @@ infix fun Number.roundClosest(range: IntRange): Number{
 fun Number.isZero(): Boolean = this.compareTo(0) == 0
 fun Number.isNegative(): Boolean = this < 0
 fun Number.isPositive(): Boolean = this > 0
+
+fun Number.isNotZero(): Boolean = !isZero()
+fun Number.isNotNegative(): Boolean = !isNegative()
+fun Number.isNotPositive(): Boolean = !isPositive()
+
 /** @return true jika `this.extension` merupakan angka dg tipe data yg memiliki angka di belakang koma. */
 fun Number.isDecimalType(): Boolean = this is Double || this is Float
 

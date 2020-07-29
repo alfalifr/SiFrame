@@ -4,16 +4,16 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomFragmentBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
-import sidev.lib.android.siframe.tool.util.`fun`.iterator
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.StrAdp
+import sidev.lib.universal.`fun`.string
 import sidev.lib.universal.`fun`.toArrayList
 import sidev.lib.universal.tool.util.ThreadUtil
 
@@ -47,27 +47,44 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
 
     override fun initRvAdp(): StrAdp = StrAdp(context!!, null)
 
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        super.onActive(parentView, callingLifecycle, pos)
+
+        rv.addOnGlobalLayoutListener {
+            loge("onActive() rv.yEndInWindow= ${rv.yEndInWindow} typedTopFragment.layoutView.size.string= ${try{ topFragment?.layoutView?.size?.string} catch (e: Exception){ null }} bottomFragment?.layoutView?.size?.string= ${try{ bottomFragment?.layoutView?.size?.string} catch (e: Exception){ null }}")
+        }
+    }
+
     override fun _initView(layoutView: View) {
+        rv.addOnGlobalLayoutListener {
+            loge("_initView() AWAL rv.yEndInWindow= ${rv.yEndInWindow} typedTopFragment.layoutView.size.string= ${try{ topFragment?.layoutView?.size?.string} catch (e: Exception){ null }} bottomFragment?.layoutView?.size?.string= ${try{ bottomFragment?.layoutView?.size?.string} catch (e: Exception){ null }}")
+        }
         __initTopMiddleBottomView(layoutView)
+        rv.addOnGlobalLayoutListener {
+            loge("_initView() rv.yEndInWindow= ${rv.yEndInWindow} typedTopFragment.layoutView.size.string= ${try{ topFragment?.layoutView?.size?.string} catch (e: Exception){ null }} bottomFragment?.layoutView?.size?.string= ${try{ bottomFragment?.layoutView?.size?.string} catch (e: Exception){ null }}")
+        }
         val data= arrayOf(
             "Data 1",
-            "Data 2",
-            "Data 3",
+            "Data 2"
+/*
+            ,"Data 3",
             "Data 4",
             "Halo",
             "Bro"
-///*
+/// *
             ,"Hoho"
-/*
+/// *
             ,"Hihe 8"
 /// *
             ,"Hihe",
             "Hihe 10",
             "Hihe 11",
             "Hihe",
-            "Hihe",
-            "Hihe",
-            "Hihe",
+            "Hihe"
+/ *
+            ,"Hihe"
+/ *
+            ,"Hihe",
             "Hihe",
             "Hihe",
             "Hihe"

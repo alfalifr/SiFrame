@@ -28,8 +28,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.classSimpleName
+import sidev.lib.universal.`fun`.*
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].
@@ -146,8 +145,8 @@ abstract class Frag : Fragment(),
         _initView(view)
  */
 //        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
-        onViewCreatedListener?.invoke(view, savedInstanceState) //?.onViewCreated_(view, savedInstanceState)
         currentState= LifecycleBase.State.CREATED
+        onViewCreatedListener?.invoke(view, savedInstanceState) //?.onViewCreated_(view, savedInstanceState)
 /*
         if(this is ViewPagerBase<*>){
             if(vpFragList[0].currentState.no >= LifecycleBase.State.CREATED.no)
@@ -157,48 +156,61 @@ abstract class Frag : Fragment(),
     }
 
     override fun onAttach(context: Context) {
+        loge("Fragment ${this::class.simpleName} onAttach(ctx)")
         super.onAttach(context)
         loge("Fragment ${this::class.java.simpleName} is attached to context!!!")
     }
     override fun onAttach(act: Activity) {
+        loge("Fragment ${this::class.simpleName} onAttach(act)")
         super.onAttach(act)
         loge("Fragment ${this::class.java.simpleName} is attached to activity!!!")
     }
+    @CallSuper
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        childFragment.asNotNull { frag: FragBase ->
+            frag.onLifecycleAttach(this)
+            if(frag is Frag) frag.firstFragPageOnActivePosition= 0
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         loge("Fragment ${this::class.simpleName} onCreate()")
+        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
-        super.onStart()
         loge("Fragment ${this::class.simpleName} onStart()")
+        super.onStart()
         currentState= LifecycleBase.State.STARTED
     }
 
     override fun onResume() {
-        super.onResume()
         loge("Fragment ${this::class.simpleName} onResume()")
+        super.onResume()
         currentState= LifecycleBase.State.ACTIVE
-        if(firstFragPageOnActivePosition >= 0){
+        if(firstFragPageOnActivePosition.isNotNegative()){
             onActive(_prop_parentLifecycle?.layoutView, _prop_parentLifecycle, firstFragPageOnActivePosition)
             firstFragPageOnActivePosition= -1
         }
     }
 
     override fun onPause() {
-        super.onPause()
         loge("Fragment ${this::class.simpleName} onPause()")
+        super.onPause()
         currentState= LifecycleBase.State.PAUSED
     }
 
     @CallSuper
     override fun onDetach() {
+        loge("Fragment ${this::class.simpleName} onDetach()")
         super.onDetach()
         loge("Fragment ${this::class.java.simpleName} is detached!!!")
     }
 
     override fun onDestroy() {
+        loge("Fragment ${this::class.simpleName} onDestroy()")
         if(this is AutoRestoreViewClient)
             extractAllViewContent()
 
