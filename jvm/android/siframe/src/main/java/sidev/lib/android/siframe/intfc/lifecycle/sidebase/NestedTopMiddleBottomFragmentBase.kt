@@ -84,11 +84,12 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                             loge("=======bottomFragment!!.onViewCreatedListener=======")
                             loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.size?.string= ${adp.headerView?.size?.string} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.yEndInWindow= ${adp.headerView?.yEndInWindow}")
                             loge("view.size.string= ${view.size.string} view.height= ${view.height}")
-                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
                             loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
                             loge("rv.screenHeight= ${rv.screenHeight}")
                             loge("adp.headerView != null => ${adp.headerView != null} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} rv.yEndInWindow = ${rv.yEndInWindow}")
                             loge("rv.adapter == adp => ${rv.adapter == adp} rv.adapter == null => ${rv.adapter == null}")
+                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
+
                             val rvYEnd= rv.yEndInWindow +
                                     if(adp.headerView != null && adp.headerView!!.height == 0) //Bertujuan agar perhitungan total panjang rv sesuai setelah ditambah panjang headerView
                                         adp.headerView!!.size[1] //
