@@ -195,8 +195,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
             attachActBarView(0)
             attachActBarTitle(0)
             isActBarAttached= true
-        }
-        frag.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
+        } else if(this !is ViewPagerBase<*>)
+            frag.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
     }
     @CallSuper
     override fun onResumeFragments() {
