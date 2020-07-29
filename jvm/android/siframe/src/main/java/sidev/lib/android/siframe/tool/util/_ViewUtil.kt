@@ -39,6 +39,7 @@ import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.universal.`fun`.isZero
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.notNullTo
 import sidev.lib.universal.`fun`.string
@@ -99,11 +100,11 @@ object  _ViewUtil{
      */
     fun getViewXEndInWindow(v: View): Int{
         val x= getViewLocationInWIndow(v)[0]
-        return x +v.width
+        return x +v.size[0]
     }
     fun getViewYEndInWindow(v: View): Int{
         val y= getViewLocationInWIndow(v)[1]
-        return y +v.height
+        return y +v.size[1]
     }
 
     fun getViewXStartInWindow(v: View): Int{
@@ -275,7 +276,9 @@ object  _ViewUtil{
      */
     fun getViewSize(act: Activity?, view: View): IntArray{
         val res= IntArray(2)
-        if(act != null){
+        res[0]= view.width
+        res[1]= view.height
+        if(res[0].isZero() && res[1].isZero() && act != null){
 /*
             containerView.measure(View.MeasureSpec.makeMeasureSpec(parentView.getWidth(), MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(MAX_HEIGHT, MeasureSpec.AT_MOST));
             final int targetHeight = containerView.getMeasuredHeight();

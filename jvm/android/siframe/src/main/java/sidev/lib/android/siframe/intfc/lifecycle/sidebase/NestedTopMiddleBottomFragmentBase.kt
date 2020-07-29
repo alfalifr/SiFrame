@@ -90,10 +90,12 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                             loge("rv.adapter == adp => ${rv.adapter == adp} rv.adapter == null => ${rv.adapter == null}")
                             loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
 
-                            val rvYEnd= rv.yEndInWindow +
+                            val rvYEnd= rv.yEndInWindow
+/*
                                     if(adp.headerView != null && adp.headerView!!.height == 0) //Bertujuan agar perhitungan total panjang rv sesuai setelah ditambah panjang headerView
                                         adp.headerView!!.size[1] //
                                     else 0
+ */
                             loge("rvYEnd= $rvYEnd")
 
                             if(rvYEnd +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
