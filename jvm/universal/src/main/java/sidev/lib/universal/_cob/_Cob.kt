@@ -53,16 +53,24 @@ fun main(args: Array<String>) {
 
     prin("0.0.isZero() => ${0.0.isZero()} 0.00000000.isZero() => ${0.00000000.isZero()} 0.00000001.isZero() => ${0.00000001.isZero()} 0.0000001.isPositive() => ${0.0000001.isPositive()} (-0.0000001).isNegative() => ${(-0.0000001).isNegative()}")
     prin("(-1).isNegative() => ${(-1).isNegative()} (-0.1).isNegative() => ${(-0.1).isNegative()} (-0.00000000001).isPositive() => ${(-0.00000000001).isPositive()}")
+
+    1("aak")
+
+    val b= 1
+//    val c= 1 +if(b == 2) b else 3
+    prin("1 +if(b == 2) b else 3 => ${1 +if(b == 2) b else 3}")
 }
-fun plus(a: Number, b: Number): Number = a + b
-fun rem(a: Number, b: Number): Number = a % b
+internal fun plus(a: Number, b: Number): Number = a + b
+internal fun rem(a: Number, b: Number): Number = a % b
 
-class BooleanWrap(private val value: String): Comparable<String> by value
+internal class BooleanWrap(private val value: String): Comparable<String> by value
 
-class ADE{
+internal class ADE{
     val a: ArrayList<Int> by lazy { ArrayList<Int>() }
 }
 
-enum class En{A, C, Z, E}
+internal enum class En{A, C, Z, E}
 
-fun <T> ArrayList<T>.aoe(){}
+internal fun <T> ArrayList<T>.aoe(){}
+
+internal operator fun Int.invoke(other: Any, other2: Any?= null) = prine("Int.invoke() = this= $this other= $other other2= $other2")
