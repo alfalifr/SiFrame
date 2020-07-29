@@ -74,7 +74,9 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                         // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
 
                         bottomFragment!!.onViewCreatedListener= { view, _ ->
-                            loge("rv.yEndInWindow= ${rv.yEndInWindow} adp.headerView?.size?.string= ${adp.headerView?.size?.string} view.size.string= ${view.size.string}")
+                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.size?.string= ${adp.headerView?.size?.string}")
+                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow}  view.size.string= ${view.size.string}")
+                            loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
                             loge("rv.screenHeight= ${rv.screenHeight}")
                             if(rv.yEndInWindow +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
                                 view.detachFromParent() // maka lepas bottomView dari kontainer awal.

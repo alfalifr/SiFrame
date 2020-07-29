@@ -89,6 +89,7 @@ object  _ViewUtil{
      */
     fun getViewLocationInWIndow(v: View): IntArray{
         val location= IntArray(2)
+//        v.transformFromViewToWindowSpace()
         v.getLocationInWindow(location)
         return location
     }
