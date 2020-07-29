@@ -28,7 +28,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.tool.util.`fun`.logew
 import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.exception.IllegalStateExc
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].
@@ -57,8 +59,11 @@ abstract class Frag : Fragment(),
 
     override val _prop_ctx: Context
         get() = context!!
-    override var _prop_parentLifecycle: ActFragBase?= null
-        internal set
+    final override var _prop_parentLifecycle: ActFragBase?= null
+        private set
+    final override var _prop_hierarchyOder: Int= 0
+        private set
+
     val actSimple: Act?
         get() = activity as? Act ?: _prop_parentLifecycle as? Act
 //    val actBarContentNavAct
@@ -182,6 +187,9 @@ abstract class Frag : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         loge("Fragment ${this::class.simpleName} onCreate()")
+        //TODO <29 Juli 2020> => Sementara ini msh peringatan pada log, ke depannya mungkin akan throw exception.
+        if(_prop_parentLifecycle == null)
+            logew("_prop_parentLifecycle == null, lifecycle dapat menjadi tidak stabil!!!")
         super.onCreate(savedInstanceState)
     }
 
@@ -211,6 +219,7 @@ abstract class Frag : Fragment(),
     override fun onDetach() {
         loge("Fragment ${this::class.simpleName} onDetach()")
         super.onDetach()
+        onLifecycleDetach()
         loge("Fragment ${this::class.java.simpleName} is detached!!!")
     }
 
@@ -292,10 +301,25 @@ abstract class Frag : Fragment(),
         }
     }
 // */
-    override fun onLifecycleAttach(callingLifecycle: ActFragBase?) {
+    override fun onLifecycleAttach(callingLifecycle: ActFragBase) {
         super.onLifecycleAttach(callingLifecycle)
-        loge("callingLifecycle= ${callingLifecycle?.classSimpleName()}")
-        _prop_parentLifecycle= callingLifecycle
+        if(callingLifecycle == _prop_parentLifecycle) return
+
+        loge("Fragment: ${this::class} is attached to lifecycle: ${callingLifecycle.clazz}")
+        if(callingLifecycle._prop_hierarchyOder >= _prop_hierarchyOder){ //Berguna agar _prop_parentLifecycle yg di-attach bkn merupakan parent yg jauh scr hirarki.
+                // Pengecekan berfungsi agar _prop_parentLifecycle yg di-attach tetap parent scr langsung pada hirarki.
+            _prop_parentLifecycle= callingLifecycle
+            _prop_hierarchyOder= callingLifecycle._prop_hierarchyOder +1
+        } else
+            throw IllegalStateExc(this::class, callingLifecycle::class,
+                "_prop_hierarchyOder = ${callingLifecycle._prop_hierarchyOder}",
+                "_prop_hierarchyOder >= $_prop_hierarchyOder",
+                "onLifecycleAttach() -> panggil onLifecycleDetach() agar ${this::class} lepas dari lifecycle sebelumnya (${_prop_parentLifecycle?.clazz})")
+    }
+    override fun onLifecycleDetach(){
+        super.onLifecycleDetach()
+        _prop_parentLifecycle= null
+        _prop_hierarchyOder= 0
     }
     //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
 //    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}

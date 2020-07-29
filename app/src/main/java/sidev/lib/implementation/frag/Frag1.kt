@@ -7,6 +7,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
+import sidev.lib.universal.`fun`.clazz
 
 class Frag1 : ActBarFrag(){
     override val actBarId: Int
@@ -20,7 +21,7 @@ class Frag1 : ActBarFrag(){
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag1"
         _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumputMuda)
-        arguments
+        loge("Frag1 _prop_parentLifecycle?.clazz => ${_prop_parentLifecycle?.clazz}")
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {

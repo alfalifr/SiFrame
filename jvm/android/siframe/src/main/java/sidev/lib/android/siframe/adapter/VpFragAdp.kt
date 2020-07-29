@@ -9,6 +9,7 @@ import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.prop.ParentLifecycleProp
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.universal.exception.PropertyAccessExc
 import java.lang.Exception
 /*
 //class ViewPagerFragAdp (var fm: FragmentManager, vararg items: SimpleAbsFrag): PagerAdapter(){
@@ -108,7 +109,9 @@ open class VpFragAdp(fm: FragmentManager, vararg items: Frag)
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val res= super.instantiateItem(container, position)
-        items!![position].onLifecycleAttach(_prop_parentLifecycle)
+        if(_prop_parentLifecycle == null)
+            throw PropertyAccessExc(this::class, ownerName = this::class.toString(), propertyName = "_prop_parentLifecycle")
+        items!![position].onLifecycleAttach(_prop_parentLifecycle!!)
         return res
     }
 

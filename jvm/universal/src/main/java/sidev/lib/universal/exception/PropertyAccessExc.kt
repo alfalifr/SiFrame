@@ -8,7 +8,7 @@ open class PropertyAccessExc(
     ownerName: String?= "<owner>",
     propertyName: String?= "<properti>")
     : Exc(relatedClass, "Terdapat bbrp properti ${kind.msg}",
-    """Properti yg bermasalah: "$propertyName" pada "$ownerName". Harap setting dulu."""){
+    """Properti yg bermasalah: "$propertyName" pada "$ownerName". Harap setting value-nya dulu."""){
 
     enum class Kind(val msg: String){
         Null("nullable yg msh null"),

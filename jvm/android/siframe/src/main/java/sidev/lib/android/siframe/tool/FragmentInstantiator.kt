@@ -54,9 +54,10 @@ open class FragmentInstantiator<F: Fragment> private constructor(
                 throw IllegalStateException("FragmentInstantiator untuk Fragment: \"$fragmentClass\" harus punya \"fragContainerView\" atau \"fragContainerId\" yg berada di dalam Activity: \"${activity::class}\"")
             }
         }
-        loge("fragment is Frag && activity is ActFragBase => ${fragment is Frag && activity is ActFragBase}")
+//        loge("fragment is Frag && activity is ActFragBase => ${fragment is Frag && activity is ActFragBase}")
         if(fragment is Frag && activity is ActFragBase)
-            fragment._prop_parentLifecycle= activity
+            fragment.onLifecycleAttach(activity)
+//            fragment._prop_parentLifecycle= activity
 
         activity.lifecycle.addObserver(this)
     }

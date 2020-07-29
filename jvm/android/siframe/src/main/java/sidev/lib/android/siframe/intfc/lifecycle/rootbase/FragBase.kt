@@ -2,7 +2,10 @@ package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
+import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
 import sidev.lib.android.siframe.intfc.prop.ParentLifecycleProp
 
 interface FragBase: ActFragBase, ParentLifecycleProp{
@@ -27,7 +30,14 @@ interface FragBase: ActFragBase, ParentLifecycleProp{
 
     /**
      * Fungsi yg dipanggil saat fragment turunan [FragBase] ini menempel di [ActFragBase].
+     * Fungsi ini dipanggil saat [FragmentActivity.onAttachFragment] atau [Fragment.onAttachFragment].
      */
     @CallSuper
-    fun onLifecycleAttach(callingLifecycle: ActFragBase?){}
+    fun onLifecycleAttach(callingLifecycle: ActFragBase){}
+    /**
+     * Fungsi yg dipanggil saat fragment turunan [FragBase] ini dilepaskan dari [ActFragBase].
+     * Fungsi ini dipanggil saat [Fragment.onDetach].
+     */
+    @CallSuper
+    fun onLifecycleDetach(){}
 }

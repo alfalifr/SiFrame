@@ -34,6 +34,7 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.universal.exception.IllegalStateExc
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
@@ -195,8 +196,13 @@ abstract class Act : AppCompatActivity(), Inheritable,
             attachActBarView(0)
             attachActBarTitle(0)
             isActBarAttached= true
-        } else if(this !is ViewPagerBase<*>)
-            frag.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
+        }
+        frag.asNotNull { frag: FragBase ->
+            try{ frag.onLifecycleAttach(this) }
+            catch (e: IllegalStateExc){
+                loge("${this::class} fragment.onLifecycleAttach() IllegalStateExc diabaikan.")
+            }
+        }
     }
     @CallSuper
     override fun onResumeFragments() {

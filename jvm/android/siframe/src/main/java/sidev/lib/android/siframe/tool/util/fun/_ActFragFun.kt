@@ -18,6 +18,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import org.jetbrains.anko.contentView
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util._BitmapUtil
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
 import sidev.lib.android.siframe.tool.FragmentInstantiator
@@ -44,22 +46,20 @@ fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     context?.toast(msg, length)
 }
 
-fun Context.commitFrag(fragment: Fragment,
+fun FragmentManager.commitFrag(fragment: Fragment,
                        fragContainerView: ViewGroup?= null,
                        @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
                        tag: String= fragment::class.java.name){
-    when(this){
-        is FragmentActivity -> {
-            val fragTrans= supportFragmentManager.beginTransaction()
-            val containerId= when {
-                fragContainerId != View.NO_ID -> fragContainerId
-                fragContainerView != null -> {
-                    if(fragContainerView.id == View.NO_ID)
-                        fragContainerView.id= View.generateViewId()
-                    fragContainerView.id
-                }
-                else -> View.NO_ID
-            }
+    val fragTrans= beginTransaction()
+    val containerId= when {
+        fragContainerId != View.NO_ID -> fragContainerId
+        fragContainerView != null -> {
+            if(fragContainerView.id == View.NO_ID)
+                fragContainerView.id= View.generateViewId()
+            fragContainerView.id
+        }
+        else -> View.NO_ID
+    }
 /*
             this.contentView.notNull {
                 if(containerId.isIdDuplicatedInView(it) && fragContainerView != null){
@@ -68,25 +68,30 @@ fun Context.commitFrag(fragment: Fragment,
                 }
             }
  */
-            //TODO ilangi loge
-            loge("containerId == View.NO_ID => ${containerId == View.NO_ID} containerId= $containerId idName= ${try{containerId asResNameBy this} catch (e: Exception){null}} tag= $tag")
-            fragTrans.replace(containerId, fragment, tag)
-            fragTrans.commit()
-        }
-/*
-        else -> {
-            val fragTrans= fragmentManager.beginTransaction()
-            fragTrans.replace(fragContainerId, fragment)
-            fragTrans.commit()
-        }
- */
+    //TODO ilangi loge
+//    loge("containerId == View.NO_ID => ${containerId == View.NO_ID} containerId= $containerId idName= ${try{containerId asResNameBy this} catch (e: Exception){null}} tag= $tag")
+    fragTrans.replace(containerId, fragment, tag)
+    fragTrans.commit()
+}
+fun Context.commitFrag(fragment: Fragment,
+                       fragContainerView: ViewGroup?= null,
+                       @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
+                       tag: String= fragment::class.java.name){
+    when(this){
+        is FragmentActivity -> supportFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag)
     }
 }
 fun Fragment.commitFrag(fragment: Fragment,
                         fragContainerView: ViewGroup?= null,
                         @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
                         tag: String= fragment::class.java.name){
-    activity?.commitFrag(fragment, fragContainerView, fragContainerId, tag)
+//    activity?.commitFrag(fragment, fragContainerView, fragContainerId, tag)
+    childFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag)
+}
+
+fun FragBase.forcedAttach(callingLifecyle: ActFragBase){
+    onLifecycleDetach()
+    onLifecycleAttach(callingLifecyle)
 }
 
 

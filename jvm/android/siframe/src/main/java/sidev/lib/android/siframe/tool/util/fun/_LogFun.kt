@@ -3,6 +3,8 @@ package sidev.lib.android.siframe.tool.util.`fun`
 import android.util.Log
 import sidev.lib.android.siframe._customizable._Config
 
+fun Any.logew(txt: String, throwable: Throwable?= null) = loge("=== \n =================== \n WARNING!!! -> $txt \n =================== \n", throwable)
+
 fun Any.loge(txt: String, throwable: Throwable?= null){
     if(_Config.LOG){
         var tag= this::class.java.simpleName
