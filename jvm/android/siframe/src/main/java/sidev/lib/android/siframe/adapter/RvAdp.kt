@@ -235,7 +235,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             if(!isItemClickEnabled)
                 holder.itemView.isClickable= false
 
-            __bindVH(holder, position, data, true) //dataInd
+            __bindVH(holder, position, data, false) //dataInd
             bindVH(holder, position, data)
 
             if(isItemClickEnabled)
@@ -243,7 +243,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                     selectItem(position, onlyShownItem = true) //jika true, maka [dataInd] akan diproses lagi, yg mungkin dapat menyebabkan error.
                     onItemClickListener?.onClickItem(v, holder.adapterPosition, data)
                 }
-        }.isNull { __bindVH(holder, position, null, false) }
+        }.isNull { __bindVH(holder, position, null, true) }
         //dataList!![dataInd]
                 //<9 Juli 2020> => Pakai fungsi [getDataAt] agar definisi diperolehnya data bisa dioverride.
                 // Knp kok pake [position] bkn [dataInd]? Karena di fungsi [getDataAt] sudah diberi filter.
