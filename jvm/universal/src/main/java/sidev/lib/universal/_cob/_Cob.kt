@@ -23,7 +23,11 @@ fun main(args: Array<String>) {
  */
 
     prin("decimal= $decimal decimalRound= $decimalRound decimal2= $decimal2 1.2315f.toInt()= ${1.2315f.toInt()}")
-
+    val roundClosest= (-1).roundClosest(0 .. Int.MAX_VALUE)
+    val intMinVal= Int.MIN_VALUE
+    val longMinVal= Long.MIN_VALUE
+    prin("roundClosest= $roundClosest intMinVal= $intMinVal intMinVal.absoluteValue= ${intMinVal.absoluteValue} Int.MAX_VALUE= ${Int.MAX_VALUE}")
+    prin("longMinVal= $longMinVal longMinVal.absoluteValue= ${longMinVal.absoluteValue} Long.MAX_VALUE= ${Long.MAX_VALUE}")
 //    val newVal= 1254.6178.round(-2)
     val double1= 12345.678.round(-2)
     val float1= 7654.321f//.round(-2, RoundMethod.CEIL)

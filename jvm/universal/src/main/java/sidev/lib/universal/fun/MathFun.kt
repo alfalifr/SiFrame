@@ -27,13 +27,13 @@ fun <T: Comparable<T>> moreThanEqual():(T, T) -> Boolean= {i1, i2 -> i1 >= i2}
 
 
 infix fun Int.roundClosest(range: IntRange): Int{
-    val diffToFirst= abs(this -range.first)
-    val diffToLast= abs(this -range.last)
+    val diffToFirst= (this -range.first).asNumber().absoluteValue //Dijadikan number agar Int.MIN_VALUE dan Long.MIN_VLAUE dapat diubah jadi absolute value.
+    val diffToLast= (this -range.last).asNumber().absoluteValue
 
     return if(diffToFirst < diffToLast) range.first
     else range.last
 }
-infix fun Number.roundClosest(range: IntRange): Number{
+infix fun Number.roundClosest(range: IntRange): Int{
     val diffToFirst= (this -range.first).absoluteValue
     val diffToLast= (this -range.last).absoluteValue
 
@@ -120,13 +120,23 @@ fun String.toNumber(): Number{
     }
 }
 
-val Number.absoluteValue: Number
-    get()= when(this){
-        is Int -> absoluteValue
-        is Long -> absoluteValue
-        is Float -> absoluteValue
-        is Double -> absoluteValue
-        else -> if(!isNegative()) this else -this
+fun Number.asNumber(): Number = this
+/**
+ * Mengambil nilai absolut dari `this.extension` [Number] apapun formatnya.
+ * Special Case:
+ *   - `Int.MIN_VALUE` dan `Long.MIN_VALUE` akan menghasilkan MIN_VALUE +1 agar bisa jadi positif.
+ */
+val <T: Number> T.absoluteValue: T
+    get(){
+        val res= when(this){
+            is Int -> absoluteValue
+            is Long -> absoluteValue
+            is Float -> absoluteValue
+            is Double -> absoluteValue
+            else -> if(!isNegative()) this else -this
+        }
+        return if(res.isNotNegative()) res as T
+        else (res +1).absoluteValue as T
     }
 
 /*

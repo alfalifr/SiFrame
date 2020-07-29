@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -14,6 +15,7 @@ import sidev.lib.universal.structure.data.BoxedVal
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.universal.`fun`.notNull
