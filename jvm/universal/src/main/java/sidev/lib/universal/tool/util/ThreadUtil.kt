@@ -3,6 +3,7 @@ package sidev.lib.universal.tool.util
 import android.os.Handler
 import android.util.Log
 import sidev.lib.universal.`fun`.prin
+import sidev.lib.universal.`fun`.prine
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.RunnableFuture
@@ -38,9 +39,8 @@ object ThreadUtil{
     }
 
     fun printCurrentStackTrace(){
-        for(stack in Thread.currentThread().stackTrace){
-            prin(stack)
-        }
+        for(stack in Thread.currentThread().stackTrace)
+            prine(stack)
     }
 
     fun logCurrentStackTrace(){

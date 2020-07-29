@@ -45,6 +45,10 @@ abstract class Frag : Fragment(),
     final override var currentState: LifecycleBase.State= super<FragBase>.currentState
         internal set
     internal var firstFragPageOnActivePosition: Int= -1
+        set(v){
+            field= v
+            loge("clazz= ${this::class} firstFragPageOnActivePosition= $firstFragPageOnActivePosition")
+        }
 
     final override var isExpired: Boolean= false
         private set
