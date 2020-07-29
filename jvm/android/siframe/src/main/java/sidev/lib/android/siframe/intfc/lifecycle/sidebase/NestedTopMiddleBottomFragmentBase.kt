@@ -40,7 +40,7 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                         topFragment!!.onViewCreatedListener= { view, bundle ->
                             loge("=======topFragment!!.onViewCreatedListener=======")
 //                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.size?.string= ${adp.headerView?.size?.string}")
-                            loge("view.height= ${view.height} view.size.string= ${view.size.string}")
+                            loge("view.size.string= ${view.size.string} view.height= ${view.height}")
                             loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
                             loge("adp.footerView?.size?.string = ${adp.footerView?.size?.string} adp.footerView?.height = ${adp.footerView?.height} adp.footerView?.yEndInWindow = ${adp.footerView?.yEndInWindow}")
 //                            loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
@@ -82,8 +82,8 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
 
                         bottomFragment!!.onViewCreatedListener= { view, _ ->
                             loge("=======bottomFragment!!.onViewCreatedListener=======")
-                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.size?.string= ${adp.headerView?.size?.string}")
-                            loge("view.height= ${view.height} view.size.string= ${view.size.string}")
+                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.size?.string= ${adp.headerView?.size?.string} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.yEndInWindow= ${adp.headerView?.yEndInWindow}")
+                            loge("view.size.string= ${view.size.string} view.height= ${view.height}")
                             loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
                             loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
                             loge("rv.screenHeight= ${rv.screenHeight}")
