@@ -87,6 +87,7 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                             loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
                             loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
                             loge("rv.screenHeight= ${rv.screenHeight}")
+                            loge("adp.headerView != null => ${adp.headerView != null} adp.headerView?.height = ${adp.headerView?.height}")
                             val rvYEnd= rv.yEndInWindow +
                                     if(adp.headerView != null && adp.headerView!!.height == 0) //Bertujuan agar perhitungan total panjang rv sesuai setelah ditambah panjang headerView
                                         adp.headerView!!.size[1] //
