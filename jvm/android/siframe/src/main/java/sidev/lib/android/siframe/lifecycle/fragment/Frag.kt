@@ -156,17 +156,18 @@ abstract class Frag : Fragment(),
     }
 
     override fun onAttach(context: Context) {
-        loge("Fragment ${this::class.simpleName} onAttach(ctx)")
+        loge("Fragment ${this::class.simpleName} onAttach(ctx) context: ${context::class}")
         super.onAttach(context)
         loge("Fragment ${this::class.java.simpleName} is attached to context!!!")
     }
     override fun onAttach(act: Activity) {
-        loge("Fragment ${this::class.simpleName} onAttach(act)")
+        loge("Fragment ${this::class.simpleName} onAttach(act) activity: ${act::class}")
         super.onAttach(act)
         loge("Fragment ${this::class.java.simpleName} is attached to activity!!!")
     }
     @CallSuper
     override fun onAttachFragment(childFragment: Fragment) {
+        loge("Fragment ${this::class.simpleName} onAttachFragment() childFrag: ${childFragment::class}")
         super.onAttachFragment(childFragment)
         childFragment.asNotNull { frag: FragBase ->
             frag.onLifecycleAttach(this)

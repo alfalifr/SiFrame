@@ -187,6 +187,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
     private var frag: Fragment?= null
     private var isActBarAttached= false //agar attachActBarView() inisial dilakukan sekali
     override fun onAttachFragment(fragment: Fragment) {
+        loge("Activity ${this::class.simpleName} onAttachFragment() fragment: ${fragment::class}")
         super.onAttachFragment(fragment)
         frag= fragment
         if(this is MultipleActBarViewPagerBase<*>
@@ -199,6 +200,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
     }
     @CallSuper
     override fun onResumeFragments() {
+        loge("Activity ${this::class.simpleName} onResumeFragments()")
         super.onResumeFragments()
         frag.asNotNull { frag: Frag -> frag.onActive(layoutView, this, 0) }
 /*

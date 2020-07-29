@@ -3,6 +3,7 @@ package sidev.lib.universal._cob
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.`val`.RoundMethod
 import kotlin.math.log10
+import kotlin.reflect.KFunction
 
 fun main(args: Array<String>) {
 //    val v = BooleanWrap("a")
@@ -11,6 +12,15 @@ fun main(args: Array<String>) {
     val decimal= 1.2315f -1.2315f.toInt()
     val decimalRound= decimal *10000
     val decimal2= decimalRound -(decimalRound.toInt())
+
+/*
+    fun ok(){}
+    fun ada(): KFunction<Unit>{
+        fun ya(){}
+        return ::ya
+    }
+    ada().call()
+ */
 
     prin("decimal= $decimal decimalRound= $decimalRound decimal2= $decimal2 1.2315f.toInt()= ${1.2315f.toInt()}")
 
