@@ -68,8 +68,6 @@ fun FragmentManager.commitFrag(fragment: Fragment,
                 }
             }
  */
-    //TODO ilangi loge
-//    loge("containerId == View.NO_ID => ${containerId == View.NO_ID} containerId= $containerId idName= ${try{containerId asResNameBy this} catch (e: Exception){null}} tag= $tag")
     fragTrans.replace(containerId, fragment, tag)
     fragTrans.commit()
 }

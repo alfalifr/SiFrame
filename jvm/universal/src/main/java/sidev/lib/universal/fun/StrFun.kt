@@ -1,5 +1,5 @@
 package sidev.lib.universal.`fun`
-
+//TODO <29 Juli 2020> => Buat validator angka (menghilangkan 0 di depan angka).
 fun <T> T.toString(func: (obj: T) -> String): String{
     return func(this)
 }

@@ -26,6 +26,7 @@ fun main(args: Array<String>) {
     val roundClosest= (-1).roundClosest(0 .. Int.MAX_VALUE)
     val intMinVal= Int.MIN_VALUE
     val longMinVal= Long.MIN_VALUE
+    prin("longMinVal -1 = ${longMinVal -1} (longMinVal -1) == Long.MAX_VALUE => ${(longMinVal -1) == Long.MAX_VALUE}")
     prin("roundClosest= $roundClosest intMinVal= $intMinVal intMinVal.absoluteValue= ${intMinVal.absoluteValue} Int.MAX_VALUE= ${Int.MAX_VALUE}")
     prin("longMinVal= $longMinVal longMinVal.absoluteValue= ${longMinVal.absoluteValue} Long.MAX_VALUE= ${Long.MAX_VALUE}")
 //    val newVal= 1254.6178.round(-2)
