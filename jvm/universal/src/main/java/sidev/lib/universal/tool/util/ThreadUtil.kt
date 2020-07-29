@@ -2,6 +2,7 @@ package sidev.lib.universal.tool.util
 
 import android.os.Handler
 import android.util.Log
+import sidev.lib.universal.`fun`.prin
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.RunnableFuture
@@ -34,6 +35,12 @@ object ThreadUtil{
 
     fun delayRun(millis: Long, func: () -> Unit){
         Handler().postDelayed(func, millis)
+    }
+
+    fun printCurrentStackTrace(){
+        for(stack in Thread.currentThread().stackTrace){
+            prin(stack)
+        }
     }
 
     fun logCurrentStackTrace(){
