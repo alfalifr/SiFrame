@@ -25,6 +25,14 @@ fun main(args: Array<String>) {
     prin("decimal= $decimal decimalRound= $decimalRound decimal2= $decimal2 1.2315f.toInt()= ${1.2315f.toInt()}")
 
 //    val newVal= 1254.6178.round(-2)
+    val double1= 12345.678.round(-2)
+    val float1= 7654.321f//.round(-2, RoundMethod.CEIL)
+    val float2= 7654.321//.round(-2, RoundMethod.CEIL)
+    val float3= 7654.321f//.round(-2, RoundMethod.CEIL)
+    val res= (((double1 + float1).round(-2) - float2).round(-2) + float3).round(-2)
+
+    prin("double1= $double1 float1= $float1 res= $res")
+
     prin("log10(123.0).toInt() +1= ${log10(123.0).toInt() +1}")
     prin("1234.5146.getNumberAtDigit(-4)= ${1234.5146.getNumberAtDigit(-4)}")
     prin("1234.getNumberAtDigit(-3)= ${1234.getNumberAtDigit(-3)}")
