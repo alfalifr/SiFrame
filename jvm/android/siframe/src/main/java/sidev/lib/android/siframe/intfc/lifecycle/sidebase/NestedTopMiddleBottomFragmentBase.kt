@@ -38,6 +38,13 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                         // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
 
                         topFragment!!.onViewCreatedListener= { view, bundle ->
+                            loge("=======topFragment!!.onViewCreatedListener=======")
+//                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.size?.string= ${adp.headerView?.size?.string}")
+                            loge("view.height= ${view.height} view.size.string= ${view.size.string}")
+                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
+                            loge("adp.footerView?.size?.string = ${adp.footerView?.size?.string} adp.footerView?.height = ${adp.footerView?.height} adp.footerView?.yEndInWindow = ${adp.footerView?.yEndInWindow}")
+//                            loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
+                            loge("rv.screenHeight= ${rv.screenHeight}")
                             view.detachFromParent()
                             adp.headerView= view
                             _initTopView(view)
@@ -74,11 +81,19 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                         // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
 
                         bottomFragment!!.onViewCreatedListener= { view, _ ->
+                            loge("=======bottomFragment!!.onViewCreatedListener=======")
                             loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.size?.string= ${adp.headerView?.size?.string}")
-                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow}  view.size.string= ${view.size.string}")
+                            loge("view.height= ${view.height} view.size.string= ${view.size.string}")
+                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
                             loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
                             loge("rv.screenHeight= ${rv.screenHeight}")
-                            if(rv.yEndInWindow +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
+                            val rvYEnd= rv.yEndInWindow +
+                                    if(adp.headerView != null && adp.headerView!!.height == 0) //Bertujuan agar perhitungan total panjang rv sesuai setelah ditambah panjang headerView
+                                        adp.headerView!!.size[1] //
+                                    else 0
+                            loge("rvYEnd= $rvYEnd")
+
+                            if(rvYEnd +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
                                 view.detachFromParent() // maka lepas bottomView dari kontainer awal.
                                 adp.footerView= view // dan ganti masukan ke adapter agar jadi nested
                             }
