@@ -93,14 +93,23 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                             loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
 
                             val rvYEnd= rv.yEndInWindow
+                            val headerHeight= adp.headerView?.height ?: 0
+                            val headerMeasuredHeight= adp.headerView?.size?.get(1) ?: 0
+
+                            val totalYEnd= rvYEnd + when{
+                                headerHeight == 0 -> headerMeasuredHeight
+                                headerMeasuredHeight > rvYEnd -> headerMeasuredHeight
+                                else -> 0
+                            }
+//                                when{adp.headerView != null && adp.headerView!!.yEndInWindow >= rv.yEndInWindow-> adp.headerView!!.yEndInWindow//rv.yEndInWindow }
 /*
                                     if(adp.headerView != null && adp.headerView!!.height == 0) //Bertujuan agar perhitungan total panjang rv sesuai setelah ditambah panjang headerView
                                         adp.headerView!!.size[1] //
                                     else 0
  */
-                            loge("rvYEnd= $rvYEnd")
+                            loge("rvYEnd= $rvYEnd totalYEnd= $totalYEnd")
 
-                            if(rvYEnd +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
+                            if(totalYEnd +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
                                 view.detachFromParent() // maka lepas bottomView dari kontainer awal.
                                 adp.footerView= view // dan ganti masukan ke adapter agar jadi nested
                             }
