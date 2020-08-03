@@ -53,8 +53,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
 //    MviView<State>,
 //    PresenterCallback<Presenter>, //Ini memungkinkan Programmer untuk memilih arsitektur MVP. Repository adalah Presneter namun sudah lifecycle-aware.
     BackBtnBase {
-    var isActivitySavedInstanceStateNull= true
-        private set
+//    var isActivitySavedInstanceStateNull= true
+//        private set
 
     final override var currentState: LifecycleBase.State= super<ActFragBase>.currentState
         internal set
@@ -66,7 +66,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
 
     override var isInherited: Boolean= false
     override fun _configInheritable(){}
-/*
+
+    /*
     override val lifecycleCtx: Context
         get() = this
     override val _prop_ctx: Context
@@ -121,7 +122,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         loge("Activity ${this::class.simpleName} onCreate()")
-        isActivitySavedInstanceStateNull= savedInstanceState == null
+//        isActivitySavedInstanceStateNull= savedInstanceState == null
         setStyle(this)
         super.onCreate(savedInstanceState)
         setContentView(layoutId)

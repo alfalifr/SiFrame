@@ -15,7 +15,7 @@ fun main(){
     val newProd= oldProd?.clone()
 
     val startClone= System.nanoTime()
-    val newBound: Bound= oldBound.clone()
+    val newBound= oldBound.clone()
     val endClone= System.nanoTime()
     val elapsedTime= (endClone - startClone) / 1e9
 

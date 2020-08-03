@@ -3,15 +3,18 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.intfc.lifecycle.FragmentHostBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 
-interface TopMiddleBottomFragmentBase: TopMiddleBottomBase {
+interface TopMiddleBottomFragmentBase: TopMiddleBottomBase, FragmentHostBase {
     val topFragment: Frag?
     val bottomFragment: Frag?
+    override val _prop_fm: FragmentManager
 
     override val topLayoutId: Int
         get() = topFragment?.layoutId ?: super.topLayoutId
@@ -26,7 +29,7 @@ interface TopMiddleBottomFragmentBase: TopMiddleBottomBase {
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isTopContainerNestedInRv }
                 ?: false
         if(topFragment != null && topContainer != null && !isTopLayoutNestedInRv){
-            c.commitFrag(topFragment!!, topContainer!!)
+            _prop_fm.commitFrag(topFragment!!, topContainer!!)
             topFragment!!.onViewCreatedListener= { view, bundle -> _initTopView(view) }
         }
 
@@ -42,7 +45,7 @@ interface TopMiddleBottomFragmentBase: TopMiddleBottomBase {
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isBottomContainerNestedInRv }
                 ?: false
         if(bottomFragment != null && bottomContainer != null && !isBottomLayoutNestedInRv){
-            c.commitFrag(bottomFragment!!, bottomContainer!!)
+            _prop_fm.commitFrag(bottomFragment!!, bottomContainer!!)
             bottomFragment!!.onViewCreatedListener= { view, bundle -> _initBottomView(view) }
         }
     }

@@ -1,5 +1,7 @@
 package sidev.lib.universal.`fun`
 
+//import sidev.lib.universal._cob.isInstance
+//import sidev.lib.universal._cob.isSubtypeOf
 import sidev.lib.universal.`val`.StringLiteral
 import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.annotation.Interface
@@ -7,8 +9,14 @@ import sidev.lib.universal.annotation.renamedName
 import sidev.lib.universal.exception.ClassCastExc
 import sidev.lib.universal.exception.NonInstantiableTypeExc
 import sidev.lib.universal.exception.TypeExc
+import sidev.lib.universal.exception.UndefinedDeclarationExc
 import sidev.lib.universal.structure.collection.iterator.*
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
+import sidev.lib.universal.structure.data.InferredType
+import sidev.lib.universal.structure.data.LinkedTypeParameter
+import sidev.lib.universal.structure.data.TypedValue
+import sidev.lib.universal.structure.data.withType
+import sidev.lib.universal.structure.type.Null
 import java.io.Serializable
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.*
@@ -26,6 +34,484 @@ fun Any.findSealedSubclass(func: ()): Class{
     this::class.isInstance()
 }
  */
+
+
+
+/*
+==========================
+KType - KTypeParameter - KTypeProjection
+==========================
+ */
+val <T: Any> KClass<T>.arrayTypeArgument: KTypeProjection?
+    get(){
+        if(!isArray) return null
+
+        var variance= typeParameters.firstOrNull()?.variance
+        val classifier= if(toString() == Array<Any>::class.toString()) typeParameters.first()
+        else {
+            variance= KVariance.INVARIANT
+            when(this){
+                IntArray::class -> Int::class
+                LongArray::class -> Long::class
+                FloatArray::class -> Float::class
+                DoubleArray::class -> Double::class
+                CharArray::class -> Char::class
+                ShortArray::class -> Short::class
+                BooleanArray::class -> Boolean::class
+                ByteArray::class -> Byte::class
+                else -> return null
+            }
+        }
+        return KTypeProjection(variance, classifier.createType())
+    }
+
+
+/**
+ * Mengambil [KTypeProjection] dari `this.extension` [KTypeParameter] dg [KType]
+ * dari kelas sesungguhnya yg disimpulkan dari nilai properti yg dimiliki oleh [owner].
+ */
+fun KTypeParameter.getClassProjectionIn(owner: Any): KTypeProjection {
+    if(owner::class.isArray && this in owner::class.typeParameters){
+        return if(owner::class.isObjectArray) KTypeProjection(variance, inferElementType(owner as Array<*>))
+        else owner::class.arrayTypeArgument
+            ?: throw UndefinedDeclarationExc(undefinedDeclaration = owner::class, detailMsg = "Terdapat sebuah array primitif, namun tidak terdefinisi dalam bahasa Kotlin.")
+    }
+    for(prop in owner::class.nestedDeclaredMemberPropertiesTree){
+        if((prop.returnType.classifier as? KClass<*>)?.isArray == true){ //Ada kasus spesial, yaitu array, di mana elemennya tidak ada pada properti.
+            if(prop.returnType.arguments.find { it.type?.classifier == this } != null)
+                prop.forcedGet(owner).notNull { array ->
+                    (prop.returnType.classifier as KClass<*>).typeParameters.first()
+                        .getClassProjectionIn(array).also { if(it != KTypeProjection.STAR) return it }
+                }
+        } else if(this == prop.returnType.classifier)
+            prop.forcedGet(owner).notNull { valueProjection ->
+//                    prine("owner= $owner prop= $prop valueProjection= $valueProjection class= ${valueProjection::class}")
+                val typeParamProjectionList= ArrayList<KTypeProjection>()
+//                for(ownerTypeParam in owner::class.typeParameters)
+                for(typeParam in valueProjection::class.typeParameters)
+                    typeParam.getClassProjectionIn(valueProjection)
+                        .notNull { typeParamProjectionList += it }
+//                            .isNull { typeParamProjectionList += KTypeProjection.STAR }
+                val type= valueProjection::class.createType(typeParamProjectionList, prop.returnType.isMarkedNullable)
+                return KTypeProjection(variance, type)
+            }
+    }
+    prine("""KTypeParameter.getProjectionIn() -> Tidak bisa mendapatkan proyeksi dari KTypeParameter: "$this", proyeksi akhir "KTypeProjection.STAR".""")
+    return KTypeProjection.STAR
+}
+
+/** Mengambil hubungan nested antar [KTypeParameter] dalam satu [KClass]. */
+fun KTypeParameter.getTypeParameterLink(clazz: KClass<*>): LinkedTypeParameter? {
+    val targetTypeParams= clazz.typeParameters
+    if(this !in targetTypeParams) return null
+
+    val linkedTypeParamList= ArrayList<KTypeParameter>()
+    for(typeArg in nestedUpperBoundTypeArguments){
+        val typeParamItr= typeArg.type?.classifier
+        if(typeParamItr in targetTypeParams && typeParamItr !in linkedTypeParamList)
+            linkedTypeParamList += typeParamItr as KTypeParameter
+    }
+    return LinkedTypeParameter(this, linkedTypeParamList)
+}
+
+/** Sequence semua nested [KTypeProjection] dari `upperBounds`. `this.extension` upperBounds juga disertakan. */
+val KTypeParameter.nestedUpperBoundTypeArguments: NestedSequence<KTypeProjection>
+    get()= object : NestedSequence<KTypeProjection>{
+        private val initUpperBounds= this@nestedUpperBoundTypeArguments.upperBounds
+        override fun iterator(): NestedIterator<KType, KTypeProjection>
+                = object : NestedIteratorImpl<KType, KTypeProjection>(initUpperBounds.iterator()){
+            private var initOutputEmitionLimit= initUpperBounds.size
+            private var emissionNumber= 0
+            override fun getOutputIterator(nowInput: KType): Iterator<KTypeProjection>?
+                    = if(emissionNumber++ < initOutputEmitionLimit) {
+                newIteratorSimple(KTypeProjection(this@nestedUpperBoundTypeArguments.variance, nowInput))
+            } else nowInput.arguments.iterator()
+            override fun getInputIterator(nowOutput: KTypeProjection): Iterator<KType>?
+                    = if(nowOutput.type != null) newIteratorSimple(nowOutput.type!!) else null
+        }
+    }
+
+/**
+ * Sequence semua nested [KTypeProjection] yg ada di dalam `this.extension`.
+ * Properti ini mirip dg [nestedUpperBoundTypeArguments], namun yg dimaksud [KTypeProjection] di sini
+ * adalah proyeksi yg sesungguhnya, bkn merupakan yg dideklarasikan pada sebuah kelas (upperBounds).
+ */
+val KTypeProjection.nestedProjections: NestedSequence<KTypeProjection>
+    get()= object : NestedSequence<KTypeProjection>{
+        override fun iterator(): NestedIteratorSimple<KTypeProjection>
+                = object : NestedIteratorSimpleImpl<KTypeProjection>(this@nestedProjections){
+            override fun getOutputIterator(nowInput: KTypeProjection): Iterator<KTypeProjection>?
+                    = nowInput.type?.arguments?.iterator()
+        }
+    }
+/**
+ * Sama dg [KTypeProjection.nestedProjections]. `this.extension` juga diikutkan namun sbg [simpleTypeProjection].
+ */
+val KType.nestedProjections: NestedSequence<KTypeProjection>
+    get()= object : NestedSequence<KTypeProjection>{
+        override fun iterator(): NestedIteratorSimple<KTypeProjection>
+                = object : NestedIteratorSimpleImpl<KTypeProjection>(this@nestedProjections.simpleTypeProjection){
+            override fun getOutputIterator(nowInput: KTypeProjection): Iterator<KTypeProjection>?
+                    = nowInput.type?.arguments?.iterator()
+        }
+    }
+/**
+ * Sama dg [KTypeProjection.nestedProjections]. `this.extension` juga diikutkan namun sbg [simpleTypeProjection].
+ */
+val KType.nestedProjectionsTree: NestedSequence<KTypeProjection>
+    get()= object : NestedSequence<KTypeProjection>{
+        override fun iterator(): NestedIteratorSimple<KTypeProjection>
+                = object : NestedIteratorSimpleImpl<KTypeProjection>(this@nestedProjectionsTree.typesTree.map { it.simpleTypeProjection }.iterator()){
+            override fun getOutputIterator(nowInput: KTypeProjection): Iterator<KTypeProjection>?
+                    = nowInput.type?.arguments?.iterator()
+        }
+    }
+val KType.simpleTypeProjection: KTypeProjection
+    get()= KTypeProjection(KVariance.INVARIANT, this)
+
+
+val KClass<*>.nestedTypeParameters: NestedSequence<KTypeParameter>
+    get()= object : NestedSequence<KTypeParameter>{
+        override fun iterator(): NestedIteratorSimple<KTypeParameter>
+                = object : NestedIteratorSimpleImpl<KTypeParameter>(this@nestedTypeParameters.typeParameters){
+            override fun getOutputIterator(nowInput: KTypeParameter): Iterator<KTypeParameter>? {
+                val upperBoundSeq= nowInput.upperBounds.asSequence().map { it.classifier }
+                val typeParamSeq= upperBoundSeq.filter { it is KTypeParameter } as Sequence<KTypeParameter>
+                val classSeq= upperBoundSeq.filter { it is KClass<*> } as Sequence<KClass<*>>
+                val typeSeqFromClass= classSeq.map { it.typeParameters.asSequence() }.toLinear()
+                return (typeParamSeq + typeSeqFromClass).iterator()
+            }
+        }
+    }
+
+/**
+ * Mengambil [InferredType] yg berisi [KType] yg disimpulkan dari properti yg ada di `this.extension` [Any].
+ * Properti ini juga dapat menyimpulkan tipe dari null instance, namun tipe yg disimpulkan menjadi [Null?].
+ */
+val Any?.inferredType: InferredType
+    get(){
+        if(this == null)
+            return Null.type.asInferredType()
+
+        val typeParams= this::class.typeParameters
+
+        val typeParamProjectionList= typeParams.map{ it.getClassProjectionIn(this) } as ArrayList
+        typeParamProjectionList.filterIndex { it.value == KTypeProjection.STAR }
+            .notEmpty { indexedList -> //Jika terdapat star-projection, maka cari apakah projection ada terdapat pada type-param lainnya.
+                val indexList= indexedList.map { it.index } as ArrayList //Untuk mempermudah pengecekan apakah indeks iterasi merupakan indeks untuk star-projection.
+
+                val linkedTypeParamsSeq=
+                    typeParams.asSequence() //.filterIndexed{ i, typeParam -> i !in indexList }
+                        .map { it.getTypeParameterLink(this::class)!! }.asCached()
+                //Digunakan untuk mencari hubungan type-param yg star-projected dg type-param lain.
+                // Dalam konteks ini, nested pada type-param lain.
+
+                var resolvedProjectionCount= 0
+                //Pencairan pada type-param lain di dalam while dilatar-belakangi karena urutan nested tidak urut sesuai [KClass.typeParameters].
+                while(resolvedProjectionCount in 0 until indexList.size){
+                    resolvedProjectionCount= -1
+                    val itrLimit= indexList.size
+                    var itrProgress= 0
+
+                    for(starProjectedIndex in typeParams.indices){
+                        if(itrProgress >= itrLimit) break //Jika indeks iterasi udah melebihi jumlah star-projection, maka akhiri iterasi.
+                        if(starProjectedIndex !in indexList) continue
+                        itrProgress++
+
+                        val starProjectedTypeParam= typeParams[starProjectedIndex] //Cari type-param yg star-projected.
+                        //linkedTypeParamsSeq[starProjectedIndex].typeParam
+                        linkedTypeParamsSeq.findIndexed {
+                            it.value.upperBoundTypeParam.contains(starProjectedTypeParam) //Cari apakah type-param yg star-projected nested di type-param lain.
+                                    && it.index !in indexList // Tentunya nested pada type-param yg bkn star-projected.
+                        }.notNull {
+                            val foundLinkedTypeParam= it.value
+                            val typeParam= foundLinkedTypeParam.typeParam //Type-param lain tempat nested type-param yg star-projected.
+                            val projectionsItr= typeParamProjectionList[it.index].nestedProjections.iterator()
+                            //Iterator untuk projection pada type-param lain.
+
+                            for((upperBoundIndexItr, upperBoundProjection) in typeParam.nestedUpperBoundTypeArguments.withIndex()){
+                                if(upperBoundProjection.type?.classifier == starProjectedTypeParam){
+                                    var itr= -1
+                                    while(++itr < upperBoundIndexItr){ projectionsItr.next() } //while digunakan ketimbang CachedSequence agar tidak membebani heap.
+                                    val realProjectionOfStarProjectedTypeParam= projectionsItr.next()
+                                    typeParamProjectionList[starProjectedIndex]= realProjectionOfStarProjectedTypeParam
+                                    resolvedProjectionCount++ //+= if(resolvedProjectionCount == -1) 2 else 1
+                                    indexList -= starProjectedIndex
+                                    prinr("""Berhasil menyimpulkan starProjectedTypeParam: "$starProjectedTypeParam" proyeksi: "$realProjectionOfStarProjectedTypeParam".""")
+                                    break
+                                }
+                            }
+                        }.isNull { prine("""Tidak bisa menyimpulkan starProjectedTypeParam: "$starProjectedTypeParam" karena tidak tersedia info proyeksi dari type param lain.""") }
+                    }
+                }
+            }
+        return this::class.createType(typeParamProjectionList).asInferredType()
+    }
+
+/** Mengambil [InferredType] yg berisi [KType] yg disimpulkan dari properti yg ada di `this.extension` [Any]. */
+@Deprecated("Tidak dapat meng-infer nested type-projection", ReplaceWith("Any.inferredType"))
+internal val Any.inferredType_old: InferredType
+    get(){
+        val typeParamProjectionList= this::class.typeParameters
+            .map{ it.getClassProjectionIn(this) }
+        return this::class.createType(typeParamProjectionList).asInferredType()
+    }
+
+/** Membungkus `this.extension` [KType] menjadi [InferredType]. */
+fun KType.asInferredType(): InferredType = InferredType(this)
+
+/**
+ * Menentukan apakah `this.extension` [KTypeParameter] merupakan subtype dari [base]
+ * berdasarkan [KTypeParameter.upperBounds]. Fungsi ini menggunakan upperBounds karena
+ * tidak mungkin membandingkan menggunakan tipe sesungguhnya mengingat tidak terdapat type-projection.
+ */
+fun KTypeParameter.isUpperBoundSubTypeOf(base: KTypeParameter): Boolean{
+    return when(val baseBound= base.upperBounds.first().classifier){
+        is KClass<*> -> isUpperBoundSubTypeOf(baseBound)
+        is KTypeParameter -> isUpperBoundSubTypeOf(baseBound)
+        else -> false
+    }
+}
+fun KTypeParameter.isUpperBoundSuperTypeOf(derived: KTypeParameter): Boolean{
+    return when(val baseBound= derived.upperBounds.first().classifier){
+        is KClass<*> -> isUpperBoundSuperTypeOf(baseBound)
+        is KTypeParameter -> isUpperBoundSuperTypeOf(baseBound)
+        else -> false
+    }
+}
+
+fun KTypeParameter.isUpperBoundSubTypeOf(base: KClass<*>): Boolean{
+    return when(val thisBound= upperBounds.first().classifier){
+        is KClass<*> -> thisBound.isSubclassOf(base)
+        is KTypeParameter -> thisBound.isUpperBoundSubTypeOf(base)
+        else -> false
+    }
+}
+fun KTypeParameter.isUpperBoundSuperTypeOf(derived: KClass<*>): Boolean{
+    return when(val thisBound= upperBounds.first().classifier){
+        is KClass<*> -> thisBound.isSuperclassOf(derived)
+        is KTypeParameter -> thisBound.isUpperBoundSuperTypeOf(derived)
+        else -> false
+    }
+}
+
+fun KClass<*>.isUpperBoundSubTypeOf(base: KTypeParameter): Boolean{
+    return when(val baseBound= base.upperBounds.first().classifier){
+        is KClass<*> -> isSubclassOf(baseBound)
+        is KTypeParameter -> isUpperBoundSubTypeOf(baseBound)
+        else -> false
+    }
+}
+fun KClass<*>.isUpperBoundSuperTypeOf(base: KTypeParameter): Boolean{
+    return when(val baseBound= base.upperBounds.first().classifier){
+        is KClass<*> -> isSuperclassOf(baseBound)
+        is KTypeParameter -> isUpperBoundSuperTypeOf(baseBound)
+        else -> false
+    }
+}
+
+/**
+ * Menentukan pakah [any] memiliki tipe yg sama dg `this.extension` [KType].
+ * Fungsi ini hanya menyocokan [KClass] dan nullability.
+ * Untuk TypeParameter dan TypeProjection, pengecekan tidak mungkin dilakukan dari KClass.
+ */
+fun KType.isInstance(any: Any?): Boolean
+        = any == null && isMarkedNullable || any!!.clazz == classifier
+
+
+fun KClassifier.isUpperBoundSubTypeOf(base: KClassifier): Boolean{
+    return when(this){
+        is KClass<*> -> when(base){
+            is KClass<*> -> isSubclassOf(base)
+            is KTypeParameter -> isUpperBoundSubTypeOf(base)
+            else -> false
+        }
+        is KTypeParameter -> when(base){
+            is KClass<*> -> isUpperBoundSubTypeOf(base)
+            is KTypeParameter -> isUpperBoundSubTypeOf(base)
+            else -> false
+        }
+        else -> false
+    }
+}
+fun KClassifier.isUpperBoundSuperTypeOf(derived: KClassifier): Boolean{
+    return when(this){
+        is KClass<*> -> when(derived){
+            is KClass<*> -> isSuperclassOf(derived)
+            is KTypeParameter -> isUpperBoundSuperTypeOf(derived)
+            else -> false
+        }
+        is KTypeParameter -> when(derived){
+            is KClass<*> -> isUpperBoundSuperTypeOf(derived)
+            is KTypeParameter -> isUpperBoundSuperTypeOf(derived)
+            else -> false
+        }
+        else -> false
+    }
+}
+
+fun KType.isSameTypeAs(other: KType, includeNullability: Boolean= true): Boolean
+        = classifier == other.classifier
+        && arguments == other.arguments
+        && (!includeNullability || isMarkedNullable == other.isMarkedNullable)
+
+/**
+ * Menentukan apakah `this.extension` [KType] merupakan subtype dari [base].
+ * Definisi subtype pada fungsi ini berbeda sedikit dg [KType.isSubtypeOf] pada [kotlin.reflect.full],
+ * yaitu:
+ *  -> subtype jika `this.extension`.classifier merupakan subtype atau sama dg [base].classifier, dan
+ *  -> `this.extension`.arguments merupakan subtype atau sama dg [base].arguments.
+ */
+fun KType.isSubTypeOf(base: KType): Boolean{
+    val isClassifierSubtype= base.classifier != null && classifier?.isUpperBoundSubTypeOf(base.classifier!!) ?: false
+    var isTypeArgSubtype= true
+
+    val otherArgs= base.arguments
+
+    for((i, typeArg) in arguments.withIndex()){
+        val otherTypeArg= try{ otherArgs[i].type }
+        catch (e: Exception){ break }
+        isTypeArgSubtype= isTypeArgSubtype && (otherTypeArg != null && typeArg.type?.isSubtypeOf(otherTypeArg) ?: true)
+    }
+    return isClassifierSubtype && isTypeArgSubtype
+}
+fun KType.isSuperTypeOf(derived: KType): Boolean = derived.isSubTypeOf(this)
+
+//fun InferredType.isSubtypeOf(other: InferredType): Boolean = type.isSubtypeOf(other.type)
+//fun InferredType.isSupertypeOf(other: InferredType): Boolean = type.isSupertypeOf(other.type)
+
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+fun getCommonClass(vararg classes: KClass<*>): KClass<*>{
+    if(classes.isEmpty())
+        throw NoSuchElementException("""Tidak bisa mendapatkan common-class dari list "classes" kosong.""")
+    val usedClasses= classes.asSequence().filter { it != Null::class }.toList() //Kelas Null tidak dihitung karena hanya sbg representasi pada operasi [getCommonType].
+    val superClassList= usedClasses.first().classesTree.withLevel().toMutableList().distinct()
+        .sortedBy { it.level }.map { it.value } as MutableCollection<KClass<*>>
+
+    for(i in 1 until usedClasses.size)
+        superClassList intersect usedClasses[i].classesTree.toMutableList()
+    return superClassList.first()
+}
+fun getCommonClass(vararg any: Any): KClass<*> = getCommonClass(*any.toArrayOf { it::class })
+
+fun getCommonType(vararg types: KType): KType{
+//    prine("==types= ${types.string}")
+    if(types.isEmpty())
+        throw NoSuchElementException("""Tidak bisa mendapatkan common-type dari list "types" kosong.""")
+
+    val isMarkedNullable= types.find { it.isMarkedNullable }?.isMarkedNullable ?: false
+
+    val usedTypes= types.asSequence().filter { it.classifier != Null::class }.toList()
+    val classesArray= types.mapNotNull { it.classifier as? KClass<*> }.toTypedArray()
+    val commonClass= getCommonClass(*classesArray)
+
+    val commonTypeArgs: MutableList<KTypeProjection> = mutableListOf()
+    if(commonClass.typeParameters.isNotEmpty()){ //Agar tidak terjadi komputasi mahal yg melibatkan [KTypeProjection.nestedProjectionsTree].
+        val foundTypeArgs: MutableList<List<KTypeProjection>> = mutableListOf()
+        for(typeArg in usedTypes.map { it.nestedProjectionsTree }.asSequence().toLinear()){
+//        prine("typeArg= $typeArg getCommonType() -> typeArg.type?.classifier= ${typeArg.type?.classifier} commonClass= $commonClass")
+            if(typeArg.type?.classifier == commonClass){
+                foundTypeArgs += typeArg.type!!.arguments
+//            break
+            }
+        }
+
+//    prine("==== foundTypeArgs= $foundTypeArgs")
+        //Jika foundTypeArgs == types, maka typeArg disimpulkan menjadi supertype dari commonClass.
+        // Contoh kasus ini adalah Int, String, dan Double di mana common-class adalah Comparable<T> di mana T merupakan cyclic type-param.
+        // Jika scr program, foundTypeArgs == [Int, String, Double] di mana jika dipanggil fungsi [getCommonType] ini lagi,
+        // maka akan terjadi infinite loop.
+        if(foundTypeArgs.toLinear().mapNotNull{ it.type }.contentEquals(usedTypes))
+            commonTypeArgs += commonClass.supertypes[0].simpleTypeProjection
+        else{
+            for(typeArgs in foundTypeArgs.leveledIterator){
+                if(typeArgs.isEmpty()) continue
+                commonTypeArgs += getCommonType(*typeArgs.toArrayOf { it.type }).simpleTypeProjection
+            }
+        }
+    }
+    return commonClass.createType(commonTypeArgs, isMarkedNullable)
+}
+fun getCommonType(vararg any: Any?): KType = getCommonType(*any.toArrayOf { it.inferredType.type })
+
+
+/**
+ * Menyimpulkan common-class dari element pada sebuah array.
+ * Penyimpulan melibatkan semua anggota array dg batas maksimal 200.
+ */
+fun <T: Any> inferElementClass(array: Array<T>): KClass<*>
+    = getCommonClass(
+        *(
+            if(array.size <= 200) array
+            else array.sliceArray(0 until 200)
+        )
+    )
+
+/**
+ * Menyimpulkan common-class dari element pada sebuah array.
+ * Penyimpulan melibatkan semua anggota array dg batas maksimal 200.
+ */
+fun <T> inferElementType(array: Array<T>): KType
+    = getCommonType(
+        *(
+            if(array.size <= 200) array
+            else array.sliceArray(0 until 200)
+        )
+    )
+
+/**
+ * Menentukan apakah `this.extension` [KType] dapat diassign dengan nilai yg memiliki tipe [other].
+ * Fungsi ini juga memperhitungkan type-arg variance.
+ */
+fun KType.isAssignableFrom(other: KType): Boolean{
+///*
+    prine("isAssignableFrom classifier= $classifier")
+    prine("isAssignableFrom other.classifier= ${other.classifier}")
+    prine("isAssignableFrom arguments= $arguments")
+    prine("isAssignableFrom other.arguments= ${other.arguments}")
+// */
+    return when{
+        (classifier as? KClass<*>)?.isPrimitiveArray == true -> {
+            when {
+                (other.classifier as? KClass<*>)?.isPrimitiveArray == true -> classifier == other.classifier
+                (other.classifier as? KClass<*>)?.isObjectArray == true ->
+                    (classifier as KClass<*>).arrayTypeArgument?.type == other.arguments.first().type //Karena array INVARIANT.
+                else -> false
+            }
+        }
+        (classifier as? KClass<*>)?.isObjectArray == true -> {
+            when {
+                (other.classifier as? KClass<*>)?.isObjectArray == true -> classifier == other.classifier
+                (other.classifier as? KClass<*>)?.isPrimitiveArray == true ->
+                    arguments.first().type == (other.classifier as KClass<*>).arrayTypeArgument?.type //Karena array INVARIANT.
+                else -> false
+            }
+        }
+        else -> {
+            val commonType= other.typesTree.find { it.classifier == this.classifier } ?: return false
+                //Menentukan apakah `this.extension`.classifier ada pada supertype dari `other`.
+                // Jika ada, maka ambil commonType-nya.
+
+            when(classifier){
+                is KClass<*> -> { //Jika classifier adalah KClass<*>, maka tentukan apakah variance pada type-param udah sesuai dg commonType.arguments.
+                    var isTypeArgCompatible= true
+                    for((i, typeParam) in (classifier as KClass<*>).typeParameters.withIndex()){
+                        isTypeArgCompatible= isTypeArgCompatible && when(typeParam.variance){
+                            KVariance.INVARIANT -> arguments[i].type == commonType.arguments[i].type
+                            KVariance.OUT -> commonType.arguments[i].type != null && arguments[i].type?.isSupertypeOf(commonType.arguments[i].type!!) ?: false
+                            KVariance.IN -> commonType.arguments[i].type != null && arguments[i].type?.isSubtypeOf(commonType.arguments[i].type!!) ?: false
+                        }
+                    }
+                    isTypeArgCompatible
+                }
+                else -> true //Jika classifier KTypeParameter atau yg lainnya, maka return true karena pengecekan sudah terjadi pada proses pengambilan commonType.
+            }
+        }
+    }
+}
+//fun InferredType.isAssignableFrom(other: InferredType): Boolean = type.isAssignableFrom(other.type)
+
+
 
 
 /*
@@ -85,6 +571,7 @@ val <T: Any> KClass<T>.leastRequiredParamConstructor: KFunction<T>
         //Bungkus constructor yg ditemukan dengan fungsi yg parameter listnya hanya terlihat yg non-optional.
         return object: KFunction<T> by constr{
             override val parameters: List<KParameter> = paramList
+            override fun toString(): String = constr.toString()
         }
     }
 
@@ -136,7 +623,7 @@ val KClass<*>.contructorParamsTree: NestedSequence<KParameter>
 val KClass<*>.contructorPropertiesTree: Sequence<KProperty1<*, *>>
     get()= object : Sequence<KProperty1<*, *>>{
         override fun iterator(): Iterator<KProperty1<*, *>>
-                = object : SkippableIteratorImpl<KProperty1<*, *>>(this@contructorPropertiesTree.implementedPropertiesTree.iterator()){
+                = object : SkippableIteratorImpl<KProperty1<*, *>>(this@contructorPropertiesTree.implementedMemberPropertiesTree.iterator()){
             val constrsParams= this@contructorPropertiesTree.contructorParamsTree.asCached()
 
             override fun skip(now: KProperty1<*, *>): Boolean
@@ -195,16 +682,52 @@ fun <I, O> KProperty1<I, O>.forcedGet(receiver: I): O?{
         null
     }
 }
+
 /** @return -> `true` jika operasi set berhasil,
  *   -> `false` jika refleksi dilarang,
  *   -> @throws [TypeExc] jika [value] yg dipass tidak sesuai tipe `this.extension`. */
-fun <I, O> KMutableProperty1<I, O>.forcedSet(receiver: I, value: O): Boolean{
+fun <I, O> KMutableProperty1<I, O>.forcedSet(receiver: I, value: O, alsoInferValueType: Boolean= true): Boolean{
     return try{
-        if(value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
-            || (value == null && returnType.isMarkedNullable)){
+/*
+value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
+            || (value == null && returnType.isMarkedNullable)
+ */
+        val isAssignable= if(alsoInferValueType) returnType.isAssignableFrom(value.inferredType)
+            else value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
+                    || (value == null && returnType.isMarkedNullable)
+        if(isAssignable){
             val oldIsAccesible= isAccessible
             isAccessible= true
             set(receiver, value)
+            isAccessible= oldIsAccesible
+            true
+        } else {
+            throw TypeExc(
+                expectedType = returnType.classifier as KClass<*>, actualType = value?.clazz,
+                msg = "Tidak dapat meng-assign value dg tipe tersebut ke properti: $this."
+            )
+        }
+    } catch (e: IllegalCallableAccessException){ //Jika Kotlin melarang melakukan call melalui refleksi
+        false
+    } catch (e: InvocationTargetException){
+        //Jika terjadi error secara internal pada refleksi Java.
+        // Biasanya terjadi pada operasi call melibatkan `lateinit var`
+        false
+    }
+}
+
+/** @return -> `true` jika operasi set berhasil,
+ *   -> `false` jika refleksi dilarang,
+ *   -> @throws [TypeExc] jika [value] yg dipass tidak sesuai tipe `this.extension`. */
+fun <I, O> KMutableProperty1<I, O>.forcedSetTyped(receiver: I, typedValue: TypedValue<O>): Boolean{
+    return try{
+        val value= typedValue.value
+        val type= typedValue.type
+
+        if(returnType.isAssignableFrom(typedValue.type)){
+            val oldIsAccesible= isAccessible
+            isAccessible= true
+            set(receiver, typedValue.value)
             isAccessible= oldIsAccesible
             true
         } else {
@@ -337,7 +860,7 @@ Inheritance
  */
 
 val <T: Any> KClass<T>.isInterface: Boolean
-    get()= this.java.isInterface
+    get()= isAbstract && !isInstantiable
 
 val <T: Any> KClass<T>.isInstantiable: Boolean
     get()= constructors.isNotEmpty()
@@ -357,7 +880,7 @@ val <T: Any> KClass<T>.isPrimitive: Boolean
  * copy-safe.
  */
 val <T: Any> KClass<T>.isCopySafe: Boolean
-    get()= isPrimitive || this == String::class || this.isSubclassOf(Enum::class)
+    get()= isPrimitive || this == String::class || isSubclassOf(Enum::class)
 /*
 //        prine("isCopySafe @$this isPrimitive= $isPrimitive this == String::class= ${this == String::class} this.isSubclassOf(Enum::class)= ${this.isSubclassOf(Enum::class)} isKReflectionElement= $isKReflectionElement")
         val res
@@ -384,10 +907,30 @@ val <T> T.isKReflectionElement: Boolean
 val <T: Any> KClass<T>.isShallowAnonymous: Boolean
     get()= qualifiedName == null && supertypes.size == 1
             && !(supertypes.first().classifier as KClass<*>).isAbstract
+            && isAllMembersImplemented
+
+/**
+ * Menunjukan apakah `this.extension` [KClass] abstrak scr sederhana, yaitu
+ * tidak memiliki fungsi atau properti yg abstrak dan supertype hanya satu.
+ * Berguna untuk operasi [new] pada kelas abstrak sehingga dapat mengembalikan
+ * instance dg superclass.
+ */
+val <T: Any> KClass<T>.isShallowAbstract: Boolean
+    get()= isAbstract && supertypes.size == 1
+            && !(supertypes.first().classifier as KClass<*>).isAbstract
+            && isAllMembersImplemented
+
+val <T: Any> KClass<T>.isAllMembersImplemented: Boolean
+    get()= members.find { it.isAbstract } == null
 
 val <T: Any> KClass<T>.isArray: Boolean
-    get()= if(toString() == Array<Any>::class.toString()) true
-        else when(this){
+    get()= isObjectArray || isPrimitiveArray
+
+val <T: Any> KClass<T>.isObjectArray: Boolean
+    get()= toString() == Array<Any>::class.toString()
+
+val <T: Any> KClass<T>.isPrimitiveArray: Boolean
+    get()= when(this){
         IntArray::class -> true
         LongArray::class -> true
         FloatArray::class -> true
@@ -398,7 +941,6 @@ val <T: Any> KClass<T>.isArray: Boolean
         ByteArray::class -> true
         else -> false
     }
-
 
 /** Fungsi yg dapat dipanggil melalui Java. */
 fun <T: Any> getKClass(javaClass: Class<T>): KClass<T>
@@ -451,12 +993,12 @@ Inheritance Tree
  */
 
 /**
- * [onlyExtendedClass] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
+ * [includeInterfaces] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
  * Fungsi ini mendefinisikan supertype sbg interface berdasarkan refleksi Java.
  *
  * Fungsi ini msh bergantung dari Java Reflection.
  */
-fun KClass<*>.supertypesJvm(onlyExtendedClass: Boolean= false): NestedSequence<KType> {
+fun KClass<*>.supertypes(includeInterfaces: Boolean= true): NestedSequence<KType> {
     return object :
         NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
@@ -468,17 +1010,17 @@ fun KClass<*>.supertypesJvm(onlyExtendedClass: Boolean= false): NestedSequence<K
             }
 
             override fun skip(now: KType): Boolean
-                    = ((now.classifier as? KClass<*>)?.isInterface ?: false) && onlyExtendedClass
+                    = ((now.classifier as? KClass<*>)?.isInterface ?: false) && !includeInterfaces
         }
     }
 }
 
 /**
- * [onlyExtendedClass] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
+ * [includeInterfaces] true jika iterasi hanya dilakukan pada super class dg jenis Class, bkn Interface.
  * Fungsi ini mendefinisikan supertype sbg interface berdasarkan anotasi framework SiFrame,
  * yaitu tipe data yg memiliki anotasi [Interface].
  */
-fun KClass<*>.supertypesSif(onlyExtendedClass: Boolean= false): NestedSequence<KType> {
+fun KClass<*>.supertypesSif(includeInterfaces: Boolean= true): NestedSequence<KType> {
     return object :
         NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
@@ -491,7 +1033,7 @@ fun KClass<*>.supertypesSif(onlyExtendedClass: Boolean= false): NestedSequence<K
 
             override fun skip(now: KType): Boolean
                     = ((now.classifier as? KClass<*>)?.findAnnotation<Interface>() != null)
-                    && onlyExtendedClass
+                    && !includeInterfaces
         }
     }
 }
@@ -521,15 +1063,27 @@ val KClass<*>.superclassesTree: NestedSequence<KClass<*>>
 
 /** Sama seperti [supertypesTree] namun termasuk `this.extension` [KClass]. */
 val KClass<*>.typesTree: NestedSequence<KType>
-    get()= object :
-        NestedSequence<KType> {
+    get()= object : NestedSequence<KType> {
         override fun iterator(): NestedIteratorSimple<KType>
-                = object: NestedIteratorSimpleImpl<KType>(this@typesTree.createType()){
-            override fun getOutputIterator(nowInput: KType): Iterator<KType>? {
-                return if((nowInput.classifier as? KClass<*>)?.simpleName == K_CLASS_BASE_NAME) null
-                else (nowInput.classifier as? KClass<*>)?.supertypes?.iterator() //Jika (now.classifier as? KClass<*>)?.simpleName menghasilkan null, maka cabang ini tetap aman.
-            }
-        }
+                = object: NestedIteratorSimpleImpl<KType>(
+                    try{ this@typesTree.createType() } catch (e: Exception){ this@typesTree.inferredType.type }
+                ){
+                    override fun getOutputIterator(nowInput: KType): Iterator<KType>? {
+                        return if((nowInput.classifier as? KClass<*>)?.simpleName == K_CLASS_BASE_NAME) null
+                        else (nowInput.classifier as? KClass<*>)?.supertypes?.iterator() //Jika (now.classifier as? KClass<*>)?.simpleName menghasilkan null, maka cabang ini tetap aman.
+                    }
+                }
+    }
+/** Sama dg [KClass.typesTree]. */
+val KType.typesTree: NestedSequence<KType>
+    get()= object : NestedSequence<KType> {
+        override fun iterator(): NestedIteratorSimple<KType>
+                = object: NestedIteratorSimpleImpl<KType>(this@typesTree){
+                    override fun getOutputIterator(nowInput: KType): Iterator<KType>? {
+                        return if((nowInput.classifier as? KClass<*>)?.simpleName == K_CLASS_BASE_NAME) null
+                        else (nowInput.classifier as? KClass<*>)?.supertypes?.iterator() //Jika (now.classifier as? KClass<*>)?.simpleName menghasilkan null, maka cabang ini tetap aman.
+                    }
+                }
     }
 /** Sama seperti [superclassesTree] namun termasuk `this.extension` [KClass]. */
 val KClass<*>.classesTree: NestedSequence<KClass<*>>
@@ -594,7 +1148,7 @@ fun KClass<*>.getSealedClassName(isQualifiedName: Boolean= true): String?{
 //            Log.e("getSealedClassName", ".getSealedClassName() QUALIFIED MAULAI")
             var superName= ""
             var isSealedSuperFound= false
-            for(supertype in this.supertypesJvm(true)){
+            for(supertype in this.supertypes(false)){
                 val clazz= (supertype.classifier as? KClass<*>)
 //                if(clazz == Any::class) continue
                 if(clazz != null){
@@ -634,13 +1188,93 @@ fun KClass<*>.getSealedClassName(isQualifiedName: Boolean= true): String?{
 Properties Tree
 ==========================
  */
+/**
+ * Properti yg mengembalikan [NestedSequence] yg berisi semua function dan property yg
+ * terdapat di this [KClass] dan supertypes.
+ */
+val KClass<*>.declaredMembersTree: NestedSequence<KCallable<*>>
+    get()= object : NestedSequence<KCallable<*>> {
+        override fun iterator(): NestedIterator<KClass<*>, KCallable<*>>
+                = object: NestedIteratorImpl<KClass<*>, KCallable<*>>(classesTree.iterator()){
+            override val tag: String
+                get() = "declaredMembersTree"
+
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KCallable<*>>?
+                    = nowInput.declaredMembers.iterator()
+            override fun getInputIterator(nowOutput: KCallable<*>): Iterator<KClass<*>>? = null
+        }
+    }
+/**
+ * Properti yg mengembalikan [NestedSequence] yg berisi semua function dan property yg
+ * terdapat di this [KClass] dan supertypes. Sequence juga berisi [KCallable] dari [KCallable]
+ * jika returnType berupa object.
+ */
+val KClass<*>.nestedDeclaredMembersTree: NestedSequence<KCallable<*>>
+    get()= object : NestedSequence<KCallable<*>> {
+        override fun iterator(): NestedIterator<KClass<*>, KCallable<*>>
+                = object: NestedIteratorImpl<KClass<*>, KCallable<*>>(classesTree.iterator()){
+            override val tag: String
+                get() = "declaredMembersTree"
+
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KCallable<*>>?
+                    = nowInput.declaredMembers.iterator()
+            override fun getInputIterator(nowOutput: KCallable<*>): Iterator<KClass<*>>?
+                    = (nowOutput.returnType.classifier as? KClass<*>)?.classesTree?.iterator()
+        }
+    }
+/**
+ * Properti yg mengembalikan [NestedSequence] yg berisi semua function dan property yg
+ * terdapat di this [KClass]. Sequence juga berisi [KCallable] dari [KCallable]
+ * jika returnType berupa object.
+ */
+val KClass<*>.nestedMembers: NestedSequence<KCallable<*>>
+    get()= object : NestedSequence<KCallable<*>> {
+        override fun iterator(): NestedIteratorSimple<KCallable<*>>
+                = object: NestedIteratorSimpleImpl<KCallable<*>>(members.iterator()){
+            override val tag: String
+                get() = "nestedMembers"
+
+            override fun getOutputIterator(nowInput: KCallable<*>): Iterator<KCallable<*>>?
+                    = (nowInput.returnType.classifier as? KClass<*>)?.members?.iterator()
+        }
+    }
+
+/** Sama dg [declaredMembersTree], namun tidak termasuk yg abstrak. */
+val KClass<*>.implementedMembersTree: NestedSequence<KCallable<*>>
+    get()= object : NestedSequence<KCallable<*>> {
+        override fun iterator(): NestedIterator<KClass<*>, KCallable<*>>
+                = object: NestedIteratorImpl<KClass<*>, KCallable<*>>(classesTree.iterator()){
+            override val tag: String
+                get() = "implementedMembersTree"
+
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KCallable<*>>?
+                    = nowInput.declaredMembers.iterator()
+            override fun getInputIterator(nowOutput: KCallable<*>): Iterator<KClass<*>>? = null
+            override fun skip(now: KCallable<*>): Boolean = now.isAbstract
+        }
+    }
+/** Sama dg [nestedDeclaredMembersTree], namun tidak termasuk yg abstrak. */
+val KClass<*>.nestedImplementedMembersTree: NestedSequence<KCallable<*>>
+    get()= object : NestedSequence<KCallable<*>> {
+        override fun iterator(): NestedIterator<KClass<*>, KCallable<*>>
+                = object: NestedIteratorImpl<KClass<*>, KCallable<*>>(classesTree.iterator()){
+            override val tag: String
+                get() = "nestedImplementedMembersTree"
+
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KCallable<*>>?
+                    = nowInput.declaredMembers.iterator()
+            override fun getInputIterator(nowOutput: KCallable<*>): Iterator<KClass<*>>?
+                    = (nowOutput.returnType.classifier as? KClass<*>)?.classesTree?.iterator()
+            override fun skip(now: KCallable<*>): Boolean = now.isAbstract
+        }
+    }
 
 /**
  * Properti yg mengembalikan [NestedSequence] yg berisi semua properti yg
  * terdapat di `this.extension` [KClass]. Sequence juga termasuk properti dari properti jika tipenya
  * berupa object.
  */
-val KClass<*>.nestedPropertiesTree: NestedSequence<KProperty1<*, *>>
+val KClass<*>.nestedMemberProperties: NestedSequence<KProperty1<*, *>>
     get()= object :
         NestedSequence<KProperty1<*, *>> {
         override fun iterator(): NestedIteratorSimple<KProperty1<*, *>>
@@ -651,72 +1285,75 @@ val KClass<*>.nestedPropertiesTree: NestedSequence<KProperty1<*, *>>
     }
 /**
  * Properti yg mengembalikan [NestedSequence] yg berisi semua properti yg
- * terdapat di this [KClass]. Sequence juga termasuk properti dari properti jika tipenya
- * berupa object.
+ * terdapat di this [KClass] dan supertypes.
  */
-val KClass<*>.declaredPropertiesTree: NestedSequence<KProperty1<*, *>>
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+val KClass<*>.declaredMemberPropertiesTree: NestedSequence<KProperty1<Any, *>>
     get()= object :
-        NestedSequence<KProperty1<*, *>> {
-        override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
-            = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
+        NestedSequence<KProperty1<Any, *>> {
+        override fun iterator(): NestedIterator<KClass<*>, KProperty1<Any, *>>
+            = object: NestedIteratorImpl<KClass<*>, KProperty1<Any, *>>(classesTree.iterator()){
             override val tag: String
                 get() = "declaredPropertiesTree"
 
-            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<*, *>>?
-                = nowInput.declaredMemberProperties.iterator()
-            override fun getInputIterator(nowOutput: KProperty1<*, *>): Iterator<KClass<*>>? = null
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<Any, *>>?
+                = nowInput.declaredMemberProperties.iterator() as Iterator<KProperty1<Any, *>>
+            override fun getInputIterator(nowOutput: KProperty1<Any, *>): Iterator<KClass<*>>? = null
         }
     }
 
 
-/** Sama dengan [declaredPropertiesTree], ditambah isi dari properti jika properti merupakan object. */
-val KClass<*>.nestedDeclaredPropertiesTree: NestedSequence<KProperty1<*, *>>
+/** Sama dengan [declaredMemberPropertiesTree], ditambah isi dari properti jika properti merupakan object. */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+val KClass<*>.nestedDeclaredMemberPropertiesTree: NestedSequence<KProperty1<Any, *>>
     get()= object :
-        NestedSequence<KProperty1<*, *>> {
-        override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
-            = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
+        NestedSequence<KProperty1<Any, *>> {
+        override fun iterator(): NestedIterator<KClass<*>, KProperty1<Any, *>>
+            = object: NestedIteratorImpl<KClass<*>, KProperty1<Any, *>>(classesTree.iterator()){
             override val tag: String
                 get() = "nestedDeclaredPropertiesTree"
 
-            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<*, *>>?
-                = nowInput.declaredMemberProperties.iterator()
-            override fun getInputIterator(nowOutput: KProperty1<*, *>): Iterator<KClass<*>>?
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<Any, *>>?
+                = nowInput.declaredMemberProperties.iterator() as Iterator<KProperty1<Any, *>>
+            override fun getInputIterator(nowOutput: KProperty1<Any, *>): Iterator<KClass<*>>?
                 = (nowOutput.returnType.classifier as? KClass<*>)?.classesTree?.iterator()
         }
     }
 
-/** Sama dengan [declaredPropertiesTree], namun tidak termasuk abstract property. */
-val KClass<*>.implementedPropertiesTree: NestedSequence<KProperty1<*, *>>
+/** Sama dengan [declaredMemberPropertiesTree], namun tidak termasuk abstract property. */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+val KClass<*>.implementedMemberPropertiesTree: NestedSequence<KProperty1<Any, *>>
     get()= object :
-        NestedSequence<KProperty1<*, *>> {
-        override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
-                = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
+        NestedSequence<KProperty1<Any, *>> {
+        override fun iterator(): NestedIterator<KClass<*>, KProperty1<Any, *>>
+                = object: NestedIteratorImpl<KClass<*>, KProperty1<Any, *>>(classesTree.iterator()){
             override val tag: String
                 get() = "declaredPropertiesTree"
 
-            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<*, *>>?
-               = nowInput.declaredMemberProperties.iterator()
-            override fun getInputIterator(nowOutput: KProperty1<*, *>): Iterator<KClass<*>>? = null
-            override fun skip(now: KProperty1<*, *>): Boolean = now.isAbstract
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<Any, *>>?
+               = nowInput.declaredMemberProperties.iterator() as Iterator<KProperty1<Any, *>>
+            override fun getInputIterator(nowOutput: KProperty1<Any, *>): Iterator<KClass<*>>? = null
+            override fun skip(now: KProperty1<Any, *>): Boolean = now.isAbstract
         }
     }
 
-/** Sama dengan [nestedDeclaredPropertiesTree], namun tidak termasuk abstract property. */
-val KClass<*>.nestedImplementedPropertiesTree: NestedSequence<KProperty1<*, *>>
+/** Sama dengan [nestedDeclaredMemberPropertiesTree], namun tidak termasuk abstract property. */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+val KClass<*>.nestedImplementedMemberPropertiesTree: NestedSequence<KProperty1<Any, *>>
     get()= object :
-        NestedSequence<KProperty1<*, *>> {
-        override fun iterator(): NestedIterator<KClass<*>, KProperty1<*, *>>
-            = object: NestedIteratorImpl<KClass<*>, KProperty1<*, *>>(classesTree.iterator()){
+        NestedSequence<KProperty1<Any, *>> {
+        override fun iterator(): NestedIterator<KClass<*>, KProperty1<Any, *>>
+            = object: NestedIteratorImpl<KClass<*>, KProperty1<Any, *>>(classesTree.iterator()){
             override val tag: String
                 get() = "nestedDeclaredPropertiesTree"
 
-            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<*, *>>?
-                = nowInput.declaredMemberProperties.iterator()
+            override fun getOutputIterator(nowInput: KClass<*>): Iterator<KProperty1<Any, *>>?
+                = nowInput.declaredMemberProperties.iterator() as Iterator<KProperty1<Any, *>>
 
-            override fun getInputIterator(nowOutput: KProperty1<*, *>): Iterator<KClass<*>>?
+            override fun getInputIterator(nowOutput: KProperty1<Any, *>): Iterator<KClass<*>>?
                 = (nowOutput.returnType.classifier as? KClass<*>)?.classesTree?.iterator()
 
-            override fun skip(now: KProperty1<*, *>): Boolean = now.isAbstract
+            override fun skip(now: KProperty1<Any, *>): Boolean = now.isAbstract
         }
     }
 
@@ -745,15 +1382,17 @@ fun copySimilarProperty(source: Any, destination: Any){
 
 
 /** Mengambil semua properti berserta nilainya dari `this.extension` termasuk yg `private`. */
-val Any.implementedPropertiesValueMap: Sequence<Pair<KProperty1<*, *>, Any?>>
-    get()= object : Sequence<Pair<KProperty1<*, *>, Any?>>{
-        override fun iterator(): Iterator<Pair<KProperty1<*, *>, Any?>>
-            = object: Iterator<Pair<KProperty1<*, *>, Any?>>{
-            private val declaredPropsItr= this@implementedPropertiesValueMap::class.declaredMemberProperties.iterator()
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+val Any.implementedPropertiesValueMap: Sequence<Pair<KProperty1<Any, *>, Any?>>
+    get()= object : Sequence<Pair<KProperty1<Any, *>, Any?>>{
+        override fun iterator(): Iterator<Pair<KProperty1<Any, *>, Any?>>
+            = object: Iterator<Pair<KProperty1<Any, *>, Any?>>{
+            private val declaredPropsItr=
+                this@implementedPropertiesValueMap::class.declaredMemberProperties.iterator() as Iterator<KProperty1<Any, *>>
 
             override fun hasNext(): Boolean = declaredPropsItr.hasNext()
 
-            override fun next(): Pair<KProperty1<*, *>, Any?> {
+            override fun next(): Pair<KProperty1<Any, *>, Any?> {
                 val prop= declaredPropsItr.next()
                 val value= if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
                     prop.getter.forcedCall(this@implementedPropertiesValueMap)
@@ -781,17 +1420,17 @@ val Any.implementedPropertiesValue: Sequence<Any?>
     }
 
 /** Sama dengan [implementedPropertiesValueMap], beserta properti dari properti. */
-val Any.nestedImplementedPropertiesValueMap: NestedSequence<Pair<KProperty1<*, *>, Any?>>
+val Any.nestedImplementedPropertiesValueMap: NestedSequence<Pair<KProperty1<Any, *>, Any?>>
     get()= object :
-        NestedSequence<Pair<KProperty1<*, *>, Any?>> {
-        override fun iterator(): NestedIteratorSimple<Pair<KProperty1<*, *>, Any?>>
-            = object : NestedIteratorSimpleImpl<Pair<KProperty1<*, *>, Any?>>(
+        NestedSequence<Pair<KProperty1<Any, *>, Any?>> {
+        override fun iterator(): NestedIteratorSimple<Pair<KProperty1<Any, *>, Any?>>
+            = object : NestedIteratorSimpleImpl<Pair<KProperty1<Any, *>, Any?>>(
                 this@nestedImplementedPropertiesValueMap.implementedPropertiesValueMap.iterator()
             ){
             override val tag: String
                 get() = "nestedImplementedPropertiesValueMap"
 
-            override fun getOutputIterator(nowInput: Pair<KProperty1<*, *>, Any?>): Iterator<Pair<KProperty1<*, *>, Any?>>?
+            override fun getOutputIterator(nowInput: Pair<KProperty1<Any, *>, Any?>): Iterator<Pair<KProperty1<Any, *>, Any?>>?
                 = nowInput.second?.implementedPropertiesValueMap?.iterator()
         }
     }
@@ -812,15 +1451,15 @@ val Any.implementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<*, *>,
 */
 ///*
 /** Sama dg [implementedPropertiesValueMap], beserta semua properti `private` dari superclass. */
-val Any.implementedPropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>>
-    get()= object : Sequence<Pair<KProperty1<*, *>, Any?>>{
-        override fun iterator(): Iterator<Pair<KProperty1<*, *>, Any?>>
-                = object: Iterator<Pair<KProperty1<*, *>, Any?>>{
-            private val declaredPropsItr= this@implementedPropertiesValueMapTree::class.implementedPropertiesTree.iterator()
+val Any.implementedPropertiesValueMapTree: Sequence<Pair<KProperty1<Any, *>, Any?>>
+    get()= object : Sequence<Pair<KProperty1<Any, *>, Any?>>{
+        override fun iterator(): Iterator<Pair<KProperty1<Any, *>, Any?>>
+                = object: Iterator<Pair<KProperty1<Any, *>, Any?>>{
+            private val declaredPropsItr= this@implementedPropertiesValueMapTree::class.implementedMemberPropertiesTree.iterator()
 
             override fun hasNext(): Boolean = declaredPropsItr.hasNext()
 
-            override fun next(): Pair<KProperty1<*, *>, Any?> {
+            override fun next(): Pair<KProperty1<Any, *>, Any?> {
                 val prop= declaredPropsItr.next()
                 val value= if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
                     prop.getter.forcedCall(this@implementedPropertiesValueMapTree)
@@ -833,17 +1472,17 @@ val Any.implementedPropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>
 
 ///*
 /** Sama dg [implementedPropertiesValueMapTree], beserta semua properti dari properti, termasuk yg `private`. */
-val Any.nestedImplementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<*, *>, Any?>>
+val Any.nestedImplementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<Any, *>, Any?>>
     get()= object:
-        NestedSequence<Pair<KProperty1<*, *>, Any?>> {
-        override fun iterator(): NestedIteratorSimple<Pair<KProperty1<*, *>, Any?>>
-            = object: NestedIteratorSimpleImpl<Pair<KProperty1<*, *>, Any?>>(
+        NestedSequence<Pair<KProperty1<Any, *>, Any?>> {
+        override fun iterator(): NestedIteratorSimple<Pair<KProperty1<Any, *>, Any?>>
+            = object: NestedIteratorSimpleImpl<Pair<KProperty1<Any, *>, Any?>>(
                 this@nestedImplementedPropertiesValueMapTree.implementedPropertiesValueMapTree.iterator()
             ){
             override val tag: String
                 get() = "nestedImplementedPropertiesValueMapTree"
 
-            override fun getOutputIterator(nowInput: Pair<KProperty1<*, *>, Any?>): Iterator<Pair<KProperty1<*, *>, Any?>>?
+            override fun getOutputIterator(nowInput: Pair<KProperty1<Any, *>, Any?>): Iterator<Pair<KProperty1<Any, *>, Any?>>?
                 = nowInput.second?.implementedPropertiesValueMapTree?.iterator()
         }
     }
@@ -851,17 +1490,19 @@ val Any.nestedImplementedPropertiesValueMapTree: NestedSequence<Pair<KProperty1<
 
 
 /** Sama dg [implementedPropertiesValueMapTree], namun tidak mengambil property yg `private`. */
-val Any.implementedAccesiblePropertiesValueMapTree: Sequence<Pair<KProperty1<*, *>, Any?>>
-    get()= object : Sequence<Pair<KProperty1<*, *>, Any?>>{
-        override fun iterator(): Iterator<Pair<KProperty1<*, *>, Any?>>
-                = object: Iterator<Pair<KProperty1<*, *>, Any?>>{
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+val Any.implementedAccesiblePropertiesValueMapTree: Sequence<Pair<KProperty1<Any, *>, Any?>>
+    get()= object : Sequence<Pair<KProperty1<Any, *>, Any?>>{
+        override fun iterator(): Iterator<Pair<KProperty1<Any, *>, Any?>>
+                = object: Iterator<Pair<KProperty1<Any, *>, Any?>>{
             private val memberPropsItr=
                 this@implementedAccesiblePropertiesValueMapTree::class.memberProperties
                     .asSequence().filterNot { it.isAbstract }.iterator()
+                        as Iterator<KProperty1<Any, *>>
 
             override fun hasNext(): Boolean = memberPropsItr.hasNext()
 
-            override fun next(): Pair<KProperty1<*, *>, Any?> {
+            override fun next(): Pair<KProperty1<Any, *>, Any?> {
                 val prop= memberPropsItr.next()
                 val value= if(prop.toString() != K_PROPERTY_ARRAY_SIZE_STRING)
                     prop.getter.forcedCall(this@implementedAccesiblePropertiesValueMapTree)
@@ -979,10 +1620,10 @@ fun <T: Any> Any.anyClone(isDeepClone: Boolean= true, constructorParamValFunc: (
  */
 //@Suppress(SuppressLiteral.UNCHECKED_CAST)
 fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T{
+    var clazz= this::class.also{ if(it.isCopySafe) return this }
+    var continueCreateNewInstance= true
     val valueMapTree= implementedPropertiesValueMapTree
     //Berguna untuk mengecek apakah `KProperty` merupakan properti dg mengecek kesamaannya dg `KParameter` di contrustor.
-    var continueCreateNewInstance= true
-    var clazz= this::class
 
     val constr= try{ clazz.leastRequiredParamConstructor }
     catch (e: Exception){
@@ -1004,6 +1645,8 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
         }).invoke(clazz, paramOfNew)
     }
 
+//    prine("clazz= $clazz !clazz.isArray= ${!clazz.isArray} continueCreateNewInstance= $continueCreateNewInstance")
+
     val newInstance= if(continueCreateNewInstance){
         if(!clazz.isArray)
             new(clazz, constructor = constr, defParamValFunc = newInsConstrParamValFunc)
@@ -1020,7 +1663,7 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
 
     for(valueMap in valueMapTree){
         val prop= valueMap.first
-        if(prop is KMutableProperty1<*, *>){
+        if(prop is KMutableProperty1<Any, *>){
             val value= valueMap.second
 //            prine("clone() prop= $prop value= $value value.clazz.isPrimitive= ${value?.clazz?.isPrimitive} bool=${!isDeepClone || value == null || value.clazz.isPrimitive}")
             prop.asNotNull { mutableProp: KMutableProperty1<T, Any?> ->
@@ -1030,9 +1673,11 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
                     //Jika ternyata [mutableProp] terletak di konstruktor dan sudah di-instansiasi,
                     // itu artinya programmer sudah memberikan definisi nilainya sendiri saat intansiasi,
                     // maka jangan salin nilai lama [mutableProp] ke objek yg baru di-intansiasi.
-                        mutableProp.forcedSet(newInstance, valueMap.second)
-                } else
-                    mutableProp.forcedSet(newInstance, value.clone(true, constructorParamValFunc))
+                        mutableProp.forcedSetTyped(newInstance, value.withType(mutableProp.returnType))
+                } else{
+//                    prine("prop= $mutableProp mutableProp.returnType= ${mutableProp.returnType.classifier}")
+                    mutableProp.forcedSetTyped<T, Any?>(newInstance, value.clone(true, constructorParamValFunc).withType(mutableProp.returnType))
+                }
             }
         }
     }
@@ -1141,14 +1786,30 @@ fun <T: Any> new(clazz: KClass<out T>, constructorParamClass: Array<KClass<*>>?=
         }
     }
  */
+    val usedClazz=
+        if(!clazz.isShallowAbstract) clazz
+        else try{
+            val superclazz= clazz.supertypes.first().classifier as KClass<out T>
+            prine("""Kelas: "$clazz" merupakan shallow-abstract, newInstance yg di-intanstiate adalah superclass: "$superclazz".""")
+            superclazz
+        } catch (e: ClassCastException){
+            prine("""Kelas: "$clazz" abstrak sehingga tidak dapat di-intanstiate.""")
+            return null
+        }
+
     val constr = constructor ?:
         try {
-            if (constructorParamClass.isNullOrEmpty()) clazz.leastRequiredParamConstructor
-            else clazz.findConstructorWithParam(*constructorParamClass)
+            if (constructorParamClass.isNullOrEmpty()) usedClazz.leastRequiredParamConstructor
+            else usedClazz.findConstructorWithParam(*constructorParamClass)
         } catch (e: Exception){
-            return if(!clazz.isShallowAnonymous) null //Kelas udah gak bisa di-instantiate.
-            else new(clazz.supertypes.first().classifier as KClass<out T>,
-                constructorParamClass, constructor, defParamValFunc)
+            return if(!usedClazz.isShallowAnonymous) { //Kelas udah gak bisa di-instantiate.
+                prine("""Kelas: "$clazz" tidak punya konstruktor sehingga tidak dapat di-intanstiate.""")
+                null
+            } else {
+                val superclazz= clazz.supertypes.first().classifier as KClass<out T>
+                prine("""Kelas: "$clazz" merupakan shallow-anonymous, newInstance yg di-intanstiate adalah superclass: "$superclazz".""")
+                new(superclazz, constructorParamClass, constructor, defParamValFunc)
+            }
         }
 
     val params=  constr.parameters

@@ -1,13 +1,15 @@
 package sidev.lib.universal.`fun`
 
+import sidev.lib.universal.`val`.SuppressLiteral
+import sidev.lib.universal.structure.collection.iterator.NestedIterator
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorImpl
 import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
+import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import sidev.lib.universal.structure.data.MapEntry
 import sidev.lib.universal.structure.data.MutableMapEntry
 import kotlin.collections.ArrayList
-import kotlin.reflect.KClass
 
 /*
 ===============
@@ -228,12 +230,36 @@ inline fun <T, C: MutableCollection<in String>> Iterable<T>.toStringList(dest: C
     return dest
 }
 
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+fun <T> Any.get(index: Int): T? {
+    return when{
+        this::class.isArray -> this.getArrayElementAt(index) as? T
+        this is List<*> -> this[index] as? T
+        else -> {
+            prine("""this: "$this" bkn array atau list.""")
+            null
+        }
+    }
+}
 
-fun <T> Any.get(pos: Int): T? {
-    return when(this){
-        is Array<*> -> this[pos] as T?
-        is List<*> -> this[pos] as T?
-        else -> null
+fun Any.getArrayElementAt(index: Int): Any?{
+    return when{
+        this::class.isObjectArray -> (this as Array<*>)[index]
+        this::class.isPrimitiveArray -> when(this){
+            is IntArray -> this[index]
+            is LongArray -> this[index]
+            is FloatArray -> this[index]
+            is DoubleArray -> this[index]
+            is CharArray -> this[index]
+            is ShortArray -> this[index]
+            is BooleanArray -> this[index]
+            is ByteArray -> this[index]
+            else -> null
+        }
+        else -> {
+            prine("""this: "$this" bkn array.""")
+            null
+        }
     }
 }
 
@@ -421,6 +447,16 @@ fun <T> MutableList<T>.takeLast(): T = if(isEmpty()) throw NoSuchElementExceptio
 /** Sama seperti [lastOrNull] sekaligus mengahpus element pertama */
 fun <T> MutableList<T>.takeLastOrNull(): T? = if(isEmpty()) null else removeAt(lastIndex)
 
+/** Sama seperti [remove], namun menghapus last occurrence. */
+fun <T> MutableList<T>.removeLast(element: T): Boolean{ //= if(isEmpty()) throw NoSuchElementException("List is Empty") else removeAt(lastIndex)
+    for(i in size -1 downTo 0)
+        if(this[i] == element){
+            removeAt(i)
+            return true
+        }
+    return false
+}
+
 /**
  * @return true jika [element] tidak terdapat sebelumnya di list ini.
  * Fungsi ini menggunakan standard equals().
@@ -585,6 +621,90 @@ fun <I, O> Iterator<I>.toOtherIterator(mapping: (I) -> O): Iterator<O>
     override fun next(): O = mapping(this@toOtherIterator.next())
 }
 
+fun <T> Sequence<Sequence<T>>.toLinear(): NestedSequence<T>
+        = object : NestedSequence<T> {
+    override fun iterator(): NestedIterator<Sequence<T>, T>
+            = object : NestedIteratorImpl<Sequence<T>, T>(this@toLinear.iterator()){
+        override fun getOutputIterator(nowInput: Sequence<T>): Iterator<T>? = nowInput.iterator()
+        override fun getInputIterator(nowOutput: T): Iterator<Sequence<T>>? = null
+    }
+}
+
+fun <Cin: Collection<Cout>, Cout: Collection<T>, T> Cin.toLinear(): Cout{
+    val res= ArrayList<T>()
+    for(coll in this)
+        res += coll
+    return res as Cout
+}
+inline fun <reified T> Array<Array<T>>.toLinear(): Array<T>{
+    val res= ArrayList<T>()
+    for(coll in this)
+        res += coll
+    return res.toTypedArray()
+}
+
+fun <T> Sequence<T>.isEmpty(): Boolean = !iterator().hasNext()
+fun <T> Sequence<T>.isNotEmpty(): Boolean = !isEmpty()
+
+/** Mengambil element pada [index] pada semua list yg disimpan dalam `this.extension`. */
+fun <T> List<List<T>>.getAtAllLevelAt(index: Int): List<T>{
+    val res= ArrayList<T>()
+    for(list in this){
+        res += list[index]
+    }
+    return res
+}
+/** Mengambil element pada [index] pada semua array yg disimpan dalam `this.extension`. */
+inline fun <reified T> Array<Array<T>>.getAtAllLevelAt(index: Int): Array<T> = Array(size){ this[it][index] }
+
+/** Size paling kecil dari bbrp [Collection] yg disimpan dalam `this.extension`. */
+val <T> Collection<Collection<T>>.minSize: Int
+    get()= minSize(*toTypedArray())?.size ?: 0
+/** Size paling kecil dari bbrp [Array] yg disimpan dalam `this.extension`. */
+val <T> Array<Array<T>>.minSize: Int
+    get()= minSize(*this)?.size ?: 0
+
+/** Size paling besar dari bbrp [Collection] yg disimpan dalam `this.extension`. */
+val <T> Collection<Collection<T>>.maxSize: Int
+    get()= maxSize(*toTypedArray())?.size ?: 0
+/** Size paling besar dari bbrp [Array] yg disimpan dalam `this.extension`. */
+val <T> Array<Array<T>>.maxSize: Int
+    get()= maxSize(*this)?.size ?: 0
+
+/** Size paling besar dari bbrp [Collection] yg disimpan dalam `this.extension`. */
+val <T> Collection<Collection<T>>.totalSize: Int
+    get(){
+        var size= 0
+        for(coll in this)
+            size += coll.size
+        return size
+    }
+/** Size paling besar dari bbrp [Array] yg disimpan dalam `this.extension`. */
+val <T> Array<Array<T>>.totalSize: Int
+    get(){
+        var size= 0
+        for(array in this)
+            size += array.size
+        return size
+    }
+
+/** Size paling kecil dari bbrp [Collection] yg disimpan dalam `this.extension`. */
+val <T> List<List<T>>.leveledIterator: Iterator<List<T>>
+    get()= object: Iterator<List<T>>{
+        val size= minSize
+        var index= 0
+        override fun hasNext(): Boolean = index < size
+        override fun next(): List<T> = getAtAllLevelAt(index++)
+    }
+/** Size paling kecil dari bbrp [Collection] yg disimpan dalam `this.extension`. */
+inline val <reified T> Array<Array<T>>.leveledIterator: Iterator<Array<T>>
+    get()= object: Iterator<Array<T>>{
+        val size= minSize
+        var index= 0
+        override fun hasNext(): Boolean = index < size
+        override fun next(): Array<T> = getAtAllLevelAt(index++)
+    }
+
 
 
 /*
@@ -614,6 +734,60 @@ operator fun <T> MutableCollection<T>.minus(collection: Collection<T>): MutableC
 operator fun <T> MutableList<T>.times(factor: Int): MutableList<T>{
     this.growTimely(factor)
     return this
+}
+
+infix fun <T> MutableCollection<T>.intersect(other: Iterable<T>): MutableCollection<T>{
+    this.retainAll(other)
+    return this
+}
+fun <T> MutableCollection<T>.distinct(): MutableCollection<T>{
+    return toMutableSet().toMutableList()
+}
+
+/** Mengambil [Collection] dg jml size paling kecil. [includeEmpty] == true, maka hasil @return juga menyertakan empty-collection. */
+fun <C: Collection<T>, T> minSize(vararg collections: C, includeEmpty: Boolean= true): C?{
+    var collOut: C?= null //collections.first()
+//    if(collOut.isEmpty() && includeEmpty || collOut.size == 1) return collOut
+
+    for(c in collections)
+        if(c.size < collOut?.size ?: 0 || collOut == null){
+            if(c.isEmpty() && includeEmpty || c.size == 1) return c
+            collOut= c
+        }
+    return collOut
+}
+/** Mengambil [Array] dg jml size paling kecil. [includeEmpty] == true, maka hasil @return juga menyertakan empty-array. */
+fun <T> minSize(vararg arrays: Array<T>, includeEmpty: Boolean= true): Array<T>?{
+    var arrayOut: Array<T>?= null //arrays.first()
+//    if(arrayOut.isEmpty() && includeEmpty || arrayOut.size == 1) return arrayOut
+
+    for(arr in arrays)
+        if(arr.size < arrayOut?.size ?: 0 || arrayOut == null){
+            if(arr.isEmpty() && includeEmpty || arr.size == 1) return arr
+            arrayOut= arr
+        }
+    return arrayOut
+}
+
+/** Mengambil [Collection] dg jml size paling besar. [includeEmpty] == true, maka hasil @return juga menyertakan empty-collection. */
+fun <C: Collection<T>, T> maxSize(vararg collections: C, includeEmpty: Boolean= true): C?{
+    var collOut: C?= null //collections.first()
+    for(c in collections)
+        if(c.size > collOut?.size ?: 0 || collOut == null){
+            if(c.isEmpty() && !includeEmpty) continue
+            collOut= c
+        }
+    return collOut
+}
+/** Mengambil [Array] dg jml size paling besar. [includeEmpty] == true, maka hasil @return juga menyertakan empty-array. */
+fun <T> maxSize(vararg arrays: Array<T>, includeEmpty: Boolean= true): Array<T>?{
+    var arrayOut: Array<T>?= null //arrays.first()
+    for(arr in arrays)
+        if(arr.size > arrayOut?.size ?: 0 || arrayOut == null){
+            if(arr.isEmpty() && !includeEmpty) continue
+            arrayOut= arr
+        }
+    return arrayOut
 }
 
 
@@ -737,13 +911,58 @@ fun <T> Array<T>.findLastIndexed(predicate: (IndexedValue<T>) -> Boolean): Index
 }
 
 
-fun <T: Number> Array<T>.isElementEmpty(): Boolean{
+fun <T> Iterable<T>.filterIndex(predicate: (IndexedValue<T>) -> Boolean): List<IndexedValue<T>>{
+    val res= ArrayList<IndexedValue<T>>()
+    for(vals in this.withIndex())
+        if(predicate(vals))
+            res += vals
+    return res
+}
+fun <T> Sequence<T>.filterIndex(predicate: (IndexedValue<T>) -> Boolean): Sequence<IndexedValue<T>>{
+    var index= 0
+    return toOtherSequence { IndexedValue(index++, it) }.filter(predicate)
+}
+fun <T> Array<T>.filterIndex(predicate: (IndexedValue<T>) -> Boolean): List<IndexedValue<T>>{
+    val res= ArrayList<IndexedValue<T>>()
+    for(vals in this.withIndex()){
+        if(predicate(vals)){
+            res += vals
+        }
+    }
+    return res
+}
+
+inline fun <T> List<T>.notEmpty(block: (List<T>) -> Unit): List<T>{
+    if(isNotEmpty()) block(this)
+    return this
+}
+inline fun <T> Array<T>.notEmpty(block: (Array<T>) -> Unit): Array<T>{
+    if(isNotEmpty()) block(this)
+    return this
+}
+
+fun <T> Collection<Collection<T>>.isElementEmpty(): Boolean{
+    for(coll in this){
+        if(coll.isNotEmpty())
+            return false
+    }
+    return true
+}
+fun <T> Array<Array<T>>.isElementEmpty(): Boolean{
+    for(coll in this){
+        if(coll.isNotEmpty())
+            return false
+    }
+    return true
+}
+
+fun <T: Number> Array<T>.isElementZero(): Boolean{
     for(e in this)
         if(!e.isZero())
             return false
     return true
 }
-fun <T: Number> Collection<T>.isElementEmpty(): Boolean{
+fun <T: Number> Collection<T>.isElementZero(): Boolean{
     for(e in this)
         if(!e.isZero())
             return false
@@ -751,25 +970,25 @@ fun <T: Number> Collection<T>.isElementEmpty(): Boolean{
 }
 
 
-fun IntArray.isElementEmpty(): Boolean{
+fun IntArray.isElementZero(): Boolean{
     for(e in this)
         if(!e.isZero())
             return false
     return true
 }
-fun LongArray.isElementEmpty(): Boolean{
+fun LongArray.isElementZero(): Boolean{
     for(e in this)
         if(!e.isZero())
             return false
     return true
 }
-fun DoubleArray.isElementEmpty(): Boolean{
+fun DoubleArray.isElementZero(): Boolean{
     for(e in this)
         if(!e.isZero())
             return false
     return true
 }
-fun FloatArray.isElementEmpty(): Boolean{
+fun FloatArray.isElementZero(): Boolean{
     for(e in this)
         if(!e.isZero())
             return false

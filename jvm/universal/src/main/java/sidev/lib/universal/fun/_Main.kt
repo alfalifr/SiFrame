@@ -1,6 +1,5 @@
 package sidev.lib.universal.`fun`
 
-import com.google.gson.Gson
 import sidev.lib.universal.annotation.AnnotatedFunctionClass
 import sidev.lib.universal.annotation.Rename
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
@@ -66,6 +65,7 @@ internal sealed class AB: AA(){
     protected val ab= "ok"
     private val ab_2= "ok"
     var ab_3= 6
+    abstract var ab_abs: Int
 }
 
 internal annotation class FunAnot(val a: Int= 101)
@@ -81,6 +81,7 @@ internal open class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionCl
     var poin= Poin(1, 2)
     var array= arrayOf(1, 2, 3)
     lateinit var poinLate: Poin //= Poin(1, 2)
+    override var ab_abs: Int= 10
 
     @Anotasi<Int, Any> @FunAnot(10)
     fun someFun(x: Int) = prin("\n\n ==== Halo dari AC.someFun() x= $x ==== \n\n")
@@ -129,6 +130,26 @@ fun main(args: Array<String>){
     val exc= Exc(err?.message, err)
     throw exc
 // */
+
+//    AC::class.declaredMemberPropertiesTree.withLevel()
+    println("\n============= BATAS AC Kotlin.classesTree ==============\n")
+    for((i, leveledClass) in AC::class.classesTree.withLevel().withIndex()){
+        prin("i= $i level= ${leveledClass.level} class= ${leveledClass.value}")
+    }
+
+    println("\n============= BATAS AC Kotlin.classesTree ==============\n")
+    for((i, clazz) in AC::class.classesTree.withIndex()){
+        prin("i= $i class= $clazz")
+    }
+
+    println("\n============= BATAS AC Kotlin.nestedDeclaredMemberPropertiesTree ==============\n")
+    for((i, leveledProp) in AC::class.nestedDeclaredMemberPropertiesTree.withLevel().withIndex()){
+        prin("i= $i level= ${leveledProp.level} prop= ${leveledProp.value}")
+    }
+    println("\n============= BATAS AC Kotlin.fieldsTree ==============\n")
+    for((i, prop) in AC::class.java.fieldsTree.withIndex()){
+        prin("i= $i prop= $prop")
+    }
 
     println("\n============= BATAS List plus ==============\n")
     val list= ArrayList<Int>()
@@ -284,7 +305,11 @@ AD(a= 0)
     println("AAD data= ${new<AAD>()}")
 */
     println("\n=============BATAS nestedPropertiesTree ==============\n")
-    for((i, prop) in AC::class.nestedPropertiesTree.withIndex())
+    for((i, prop) in AC::class.nestedMemberProperties.withIndex())
+        println("i= $i prop name= $prop ") //val= ${try{ prop.forcedGet(acObj as AC)}}
+
+    println("\n=============BATAS members ==============\n")
+    for((i, prop) in AC::class.members.withIndex())
         println("i= $i prop name= $prop ") //val= ${try{ prop.forcedGet(acObj as AC)}}
 /*
     println("\n=============BATAS propertiesTree_simple ==============\n")
@@ -342,11 +367,34 @@ AD(a= 0)
     val oldAc= object: AC(Poin(2,3)){
 
     }
+    prin("oldAc::class.isAllMembersImplemented = ${oldAc::class.isAllMembersImplemented}")
+    for((i, abst) in (oldAc::class.declaredMembersTree - oldAc::class.implementedMembersTree).withIndex()){
+        prin("i= $i abst= $abst")
+    }
     val oldAcSim= AC(Poin(y=12))
 
 //    var newAc= //oldAc.clone(true)
     oldAc.poin.x= 100
 
+    prine("oldAc.array[1]= ${oldAc.array[1]}")
+    prine("Int::class.isPrimitive= ${Int::class.isPrimitive}")
+    prine("Int::class.leastRequiredParamConstructor= ${Int::class.leastRequiredParamConstructor}")
+    prine("IntArray::class= ${IntArray::class}")
+
+    val arr= arrayOf(0, 1, 3)
+    val arr2= arr.clone()
+    val intArr= IntArray(2)
+
+    prin("arr::class.typeParameters.first().upperBounds.first() = ${arr::class.typeParameters.first().upperBounds.first()} arr::class.typeParameters.size= ${arr::class.typeParameters.size}")
+
+    arr2[2]= 1
+
+    prin("arr[2]= ${arr[2]} arr2[2]= ${arr2[2]} arr::class= ${arr::class} arr2::class= ${arr2::class}")
+
+    println("\n=============BATAS Int.constructor ==============\n")
+    for((i, constr) in Int::class.constructors.withIndex()){
+        prin("i= $i constr= $constr")
+    }
 
     val newAc= oldAc.clone<AC>(true)
 ///*
@@ -373,6 +421,7 @@ AD(a= 0)
     oldAc.aa_= 43
     oldAc.poinLate= Poin(33, 73)
     oldAc.poinConstr.x= 12
+    oldAc.array[1]= 110
 
     println("\n=============BATAS memberFunctions ==============\n")
     for((i, func) in oldAc::class.memberFunctions.withIndex()){
@@ -405,6 +454,7 @@ AD(a= 0)
     println("oldAc.aa_= ${oldAc.aa_} newAc.aa_= ${newAc.aa_}")
     println("oldAc.poinConstr.x= ${oldAc.poinConstr.x} oldAc.poinConstr.y= ${oldAc.poinConstr.y} newAc.poinConstr.x= ${newAc.poinConstr.x} newAc.poinConstr.y= ${newAc.poinConstr.y}")
     println("oldAc.poinLate.x= ${oldAc.poinLate.x} oldAc.poinLate.y= ${oldAc.poinLate.y} newAc.poinLate?.x= ${newAc.getLateinit { poinLate.x }} newAc.poinLate?.y= ${newAc.getLateinit { poinLate.y }}")
+    prin("oldAc.array= ${oldAc.array.string} newAc.array= ${newAc.array.string}")
 
 
     println("\n============= BATAS sealedSubclasses ==============\n")

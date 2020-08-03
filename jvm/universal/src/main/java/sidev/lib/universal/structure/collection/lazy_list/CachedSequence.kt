@@ -1,5 +1,6 @@
 package sidev.lib.universal.structure.collection.lazy_list
 
+import sidev.lib.universal.`fun`.isNegative
 import sidev.lib.universal.`fun`.withKeyIndexed
 
 /**
@@ -20,7 +21,11 @@ open class CachedSequence<T>(): ArrayList<T>(),
 
     final override val iteratorList: MutableList<Iterator<Pair<Int, T>>> = ArrayList()
     final override lateinit var builderIterator: Iterator<Pair<Int, T>>
-
+    /**
+     * Digunakan untuk menyocokan apakah hasil dari [findNext] sesuai dg index yg direquest.
+     * Variabel ini digunakan pada [isNextMatched].
+     */
+    private var requestedGetIndex: Int= -1
 
     override fun getExisting(key: Int): T? = if(key in indices) super.get(key) else null
     override fun getExistingKey(value: T): Int?{
@@ -29,16 +34,19 @@ open class CachedSequence<T>(): ArrayList<T>(),
     }
     override fun containsExistingValue(value: T): Boolean = super.indexOf(value) >= 0
     override fun containsExistingKey(key: Int): Boolean = key in indices
-    override fun isNextMatched(key: Int, addedNext: T): Boolean = key in indices
+    override fun isNextMatched(key: Int, addedNext: T): Boolean = key == requestedGetIndex //key in indices
 
     override fun addNext(key: Int, value: T): Boolean = add(value)
     override fun addValueIterator(itr: Iterator<T>): Boolean = addIterator(itr.withKeyIndexed{ index, _ -> index })
 
     //    /** @return -1 karena `key` dalam konteks ArrayList tidak penting. */
 //    override fun extractKeyFrom(addedNext: T): Int = -1
-
     override fun get(index: Int): T {
+        if(index.isNegative())
+            throw ArrayIndexOutOfBoundsException("get() -> index tidak boleh negatif: \"$index\"")
+        requestedGetIndex= index
         val el= findNext(index)
+        requestedGetIndex= -1
         return el
             ?: throw ArrayIndexOutOfBoundsException("CachedSequence: ${this::class.simpleName} hanya memiliki element sebanyak $size tapi index= $index")
 /*

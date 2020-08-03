@@ -2,13 +2,9 @@ package sidev.lib.android.viewrap
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.isElementEmpty
-import sidev.lib.universal.`fun`.isNegative
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.string
+import sidev.lib.universal.`fun`.isElementZero
 
 
 abstract class ViewBufferWrapperImpl<V: View>(final override val context: Context): ViewBufferWrapper<V>{
@@ -60,7 +56,7 @@ abstract class ViewBufferWrapperImpl<V: View>(final override val context: Contex
  */
 
     private fun configureBufferView(){
-        if((view?.size?.isElementEmpty() == false).also { mIsBufferViewConfigured= it }){
+        if((view?.size?.isElementZero() == false).also { mIsBufferViewConfigured= it }){
             bufferView?.layoutParams= view!!.layoutParams
             bufferView?.size= view!!.size
 //            loge("bufferView?.size= ${bufferView?.size?.string} view?.size?.string= ${view?.size?.string} bufferView?.layoutParams.width= ${bufferView?.layoutParams?.width} bufferView?.layoutParams?.height= ${bufferView?.layoutParams?.height} view!!.size.isElementEmpty()= ${view!!.size.isElementEmpty()}")

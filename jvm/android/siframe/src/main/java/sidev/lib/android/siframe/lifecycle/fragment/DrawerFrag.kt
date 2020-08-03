@@ -21,8 +21,8 @@ abstract class DrawerFrag : Frag(), DrawerFragBase {
         get() = layoutView
     final override val _prop_intent: Intent?
         get() = activity?.intent
-    final override val _prop_fm: FragmentManager?
-        get() = fragmentManager
+    final override val _prop_fm: FragmentManager
+        get() = childFragmentManager
 
     final override val _prop_backBtnBase: BackBtnBase?
         get() = activity.asNotNullTo { act: BackBtnBase -> act }

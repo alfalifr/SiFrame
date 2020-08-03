@@ -1,18 +1,203 @@
 package sidev.lib.universal._cob
 
 import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.`val`.RoundMethod
-import java.lang.Thread.yield
-import kotlin.math.log10
-import kotlin.reflect.KFunction
+import java.io.Serializable
+import java.lang.Exception
+import kotlin.reflect.*
+import kotlin.reflect.full.*
 
+class AE<T: Collection<S>, S: CharSequence>(var ae: T, var ae2: T?= null): Serializable
+class AEB<T: Collection<List<S>>, S: CharSequence>(var ae: T, var ae2: T?= null)
+class AEA{
+    var ae= arrayOf(1, 2, 3)
+}
+data class AED(var a: Int= 1, var b: Int= 2)
+
+open class AA
+class AA2: AA()
+
+open class Food
+open class FastFood: Food()
+class Burger: FastFood()
+
+interface Consumer<in T: Food>{
+    fun eat(food: T) = prin("eat ${food::class} food is Food = > ${food is Food}")
+}
+class Everybody: Consumer<Food>
+class ModernPeople: Consumer<FastFood>
+class American: Consumer<Burger>{
+    override fun eat(food: Burger) {
+        if(food !is Burger) throw Exception("food !is Burger")
+    }
+}
+
+interface Producer<out T: Food>{
+    fun eat() : T
+}
+class FoodStore: Producer<Food>{
+    override fun eat(): Food = Food()
+}
+class FastFoodStore: Producer<FastFood>{
+    override fun eat(): FastFood = FastFood()
+}
+class BurgerStore: Producer<Burger>{
+    override fun eat(): Burger = Burger()
+}
+
+private abstract class AbsCl private constructor()
+internal object ObjCl
+internal interface IntfcCl
+
+@ExperimentalStdlibApi
 fun main(args: Array<String>) {
 //    val v = BooleanWrap("a")
+//    AbsCl::class.createInstance()
+    prin("ObjCl::class.isInterface= ${ObjCl::class.isInterface} AbsCl::class.isInterface= ${AbsCl::class.isInterface} IntfcCl::class.isInterface= ${IntfcCl::class.isInterface}")
+    prin("ObjCl::class.constructors.size= ${ObjCl::class.constructors.size} ObjCl::class.isAbstract= ${ObjCl::class.isAbstract}")
+    prin("AbsCl::class.constructors.size= ${AbsCl::class.constructors.size}")
+
     val p= ADE()
     p.a.aoe()
+    val aed1= AED()
+    val aed2= aed1
+    aed1.a= 10
+    prin("aed1.a= ${aed1.a} aed2.a= ${aed2.a}")
+
+    val arr= ArrayList<Int>()
+    val list1= listOf(AA(), AA())
+    val list2= listOf(AA2(), AA2())
+    val inferredTypeList1= list1.inferredType
+    val inferredTypeList2= list2.inferredType
+
+    prin("inferredTypeList1.canBeAssignedWith(inferredTypeList2)= ${inferredTypeList1.isAssignableFrom(inferredTypeList2)}")
+
+    prin("inferredTypeList1= $inferredTypeList1 inferredTypeList2= $inferredTypeList2")
+    prin("inferredTypeList2.isSubtypeOf(inferredTypeList1)= ${inferredTypeList2.type.isSubtypeOf(inferredTypeList1.type)}")
+    prin("inferredTypeList2.isSubTypeOf(inferredTypeList1)= ${inferredTypeList2.isSubTypeOf(inferredTypeList1)}")
+    prin("inferredTypeList1.isSupertypeOf(inferredTypeList2)= ${inferredTypeList1.type.isSupertypeOf(inferredTypeList2.type)}")
+    prin("inferredTypeList1.isSuperTypeOf(inferredTypeList2)= ${inferredTypeList1.type.isSuperTypeOf(inferredTypeList2.type)}")
+
+    val arr2= arrayOf(1, 2, 3)
+    val arr4= arrayOf(11, 2, null)
+    prin("inferElementClass(arr2)= ${inferElementClass(arr2)}")
+    prin("inferElementType(arr4)= ${inferElementType(arr4)}")
+
+    val arr3= intArrayOf(1, 2)
+    val inferredArr2= arr2.inferredType
+    val inferredArr3= arr3.inferredType
+    prin("arr2::class.arrayTypeArgument= ${arr2::class.arrayTypeArgument} arr3::class.arrayTypeArgument= ${arr3::class.arrayTypeArgument}")
+    prin("arr2::class.isSuperclassOf(arr3::class)= ${arr2::class.isSuperclassOf(arr3::class)} arr3::class= ${arr3::class}")
+    prin("arr2::class.isSubclassOf(arr3::class)= ${arr2::class.isSubclassOf(arr3::class)}")
+
+    prin("inferredArr2.isAssignableFrom(inferredArr3)= ${inferredArr2.isAssignableFrom(inferredArr3)}")
+    prin("inferredArr2= $inferredArr2 inferredArr3= $inferredArr3")
+
+    val cons: Consumer<Burger> = Everybody()
+    val prods: Producer<Food> = BurgerStore()
+
+    val consBurgerType= Consumer::class.createType(listOf(Burger::class.createType().simpleTypeProjection))
+    val consEverybody= Everybody::class.createType()
+
+    val prodsFood= Producer::class.createType(listOf(Food::class.createType().simpleTypeProjection))
+    val prodsBurger= Producer::class.createType(listOf(Burger::class.createType().simpleTypeProjection))
+    val prodsFoodStore= FoodStore::class.createType()
+    val prodsBurgerStore= BurgerStore::class.createType()
+
+    prin("consBurgerType= $consBurgerType consEverybody= $consEverybody consBurgerType.canBeAssignedWith(consEverybody)= ${consBurgerType.isAssignableFrom(consEverybody)}")
+    prin("prodsFood= $prodsFood prodsBurgerStore= $prodsBurgerStore prodsFood.canBeAssignedWith(prodsBurgerStore)= ${prodsFood.isAssignableFrom(prodsBurgerStore)}")
+    prin("prodsFood= $prodsFood prodsBurgerStore= $prodsBurgerStore prodsFood.isSupertypeOf(prodsBurgerStore)= ${prodsFood.isSupertypeOf(prodsBurgerStore)}")
+    prin("prodsFood= $prodsFood prodsBurgerStore= $prodsBurgerStore prodsFood.isSuperTypeOf(prodsBurgerStore)= ${prodsFood.isSuperTypeOf(prodsBurgerStore)}")
+    prin("prodsBurger= $prodsBurger prodsBurgerStore= $prodsBurgerStore prodsBurger.isSupertypeOf(prodsBurgerStore)= ${prodsBurger.isSupertypeOf(prodsBurgerStore)}")
+    prin("prodsBurger= $prodsBurger prodsBurgerStore= $prodsBurgerStore prodsBurger.isSuperTypeOf(prodsBurgerStore)= ${prodsBurger.isSuperTypeOf(prodsBurgerStore)}")
+    prin("prodsFoodStore= $prodsFoodStore prodsBurger= $prodsBurgerStore prodsFoodStore.canBeAssignedWith(prodsBurger)= ${prodsFoodStore.isAssignableFrom(prodsBurgerStore)}")
+    prin("prodsFoodStore= $prodsFoodStore prodsBurger= $prodsBurgerStore prodsFoodStore.isSupertypeOf(prodsBurgerStore)= ${prodsFoodStore.isSupertypeOf(prodsBurgerStore)}")
+    prin("prodsFoodStore= $prodsFoodStore prodsBurger= $prodsBurgerStore prodsFoodStore.isSuperTypeOf(prodsBurgerStore)= ${prodsFoodStore.isSuperTypeOf(prodsBurgerStore)}")
+    prin("prodsFood= $prodsFood prodsBurger= $prodsBurger prodsFood.isSupertypeOf(prodsBurger)= ${prodsFood.isSupertypeOf(prodsBurger)}")
+    prin("prodsFood= $prodsFood prodsBurger= $prodsBurger prodsFood.isSuperTypeOf(prodsBurger)= ${prodsFood.isSuperTypeOf(prodsBurger)}")
+
+    val ae= AE(listOf("String txt"))
+
+    val commonClass= getCommonClass(Int::class, String::class, Double::class)
+    val commonClass2= getCommonClass(1, "halo", 2.1, ae)
+    prin("commonClass= $commonClass commonClass2= $commonClass2")
+
+    val commonType1= getCommonType(1, 2, 3, null, 2.1) //(1, "halo", 2.1, ae)
+    val inferredNullType= null.inferredType
+//    val listaa= listOf(1, "halo", 2.1)
+    prin("commonType1= $commonType1")
+    prin("inferredNullType= $inferredNullType")
+
+    prin("====Sorted=====")
+    for(cls in Int::class.classesTree.withLevel().sortedBy { it.level })
+        prin("cls= $cls")
+    prin("====Non-Sorted=====")
+    for(cls in Int::class.classesTree.withLevel())
+        prin("cls= $cls")
+    prin("====Non-Sorted=====")
+    for(cls in String::class.classesTree.withLevel())
+        prin("cls= $cls")
+
+    for((i, typeParam) in ae::class.nestedTypeParameters.withIndex()){
+        prin("i= $i typeParam= $typeParam")
+    }
+    prin("AEB::class.typeParameters[0].nestedUpperBoundTypeArguments = ${AEB::class.typeParameters[0].nestedUpperBoundTypeArguments.toList()}")
+    prin("ae::class.typeParameters[0].nestedUpperBoundTypeArguments= ${ae::class.typeParameters[0].nestedUpperBoundTypeArguments.toList()}")
+    prin("ae::class.typeParameters[1].getTypeParameterLink(ae::class)= ${ae::class.typeParameters[1].getTypeParameterLink(ae::class)}")
+    prin("ae::class.typeParameters[0].getTypeParameterLink(ae::class)= ${ae::class.typeParameters[0].getTypeParameterLink(ae::class)}")
+//    ae::class.typeParameters.first().upperBounds
+
+//    fun KTypeParameter.get
+    prin("ae::class.typeParameters.first().upperBounds= ${ae::class.typeParameters.first().upperBounds}")
+
+//    prin("ae.ae::class.typeParameters.first().getProjection(ae.ae) = ${ae.ae::class.typeParameters.first().getProjectionIn(ae.ae)}")
+    prin("ae::class.typeParameters.first().getProjection(ae) = ${ae::class.typeParameters.first().getClassProjectionIn(ae)}")
+    prin("ae.inferredType_old= ${ae.inferredType_old}")
+    prin("ae.inferredType= ${ae.inferredType}")
+
+    val aeee= ae::class.typeParameters.asSequence().map { it.getTypeParameterLink(ae::class)!! }.asCached()
+    prin("aeee[1]= ${aeee[1]}")
+    for((i, eea) in aeee.withIndex()){
+        prine("i= $i eea= $eea")
+    }
+
+
+
+// */
+    prin("AE<List<String>>::ae.returnType.classifier?.createType() = ${AE<List<String>, String>::ae.returnType.classifier?.createType()}")
+
+    prin("AE<*>::ae.returnType = ${AE<List<String>, String>::ae.returnType}")
+
+    for((i, typeArg) in AE<*, *>::ae.returnType.arguments.withIndex())
+        prin("i= $i typeArg= $typeArg")
+    for((i, typeArg) in AEA::ae.returnType.arguments.withIndex())
+        prin("i= $i typeArg= $typeArg")
+    prin("AEA::ae.returnType.arguments.size = ${AEA::ae.returnType.arguments.size}")
+    prin("AEA::ae.returnType= ${AEA::ae.returnType}")
+/*
+//    prin("AE<*>::ae.returnType == AE<*>::ae2.returnType => ${AE<ArrayList<String>>::ae.returnType == AE<*>::ae2.returnType}")
+//    prin("AE<ArrayList<String>>::ae.returnType.isSametypeAs(AE<*>::ae2.returnType) => ${AE<ArrayList<String>>::ae.returnType.isSametypeAs(AE<*>::ae2.returnType, false)}")
+//    prin("AE<ArrayList<String>>::ae.returnType.isSupertypeOf(AE<*>::ae2.returnType) => ${AE<ArrayList<String>>::ae.returnType.isSupertypeOf(AE<*>::ae2.returnType)}")
+
+//    prin("AE::class.typeParameters.first().isSupertypeOf(List::class) => ${AE::class.typeParameters.first().isSupertypeOf(List::class)}")
+
     val decimal= 1.2315f -1.2315f.toInt()
     val decimalRound= decimal *10000
     val decimal2= decimalRound -(decimalRound.toInt())
+    for((i, bound) in AE::class.typeParameters.first().upperBounds.withIndex()){
+        prin("i= $i bound= $bound")
+        for((u, arg) in bound.arguments.withIndex())
+            prin("-- u= $u arg= $arg")
+    }
+    for((i, bound) in (AE::class.typeParameters.first().upperBounds.first().classifier as KClass<*>).typeParameters.first().upperBounds.withIndex())
+        prin("i= $i bound= $bound")
+
+    val ae= AE(arrayListOf("String"))
+    prin("ae::ae.returnType.arguments.size = ${ae::ae.returnType.arguments.size}")
+    prin("\n============ AE Projection ===============\n")
+    for((i, projection) in ae::ae.returnType.arguments.withIndex())
+        prin("i= $i projection= $projection")
+
+    prin("ae::ae.returnType.classifier= ${ae::ae.returnType.classifier} ae::ae.returnType.classifier is KClass<*>= ${ae::ae.returnType.classifier is KClass<*>} ae::ae.returnType.classifier?.clazz= ${ae::ae.returnType.classifier?.clazz}")
 
 /*
     fun ok(){}
@@ -73,7 +258,25 @@ fun main(args: Array<String>) {
     val b= 1
 //    val c= 1 +if(b == 2) b else 3
     prin("1 +if(b == 2) b else 3 => ${1 +if(b == 2) b else 3}")
+
+    for((i, projection) in inferType<Array<Int>>().arguments.withIndex())
+        prin("i= $i projection= $projection")
+
+    (1 until 10).random()
+    Int::class.typeParameters.first()
+ */
 }
+
+
+
+//fun KType.isExclusivelySupertypeOf(derived: KType): Boolean = isSubtypeOf(derived) && this !=
+// */
+
+//val <T> Array<T>.inferredType: InferredType{}
+
+@ExperimentalStdlibApi
+inline fun <reified T> inferType(vararg any: T): KType = typeOf<T>()
+
 internal fun plus(a: Number, b: Number): Number = a + b
 internal fun rem(a: Number, b: Number): Number = a % b
 

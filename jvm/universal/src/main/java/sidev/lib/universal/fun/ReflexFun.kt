@@ -1,6 +1,8 @@
 package sidev.lib.universal.`fun`
 
 import android.util.Log
+import sidev.lib.universal.structure.collection.iterator.NestedIterator
+import sidev.lib.universal.structure.collection.iterator.NestedIteratorImpl
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
@@ -95,6 +97,16 @@ val Class<*>.superInterfacesTree: NestedSequence<Class<*>>
                 return if(int.isNotEmpty()) int.iterator()
                 else null
             }
+        }
+    }
+
+/** Mengambil semua [Class.getDeclaredFields] dari `this.extension` [Class] dan superclass. */
+val Class<*>.fieldsTree: NestedSequence<Field>
+    get()= object: NestedSequence<Field>{
+        override fun iterator(): NestedIterator<*, Field>
+            = object: NestedIteratorImpl<Class<*>, Field>(this@fieldsTree.superclassesTree.iterator()){
+            override fun getOutputIterator(nowInput: Class<*>): Iterator<Field>? = nowInput.declaredFields.iterator()
+            override fun getInputIterator(nowOutput: Field): Iterator<Class<*>>? = null
         }
     }
 

@@ -66,11 +66,13 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
         val data= arrayOf(
             "Data 1",
             "Data 2"
-/*
+///*
             ,"Data 3",
-            "Data 4",
-            "Halo",
-            "Bro"
+            "Data 4"
+///*
+            ,"Halo"
+/*
+            ,"Bro"
 /// *
             ,"Hoho"
 /// *

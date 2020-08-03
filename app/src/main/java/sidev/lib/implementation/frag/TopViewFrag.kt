@@ -11,6 +11,6 @@ class TopViewFrag : Frag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Teks Palsu"
-        layoutView.layoutParams.height= 1000
+        layoutView.layoutParams.height= 650
     }
 }

@@ -3,6 +3,7 @@ package sidev.lib.universal.`fun`
 import android.util.Log
 import java.lang.NullPointerException
 import kotlin.Exception
+import kotlin.reflect.KTypeParameter
 
 /**
  * Cara aman untuk mendapatkan  nilai dari `lateinit var` dari `this.extension` [I].
@@ -225,3 +226,22 @@ fun <T: Number> T.isIndexNumberOr(default: T): T = notNegativeOr(default)
 fun <T: Number> T.notNegativeOr(default: T): T = if(!isNegative()) this else default
 fun <T: Number> T.notPositiveOr(default: T): T = if(!isPositive()) this else default
 fun <T: Number> T.notZeroOr(default: T): T = if(!isZero()) this else default
+
+
+
+/*
+======================
+Data Structure Check Fun
+======================
+ */
+fun KTypeParameter.contentEquals(other: KTypeParameter, ignoreAcclamation: Boolean= true): Boolean
+    = if(ignoreAcclamation) name.replace("!", "") == other.name.replace("!", "")
+        else name == other.name
+        && upperBounds == other.upperBounds
+        && variance == other.variance
+        && isReified == isReified
+
+fun <T> Collection<T>.contentEquals(other: Collection<T>): Boolean = size == other.size && containsAll(other)
+fun <T> Collection<T>.contentEquals(other: Array<out T>): Boolean = size == other.size && containsAll(other.toList())
+fun <T> Array<T>.contentEquals(other: Array<out T>): Boolean = size == other.size && toList().containsAll(other.toList())
+fun <T> Array<T>.contentEquals(other: Collection<T>): Boolean = size == other.size && toList().containsAll(other)

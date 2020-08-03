@@ -3,7 +3,9 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.universal.exception.PropertyAccessExc
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
@@ -25,7 +27,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
 
     override val _prop_view: View
     override val _prop_intent: Intent
-    override val _prop_ctx: Context
+    //    override val _prop_ctx: Context
+    override val _prop_act: AppCompatActivity
 
     var fragment: Fragment
     /**
@@ -74,35 +77,33 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
      * Digunakan saat Fragment lateinit. Biasanya saat pemanggilan pada fungsi [startSingleFragAct]
      */
     fun __initFrag(){
+        loge("${this::class} __initFrag() fragment initialized => ${try{ fragment::class } catch (e: Exception){ null }}")
         try{ fragment::class } //Hanya sbg pengecekan kalau fragment sebelumnya udah diinit.
                 // Metode ini digunakan untuk menanggulangi 2x instansiasi fragment.
         catch(e: UninitializedPropertyAccessException){
-            if(this is Act && !this.isActivitySavedInstanceStateNull){
-                //Anggapannya tidak mungkin fragment null karena sudah diinit di awal.
-                fragment= supportFragmentManager.findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)!!
-                return
-            }
+            if(this is FragmentActivity)
+                supportFragmentManager.findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
+                    .notNull { fragment= it; return } //Jika fragment sebelumnya udah ada, maka gak usah init yg baru.
 
             _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->
                     fragment= ReflexUtil.newInstance(fragName)
                     giveFrag()
                 }
-
-            try{ __attachFrag()
-                giveFrag()
-            } catch (e: UninitializedPropertyAccessException){
-                throw PropertyAccessExc(
-                    kind = PropertyAccessExc.Kind.Uninitialized,
-                    propertyName = "fragment",
-                    ownerName = this::class.java.simpleName
-                )
-            }
+        }
+        try{ __attachFrag()
+            giveFrag()
+        } catch (e: UninitializedPropertyAccessException){
+            throw PropertyAccessExc(
+                kind = PropertyAccessExc.Kind.Uninitialized,
+                propertyName = "fragment",
+                ownerName = this::class.java.simpleName
+            )
         }
     }
 
     fun __attachFrag(){
-        _prop_ctx.commitFrag(fragment, fragContainerId = fragContainerId, tag = _SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
+        _prop_act.commitFrag(fragment, fragContainerId = fragContainerId, tag = _SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
         if(this is ActFragBase)
             fragment.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
         if(isTitleFragBased)

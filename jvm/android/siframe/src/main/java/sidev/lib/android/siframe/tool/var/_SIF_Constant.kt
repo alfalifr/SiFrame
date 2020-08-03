@@ -2,6 +2,8 @@ package sidev.lib.android.siframe.tool.`var`
 
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.Fragment
+import kotlin.reflect.KClass
 
 /**
  * Untuk val yg berawalan dg _ merupakan suffix.
@@ -9,6 +11,12 @@ import android.view.View
 object _SIF_Constant{
     internal object Internal{
         val TAG_SINGLE_FRAG_ACT= "_sif_tag_single_frag_act_"
+        val TAG_FRAG_PREFIX= "_sif_tag_frag_"
+
+        fun <T: Fragment> getSingleFragActTag(fragClass: KClass<T>): String
+            = "$TAG_SINGLE_FRAG_ACT::${fragClass.qualifiedName}"
+        fun <T: Fragment> Any.getFragTag(fragClass: KClass<T>): String
+            = "$TAG_FRAG_PREFIX::${this::class.qualifiedName}::${fragClass.qualifiedName}"
     }
 
     val DIRECTION_UP= View.FOCUS_UP

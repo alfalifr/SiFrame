@@ -11,7 +11,7 @@ import sidev.lib.universal.structure.data.TaggedBoxedVal
  *
  * Iterasi dilakukan menggunakan metode DEPTH-FIRST PRE-ORDER.
  */
-abstract class NestedIteratorImpl<I, O>(private val startInputIterator: Iterator<I>?)
+abstract class NestedIteratorImpl<I, O>(internal val startInputIterator: Iterator<I>?)
     : NestedIterator<I, O>,
     SkippableIterator<O> {
     constructor(startInputIterable: Iterable<I>): this(startInputIterable.iterator())
@@ -19,7 +19,7 @@ abstract class NestedIteratorImpl<I, O>(private val startInputIterator: Iterator
         this.start= start
     }
     open val tag: String= this::class.java.simpleName
-    protected var start: I?= null
+    internal var start: I?= null
 
     internal open val activeOutputLines= ArrayList<Iterator<O>>()
     internal open val activeInputLines= ArrayList<Iterator<I>>()
@@ -30,7 +30,7 @@ abstract class NestedIteratorImpl<I, O>(private val startInputIterator: Iterator
     private var nowOutput: O?= null
         set(v){
             field= v
-            prinr("nowOutput= $nowOutput tag= $tag")
+            prind("nowOutput= $nowOutput tag= $tag")
         }
 
     /** Varibael yg mengindikasikan bahwa pengecekan [hasNext] hanya sebatas pengecekan dan hasil dari [next] belum tentu dipakai oleh pemanggil. */
@@ -97,10 +97,15 @@ abstract class NestedIteratorImpl<I, O>(private val startInputIterator: Iterator
     private fun getNextInputIterator(out: O): Boolean{
         val inItr= getInputIterator(out)
         return if(inItr != null && inItr.hasNext()){
-            activeInputLines.add(inItr)
-            activeInputIterator= inItr
+            addInputIterator(inItr)
+//            activeInputLines.add(inItr)
+//            activeInputIterator= inItr
             true
         } else false
+    }
+    internal open fun addInputIterator(inItr: Iterator<I>){
+        activeInputLines.add(inItr)
+        activeInputIterator= inItr
     }
     /**
      * @return true jika [inn] menghasilkan [activeOutputIterator] yg baru dan
@@ -109,10 +114,15 @@ abstract class NestedIteratorImpl<I, O>(private val startInputIterator: Iterator
     private fun getNextOutputIterator(inn: I): Boolean{
         val outItr= getOutputIterator(inn)
         return if(outItr != null && outItr.hasNext()){
-            activeOutputLines.add(outItr)
-            activeOutputIterator= outItr
+            addOutputIterator(outItr)
+//            activeOutputLines.add(outItr)
+//            activeOutputIterator= outItr
             true
         } else false
+    }
+    internal open fun addOutputIterator(outItr: Iterator<O>){
+        activeOutputLines.add(outItr)
+        activeOutputIterator= outItr
     }
 
     private fun getOutputFromInput(): Boolean{
@@ -123,30 +133,41 @@ abstract class NestedIteratorImpl<I, O>(private val startInputIterator: Iterator
     private fun hasNextInput(): Boolean{
         if(activeInputIterator != null){
             while(!activeInputIterator!!.hasNext() && activeInputLines.size > 1){
-                activeInputLines.remove(activeInputIterator!!)
-                activeInputIterator= activeInputLines.last()
+                changeLastActiveInputIterator(activeInputIterator!!)
+//                activeInputLines.remove(activeInputIterator!!)
+//                activeInputIterator= activeInputLines.last()
             }
         }
         return activeInputIterator?.hasNext() == true
+    }
+    internal open fun changeLastActiveInputIterator(currentActiveInputIterator: Iterator<I>){
+        activeInputLines.remove(currentActiveInputIterator)
+        activeInputIterator= activeInputLines.last()
     }
 
     private fun hasNextOutput(): Boolean{
         if(activeOutputIterator != null){
             while(!activeOutputIterator!!.hasNext() && activeOutputLines.size > 1){
-                activeOutputLines.remove(activeOutputIterator!!)
-                activeOutputIterator= activeOutputLines.last()
+                changeLastActiveOutputIterator(activeOutputIterator!!)
+//                activeOutputLines.remove(activeOutputIterator!!)
+//                activeOutputIterator= activeOutputLines.last()
             }
         }
         return activeOutputIterator?.hasNext() == true
     }
+    internal open fun changeLastActiveOutputIterator(currentActiveOutputIterator: Iterator<O>){
+        activeOutputLines.remove(currentActiveOutputIterator)
+        activeOutputIterator= activeOutputLines.last()
+    }
 
     private fun initActiveIterator(): Boolean{
-        val itr= startInputIterator?.iterator()
-            ?: if(start != null) newIterator(start!!) else null
+        val itr= startInputIterator //?.iterator()
+            ?: if(start != null) newIteratorSimple(start!!) else null
 
         return if(itr?.hasNext() == true) {
-            activeInputLines.add(itr)
-            activeInputIterator= itr
+            addInputIterator(itr)
+//            activeInputLines.add(itr)
+//            activeInputIterator= itr
 
             if(!hasNextOutput()){
                 getOutputFromInput()

@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
+import sidev.lib.android.siframe.intfc.lifecycle.FragmentHostBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
 import sidev.lib.android.siframe.intfc.prop.CtxProp
 import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
@@ -21,12 +23,13 @@ import sidev.lib.universal.tool.util.ThreadUtil
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
  */
-interface ActFragBase: LifecycleRootBase, //ArchView,
+interface ActFragBase: LifecycleRootBase, FragmentHostBase, //ArchView,
     InitViewFun, CtxProp, HierarchyOrderProp {
 //    val layoutId: Int
 //    val styleId: Int
     var layoutView: View
     override val _prop_ctx: Context
+    override val _prop_fm: FragmentManager
     //    val lifecycleCtx: Context
 
     /**

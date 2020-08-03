@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
@@ -57,6 +58,8 @@ abstract class Frag : Fragment(),
     final override var isBusy: Boolean= false
     final override var busyOfWhat: String= InterruptableBase.DEFAULT_BUSY_OF_WHAT
 
+    override val _prop_fm: FragmentManager
+        get() = childFragmentManager
     override val _prop_ctx: Context
         get() = context!!
     final override var _prop_parentLifecycle: ActFragBase?= null

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -46,10 +47,21 @@ fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     context?.toast(msg, length)
 }
 
+/**
+ * [forceReplace] `true` maka fragment dg tag [tag] yg ada sebelumnya akan di-replace dg [fragment].
+ *
+ * @return [Fragment] yg di-commit,
+ *   -> dapat berupa [fragment] jika sebelumnya pada `this.extension` [FragmentManager]
+ *   belum terdapat fragment dg tag [tag],
+ *   -> atau fragment sebelumnya yg sudah terdapat pada `this.extension` dg tag [tag].
+ */
 fun FragmentManager.commitFrag(fragment: Fragment,
                        fragContainerView: ViewGroup?= null,
                        @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
-                       tag: String= fragment::class.java.name){
+                       tag: String= fragment::class.java.name, forceReplace: Boolean= true): Fragment{
+    if(!forceReplace)
+        findFragmentByTag(tag).notNull { return it }
+
     val fragTrans= beginTransaction()
     val containerId= when {
         fragContainerId != View.NO_ID -> fragContainerId
@@ -70,22 +82,21 @@ fun FragmentManager.commitFrag(fragment: Fragment,
  */
     fragTrans.replace(containerId, fragment, tag)
     fragTrans.commit()
+    return fragment
 }
-fun Context.commitFrag(fragment: Fragment,
-                       fragContainerView: ViewGroup?= null,
-                       @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
-                       tag: String= fragment::class.java.name){
-    when(this){
-        is FragmentActivity -> supportFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag)
-    }
-}
+
+fun FragmentActivity.commitFrag(fragment: Fragment,
+                                 fragContainerView: ViewGroup?= null,
+                                 @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
+                                 tag: String= fragment::class.java.name, forceReplace: Boolean= true): Fragment
+    = supportFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag, forceReplace)
+
 fun Fragment.commitFrag(fragment: Fragment,
                         fragContainerView: ViewGroup?= null,
                         @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
-                        tag: String= fragment::class.java.name){
-//    activity?.commitFrag(fragment, fragContainerView, fragContainerId, tag)
-    childFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag)
-}
+                        tag: String= fragment::class.java.name, forceReplace: Boolean= true): Fragment
+    = childFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag, forceReplace)
+
 
 fun FragBase.forcedAttach(callingLifecyle: ActFragBase){
     onLifecycleDetach()
