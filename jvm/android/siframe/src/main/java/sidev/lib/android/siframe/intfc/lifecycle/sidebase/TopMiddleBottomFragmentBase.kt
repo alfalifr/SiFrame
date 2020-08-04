@@ -8,12 +8,13 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.FragmentHostBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 
 interface TopMiddleBottomFragmentBase: TopMiddleBottomBase, FragmentHostBase {
-    val topFragment: Frag?
-    val bottomFragment: Frag?
+    var topFragment: Frag?
+    var bottomFragment: Frag?
     override val _prop_fm: FragmentManager
 
     override val topLayoutId: Int
@@ -29,8 +30,11 @@ interface TopMiddleBottomFragmentBase: TopMiddleBottomBase, FragmentHostBase {
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isTopContainerNestedInRv }
                 ?: false
         if(topFragment != null && topContainer != null && !isTopLayoutNestedInRv){
-            _prop_fm.commitFrag(topFragment!!, topContainer!!)
-            topFragment!!.onViewCreatedListener= { view, bundle -> _initTopView(view) }
+            _prop_fm.commitFrag(topFragment!!, topContainer!!, forceReplace = false)
+                .asNotNull { frag: Frag ->
+                    topFragment= frag
+                    frag.addOnViewCreatedListener { view, bundle -> _initTopView(view) }
+                }
         }
 
         if(middleContainer != null){
@@ -45,8 +49,11 @@ interface TopMiddleBottomFragmentBase: TopMiddleBottomBase, FragmentHostBase {
             this.asNotNullTo { nestedView: NestedTopMiddleBottomBase -> nestedView.isBottomContainerNestedInRv }
                 ?: false
         if(bottomFragment != null && bottomContainer != null && !isBottomLayoutNestedInRv){
-            _prop_fm.commitFrag(bottomFragment!!, bottomContainer!!)
-            bottomFragment!!.onViewCreatedListener= { view, bundle -> _initBottomView(view) }
+            _prop_fm.commitFrag(bottomFragment!!, bottomContainer!!, forceReplace = false)
+                .asNotNull { frag: Frag ->
+                    bottomFragment= frag
+                    frag.addOnViewCreatedListener { view, bundle -> _initBottomView(view) }
+                }
         }
     }
 

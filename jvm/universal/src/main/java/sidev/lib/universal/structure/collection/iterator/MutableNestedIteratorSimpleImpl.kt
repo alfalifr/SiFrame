@@ -11,7 +11,7 @@ import android.view.ViewGroup
 abstract class MutableNestedIteratorSimpleImpl<T>(startIterator: Iterator<T>?)
     : NestedIteratorSimpleImpl<T>(startIterator), MutableNestedIteratorSimple<T>{
     constructor(startIterable: Iterable<T>): this(startIterable.iterator())
-    constructor(start: T): this((start as? Iterable<T>)?.iterator()){
+    constructor(start: T?): this((start as? Iterable<T>)?.iterator()){
         this.start= start
     }
 

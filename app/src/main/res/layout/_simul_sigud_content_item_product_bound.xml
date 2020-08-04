@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/putih">
+
+    <RelativeLayout
+        android:id="@+id/sv_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sf_pro_bold"
+            android:text="The Subtle Art of Not Giving bla bla bla bla"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/txt_normal_sm" />
+
+        <TextView
+            android:id="@+id/tv_kind"
+            android:layout_below="@id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sf_pro"
+            android:text="Buku"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/hitam"
+            android:textSize="@dimen/txt_default" />
+
+    <!--SAMPE SINI!!!!-->
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/rl_amount_crossdocking_container"
+            android:layout_below="@id/tv_kind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/ll_amount_in_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_amount_in_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sf_pro"
+                    android:text="Inbound :"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/txt_default" />
+
+                <TextView
+                    android:id="@+id/tv_amount_in_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sf_pro_bold"
+                    android:text="99"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/ijo"
+                    android:textSize="@dimen/txt_normal_sm" />
+
+                <TextView
+                    android:id="@+id/tv_amount_in_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sf_pro"
+                    android:text="pcs"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/txt_default" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_amount_out_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_amount_out_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sf_pro"
+                    android:text="Outbound :"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/txt_default" />
+
+                <TextView
+                    android:id="@+id/tv_amount_out_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sf_pro_bold"
+                    android:text="99"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/merah"
+                    android:textSize="@dimen/txt_normal_sm" />
+
+                <TextView
+                    android:id="@+id/tv_amount_out_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sf_pro"
+                    android:text="pcs"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/txt_default" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_amount_container_outer"
+            android:layout_below="@id/tv_kind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/ll_amount_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_amount_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sf_pro"
+                    android:text="Total :"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/txt_default" />
+
+                <TextView
+                    android:id="@+id/tv_amount_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:fontFamily="@font/sf_pro_bold"
+                    android:text="99"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/txt_normal_sm" />
+
+                <TextView
+                    android:id="@+id/tv_amount_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sf_pro"
+                    android:text="pcs"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/txt_default" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/border_bottom"
+                android:layout_below="@id/ll_amount_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_number_picker_container"
+                android:layout_above="@id/border_bottom"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <include
+                    android:visibility="gone"
+                    android:id="@+id/comp_number_picker"
+                    layout="@layout/_simul_sigud_component_number_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <include
+                    android:id="@+id/comp_btn_add_amount"
+                    layout="@layout/_simul_sigud_component_btn_confirm_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
+

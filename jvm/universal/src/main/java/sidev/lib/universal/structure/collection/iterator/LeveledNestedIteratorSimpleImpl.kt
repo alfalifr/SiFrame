@@ -8,8 +8,8 @@ import sidev.lib.universal.structure.data.LeveledValue
 abstract class LeveledNestedIteratorSimpleImpl<T>(/*private val */startIterator: Iterator<T>?)
     : LeveledNestedIteratorImpl<T, T>(startIterator) {
     constructor(startInputIterable: Iterable<T>): this(startInputIterable.iterator())
-    constructor(start: T): this((start as? Iterable<T>)?.iterator()){
-        this.start= start.withLevel()
+    constructor(start: T?): this((start as? Iterable<T>)?.iterator()){
+        this.start= start?.withLevel()
     }
 
     final override val activeInputLines: ArrayList<Iterator<LeveledValue<T>>>

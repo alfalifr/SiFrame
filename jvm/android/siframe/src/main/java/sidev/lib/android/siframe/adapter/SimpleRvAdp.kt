@@ -339,7 +339,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
  */
     }
 
-    inline fun notifyDataSetChanged_(f: (() -> Unit)= {}){
+    fun notifyDataSetChanged_(f: (() -> Unit)= {}){
         val lm= rv?.layoutManager as LM?
         if(lm != null){
             val recyclerViewState= rv!!.layoutManager?.onSaveInstanceState()

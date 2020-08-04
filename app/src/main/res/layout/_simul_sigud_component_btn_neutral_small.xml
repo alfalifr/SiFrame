@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_solid_rect_round_edge"
+    android:backgroundTint="@color/colorText"
+    android:fontFamily="@font/sf_pro_bold"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:text="BATAL"
+    android:textSize="@dimen/txt_sm"
+    android:textColor="@color/putih" />

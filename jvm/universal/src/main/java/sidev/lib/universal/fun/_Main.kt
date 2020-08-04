@@ -4,6 +4,7 @@ import sidev.lib.universal.annotation.AnnotatedFunctionClass
 import sidev.lib.universal.annotation.Rename
 import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
+import java.lang.reflect.ParameterizedType
 import kotlin.reflect.full.*
 
 internal annotation class Ano
@@ -73,9 +74,8 @@ internal annotation class FunAnot(val a: Int= 101)
 @Anotasi<Int, Char>
 internal open class AC(val poinConstr: Poin): Z, Y, X, AB(), AnnotatedFunctionClass{
     val ac= "ppop"
-    private val acPriv= "aaa"
-    override val a: Boolean
-        get() = true
+    private var acPriv= "aaa"
+    override val a: Boolean = true
     override val x: String
         get() = "as"
     var poin= Poin(1, 2)
@@ -142,13 +142,34 @@ fun main(args: Array<String>){
         prin("i= $i class= $clazz")
     }
 
-    println("\n============= BATAS AC Kotlin.nestedDeclaredMemberPropertiesTree ==============\n")
-    for((i, leveledProp) in AC::class.nestedDeclaredMemberPropertiesTree.withLevel().withIndex()){
+    println("\n============= BATAS AC Kotlin.declaredMemberPropertiesTree ==============\n")
+    for((i, leveledProp) in AC::class.declaredMemberPropertiesTree.withLevel().withIndex()){
         prin("i= $i level= ${leveledProp.level} prop= ${leveledProp.value}")
     }
-    println("\n============= BATAS AC Kotlin.fieldsTree ==============\n")
+
+    prine("Void::class.constructors.size= ${Void::class.constructors.size}")
+    println("\n============= BATAS AC Java.getterMethodsTree ==============\n")
+    for((i, method) in AC::class.java.getterMethodsTree.withIndex()){
+        prin("i= $i method= $method return= ${method.returnType}")
+    }
+
+    class AB: ArrayList<Int>()
+    val superclass= AB::class.java.superclass
+    val genSuper= AB::class.java.genericSuperclass?.clazz
+    prin("superclass= $superclass genSuper= $genSuper")
+
+    println("\n============= BATAS AC Java.setterMethodsTree ==============\n")
+    for((i, method) in AC::class.java.setterMethodsTree.withIndex()){
+        prin("i= $i method= $method return= ${method.returnType}")
+    }
+
+    println("\n============= BATAS AC Java.fieldsTree ==============\n")
     for((i, prop) in AC::class.java.fieldsTree.withIndex()){
         prin("i= $i prop= $prop")
+    }
+    println("\n============= BATAS AC Java.methodsTree ==============\n")
+    for((i, method) in AC::class.java.methodsTree.withIndex()){
+        prin("i= $i method= $method return= ${method.returnType} void= ${method.returnType == Void::class.java}")
     }
 
     println("\n============= BATAS List plus ==============\n")

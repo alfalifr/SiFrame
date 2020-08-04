@@ -15,7 +15,7 @@ abstract class NestedIteratorImpl<I, O>(internal val startInputIterator: Iterato
     : NestedIterator<I, O>,
     SkippableIterator<O> {
     constructor(startInputIterable: Iterable<I>): this(startInputIterable.iterator())
-    constructor(start: I): this((start as? Iterable<I>)?.iterator()){
+    constructor(start: I?): this((start as? Iterable<I>)?.iterator()){
         this.start= start
     }
     open val tag: String= this::class.java.simpleName

@@ -44,8 +44,7 @@ open class LinearLm(c: Context) : LinearLayoutManager(c), LayoutManagerResp{
 
     var onScrollListener: ((targetPosition: Int, dx: Int, dy: Int, isAtFirstPos: Boolean, isSmoothScroll: Boolean) -> Unit)?= null
 
-    override var onLayoutCompletedListener: RvAdp.OnLayoutCompletedListener?
-        = null
+    override var onLayoutCompletedListener: RvAdp.OnLayoutCompletedListener? = null
 
     @CallSuper
     override fun onLayoutCompleted(state: RecyclerView.State?) {

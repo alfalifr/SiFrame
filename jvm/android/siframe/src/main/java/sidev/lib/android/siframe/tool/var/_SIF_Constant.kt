@@ -12,6 +12,8 @@ object _SIF_Constant{
     internal object Internal{
         val TAG_SINGLE_FRAG_ACT= "_sif_tag_single_frag_act_"
         val TAG_FRAG_PREFIX= "_sif_tag_frag_"
+        val TAG_TOP_MIDDLE_BOTTOM_PREFIX= "_sif_tag_top_middle_bottom_"
+        val TAG_DEFAULT_PREFIX= "_sif_tag_default@klafaj_@_"
 
         fun <T: Fragment> getSingleFragActTag(fragClass: KClass<T>): String
             = "$TAG_SINGLE_FRAG_ACT::${fragClass.qualifiedName}"

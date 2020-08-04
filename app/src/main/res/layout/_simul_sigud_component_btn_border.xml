@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:paddingHorizontal="@dimen/padding_btn_horizontal"
+    android:paddingVertical="@dimen/padding_btn_vertical"
+    android:text="Ini Tombol"
+    android:textSize="@dimen/txt_default"
+    android:background="@drawable/shape_border_round"
+    android:textColor="@color/colorPrimaryDark"/>

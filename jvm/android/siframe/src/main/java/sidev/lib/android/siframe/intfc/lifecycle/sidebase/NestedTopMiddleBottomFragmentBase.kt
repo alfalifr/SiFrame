@@ -5,11 +5,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import org.jetbrains.anko.runOnUiThread
 import sidev.lib.android.siframe.R
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
+import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.exception.IllegalStateExc
@@ -36,26 +40,17 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                 .notNull { rv ->
                     rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
                         _prop_fm.commitFrag(topFragment!!, topContainer!!, forceReplace = false)
-                            .notNull { loge("it == topFragment => ${it == topFragment}") }
-                            .isNull { loge("topFragment is null!") }
-//                        c.commitFrag(topFragment!!, topContainer!!)
-                        //Di-init di awal karena fragmentManager tidak dapat menemukan id di kontainer di dalam rvAdp.
-                        // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
+                            //Di-init di awal karena fragmentManager tidak dapat menemukan id di kontainer di dalam rvAdp.
+                            // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
 
-                        topFragment!!.onViewCreatedListener= { view, bundle ->
-/*
-                            loge("=======topFragment!!.onViewCreatedListener=======")
-//                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.size?.string= ${adp.headerView?.size?.string}")
-                            loge("view.size.string= ${view.size.string} view.height= ${view.height}")
-                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
-                            loge("adp.footerView?.size?.string = ${adp.footerView?.size?.string} adp.footerView?.height = ${adp.footerView?.height} adp.footerView?.yEndInWindow = ${adp.footerView?.yEndInWindow}")
-//                            loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
-                            loge("rv.screenHeight= ${rv.screenHeight}")
- */
-                            view.detachFromParent()
-                            adp.headerView= view
-                            _initTopView(view)
-                        }
+                            .asNotNull { frag: Frag ->
+                                topFragment= frag
+                                frag.addOnViewCreatedListener { view, bundle ->
+                                    view.detachFromParent()
+                                    adp.headerView= view
+                                    _initTopView(view)
+                                }
+                            }
                     }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
                         msg= "adater dari ${c.resources.getResourceName(rv.id)} bkn merupakan SimpleRvAdp"
                     }
@@ -84,43 +79,54 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                 rv.adapter.asNotNull { adp: SimpleRvAdp<*, *> ->
                     rv.addOnGlobalLayoutListener { //Diletakan di onGlobalLayout agar rv.yEndInWindow bisa keitung dulu.
                         _prop_fm.commitFrag(bottomFragment!!, bottomContainer!!)
+
                         //Di-init di awal karena fragmentManager tidak dapat menemukan id di kontainer di dalam rvAdp.
                         // Tujuan utamanya hanya agar fragment dapat meng-create view, stlah itu view dialihkan ke variabel lain.
+                            .asNotNull { frag: Frag ->
+                                bottomFragment= frag
+///*
+                                fun postBottomFrag(view: View, lm: LayoutManagerResp?){
+                                    val rvYEnd= rv.yEndInWindow
+//                                    val headerHeight= adp.headerView?.height ?: 0
+//                                    val headerMeasuredHeight= adp.headerView?.size?.get(1) ?: 0
 
-                        bottomFragment!!.onViewCreatedListener= { view, _ ->
-/*
-                            loge("=======bottomFragment!!.onViewCreatedListener=======")
-                            loge("adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} adp.headerView?.size?.string= ${adp.headerView?.size?.string} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.yEndInWindow= ${adp.headerView?.yEndInWindow}")
-                            loge("view.size.string= ${view.size.string} view.height= ${view.height}")
-                            loge("rv.yEndInWindow +view.size[1] = ${rv.yEndInWindow +view.size[1]} rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0) = ${rv.yEndInWindow +(adp.headerView?.size?.get(1) ?: 0)}")
-                            loge("rv.screenHeight= ${rv.screenHeight}")
-                            loge("adp.headerView != null => ${adp.headerView != null} adp.headerView?.height = ${adp.headerView?.height} adp.headerView?.yEndInWindow = ${adp.headerView?.yEndInWindow} rv.yEndInWindow = ${rv.yEndInWindow}")
-                            loge("rv.adapter == adp => ${rv.adapter == adp} rv.adapter == null => ${rv.adapter == null}")
-                            loge("rv.height = ${rv.height} rv.yEndInWindow= ${rv.yEndInWindow} rv.size.string= ${rv.size.string}")
- */
-                            val rvYEnd= rv.yEndInWindow
-                            val headerHeight= adp.headerView?.height ?: 0
-                            val headerMeasuredHeight= adp.headerView?.size?.get(1) ?: 0
+                                    val totalYEnd= rvYEnd + view.size[1]
+                                    val parentYEnd= rv.parentsTree.find { it.id == R.id.root_page_container }
+                                        .asNotNullTo { vg: ViewGroup -> vg.yEndInWindow }
+                                        ?: rv.screenHeight
 
-                            val totalYEnd= rvYEnd +
-                                    if(headerHeight == 0 || headerMeasuredHeight > rvYEnd) //Bertujuan agar perhitungan total panjang rv sesuai setelah ditambah panjang headerView
-                                        headerMeasuredHeight
-                                    else 0
-/*
-                            when{
-                                headerHeight == 0 -> headerMeasuredHeight
-                                headerMeasuredHeight > rvYEnd -> headerMeasuredHeight
-                                else -> 0
+//                                    loge("rv.parent= ${rv.parent}")
+//                                    loge("rv.height= ${rv.height} rvYEnd= $rvYEnd headerHeight= $headerHeight headerMeasuredHeight= $headerMeasuredHeight totalYEnd= $totalYEnd view.size[1]= ${view.size[1]} rv.screenHeight= ${rv.screenHeight} parentYEnd= $parentYEnd")
+
+                                    view.detachFromParent() //Biar lebih aman
+                                    if(totalYEnd >= parentYEnd)
+                                        adp.footerView= view
+                                    else bottomContainer!!.addView(view)
+//                                    _initBottomView(view)
+
+                                    lm?.onLayoutCompletedListener= null
+                                }
+// */
+                                frag.addOnViewCreatedListener { view, bundle ->
+//                                    loge("Nested bottom frag.addOnViewCreatedListener rv.yEnd= ${rv.yEndInWindow}")
+                                    view.detachFromParent()
+                                }
+                                frag.addOnActiveListener { view, parent, pos ->
+//                                    loge("Nested bottom frag.addOnActiveListener frag= $frag currentState= ${frag.currentState} parent= $parent pos= $pos")
+                                    if(frag.currentState == LifecycleBase.State.STARTED) return@addOnActiveListener
+
+                                    rv.layoutManager.asNotNull { lm: LayoutManagerResp ->
+                                        lm.setOnLayoutCompletedListener { state ->
+//                                            loge("Nested bottom frag.setOnLayoutCompletedListener state= $state")
+                                            rv.post {
+                                                //TODO <4 Agustus 2020> => Udah bisa perhitungan bottomFrag, namun kadang" msh nge-lag.
+                                                _initBottomView(view)
+                                                view.post { postBottomFrag(view, lm) }
+                                            }
+                                        }
+                                    }
+                                }
                             }
- */
-//                            loge("rvYEnd= $rvYEnd totalYEnd= $totalYEnd")
-
-                            if(totalYEnd +view.size[1] >= rv.screenHeight){ //Jika lebar rv + bottomView >= screenHeight,
-                                view.detachFromParent() // maka lepas bottomView dari kontainer awal.
-                                adp.footerView= view // dan ganti masukan ke adapter agar jadi nested
-                            }
-                            _initBottomView(view)
-                        }
                     }
                 }.asnt<RecyclerView.Adapter<*>, SimpleRvAdp<*, *>>{
                     msg= "adater dari ${c.resources.getResourceName(rv.id)} bkn merupakan SimpleRvAdp."

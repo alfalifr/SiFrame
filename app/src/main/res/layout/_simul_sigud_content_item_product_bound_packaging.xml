@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--
+        android:layout_below="@id/tv_warehouse_distance"
+    -->
+    <LinearLayout
+        android:id="@+id/ll_packaging_container"
+        android:layout_toRightOf="@id/cv_pict_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="7dp"
+            android:text="Packaging"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/txt_normal_sm" />
+
+        <LinearLayout
+            android:id="@+id/ll_packaging_plastic_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <CheckBox
+                android:id="@+id/cb_packaging_plastic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_packaging_plastic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plastik"
+                android:textSize="@dimen/txt_default"
+                android:textColor="@color/colorPrimaryDark"/>
+        </LinearLayout>
+
+        <View
+            android:background="@color/colorBorder"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+<!--
+        <include
+            layout="@layout/item_separator_billing_product"/>
+-->
+
+        <LinearLayout
+            android:id="@+id/ll_packaging_bubble_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <CheckBox
+                android:id="@+id/cb_packaging_bubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_packaging_bubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bubble Wrap"
+                android:textSize="@dimen/txt_default"
+                android:textColor="@color/colorPrimaryDark"/>
+        </LinearLayout>
+
+        <View
+            android:background="@color/colorBorder"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+<!--
+        <include
+            layout="@layout/item_separator_billing_product"/>
+-->
+        <LinearLayout
+            android:id="@+id/ll_packaging_cardboard_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <CheckBox
+                android:id="@+id/cb_packaging_cardboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_packaging_cardboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kerdus"
+                android:textSize="@dimen/txt_default"
+                android:textColor="@color/colorPrimaryDark"/>
+        </LinearLayout>
+
+    </LinearLayout>
+<!--
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_send_container"
+        android:layout_toRightOf="@id/cv_pict_container"
+        android:layout_below="@id/ll_packaging_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/comp_bar_send_kind"
+            layout="@layout/component_bar_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <include
+            android:id="@+id/comp_bar_fill_send_address"
+            layout="@layout/component_bar_fill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+-->
+</LinearLayout>

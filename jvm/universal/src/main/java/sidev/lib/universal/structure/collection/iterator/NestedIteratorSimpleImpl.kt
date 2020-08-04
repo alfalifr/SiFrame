@@ -13,7 +13,7 @@ abstract class NestedIteratorSimpleImpl<T>(startIterator: Iterator<T>?)
     NestedIteratorSimple<T>,
     SkippableIterator<T> {
     constructor(startIterable: Iterable<T>): this(startIterable.iterator())
-    constructor(start: T): this((start as? Iterable<T>)?.iterator()){
+    constructor(start: T?): this((start as? Iterable<T>)?.iterator()){
         this.start= start
     }
 

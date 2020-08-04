@@ -89,6 +89,15 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 
+    implementation("com.squareup.picasso:picasso:2.71828")
+
+    //Loading dots
+    implementation("com.romandanylyk:pageindicatorview:1.0.3")
+    // google vision
+    implementation( "com.google.android.gms:play-services-vision:19.0.0")
+    // untuk http request
+    implementation("com.loopj.android:android-async-http:1.4.9")
+
     //String match
     implementation("io.grpc:grpc-core:1.13.1")
     implementation("org.apache.commons:commons-lang3:3.6")

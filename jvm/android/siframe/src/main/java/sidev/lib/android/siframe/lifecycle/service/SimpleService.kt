@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import sidev.lib.universal.`fun`.removeAllVal
+import sidev.lib.universal.`fun`.removeAllValue
 
 open class SimpleService : Service(){
     private val bcReceivers= HashMap<Array<out String>, SimpleAbsBcReceiver>()
@@ -36,6 +36,6 @@ open class SimpleService : Service(){
         bcReceivers.remove(action)
     }
     fun unregister(r: SimpleAbsBcReceiver){
-        bcReceivers.removeAllVal(r)
+        bcReceivers.removeAllValue(r)
     }
 }

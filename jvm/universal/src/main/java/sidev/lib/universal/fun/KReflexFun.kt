@@ -311,12 +311,11 @@ fun KClass<*>.isUpperBoundSuperTypeOf(base: KTypeParameter): Boolean{
 }
 
 /**
- * Menentukan pakah [any] memiliki tipe yg sama dg `this.extension` [KType].
- * Fungsi ini hanya menyocokan [KClass] dan nullability.
- * Untuk TypeParameter dan TypeProjection, pengecekan tidak mungkin dilakukan dari KClass.
+ * Menentukan apakah [any] memiliki tipe yg kompatibel dg `this.extension` [KType].
+ * Fungsi ini scr prinsip sama dg [isAssignableFrom].
  */
 fun KType.isInstance(any: Any?): Boolean
-        = any == null && isMarkedNullable || any!!.clazz == classifier
+        = any == null && isMarkedNullable || isAssignableFrom(any.inferredType) //any!!.clazz == classifier
 
 
 fun KClassifier.isUpperBoundSubTypeOf(base: KClassifier): Boolean{
@@ -509,6 +508,13 @@ fun KType.isAssignableFrom(other: KType): Boolean{
         }
     }
 }
+fun KType.isAssignableFrom(value: Any?, deepInspect: Boolean= true): Boolean
+    = when{
+        deepInspect -> isAssignableFrom(value.inferredType)
+        value != null -> classifier in value::class.classesTree
+        else -> isMarkedNullable
+    }
+
 //fun InferredType.isAssignableFrom(other: InferredType): Boolean = type.isAssignableFrom(other.type)
 
 

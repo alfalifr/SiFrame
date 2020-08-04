@@ -26,6 +26,7 @@ fun prine(any: Any, endWithNewLine: Boolean = true){
     if(IoConfig.PRINT_ERROR)
         prin(any, StringLiteral.ANSI_RED, endWithNewLine)
 }
+@JvmOverloads
 fun prin(any: Any, color: String= StringLiteral.ANSI_RESET, endWithNewLine: Boolean = true){
     if(IoConfig.PRINT){
         if(endWithNewLine)

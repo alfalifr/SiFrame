@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--
+        android:layout_toRightOf="@id/cv_pict_container"
+        -->
+    <LinearLayout
+        android:id="@+id/ll_send_lessee_container"
+        android:layout_below="@id/ll_packaging_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/comp_bar_fill_send_method"
+            layout="@layout/_simul_sigud_component_bar_dropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_bar_fill_between"
+            android:layout_marginBottom="@dimen/margin_bar_fill_between"/>
+        <include
+            android:id="@+id/comp_bar_fill_send_address"
+            layout="@layout/_simul_sigud_component_bar_fill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_bar_fill_between"
+            android:layout_marginBottom="@dimen/margin_bar_fill_between"/>
+        <include
+            android:id="@+id/comp_number_picker"
+            layout="@layout/_simul_sigud_component_number_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/margin_bar_fill_between"
+            android:layout_marginBottom="@dimen/margin_bar_fill_between"/>
+    </LinearLayout>
+
+</LinearLayout>

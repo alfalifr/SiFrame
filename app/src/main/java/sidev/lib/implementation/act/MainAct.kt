@@ -2,6 +2,8 @@ package sidev.lib.implementation.act
 
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.sigudang.android.fragments.BoundProcessFrag.viewpager_new.lessee.inbound.BoundVp_Lessee_In0Create
+import com.sigudang.android.utilities.constant.Constants
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.startAct
@@ -16,6 +18,7 @@ import sidev.lib.implementation._simulation.edc.frag.TransacFrag
 import sidev.lib.implementation._simulation.edc.frag.TransacFrag_Old
 import sidev.lib.implementation._simulation.edu_class.frag.ContentFragMain
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
+import sidev.lib.implementation._simulation.sigudang.dummy.inboundList_created
 import sidev.lib.implementation.frag.*
 
 class MainAct : BarContentNavAct() {
@@ -73,4 +76,9 @@ class MainAct : BarContentNavAct() {
     fun _simul_edu_toContentAct(v: View)= startSingleFragAct_config<ContentFragMain>(
         Edu_Class_Const.DATA_MODULE to dumm_module[0]
     )
+
+    fun _simul_sigud_boundVp(v: View)=
+        startSingleFragAct_config<BoundVp_Lessee_In0Create>(
+            Constants.DATA_BOUND to inboundList_created[0]
+        )
 }

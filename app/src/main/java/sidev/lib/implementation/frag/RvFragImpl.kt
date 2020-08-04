@@ -29,8 +29,8 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
         get() = R.layout.comp_nav_arrow_tall
 // */
 ///*
-    override val topFragment: Frag?= TopViewFrag()
-    override val bottomFragment: Frag?= BottomViewFrag()
+    override var topFragment: Frag?= TopViewFrag()
+    override var bottomFragment: Frag?= BottomViewFrag()
 // */
     override val isTopContainerNestedInRv: Boolean
         get() = true

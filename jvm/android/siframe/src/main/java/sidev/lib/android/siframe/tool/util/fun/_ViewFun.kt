@@ -23,6 +23,7 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.`val`.RoundMethod
+import sidev.lib.universal.structure.collection.iterator.NestedIterator
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
@@ -107,7 +108,15 @@ val View.childrenTree: MutableIterator<View>
 /**
  * Properti untuk meng-iterasi parent yg merupakan satu garis hirarki.
  */
-val View.parentsTree: Sequence<View>
+val View.parentsTree: NestedSequence<View>
+    get()= object : NestedSequence<View>{
+        override fun iterator(): NestedIterator<*, View>
+            = object : NestedIteratorSimpleImpl<View>(this@parentsTree){
+            override fun getOutputIterator(nowInput: View): Iterator<View>?
+                = nowInput.parent.asNotNullTo { v: View -> newIteratorSimple(v) }
+        }
+    }
+/*
     get()= object: Sequence<View>{
         override fun iterator(): Iterator<View>
             = object: Iterator<View>{
@@ -118,6 +127,7 @@ val View.parentsTree: Sequence<View>
                     = this@parentsTree.parent as View
         }
     }
+ */
 
 /**
  * Fungsi ini melakukan iterasi terhadap [ViewParent]

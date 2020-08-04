@@ -56,6 +56,17 @@ class CobFrag : Frag(){
 
         commitFrag(TopViewFrag(), fragContainerId = R.id.rl)
 
+        var btnClick= -1
+        layoutView.btn1.setOnClickListener {
+            loge("layoutView.ll_btn_container.height= ${layoutView.ll_btn_container.height}")
+            if(++btnClick >= 2){
+                btnClick= -1
+                layoutView.btn2.visibility= View.GONE
+                loge("AFTER GONE layoutView.ll_btn_container.height= ${layoutView.ll_btn_container.height}")
+            } else
+                layoutView.btn2.visibility= View.VISIBLE
+        }
+
 
 //        (layoutView as EditText).txt= "aku"
     }

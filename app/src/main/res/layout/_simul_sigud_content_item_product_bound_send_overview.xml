@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/putih">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:visibility="gone"
+            android:id="@+id/comp_act_bar"
+            layout="@layout/_simul_sigud_component_action_bar_default_inside" />
+
+        <ScrollView
+            android:id="@+id/main_container"
+            android:layout_below="@id/comp_act_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/auth_margin_horizontal_sides"
+                android:paddingRight="@dimen/auth_margin_horizontal_sides"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
+                <RelativeLayout
+                    android:id="@+id/ll_kind_container"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_bar_fill_between">
+                    <TextView
+                        android:layout_toLeftOf="@id/iv_kind"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/sf_pro_bold"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_default"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="Jenis Pengiriman"/>
+
+                    <ImageView
+                        android:id="@+id/iv_kind"
+                        android:layout_toLeftOf="@id/tv_kind"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/logo_jne"/>
+
+                    <TextView
+                        android:id="@+id/tv_kind"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_sm"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="JNE"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/ll_address_container"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_bar_fill_between"
+                    android:layout_marginBottom="@dimen/margin_bar_fill_between">
+                    <TextView
+                        android:id="@+id/tv_address_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/sf_pro_bold"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_default"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="Alamat"/>
+
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_below="@id/tv_address_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginLeft="20dp"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_sm"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="31 / 01 / 2020"/>
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/ll_amount_container"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_bar_fill_between"
+                    android:layout_marginBottom="@dimen/margin_bar_fill_between">
+                    <TextView
+                        android:layout_toLeftOf="@id/tv_amount_number"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/sf_pro_bold"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_default"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="Jumlah"/>
+
+                    <TextView
+                        android:id="@+id/tv_amount_number"
+                        android:layout_toLeftOf="@id/tv_amount_unit"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_sm"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textStyle="bold"
+                        android:text="99"/>
+
+                    <TextView
+                        android:id="@+id/tv_amount_unit"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textSize="@dimen/txt_sm"
+                        android:textColor="@color/colorText"
+                        android:text="(pcs)"/>
+                </RelativeLayout>
+
+                <include
+                    android:id="@+id/comp_fill_receipt"
+                    layout="@layout/_simul_sigud_component_bar_fill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_bar_fill_between"/>
+
+
+            </LinearLayout>
+        </ScrollView>
+<!--
+        <LinearLayout
+            android:id="@+id/ll_btn_container"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="24dp"
+            android:paddingLeft="24dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:visibility="gone"
+                android:id="@+id/cv_summary_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
+                android:layout_marginBottom="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:background="@color/colorPrimaryDark">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/tv_summary_amount_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:singleLine="true"
+                            android:textSize="@dimen/default_text_size"
+                            android:textColor="@color/colorWhite"
+                            android:text="Jumlah"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:id="@+id/tv_summary_amount_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:fontFamily="@font/sf_pro_bold"
+                                android:singleLine="true"
+                                android:textSize="@dimen/semi_normal_text_size"
+                                android:textColor="@color/colorWhite"
+                                android:text="99"/>
+
+                            <TextView
+                                android:id="@+id/tv_summary_amount_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:textSize="@dimen/default_text_size"
+                                android:textColor="@color/colorWhite"
+                                android:text="item"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:background="@color/colorWhite" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/tv_summary_volume_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:singleLine="true"
+                            android:textSize="@dimen/default_text_size"
+                            android:textColor="@color/colorWhite"
+                            android:text="Volume"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:id="@+id/tv_summary_volume_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:fontFamily="@font/sf_pro_bold"
+                                android:singleLine="true"
+                                android:textSize="@dimen/semi_normal_text_size"
+                                android:textColor="@color/colorWhite"
+                                android:text="0.11"/>
+
+                            <TextView
+                                android:id="@+id/tv_summary_volume_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:textSize="@dimen/default_text_size"
+                                android:textColor="@color/colorWhite"
+                                android:text="m3"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:visibility="gone"
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:background="@color/colorWhite" />
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/ll_summary_see_product"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/tv_summary_see_product"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:singleLine="true"
+                            android:textSize="@dimen/semi_normal_text_size"
+                            android:textColor="@color/colorWhite"
+                            android:text="Lihat Produk"
+                            android:fontFamily="@font/sf_pro_bold"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <include
+                android:id="@+id/comp_btn_decline"
+                layout="@layout/component_btn_decline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"/>
+            <include
+                android:id="@+id/comp_btn_confirm"
+                layout="@layout/component_btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"/>
+        </LinearLayout>
+-->
+    </RelativeLayout>
+
+    <View
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/margin_wide"
+        android:layout_marginRight="@dimen/margin_wide"
+        android:background="@color/colorBorder"/>
+
+</RelativeLayout>

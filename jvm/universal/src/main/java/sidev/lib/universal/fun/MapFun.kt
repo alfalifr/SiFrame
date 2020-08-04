@@ -3,7 +3,7 @@ package sidev.lib.universal.`fun`
 /**
  * Menghapus first occurrence
  */
-fun <K, V> MutableMap<K, V>.removeVal(value: V): Boolean {
+fun <K, V> MutableMap<K, V>.removeValue(value: V): Boolean {
     for(entry in this.entries)
         if(entry.value == value){
             this.remove(entry.key)
@@ -15,7 +15,7 @@ fun <K, V> MutableMap<K, V>.removeVal(value: V): Boolean {
 /**
  * Menghapus semua occurrence
  */
-fun <K, V> MutableMap<K, V>.removeAllVal(value: V): Boolean {
+fun <K, V> MutableMap<K, V>.removeAllValue(value: V): Boolean {
     var res= false
     for(entry in this.entries)
         if(entry.value == value){

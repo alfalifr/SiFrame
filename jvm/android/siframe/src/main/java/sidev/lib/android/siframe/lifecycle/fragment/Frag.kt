@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
@@ -17,7 +16,6 @@ import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.lifecycle.activity.Act
-import sidev.lib.android.siframe.intfc.listener.OnViewCreatedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
@@ -27,11 +25,16 @@ import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
+import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
+import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.logew
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.exception.IllegalStateExc
+import sidev.lib.universal.tool.manager.ListenerManager
+import sidev.lib.universal.tool.manager.createSimpleListener
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].
@@ -108,7 +111,26 @@ abstract class Frag : Fragment(),
     open val fragTitle= this::class.java.simpleName
 
     //=========Obj Listener
-    var onViewCreatedListener: ((View, Bundle?) -> Unit)?= null//OnViewCreatedListener?= null
+//    var onViewCreatedListener: ((View, Bundle?) -> Unit)?= null//OnViewCreatedListener?= null
+    val onViewCreatedListener: ListenerManager<Unit, Unit> by lazy { createSimpleListener() }
+    fun addOnViewCreatedListener(tag: String= _SIF_Constant.Internal.TAG_DEFAULT_PREFIX,
+                                 forceReplace: Boolean= true,
+                                 func: (View, Bundle?) -> Unit): Boolean
+            = onViewCreatedListener.addListener(tag, forceReplace){ func(it["view"] as View, it["bundle"] as? Bundle) }
+
+    val onActiveListener: ListenerManager<Unit, Unit> by lazy { createSimpleListener() }
+    fun addOnActiveListener(tag: String= _SIF_Constant.Internal.TAG_DEFAULT_PREFIX,
+                            forceReplace: Boolean= true,
+                                 func: (view: View, parent: LifecycleViewBase?, pos: Int) -> Unit): Boolean
+            = onActiveListener.addListener(tag, forceReplace){
+        func(layoutView, it["parent"] as? LifecycleViewBase, it["pos"] as Int)
+    }
+
+    val onPostViewCreatedListener: ListenerManager<Unit, Unit> by lazy { createSimpleListener() }
+    fun addOnPostViewCreatedListener(tag: String= _SIF_Constant.Internal.TAG_DEFAULT_PREFIX,
+                                     forceReplace: Boolean= true,
+                                     func: (view: View) -> Unit): Boolean
+            = onPostViewCreatedListener.addListener(tag, forceReplace){ func(layoutView) }
 
 
 
@@ -158,7 +180,11 @@ abstract class Frag : Fragment(),
  */
 //        Log.e("SingleBoundProAct", "this class (${this::class.java.simpleName}) layoutView.ll_btn_container.visibility= View.VISIBLE ===MULAI===")
         currentState= LifecycleBase.State.CREATED
-        onViewCreatedListener?.invoke(view, savedInstanceState) //?.onViewCreated_(view, savedInstanceState)
+//        onViewCreatedListener?.invoke(view, savedInstanceState) //?.onViewCreated_(view, savedInstanceState)
+        onViewCreatedListener.iterateListeners(
+            "view" to view,
+            "bundle" to savedInstanceState
+        )
 /*
         if(this is ViewPagerBase<*>){
             if(vpFragList[0].currentState.no >= LifecycleBase.State.CREATED.no)
@@ -183,7 +209,7 @@ abstract class Frag : Fragment(),
         super.onAttachFragment(childFragment)
         childFragment.asNotNull { frag: FragBase ->
             frag.onLifecycleAttach(this)
-            if(frag is Frag) frag.firstFragPageOnActivePosition= 0
+//            if(frag is Frag) frag.firstFragPageOnActivePosition= 0
         }
     }
 
@@ -206,10 +232,14 @@ abstract class Frag : Fragment(),
         loge("Fragment ${this::class.simpleName} onResume()")
         super.onResume()
         currentState= LifecycleBase.State.ACTIVE
+        resolveOnActive(_prop_parentLifecycle?.layoutView, _prop_parentLifecycle, firstFragPageOnActivePosition)
+
+        /*Karena vpAdp.behavior == BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         if(firstFragPageOnActivePosition.isNotNegative()){
-            onActive(_prop_parentLifecycle?.layoutView, _prop_parentLifecycle, firstFragPageOnActivePosition)
+            resolveOnActive(_prop_parentLifecycle?.layoutView, _prop_parentLifecycle, firstFragPageOnActivePosition)
             firstFragPageOnActivePosition= -1
         }
+         */
     }
 
     override fun onPause() {
@@ -257,6 +287,8 @@ abstract class Frag : Fragment(),
 
         if(this is MviView<*, *, *>)
             restoreCurrentState(true)
+
+        onPostViewCreatedListener.iterateListeners()
     }
 // */
 
@@ -293,17 +325,44 @@ abstract class Frag : Fragment(),
         return if(i != null) super.getIntentData(key, i, default)
         else activity?.intent?.extras?.get(key) as D? ?: default as D
     }
-
 /*
-    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int){
+    override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         super.onActive(parentView, callingLifecycle, pos)
-        loge("callingLifecycle= ${callingLifecycle?.classSimpleName()}")
-        _prop_parentLifecycle= callingLifecycle.asNotNullTo { parent: SimpleActFragBase ->
-//            loge("parent= ${parent::class.java.simpleName} is SimpleActFragBase")
-            parent
-        }
+        onActiveListener.iterateListeners(
+            "parent" to callingLifecycle,
+            "pos" to pos
+        )
     }
-// */
+ */
+    @CallSuper
+    open fun onPostActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {}
+
+    internal fun resolveOnActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+        loge("resolveOnActive() parent= $callingLifecycle pos= $pos")
+        onActive(parentView, callingLifecycle, pos)
+        onPostActive(parentView, callingLifecycle, pos)
+        onActiveListener.iterateListeners(
+            "parent" to callingLifecycle,
+            "pos" to pos
+        )
+        if(this !is ViewPagerBase<*>)
+            childFragmentManager.fragments.forEach {
+                it.asNotNullTo { frag: Frag -> frag.resolveOnActive(layoutView, this, 0) }
+                    ?: it.asNotNull { frag: FragBase -> frag.onActive(layoutView, this, 0) }
+            }
+    }
+
+    /*
+        override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int){
+            super.onActive(parentView, callingLifecycle, pos)
+            loge("callingLifecycle= ${callingLifecycle?.classSimpleName()}")
+            _prop_parentLifecycle= callingLifecycle.asNotNullTo { parent: SimpleActFragBase ->
+    //            loge("parent= ${parent::class.java.simpleName} is SimpleActFragBase")
+                parent
+            }
+        }
+    // */
+
     override fun onLifecycleAttach(callingLifecycle: ActFragBase) {
         super.onLifecycleAttach(callingLifecycle)
         if(callingLifecycle == _prop_parentLifecycle) return

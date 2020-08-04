@@ -61,7 +61,8 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
 
                 attachActBarView(position)
                 attachActBarTitle(position)
-                vpFragList[position].onActive(_prop_view, this@MultipleActBarViewPagerBase, position)
+                //Karena vpAdp.behavior == BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+                //vpFragList[position].resolveOnActive(_prop_view, this@MultipleActBarViewPagerBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_prop_view, position) //
 
                 vpFragList[position].currentState= LifecycleBase.State.ACTIVE

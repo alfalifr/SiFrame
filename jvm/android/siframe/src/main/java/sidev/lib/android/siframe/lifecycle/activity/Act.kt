@@ -209,7 +209,7 @@ abstract class Act : AppCompatActivity(), Inheritable,
     override fun onResumeFragments() {
         loge("Activity ${this::class.simpleName} onResumeFragments()")
         super.onResumeFragments()
-        frag.asNotNull { frag: Frag -> frag.onActive(layoutView, this, 0) }
+        frag.asNotNull { frag: Frag -> frag.resolveOnActive(layoutView, this, 0) }
 /*
         if(this !is ViewPagerBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
             && frag != null && frag is Frag){

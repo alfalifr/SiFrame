@@ -64,7 +64,7 @@ class ViewPagerFragAdp (val c: Context, vararg items: SimpleAbsFrag): PagerAdapt
  * <10 Juli 2020> => [items] udah bisa diupdate lewat setter. Jadi gak perlu instantiate baru.
  */
 open class VpFragAdp(fm: FragmentManager, vararg items: Frag)
-    : FragmentStatePagerAdapter(fm), Adp, ParentLifecycleProp {
+    : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT), Adp, ParentLifecycleProp {
     var items: ArrayList<Frag>? = null //ArrayList()
         set(v){
             field= v
@@ -112,6 +112,9 @@ open class VpFragAdp(fm: FragmentManager, vararg items: Frag)
         if(_prop_parentLifecycle == null)
             throw PropertyAccessExc(this::class, ownerName = this::class.toString(), propertyName = "_prop_parentLifecycle")
         items!![position].onLifecycleAttach(_prop_parentLifecycle!!)
+
+        //Karena vpAdp.behavior == BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        items!![position].firstFragPageOnActivePosition= position
         return res
     }
 

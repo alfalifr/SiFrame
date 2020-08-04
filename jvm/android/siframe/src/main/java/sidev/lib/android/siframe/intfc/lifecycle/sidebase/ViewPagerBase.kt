@@ -153,7 +153,8 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
                 trya{ vpFragList[currentPosition].currentState= LifecycleBase.State.PAUSED }
 
                 attachActBarTitle(position)
-                vpFragList[position].onActive(_prop_view, this@ViewPagerBase, position)
+                //Karena vpAdp.behavior == BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+                //vpFragList[position].resolveOnActive(_prop_view, this@ViewPagerBase, position)
                 onPageFragActiveListener[position]?.onPageFragActive(_prop_view, position) //
 
                 vpFragList[position].currentState= LifecycleBase.State.ACTIVE
@@ -235,13 +236,14 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
 
         setPageLimitInd(0, size)
         setFragListMark(initFragListMark())
-
+        /*Karena vpAdp.behavior == BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         if(list != null) {
-            if(vpFragList[0].currentState >= LifecycleBase.State.STARTED)
-                vpFragList.firstOrNull()?.onActive(_prop_view, this, 0)
-            else
+            if(vpFragList[0].currentState >= LifecycleBase.State.STARTED){
+                vpFragList.firstOrNull()?.resolveOnActive(_prop_view, this, 0)
+            } else
                 vpFragList.firstOrNull()?.firstFragPageOnActivePosition= 0
         }
+         */
     }
 
     fun getFragPos(frag: F): Int{

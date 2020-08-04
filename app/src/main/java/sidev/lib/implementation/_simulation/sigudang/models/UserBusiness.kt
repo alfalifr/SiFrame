@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class UserBusiness (
     val id: Long,
-    val name: String,
+    var name: String,
     val desc: String? = null,
     val siteUrl: String? = null,
     val address: String? = null,

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<!--
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/margin_wide"
+            android:paddingBottom="@dimen/margin_normal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_marginLeft="@dimen/margin_medium"/>
+
+            <View
+                android:id="@+id/v_border_bottom"
+                android:layout_below="@id/rv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+<!--
+            <include
+                android:visibility="gone"
+                android:id="@+id/comp_btn_confirm"
+                layout="@layout/component_btn_confirm"
+                android:layout_above="@id/v_border_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/margin_bar_fill_between"/>
+-->
+        </RelativeLayout>
+<!--
+    </ScrollView>
+-->
+</RelativeLayout>

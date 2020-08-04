@@ -11,8 +11,8 @@ abstract class LeveledNestedIteratorImpl<I, O>(/*private val */startInputIterato
         startInputIterator?.toOtherIterator { LeveledValue(0, it) }
 ), LeveledNestedIterator<I, O> {
     constructor(startInputIterable: Iterable<I>): this(startInputIterable.iterator())
-    constructor(start: I): this((start as? Iterable<I>)?.iterator()){
-        this.start= start.withLevel()
+    constructor(start: I?): this((start as? Iterable<I>)?.iterator()){
+        this.start= start?.withLevel()
     }
 /*
     internal open val activeOutputLineLevels= ArrayList<Int>()

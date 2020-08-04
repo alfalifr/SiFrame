@@ -8,9 +8,12 @@ import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImp
 import sidev.lib.universal.structure.collection.sequence.NestedSequence
 //import sidev.lib.android.siframe.model.FK_M
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 
 const val CLASS_BASE_NAME= "Object"
+const val METHOD_GETTER_NAME_PREFIX= "get"
+const val METHOD_SETTER_NAME_PREFIX= "set"
 
 
 inline fun <reified T> Any.getGenericType(order: Int= 0){
@@ -86,6 +89,37 @@ val Class<*>.superclassesTree: Sequence<Class<*>>
             }
         }
     }
+val Class<*>.classesTree: Sequence<Class<*>>
+    get()= object : Sequence<Class<*>> {
+        override fun iterator(): Iterator<Class<*>>
+                = object: Iterator<Class<*>>{
+            private var now: Class<*>?= this@classesTree
+            override fun hasNext(): Boolean = now != null
+            override fun next(): Class<*>{
+                val next= now
+                now= now?.superclass
+                return next!!
+            }
+        }
+    }
+
+val Class<*>.inheritanceTree: NestedSequence<Class<*>>
+    get()= object : NestedSequence<Class<*>>{
+        override fun iterator(): NestedIteratorSimple<Class<*>>
+            = object : NestedIteratorSimpleImpl<Class<*>>(this@inheritanceTree){
+            override fun getOutputIterator(nowInput: Class<*>): Iterator<Class<*>>?
+                = nowInput.supertypes.iterator()
+        }
+    }
+
+/** List yg berisi [superclass] dan [interfaces]. */
+val Class<*>.supertypes: List<Class<*>>
+    get(){
+        val res= interfaces.toMutableList()
+        if(superclass != null)
+            res.add(0, superclass)
+        return res
+    }
 
 val Class<*>.superInterfacesTree: NestedSequence<Class<*>>
     get()= object :
@@ -104,11 +138,48 @@ val Class<*>.superInterfacesTree: NestedSequence<Class<*>>
 val Class<*>.fieldsTree: NestedSequence<Field>
     get()= object: NestedSequence<Field>{
         override fun iterator(): NestedIterator<*, Field>
-            = object: NestedIteratorImpl<Class<*>, Field>(this@fieldsTree.superclassesTree.iterator()){
+            = object: NestedIteratorImpl<Class<*>, Field>(this@fieldsTree.classesTree.iterator()){
             override fun getOutputIterator(nowInput: Class<*>): Iterator<Field>? = nowInput.declaredFields.iterator()
             override fun getInputIterator(nowOutput: Field): Iterator<Class<*>>? = null
         }
     }
+
+/** Mengambil semua [Class.getDeclaredFields] dari `this.extension` [Class] dan superclass. */
+val Class<*>.methodsTree: NestedSequence<Method>
+    get()= object: NestedSequence<Method>{
+        override fun iterator(): NestedIterator<*, Method>
+            = object: NestedIteratorImpl<Class<*>, Method>(this@methodsTree.inheritanceTree.iterator()){
+            override fun getOutputIterator(nowInput: Class<*>): Iterator<Method>? = nowInput.declaredMethods.iterator()
+            override fun getInputIterator(nowOutput: Method): Iterator<Class<*>>? = null
+        }
+    }
+
+val Class<*>.getterMethodsTree: Sequence<Method>
+    get()= methodsTree.filter {
+        it.name.startsWith(METHOD_GETTER_NAME_PREFIX)
+                && it.parameterCount == 0
+                && it.returnType != Void.TYPE
+    }
+val Class<*>.getterMethods: Sequence<Method>
+    get()= methods.asSequence().filter {
+        it.name.startsWith(METHOD_GETTER_NAME_PREFIX)
+                && it.parameterCount == 0
+                && it.returnType != Void.TYPE
+    }
+
+val Class<*>.setterMethodsTree: Sequence<Method>
+    get()= methodsTree.filter {
+        it.name.startsWith(METHOD_SETTER_NAME_PREFIX)
+                && it.parameterCount == 1
+                && it.returnType == Void.TYPE
+    }
+val Class<*>.setterMethods: Sequence<Method>
+    get()= methods.asSequence().filter {
+        it.name.startsWith(METHOD_SETTER_NAME_PREFIX)
+                && it.parameterCount == 1
+                && it.returnType == Void.TYPE
+    }
+
 
 
 /**

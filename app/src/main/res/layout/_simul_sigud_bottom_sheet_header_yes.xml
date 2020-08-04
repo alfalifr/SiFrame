@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/putih"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingBottom="@dimen/margin_normal">
+
+    <RelativeLayout
+        android:id="@+id/rl_hide_swap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/iv_hide"
+            android:layout_width="40dp"
+            android:layout_height="6dp"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/shape_solid_oval"
+            android:tint="@color/colorLine"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_header_container"
+        android:layout_below="@id/rl_hide_swap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_bs_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/sf_pro_bold"
+            android:text="Ini judul nya"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_bs_desc"
+            android:layout_below="@id/ll_header_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:text="Ini deskripsinya"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/bs_container"
+        android:layout_below="@id/ll_header_container"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"/>
+
+    <View
+        android:id="@+id/v_border_bottom"
+        android:layout_below="@id/bs_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+
+    <include
+        android:id="@+id/comp_btn_confirm"
+        layout="@layout/_simul_sigud_component_btn_confirm"
+        android:layout_above="@id/v_border_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_medium"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_bar_fill_between"/>
+</RelativeLayout>

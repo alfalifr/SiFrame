@@ -1,0 +1,6 @@
+package com.sigudang.android.fragments.BoundProcessFrag.singleProcess.lessee.inbound
+
+import com.sigudang.android.fragments.BoundProcessFrag.BoundSingleProcessAbsFrag
+import sidev.lib.implementation._simulation.sigudang.fragments.BoundProcessFrag.BoundWarehouseSelect
+
+class BoundFrag_Lessee_In0Create_2WarehouseSelect_ : BoundWarehouseSelect()

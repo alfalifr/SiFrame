@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rl_pict_pick_outer_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides">
+
+                <include
+                    android:id="@+id/comp_btn_add_photo"
+                    layout="@layout/_simul_sigud_component_btn_border"
+                    android:layout_toRightOf="@id/rl_pict_pick_container"
+                    android:layout_above="@id/v_border_pict_pick"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_bar_fill_between"
+                    android:layout_marginBottom="@dimen/margin_bar_fill_between"/>
+
+                <View
+                    android:id="@+id/v_border_pict_pick"
+                    android:layout_below="@id/rl_pict_pick_container"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_pict_pick_container"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginRight="@dimen/auth_margin_horizontal_sides">
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cv_pict_pick_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="10dp">
+                        <RelativeLayout
+                            android:id="@+id/ll_pict_pick_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/ic_outbound"
+                            android:backgroundTint="@color/colorBorder">
+
+                            <View
+                                android:id="@+id/v_pict_pick_click"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:elevation="10dp"
+                                android:background="?android:attr/selectableItemBackground"/>
+
+                            <sidev.lib.implementation._simulation.sigudang.util.customview.ImageViewResp
+                                android:id="@+id/iv_pict_pick"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:elevation="9dp"/>
+
+                            <LinearLayout
+                                android:layout_width="45dp"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:src="@drawable/ic_profile" />
+
+                                <TextView
+                                    android:id="@+id/tv_pict_pick_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Foto"
+                                    android:textColor="@color/colorText" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+                <!--
+                            <View
+                                android:id="@+id/v_border"
+                                android:layout_below="@id/cv_pict_pick_container"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"/>
+
+                            <include
+                                android:id="@+id/comp_btn_change_pict_pick"
+                                layout="@layout/component_btn_confirm_small"
+                                android:layout_above="@id/v_border"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginBottom="20dp"/>
+                -->
+            </RelativeLayout>
+<!--
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_pict_pick_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="10dp">
+                    <RelativeLayout
+                        android:id="@+id/ll_pict_pick_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_menu_default"
+                        android:backgroundTint="@color/colorBorder">
+
+                        <View
+                            android:id="@+id/v_pict_pick_click"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:elevation="10dp"
+                            android:background="?android:attr/selectableItemBackground"/>
+
+                        <com.sigudang.android.utilities.customview.ImageViewResp
+                            android:id="@+id/iv_pict_pick"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:elevation="9dp"/>
+
+                        <LinearLayout
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:src="@drawable/ic_add_photo" />
+
+                            <TextView
+                                android:id="@+id/tv_pict_pick_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Foto"
+                                android:textColor="@color/colorText" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+-->
+<!--
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides"
+                android:background="@drawable/bg_menu_default"
+                android:backgroundTint="@color/colorBorder"
+                android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                android:paddingRight="@dimen/auth_padding_horizontal_sides">
+
+                <LinearLayout
+                    android:layout_width="45dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_add_photo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto"
+                        android:textColor="@color/colorText" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+-->
+            <EditText
+                android:id="@+id/add_product_et_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_et_height"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides"
+                android:background="@color/putih"
+                android:hint="Nama Produk"
+                android:inputType="text"
+                android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                android:paddingRight="@dimen/auth_padding_horizontal_sides"
+                android:singleLine="true"
+                android:textColorHint="@color/colorText"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_et_height"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides">
+
+                <EditText
+                    android:id="@+id/add_product_et_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/putih"
+                    android:editable="false"
+                    android:hint="Jenis Produk"
+                    android:inputType="textEmailAddress"
+                    android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                    android:paddingRight="@dimen/auth_padding_horizontal_sides"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorText"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/small_ic_dimen"
+                    android:layout_height="@dimen/small_ic_dimen"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/margin_medium"
+                    android:src="@drawable/ic_arrow_thick" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_et_height"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides">
+
+                <EditText
+                    android:id="@+id/add_product_et_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/putih"
+                    android:editable="false"
+                    android:hint="Satuan"
+                    android:inputType="textEmailAddress"
+                    android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                    android:paddingRight="@dimen/auth_padding_horizontal_sides"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorText"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/small_ic_dimen"
+                    android:layout_height="@dimen/small_ic_dimen"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/margin_medium"
+                    android:src="@drawable/ic_arrow_thick" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_et_height"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/putih">
+
+                    <EditText
+                        android:id="@+id/add_product_et_length"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="P"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorText"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_narrow_ultra"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:text="m"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="@dimen/margin_medium"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/putih">
+
+                    <EditText
+                        android:id="@+id/add_product_et_width"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="L"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorText"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_narrow_ultra"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:text="m"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="@dimen/margin_medium"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/putih">
+
+                    <EditText
+                        android:id="@+id/add_product_et_height"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="T"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorText"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_narrow_ultra"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:text="m"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_et_height"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/auth_et_margin_top"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides"
+                android:background="@color/putih">
+
+                <EditText
+                    android:id="@+id/add_product_et_weight"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Berat"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                    android:paddingRight="@dimen/auth_padding_horizontal_sides"
+                    android:singleLine="true"
+                    android:textColorHint="@color/colorText"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_medium"
+                    android:layout_marginRight="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_wide"
+                    android:layout_toRightOf="@id/add_product_et_weight"
+                    android:text="kg"
+                    android:textColor="@color/colorPrimaryDark" />
+
+            </LinearLayout>
+<!--
+            <Button
+                android:id="@+id/add_product_btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_btn_height"
+                android:layout_marginLeft="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginTop="@dimen/margin_wide"
+                android:layout_marginRight="@dimen/auth_margin_horizontal_sides"
+                android:layout_marginBottom="@dimen/margin_normal"
+                android:background="@drawable/bg_button"
+                android:fontFamily="@font/sf_pro_bold"
+                android:paddingLeft="@dimen/auth_padding_horizontal_sides"
+                android:paddingRight="@dimen/auth_padding_horizontal_sides"
+                android:text="SIMPAN"
+                android:textColor="@color/colorWhite" />
+-->
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

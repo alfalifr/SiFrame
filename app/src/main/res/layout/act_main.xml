@@ -233,6 +233,16 @@
             android:text="==EDU-Class== To ContentAct"
             android:onClick="_simul_edu_toContentAct"/>
 
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="==SIGUD== To VpBoundProses"
+            android:onClick="_simul_sigud_boundVp"/>
+
     </LinearLayout>
 
 </ScrollView>

@@ -343,6 +343,15 @@ inline fun <reified T> Array<T>.toSimpleString(): String{
 fun <K, V> MutableMap<K, V>.add(pair: Pair<K, V>){
     this[pair.first]= pair.second
 }
+/*
+fun <K, V> MutableMap<K, V>.removeValue(value: V): K?{
+    return try{
+        val key= keys.toList()[values.indexOf(value)]
+        remove(key)
+        key
+    } catch (e: Exception){ null }
+}
+ */
 
 /*
 =============================
@@ -705,6 +714,47 @@ inline val <reified T> Array<Array<T>>.leveledIterator: Iterator<Array<T>>
         override fun next(): Array<T> = getAtAllLevelAt(index++)
     }
 
+/** Mengambil list yg berisi [Pair.first] dari `this.extension` [Array]. */
+val <A, B> Array<out Pair<A, B>>.firstList: List<A>
+    get(){
+        val res= ArrayList<A>()
+        for(pair in this)
+            res += pair.first
+        return res
+    }
+/** Mengambil list yg berisi [Pair.second] dari `this.extension` [Array]. */
+val <A, B> Array<out Pair<A, B>>.secondList: List<B>
+    get(){
+        val res= ArrayList<B>()
+        for(pair in this)
+            res += pair.second
+        return res
+    }
+fun <A, B> Array<out Pair<A, B>>.asMap(): Map<A, B> = mapOf(*this)
+fun <A, B> List<Pair<A, B>>.asMap(): Map<A, B> = mapOf(*toTypedArray())
+
+fun <K, V> Collection<V>.asMapWithKeys(keys: List<K>): Map<K, V>{
+    if(keys.size < size)
+        throw IllegalArgumentException("""Ukuran keys: ${keys.size} krg dari ukuran `this` Collection: $size.""")
+
+    val map= mutableMapOf<K, V>()
+    for((i, value) in this.withIndex()){
+        map += keys[i] to value
+    }
+    return map
+}
+
+fun <K, V> Collection<K>.asMapWithValues(values: List<V>): Map<K, V>{
+    if(values.size < size)
+        throw IllegalArgumentException("""Ukuran values: ${values.size} krg dari ukuran `this` Collection: $size.""")
+
+    val map= mutableMapOf<K, V>()
+    for((i, key) in this.withIndex()){
+        map += key to values[i]
+    }
+    return map
+}
+
 
 
 /*
@@ -713,35 +763,35 @@ List Operation
 ===============
  */
 
-operator fun <T> MutableCollection<T>.plus(element: T): MutableCollection<T>{
+operator fun <C: MutableCollection<T>, T> C.plus(element: T): C{
     this.add(element)
     return this
 }
-operator fun <T> MutableCollection<T>.plus(collection: Collection<T>): MutableCollection<T>{
+operator fun <C: MutableCollection<T>, T> C.plus(collection: Collection<T>): C{
     this.addAll(collection)
     return this
 }
 
-operator fun <T> MutableCollection<T>.minus(element: T): MutableCollection<T>{
+operator fun <C: MutableCollection<T>, T> C.minus(element: T): C{
     this.remove(element)
     return this
 }
-operator fun <T> MutableCollection<T>.minus(collection: Collection<T>): MutableCollection<T>{
+operator fun <C: MutableCollection<T>, T> C.minus(collection: Collection<T>): C{
     this.removeAll(collection)
     return this
 }
 
-operator fun <T> MutableList<T>.times(factor: Int): MutableList<T>{
+operator fun <L: MutableList<T>, T> L.times(factor: Int): L{
     this.growTimely(factor)
     return this
 }
 
-infix fun <T> MutableCollection<T>.intersect(other: Iterable<T>): MutableCollection<T>{
+infix fun <C: MutableCollection<T>, T> C.intersect(other: Iterable<T>): C{
     this.retainAll(other)
     return this
 }
-fun <T> MutableCollection<T>.distinct(): MutableCollection<T>{
-    return toMutableSet().toMutableList()
+fun <C: MutableCollection<T>, T> C.distinct(): C{
+    return toMutableSet().toMutableList() as C
 }
 
 /** Mengambil [Collection] dg jml size paling kecil. [includeEmpty] == true, maka hasil @return juga menyertakan empty-collection. */

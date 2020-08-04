@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_solid_rect_round_edge"
+    android:fontFamily="@font/sf_pro_bold"
+    android:paddingHorizontal="@dimen/padding_btn_horizontal"
+    android:paddingVertical="@dimen/padding_btn_vertical"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:text="SIMPAN"
+    android:textSize="@dimen/txt_default"
+    android:textColor="@color/putih" />
