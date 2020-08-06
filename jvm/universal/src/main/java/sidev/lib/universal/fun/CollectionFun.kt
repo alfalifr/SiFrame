@@ -1,6 +1,7 @@
 package sidev.lib.universal.`fun`
 
 import sidev.lib.universal.`val`.SuppressLiteral
+import sidev.lib.universal.exception.UndefinedDeclarationExc
 import sidev.lib.universal.structure.collection.iterator.NestedIterator
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorImpl
 import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl
@@ -22,6 +23,49 @@ fun <T> Collection<T>?.isNotNullAndEmpty(): Boolean{
 
 fun <T> Array<T>?.isNotNullAndEmpty(): Boolean{
     return this != null && this.isNotEmpty()
+}
+
+
+/*
+===============
+Comparison
+===============
+ */
+/**
+ * Mengurutkan isi dari `this.extension` [List] jika isinya merupakan turunan [Comparable]
+ * dan mengembalikan `this.extension` sehingga dapat di-chain.
+ */
+fun <L: MutableList<T>, T: Comparable<T>> L.sort(f: (T, T) -> Boolean = ::asc): L {
+    for(i in indices)
+        for(u in i+1 until size){
+            val isOrderTrue = try{ f(this[i], this[u]) }
+            catch (e: ClassCastException){
+                val ascFun: (T, T) -> Boolean = ::asc
+                val descFun: (T, T) -> Boolean = ::desc
+                when(f){
+                    ascFun -> univAsc(this[i], this[u])
+                    descFun -> univDesc(this[i], this[u])
+                    else -> throw UndefinedDeclarationExc(undefinedDeclaration = "${this[i]::class}.compareTo(${this[u]::class})")
+                }
+            }
+            if(!isOrderTrue){
+                val temp= this[i]
+                this[i]= this[u]
+                this[u]= temp
+            }
+        }
+    return this
+}
+/** Sama dg [MutableList.sort] di atas, namun digunakan pada [Array]. */
+fun <T: Comparable<T>> Array<T>.sort(f: (T, T) -> Boolean = ::asc): Array<T> {
+    for(i in indices)
+        for(u in i+1 until size)
+            if(!f(this[i], this[u])){
+                val temp= this[i]
+                this[i]= this[u]
+                this[u]= temp
+            }
+    return this
 }
 
 
@@ -229,7 +273,7 @@ inline fun <T, C: MutableCollection<in String>> Iterable<T>.toStringList(dest: C
     }
     return dest
 }
-
+/*
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
 fun <T> Any.get(index: Int): T? {
     return when{
@@ -241,7 +285,8 @@ fun <T> Any.get(index: Int): T? {
         }
     }
 }
-
+ */
+/*
 fun Any.getArrayElementAt(index: Int): Any?{
     return when{
         this::class.isObjectArray -> (this as Array<*>)[index]
@@ -262,10 +307,12 @@ fun Any.getArrayElementAt(index: Int): Any?{
         }
     }
 }
+ */
 
 val Map<*, *>.indices: IntRange
     get()= 0 until size
 
+/*
 fun Any.indices(): IntRange? {
     return when(this){
         is Array<*> -> this.indices
@@ -274,6 +321,7 @@ fun Any.indices(): IntRange? {
         else -> null
     }
 }
+ */
 
 inline fun <reified T> Array<T>.copy(reversed: Boolean= false): Array<T> {
     return if(!reversed) this.copyOf()

@@ -71,14 +71,14 @@ val <T: Any> KClass<T>.arrayTypeArgument: KTypeProjection?
  * dari kelas sesungguhnya yg disimpulkan dari nilai properti yg dimiliki oleh [owner].
  */
 fun KTypeParameter.getClassProjectionIn(owner: Any): KTypeProjection {
-    if(owner::class.isArray && this in owner::class.typeParameters){
-        return if(owner::class.isObjectArray) KTypeProjection(variance, inferElementType(owner as Array<*>))
-        else owner::class.arrayTypeArgument
+    if(owner::class.isArray && this in owner::class.typeParameters){ //Jika owner array dan `this` ada dalam list type-param nya.
+        return if(owner::class.isObjectArray) KTypeProjection(variance, inferElementType(owner as Array<*>)) //Jika itu array object, maka lakukan inferasi tipe elemen.
+        else owner::class.arrayTypeArgument //Jika array primitif, maka langsung ambil tipenya.
             ?: throw UndefinedDeclarationExc(undefinedDeclaration = owner::class, detailMsg = "Terdapat sebuah array primitif, namun tidak terdefinisi dalam bahasa Kotlin.")
     }
     for(prop in owner::class.nestedDeclaredMemberPropertiesTree){
         if((prop.returnType.classifier as? KClass<*>)?.isArray == true){ //Ada kasus spesial, yaitu array, di mana elemennya tidak ada pada properti.
-            if(prop.returnType.arguments.find { it.type?.classifier == this } != null)
+            if(prop.returnType.arguments.find { it.type?.classifier == this } != null) //Cek apakah type-arg pada array sama dg type-param `this`.
                 prop.forcedGet(owner).notNull { array ->
                     (prop.returnType.classifier as KClass<*>).typeParameters.first()
                         .getClassProjectionIn(array).also { if(it != KTypeProjection.STAR) return it }
@@ -480,7 +480,8 @@ fun KType.isAssignableFrom(other: KType): Boolean{
         }
         (classifier as? KClass<*>)?.isObjectArray == true -> {
             when {
-                (other.classifier as? KClass<*>)?.isObjectArray == true -> classifier == other.classifier
+                (other.classifier as? KClass<*>)?.isObjectArray == true ->
+                    classifier == other.classifier //Karena setiap array dg type-arg berbeda akan menghasilkan false.
                 (other.classifier as? KClass<*>)?.isPrimitiveArray == true ->
                     arguments.first().type == (other.classifier as KClass<*>).arrayTypeArgument?.type //Karena array INVARIANT.
                 else -> false
@@ -528,10 +529,12 @@ Constructor
 
 val KParameter.isInConstructor: Boolean
     get()= this.toString().contains(K_FUNCTION_CONSTRUCTOR_NAME_PREFIX)
+        //Karena tidak tersedia informasi mengenai fungsi pada interface KParameter,
+        // info yg bisa diambil berasal dari fungsi toString().
 
 fun KParameter.isPropertyLike(prop: KProperty<*>, isInConstructorKnown: Boolean= false): Boolean{
     return if(isInConstructorKnown || isInConstructor){
-        name == prop.name && type.classifier == prop.returnType.classifier
+        name == prop.name && type/*.classifier*/ == prop.returnType/*.classifier*/
     } else false
 }
 
@@ -697,11 +700,12 @@ fun <I, O> KMutableProperty1<I, O>.forcedSet(receiver: I, value: O, alsoInferVal
 /*
 value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
             || (value == null && returnType.isMarkedNullable)
- */
+
         val isAssignable= if(alsoInferValueType) returnType.isAssignableFrom(value.inferredType)
             else value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
                     || (value == null && returnType.isMarkedNullable)
-        if(isAssignable){
+ */
+        if(returnType.isAssignableFrom(value, alsoInferValueType)){
             val oldIsAccesible= isAccessible
             isAccessible= true
             set(receiver, value)
@@ -727,9 +731,6 @@ value?.clazz?.isSubClassOf(returnType.classifier as KClass<*>) == true
  *   -> @throws [TypeExc] jika [value] yg dipass tidak sesuai tipe `this.extension`. */
 fun <I, O> KMutableProperty1<I, O>.forcedSetTyped(receiver: I, typedValue: TypedValue<O>): Boolean{
     return try{
-        val value= typedValue.value
-        val type= typedValue.type
-
         if(returnType.isAssignableFrom(typedValue.type)){
             val oldIsAccesible= isAccessible
             isAccessible= true
@@ -738,7 +739,7 @@ fun <I, O> KMutableProperty1<I, O>.forcedSetTyped(receiver: I, typedValue: Typed
             true
         } else {
             throw TypeExc(
-                expectedType = returnType.classifier as KClass<*>, actualType = value?.clazz,
+                expectedType = returnType.classifier as KClass<*>, actualType = typedValue.value?.clazz,
                 msg = "Tidak dapat meng-assign value dg tipe tersebut ke properti: $this."
             )
         }
@@ -1646,7 +1647,10 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
         (constructorParamValFunc ?: { clazz, param ->
             if(constr.parameters.find { it == param } != null){
                 valueMapTree.find { pairValueMap -> param.isPropertyLike(pairValueMap.first) }
-                    .notNullTo { it.second }
+                    .notNullTo {
+                        if(!isDeepClone) it.second
+                        else it.second?.clone(true, constructorParamValFunc)
+                    }
             } else null
         }).invoke(clazz, paramOfNew)
     }
@@ -1687,7 +1691,7 @@ fun <T: Any> T.clone(isDeepClone: Boolean= true, constructorParamValFunc: ((KCla
             }
         }
     }
-//    prine("newInstance::class= ${newInstance::class} this::class= ${this::class}")
+//    prine("this::class= ${this::class} newInstance::class= ${newInstance::class}")
     if(newInstance.isExclusivelySuperClassOf(this))
         prine("Kelas yg di-clone: \"${this::class}\" merupakan shallow-anonymous, newInstance yg di-return adalah superclass: \"${newInstance::class}\".")
     return newInstance
@@ -1720,7 +1724,7 @@ fun <T> Array<T>.deepClone(isElementDeepClone: Boolean= true, elementConstructor
 fun <T: Any> T.arrayClone(isElementDeepClone: Boolean= true, elementConstructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T{
     if(!this::class.isArray) throw ClassCastExc(fromClass = this::class, toClass = Array<Any>::class, msg = "Instance yg di-arrayClone() bkn array")
 
-    val res: Any = if(this::class.toString() == Array<Any>::class.toString())
+    val res: Any = if(this::class.isObjectArray)
         (this as Array<*>).deepClone(isElementDeepClone, elementConstructorParamValFunc)
     else when(this){
         is IntArray -> clone()

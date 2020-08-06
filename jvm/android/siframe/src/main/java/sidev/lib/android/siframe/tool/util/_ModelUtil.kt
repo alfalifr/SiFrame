@@ -9,12 +9,8 @@ import sidev.lib.android.siframe.model.FK_M
 import sidev.lib.android.siframe.model.FK_Row
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util._BitmapUtil
-import sidev.lib.universal.`fun`.getField
-import sidev.lib.universal.`fun`.getV
-import sidev.lib.universal.`fun`.setV
-import sidev.lib.universal.`fun`.get
-import sidev.lib.universal.`fun`.indices
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.structure.collection.common.asCommonIndexedList
 import java.io.File
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -374,25 +370,23 @@ object _ModelUtil {
     }
 
     fun clearEmptyFk(model: Any){
-        if(model is Array<*> || model is Collection<*>){
-            val ind= model.indices()!!
-            for(i in ind){
-                val e= model.get<Any>(i)
-                if(e != null){
-                    val fkField= getFkField<Any>(e)
-                    var fkIsEmpty= false
-                    fkField?.getV<FK_M<*>>(e)
-                        .notNull { fk ->
-                            fkIsEmpty = fk.toId.isEmpty()
-                                    && (fk.toObj == null ||
-                                    (fk.toObj != null && fk.toObj!!.isNotEmpty())
-                                    )
-                        }
-                    if(fkIsEmpty)
-                        fkField?.setV(e, null)
-                }
+        model.asCommonIndexedList<Any>().notNull {
+//            val ind=
+            for(i in it.indices){
+                val e= it[i]
+                val fkField= getFkField<Any>(e)
+                var fkIsEmpty= false
+                fkField?.getV<FK_M<*>>(e)
+                    .notNull { fk ->
+                        fkIsEmpty = fk.toId.isEmpty()
+                                && (fk.toObj == null ||
+                                (fk.toObj != null && fk.toObj!!.isNotEmpty())
+                                )
+                    }
+                if(fkIsEmpty)
+                    fkField?.setV(e, null)
             }
-        } else {
+        }.isNull {
             val e= model
             val fkField= getFkField<Any>(e)
             var fkIsEmpty= false

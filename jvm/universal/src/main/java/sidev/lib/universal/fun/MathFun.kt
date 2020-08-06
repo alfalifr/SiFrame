@@ -2,6 +2,7 @@ package sidev.lib.universal.`fun`
 
 import sidev.lib.universal.`val`.RoundMethod
 import sidev.lib.universal.`val`.SuppressLiteral
+import sidev.lib.universal.exception.UndefinedDeclarationExc
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -20,10 +21,35 @@ val moreThanEqual: (Int, Int) -> Boolean=
     {i1, i2 -> i1 >= i2}
  */
 
-fun <T: Comparable<T>> lessThan():(T, T) -> Boolean= {i1, i2 -> i1 < i2}
-fun <T: Comparable<T>> lessThanEqual():(T, T) -> Boolean= {i1, i2 -> i1 <= i2}
-fun <T: Comparable<T>> moreThan():(T, T) -> Boolean= {i1, i2 -> i1 > i2}
-fun <T: Comparable<T>> moreThanEqual():(T, T) -> Boolean= {i1, i2 -> i1 >= i2}
+fun <T: Comparable<T>> lessThan_():(T, T) -> Boolean= { i1, i2 -> i1 < i2 }
+fun <T: Comparable<T>> lessThanEqual_():(T, T) -> Boolean= { i1, i2 -> i1 <= i2 }
+fun <T: Comparable<T>> moreThan_():(T, T) -> Boolean= { i1, i2 -> i1 > i2 }
+fun <T: Comparable<T>> moreThanEqual_():(T, T) -> Boolean= { i1, i2 -> i1 >= i2 }
+
+fun <T: Comparable<T>> lessThan(i1: T, i2: T): Boolean = i1 < i2
+fun <T: Comparable<T>> lessThanEqual(i1: T, i2: T): Boolean = i1 <= i2
+fun <T: Comparable<T>> moreThan(i1: T, i2: T): Boolean = i1 > i2
+fun <T: Comparable<T>> moreThanEqual(i1: T, i2: T): Boolean = i1 >= i2
+
+fun <T: Comparable<T>> asc(i1: T, i2: T): Boolean = lessThan(i1,  i2)
+fun <T: Comparable<T>> desc(i1: T, i2: T): Boolean = moreThan(i1,  i2)
+
+/*
+========== Universal Comparison ==============
+Digunakan untuk komparasi antar tipe data. Tidak direkomendasikan digunakan di luar library ini.
+==============================================
+*/
+fun <T: Comparable<T>> univLessThan(i1: T, i2: T): Boolean
+        = try{ i1 < i2 } catch (e: ClassCastException){ (i1 as Comparable<*>) < (i2 as Comparable<*>) }
+fun <T: Comparable<T>> univLessThanEqual(i1: T, i2: T): Boolean
+        = try{ i1 <= i2 } catch (e: ClassCastException){ (i1 as Comparable<*>) <= (i2 as Comparable<*>) }
+fun <T: Comparable<T>> univMoreThan(i1: T, i2: T): Boolean
+        = try{ i1 > i2 } catch (e: ClassCastException){ (i1 as Comparable<*>) > (i2 as Comparable<*>) }
+fun <T: Comparable<T>> univMoreThanEqual(i1: T, i2: T): Boolean
+        = try{ i1 >= i2 } catch (e: ClassCastException){ (i1 as Comparable<*>) >= (i2 as Comparable<*>) }
+
+fun <T: Comparable<T>> univAsc(i1: T, i2: T): Boolean = univLessThan(i1,  i2)
+fun <T: Comparable<T>> univDesc(i1: T, i2: T): Boolean = univMoreThan(i1,  i2)
 
 
 infix fun Int.roundClosest(range: IntRange): Int{
@@ -216,6 +242,7 @@ infix operator fun Number.compareTo(other: Number): Int{
         else -> 0
     }
 }
+
 operator fun Number.inc(): Number= this +1
 operator fun Number.dec(): Number= this -1
 operator fun Number.unaryPlus(): Number= this
@@ -249,6 +276,38 @@ infix fun Number.pow(other: Number): Number{
     }
 }
 
+
+
+//=========compareTo interType============
+infix operator fun Number.compareTo(other: String): Int = this.toString().compareTo(other)
+infix operator fun String.compareTo(other: Number): Int = this.compareTo(other.toString())
+infix operator fun Number.compareTo(other: Char): Int = this.toChar().compareTo(other)
+infix operator fun Char.compareTo(other: Number): Int = this.compareTo(other.toChar())
+infix operator fun String.compareTo(other: Char): Int = this.compareTo(other.toString())
+infix operator fun Char.compareTo(other: String): Int = this.toString().compareTo(other)
+
+infix operator fun <T1, T2> Comparable<T1>.compareTo(other: T2): Int
+        = when(this){
+            is Number -> when(other){
+                is Number -> compareTo(other)
+                is String -> compareTo(other)
+                is Char -> compareTo(other)
+                else -> throw UndefinedDeclarationExc(undefinedDeclaration = "${this::class}.compareTo(${other?.clazz})")
+            }
+            is String -> when(other){
+                is Number -> compareTo(other)
+                is String -> compareTo(other)
+                is Char -> compareTo(other)
+                else -> throw UndefinedDeclarationExc(undefinedDeclaration = "${this::class}.compareTo(${other?.clazz})")
+            }
+            is Char -> when(other){
+                is Number -> compareTo(other)
+                is String -> compareTo(other)
+                is Char -> compareTo(other)
+                else -> throw UndefinedDeclarationExc(undefinedDeclaration = "${this::class}.compareTo(${other?.clazz})")
+            }
+            else -> throw UndefinedDeclarationExc(undefinedDeclaration = "${this::class}.compareTo(${other?.clazz})")
+        }
 
 
 //=========compareTo============

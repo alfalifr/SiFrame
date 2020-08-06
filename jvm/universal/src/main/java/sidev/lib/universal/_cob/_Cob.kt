@@ -1,6 +1,8 @@
 package sidev.lib.universal._cob
 
 import sidev.lib.universal.`fun`.*
+import sidev.lib.universal.structure.collection.common.*
+//import sidev.lib.universal.structure.collection.common.withIndex
 import java.io.Serializable
 import java.lang.Exception
 import kotlin.reflect.*
@@ -49,13 +51,121 @@ private abstract class AbsCl private constructor()
 internal object ObjCl
 internal interface IntfcCl
 
+open class Invar<in T: Food?>
+class InvarFood: Invar<Food>()
+class InvarBuger: Invar<Burger>()
+
+class ArrOwner(var arr: Array<Int> = arrayOf(3, 4, 5))
+
 @ExperimentalStdlibApi
 fun main(args: Array<String>) {
+
+    val commonList= commonIndexedMutableListOf(1, 3, 1, 4)
+    val commonList2= commonIndexedMutableListOf(100, 300, 100, 400)
+    val list__= listOf(4,5,6)
+    val commonListMap= commonMutableListOf<String, Int>(
+//        "str1" to 1, "str2" to 2, "str3" to 3
+    )
+    commonListMap.put("str1", 10)
+    commonListMap.addAll(list__)
+    commonListMap["pao"]= 12
+
+    prin("commonListMap= $commonListMap \n commonListMap[\"pao\"]= ${commonListMap["pao"]} commonListMap[3]= ${commonListMap[3]}")
+
+    commonList[1]= 111
+    commonList += commonList2
+
+    prin("\n=================== commonListMap List ===================\n")
+    for((i, e) in commonListMap.keyValueIterator.withIndex()){
+        prin("i= $i e= $e")
+    }
+    val arr1= listOf(1,2)
+    val arr9= listOf(1,2,"")
+    val arrRes= arr1 + arr9
+    val commonItr= commonIterableOf("commItr1", "commItr2", "commItr0")
+    val arrayWrap= arrayWrapperOf(12, 'a', 1, 11, 10, "atr", 2, "a", 4, "str")
+//    commonList + arrayWrap
+    val resCommon= (commonList + arrayWrap)  as CommonMutableList<Int, Comparable<Any>>
+    val commItrRes= commonItr + arrayWrap
+
+    prin("\n=================== commItrRes ===================\n")
+    for((i, e) in commItrRes.withIndex()){
+        prin("i= $i e= $e")
+    }
+
+    val commItrResAsList= commItrRes.asCommonIndexedList()
+    prin("\n=================== commItrResAsList ===================\n")
+    for((i, e) in commItrResAsList.withIndex()){
+        prin("i= $i e= $e")
+    }
+    prin("commItrResAsList[1]= ${commItrResAsList[1]}")
+//    arrayWrap.asCommonMutableList() //.remove(1, 2)
+    val orderFunA: (Int, Int) -> Boolean = ::asc
+    val orderFunB: (Int, Int) -> Boolean = ::asc
+    val orderFunC: (Boolean, Boolean) -> Boolean = ::asc
+    val orderFunD: (Int, Int) -> Boolean = ::desc
+
+    prin("1 < \"as\"= ${1 < "as"} 'i' < 1= ${'i' < 1}")
+    prin("orderFunA == orderFunB= ${orderFunA == orderFunB} orderFunA == orderFunC= ${orderFunA == orderFunC} orderFunB == orderFunC= ${orderFunB == orderFunC} orderFunA == orderFunD= ${orderFunA == orderFunD}")
+    prin("'a'.toInt()= ${'a'.toInt()}")
+
+    prin("\n=================== resCommon List ===================\n")
+    for((i, e) in resCommon.withIndex()){
+        prin("i= $i e= $e")
+    }
+
+    resCommon.sort(::asc)
+    prin("resCommon= $resCommon")
+    prin("\n=================== resCommon List sort ::asc ===================\n")
+    for((i, e) in resCommon.withIndex()){
+        prin("i= $i e= $e")
+    }
+
+    resCommon.sort(::desc)
+    prin("\n=================== resCommon List sort ::desc ===================\n")
+    for((i, e) in resCommon.withIndex()){
+        prin("i= $i e= $e")
+    }
+
+    val invarFood: Invar<Food> = Invar<Food?>()
 //    val v = BooleanWrap("a")
 //    AbsCl::class.createInstance()
     prin("ObjCl::class.isInterface= ${ObjCl::class.isInterface} AbsCl::class.isInterface= ${AbsCl::class.isInterface} IntfcCl::class.isInterface= ${IntfcCl::class.isInterface}")
     prin("ObjCl::class.constructors.size= ${ObjCl::class.constructors.size} ObjCl::class.isAbstract= ${ObjCl::class.isAbstract}")
     prin("AbsCl::class.constructors.size= ${AbsCl::class.constructors.size}")
+
+    val arrOwner= ArrOwner()
+    val arrOwnerClone= arrOwner.clone()
+    val firstConstrParam= arrOwner::class.constructors.first().parameters[0]
+
+    for((i, propMap) in arrOwner.implementedPropertiesValueMap.withIndex()){
+        prin("i= $i propMap= $propMap")
+        prin("== firstConstrParam.isPropertyLike(propMap.first)= ${firstConstrParam.isPropertyLike(propMap.first)}")
+    }
+    prin("=======arrOwnerClone=======")
+    for((i, propMap) in arrOwnerClone.implementedPropertiesValueMap.withIndex()){
+        prin("i= $i propMap= $propMap")
+        prin("== firstConstrParam.isPropertyLike(propMap.first)= ${firstConstrParam.isPropertyLike(propMap.first)}")
+    }
+
+    arrOwner.arr[0]= 0
+    arrOwner.arr[1]= 110
+    prin("=======arrOwnerClone 2=======")
+    prin("arrOwner.arr.string= ${arrOwner.arr.string} arrOwnerClone.arr.string= ${arrOwnerClone.arr.string}")
+
+
+    fun ada(){}
+//    lessThan_<>()
+    fun ado(f: () -> Unit){}
+    ado(::ada)
+
+    val list1_= mutableListOf(1, 3, 1, 4, 5, 1, 2)
+    val list2_= list1_.clone()
+
+    list1_.sort()
+    list1_.forEach(::prin_)
+    prin("=======")
+    list2_.forEach(::prin_)
 
     val p= ADE()
     p.a.aoe()
@@ -80,16 +190,29 @@ fun main(args: Array<String>) {
 
     val arr2= arrayOf(1, 2, 3)
     val arr4= arrayOf(11, 2, null)
+    val arr5= arrayOf("String", "Aku")
     prin("inferElementClass(arr2)= ${inferElementClass(arr2)}")
     prin("inferElementType(arr4)= ${inferElementType(arr4)}")
+
+    val type1= Int::class.createType()
+    val type2= Int::class.createType(nullable = true)
+
+    prin("type1 == type2= ${type1 == type2}")
+    prin("type2.isSubtypeOf(type1)= ${type2.isSubtypeOf(type1)}")
+    prin("type1.isSubtypeOf(type2)= ${type1.isSubtypeOf(type2)}")
+    prin("type2.isSupertypeOf(type1)= ${type2.isSupertypeOf(type1)}")
 
     val arr3= intArrayOf(1, 2)
     val inferredArr2= arr2.inferredType
     val inferredArr3= arr3.inferredType
+    val inferredArr5= arr5.inferredType
+
     prin("arr2::class.arrayTypeArgument= ${arr2::class.arrayTypeArgument} arr3::class.arrayTypeArgument= ${arr3::class.arrayTypeArgument}")
     prin("arr2::class.isSuperclassOf(arr3::class)= ${arr2::class.isSuperclassOf(arr3::class)} arr3::class= ${arr3::class}")
     prin("arr2::class.isSubclassOf(arr3::class)= ${arr2::class.isSubclassOf(arr3::class)}")
 
+    prin("inferredArr5= $inferredArr5")
+    prin("inferredArr2.isAssignableFrom(inferredArr5)= ${inferredArr2.isAssignableFrom(inferredArr5)}")
     prin("inferredArr2.isAssignableFrom(inferredArr3)= ${inferredArr2.isAssignableFrom(inferredArr3)}")
     prin("inferredArr2= $inferredArr2 inferredArr3= $inferredArr3")
 

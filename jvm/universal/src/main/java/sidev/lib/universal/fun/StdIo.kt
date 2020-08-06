@@ -35,3 +35,4 @@ fun prin(any: Any, color: String= StringLiteral.ANSI_RESET, endWithNewLine: Bool
             print("$color $any ${StringLiteral.ANSI_RESET}")
     }
 }
+fun prin_(any: Any) = prin(any)

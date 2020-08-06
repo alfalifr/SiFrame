@@ -418,7 +418,7 @@ AD(a= 0)
     }
 
     val newAc= oldAc.clone<AC>(true)
-///*
+/*
     { clazz, param ->
 //        prine("Poin clazz= $clazz simpleName= ${clazz.simpleName} param= $param nmae= ${param.name} kind= ${param.kind}")
         when(clazz){
@@ -443,7 +443,7 @@ AD(a= 0)
     oldAc.poinLate= Poin(33, 73)
     oldAc.poinConstr.x= 12
     oldAc.array[1]= 110
-
+/*
     println("\n=============BATAS memberFunctions ==============\n")
     for((i, func) in oldAc::class.memberFunctions.withIndex()){
         println("i= $i func= $func")
@@ -457,6 +457,7 @@ AD(a= 0)
     for((i, constr) in javConstrs.withIndex()){
         prin("i= $i, constr= $constr")
     }
+ */
 
 /*
     oldAc.aa_
