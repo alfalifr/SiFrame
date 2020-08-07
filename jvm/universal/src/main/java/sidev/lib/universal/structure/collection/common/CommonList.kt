@@ -5,6 +5,7 @@ import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.annotation.Unsafe
 import sidev.lib.universal.structure.data.MapEntry
+import sidev.lib.universal.structure.data.MutableMapEntry
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
@@ -19,9 +20,10 @@ interface CommonList<K, V> : CommonIterable<V>, List<V>, Map<K, V>, ArrayWrapper
      * sehingga key tidak tidak perlu disebutkan scr langsung saat operasi [set].
      */
     val isIndexed: Boolean
-
+/*
     /** Iterator yg berisi [Map.Entry] dari [K] dan [V]. Iterator ini berguna terutama bagi [Map]. */
     val keyValueIterator: Iterator<Map.Entry<K, V>>
+ */
 
     override fun iterator(): Iterator<V>
 }
@@ -61,7 +63,10 @@ interface CommonMutableList<K, V>: CommonList<K, V>, MutableList<V>, Map<K, V>, 
     /** @return nilai sebelumnya pada [key], `null` jika belum ada nilai pada [key] sebelumnya. */
     fun put(key: K, value: V): V?
     fun putAll(from: Map<out K, V>)
-
+/*
+    /** Mengubah entry pada [index] dg [entry] yg baru. */
+    fun set(index: Int, entry: Pair<K, V>): Boolean
+ */
     /** @return nilai sebelumnya pada [key], `null` jika belum ada nilai pada [key] sebelumnya. */
     fun removeKey(key: K): V?
     //TODO <5 Agustus 2020> => Untuk sementara di-disable karena menyebabkan error internal dari Kotlin code-generator.
@@ -99,11 +104,10 @@ internal open class CommonListImpl_List<V>(open val list: List<V>): CommonIndexe
     override val values: Collection<V> get() = list
     override val entries: Set<Map.Entry<Int, V>>
         get()= list.mapIndexed { i, v ->
-                object : Map.Entry<Int, V>{
-                override val key: Int get() = i
-                override val value: V get() = v
-            }
+            prine("Set entries i= $i v= $v")
+            MapEntry(i, v)
         }.toSet()
+/*
     override val keyValueIterator: Iterator<Map.Entry<Int, V>>
         get() = object : Iterator<MapEntry<Int, V>>{
             val indexedIterator= this@CommonListImpl_List.iterator().withIndex()
@@ -114,6 +118,7 @@ internal open class CommonListImpl_List<V>(open val list: List<V>): CommonIndexe
                 return MapEntry(next.index, next.value)
             }
         }
+ */
 
     override fun toString(): String = "CommonIndexedMutableList$list"
 
@@ -139,6 +144,9 @@ internal open class CommonMutableListImpl_List<V>(override val list: MutableList
     override val values: MutableCollection<V> get() = list
     override val entries: MutableSet<MutableMap.MutableEntry<Int, V>>
         get()= list.mapIndexed { i, v ->
+            prine("MutableSet entries i= $i v= $v")
+            MutableMapEntry(i, v)
+/*
             object : MutableMap.MutableEntry<Int, V>{
                 override val key: Int get() = i
                 override var value: V = v
@@ -148,7 +156,9 @@ internal open class CommonMutableListImpl_List<V>(override val list: MutableList
                     value= newValue
                     return prevVal
                 }
+                override fun toString(): String = "$key=$value"
             }
+ */
         }.toMutableSet()
 
     override fun toString(): String = "CommonIndexedList$list"
@@ -207,7 +217,7 @@ internal open class CommonListImpl_Map<K, V>(open val map: Map<K, V>): CommonLis
     override val keys: Set<K> get() = map.keys
     override val values: Collection<V> get() = map.values
     override val entries: Set<Map.Entry<K, V>> get() = map.entries
-    override val keyValueIterator: Iterator<Map.Entry<K, V>> get() = map.iterator()
+//    override val keyValueIterator: Iterator<Map.Entry<K, V>> get() = map.iterator()
 
     override fun toString(): String = "CommonList$map"
 
@@ -383,22 +393,4 @@ internal open class CommonMutableListImpl_Map<K, V>(override val map: MutableMap
     }
 
     override fun subList(fromIndex: Int, toIndex: Int): MutableList<V> = map.values.toMutableList().subList(fromIndex, toIndex)
-}
-
-@Suppress(SuppressLiteral.UNCHECKED_CAST, SuppressLiteral.IMPLICIT_CAST_TO_ANY)
-fun <T> newUniqueValueIn(inCollection: Collection<T?>, default: T?= null, constructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T? {
-    var newVal= inCollection.lastOrNull() ?: default
-    while(newVal != null && newVal in inCollection){
-        newVal= when(newVal){
-            is Number -> newVal + 1
-            is String -> "$newVal:@"
-            else -> {
-                if(!newVal.isKReflectionElement)
-                    try{ newVal.clone<Any>(constructorParamValFunc = constructorParamValFunc) }
-                    catch (e: Exception){ default }
-                else default
-            }
-        } as? T
-    }
-    return newVal
 }

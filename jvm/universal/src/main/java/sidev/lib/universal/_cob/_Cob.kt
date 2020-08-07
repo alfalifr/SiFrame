@@ -103,7 +103,7 @@ fun main(args: Array<String>) {
     prin("ib= $ib")
 
     val commonList= commonMutableListOf(
-        "key0" to 1, "key1" to 3, 2 to 1, 3 to 4
+        "key0" to 1, "key1" to 3, 2 to 1, 3 to 4, "key10" to 50
     )
     val commonList2= commonIndexedMutableListOf(100, 300, 100, 400)
     val list__= listOf(4,5,6)
@@ -131,13 +131,18 @@ fun main(args: Array<String>) {
         prin("i= $i e= $e")
     }
 
+    prin("\n=================== commonList2 List ===================\n")
+    for((i, e) in commonList2.entries.withIndex()){
+        prin("i= $i e= $e")
+    }
+
     prin("\n=================== commonList List ===================\n")
-    for((i, e) in commonList.keyValueIterator.withIndex()){
+    for((i, e) in commonList.entries.withIndex()){
         prin("i= $i e= $e")
     }
 
     prin("\n=================== commonListMap List ===================\n")
-    for((i, e) in commonListMap.keyValueIterator.withIndex()){
+    for((i, e) in commonListMap.entries.withIndex()){
         prin("i= $i e= $e")
     }
     val arr1= listOf(1,2)
@@ -176,22 +181,25 @@ fun main(args: Array<String>) {
     prin("1 < \"as\"= ${1 < "as"} 'i' < 1= ${'i' < 1}")
     prin("orderFunA == orderFunB= ${orderFunA == orderFunB} orderFunA == orderFunC= ${orderFunA == orderFunC} orderFunB == orderFunC= ${orderFunB == orderFunC} orderFunA == orderFunD= ${orderFunA == orderFunD}")
     prin("'a'.toInt()= ${'a'.toInt()}")
+//    val hasedKeys= (resCommon.keys as LinkedHashSet)
+//    hasedKeys.sortedWith { i, i2 ->  }
 
+    prin("resCommon.keys= ${resCommon.keys} resCommon.keys::class= ${resCommon.keys::class}")
     prin("\n=================== resCommon List ===================\n")
-    for((i, e) in resCommon.keyValueIterator.withIndex()){
+    for((i, e) in resCommon.entries.withIndex()){
         prin("i= $i e= $e")
     }
-
+    //TODO <8 Agus 2020> => sort msh blum aman untuk map karena urutan key msh blum bisa diurutkan berdasarkan nilai value
     resCommon.sort(::asc)
     prin("resCommon= $resCommon")
     prin("\n=================== resCommon List sort ::asc ===================\n")
-    for((i, e) in resCommon.keyValueIterator.withIndex()){
+    for((i, e) in resCommon.entries.withIndex()){
         prin("i= $i e= $e")
     }
 
     resCommon.sort(::desc)
     prin("\n=================== resCommon List sort ::desc ===================\n")
-    for((i, e) in resCommon.keyValueIterator.withIndex()){
+    for((i, e) in resCommon.entries.withIndex()){
         prin("i= $i e= $e")
     }
 

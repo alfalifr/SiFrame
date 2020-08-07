@@ -2,6 +2,8 @@ package sidev.lib.universal.`fun`
 
 import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.exception.UndefinedDeclarationExc
+import sidev.lib.universal.structure.collection.common.CommonList
+import sidev.lib.universal.structure.collection.common.CommonMutableList
 import sidev.lib.universal.structure.collection.iterator.NestedIterator
 import sidev.lib.universal.structure.collection.iterator.NestedIteratorImpl
 import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl
@@ -11,6 +13,8 @@ import sidev.lib.universal.structure.collection.sequence.NestedSequence
 import sidev.lib.universal.structure.data.MapEntry
 import sidev.lib.universal.structure.data.MutableMapEntry
 import kotlin.collections.ArrayList
+import kotlin.reflect.KClass
+import kotlin.reflect.KParameter
 
 /*
 ===============
@@ -1137,3 +1141,36 @@ val Collection<*>.string: String
 
 val Collection<*>.namedString: String
     get()= "${this::class.simpleName}$string"
+
+
+
+
+/*
+=============================
+New Unique Value Creation
+=============================
+ */
+@Suppress(SuppressLiteral.UNCHECKED_CAST, SuppressLiteral.IMPLICIT_CAST_TO_ANY)
+fun <T> newUniqueValueIn(inCollection: Collection<T?>, default: T?= null, constructorParamValFunc: ((KClass<*>, KParameter) -> Any?)?= null): T? {
+    var newVal= inCollection.lastOrNull()
+    if(newVal == null){
+        prine("inCollection kosong, nilai default: \"$default\" dikembalikan.")
+        return default
+    }
+    while(newVal != null && newVal in inCollection){
+        newVal= when(newVal){
+            is Number -> newVal + 1
+            is String -> "$newVal:@"
+            else -> {
+                if(!newVal.isKReflectionElement)
+                    try{ newVal.clone<Any>(constructorParamValFunc = constructorParamValFunc)!! }
+                    catch (e: Exception){
+                        prine("Tidak dapat meng-instantiate key dg kelas: \"${newVal.clazz}\", nilai default: \"$default\" dikembalikan.")
+                        return default
+                    }
+                else return default
+            }
+        } as? T
+    }
+    return newVal
+}
