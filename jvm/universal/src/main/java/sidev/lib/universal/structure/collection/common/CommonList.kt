@@ -1,11 +1,13 @@
 package sidev.lib.universal.structure.collection.common
 
+import org.apache.commons.lang3.mutable.Mutable
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.`val`.SuppressLiteral
 import sidev.lib.universal.annotation.Unsafe
 import sidev.lib.universal.structure.data.MapEntry
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty
 
 /**
  * Struktur data yg menunjukan semua jenis tipe yg dapat menyimpan banyak data dg jenis [V] dan key [K].
@@ -25,6 +27,7 @@ interface CommonList<K, V> : CommonIterable<V>, List<V>, Map<K, V>, ArrayWrapper
 }
 /** [CommonList] dg key merupakan [Int]. */
 interface CommonIndexedList<T> : CommonList<Int, T> {
+    override val isIndexed: Boolean get() = true
     /** Override dg return non-nullable bertujuan agar tidak terjadi ambiguity saat operasi [get]. */
     @Suppress(SuppressLiteral.PARAMETER_NAME_CHANGED_ON_OVERRIDE)
     override fun get(index: Int): T
@@ -37,6 +40,8 @@ interface CommonIndexedList<T> : CommonList<Int, T> {
  */
 //MutableMap
 interface CommonMutableList<K, V>: CommonList<K, V>, MutableList<V>, Map<K, V>, MutableArrayWrapper<V> {
+//    operator fun getValue(thisRef: MutableMap<K, V>, property: KProperty<*>): MutableMap<K, V>
+//    operator fun setValue(thisRef: MutableMap<K, V>, property: KProperty<*>, value: MutableMap<K, V>): MutableMap<K, V>
     /**
      * @inheritdocs
      *
@@ -61,19 +66,34 @@ interface CommonMutableList<K, V>: CommonList<K, V>, MutableList<V>, Map<K, V>, 
     fun removeKey(key: K): V?
     //TODO <5 Agustus 2020> => Untuk sementara di-disable karena menyebabkan error internal dari Kotlin code-generator.
     //  Sbg gantinya, ada di extension.
+
+    /**
+     * Menghapus semua entri pada `this` dg pasangan key [K] dan value [V] yg sesuai.
+     * @return `true` jika isi dari `this` berubah.
+     */
+    fun removeAll(from: Map<out K, V>): Boolean
+
+    /**
+     * Mengahapus semua nilai yg sama dg [element].
+     * @return `true` jika [element] sebelumnya ada di `this` dan berhasil dihapus.
+     */
+    fun removeAll(element: V): Boolean
 //    fun remove(key: K, element: V): Boolean
 }
 /** [CommonMutableList] dg key merupakan [Int]. */
 interface CommonIndexedMutableList<T> : CommonIndexedList<T>, CommonMutableList<Int, T> {
+    override val isIndexed: Boolean get() = true
     /** Override dg return non-nullable bertujuan agar tidak terjadi ambiguity saat operasi [get]. */
     @Suppress(SuppressLiteral.PARAMETER_NAME_CHANGED_ON_OVERRIDE)
     override fun get(index: Int): T
     override fun addAll(elements: Collection<T>): Boolean
 }
 
+//class CommonMutableListMapDelegate<K, V>(val mutableMap: MutableMap<K, V>): CommonMutableListImpl_Map<K, V>
+
 
 internal open class CommonListImpl_List<V>(open val list: List<V>): CommonIndexedList<V> {
-    override val isIndexed: Boolean get() = true
+//    override val isIndexed: Boolean get() = true
     override val size: Int get() = list.size
     override val keys: Set<Int> get() = list.indices.toSet()
     override val values: Collection<V> get() = list
@@ -152,6 +172,13 @@ internal open class CommonMutableListImpl_List<V>(override val list: MutableList
 
     override fun removeAt(index: Int): V = list.removeAt(index)
     override fun removeAll(elements: Collection<V>): Boolean = list.removeAll(elements)
+    override fun removeAll(element: V): Boolean = list.removeAll(listOf(element))
+    override fun removeAll(from: Map<out Int, V>): Boolean {
+        var res= false
+        for((index, e) in entries)
+            res= remove(index, e) || res
+        return res
+    }
     override fun retainAll(elements: Collection<V>): Boolean = list.retainAll(elements)
     override fun clear() = list.clear()
     override fun set(index: Int, element: V): V = list.set(index, element)
@@ -257,10 +284,27 @@ internal open class CommonMutableListImpl_Map<K, V>(override val map: MutableMap
     }
 
     override fun remove(element: V): Boolean = map.removeValue(element)
+    override fun removeAll(element: V): Boolean {
+        val removedKeyList= ArrayList<K>()
+        for((key, existing) in entries)
+            if(existing == element)
+                removedKeyList += key
+        for(key in removedKeyList)
+            removeKey(key)
+        return removedKeyList.isNotEmpty()
+    }
+
     override fun removeAll(elements: Collection<V>): Boolean {
         var res= false
-        for(removed in elements)
-            res= res || remove(removed)
+        for(removed in elements.toSet()){
+            res= removeAll(removed) || res
+        }
+        return res
+    }
+    override fun removeAll(from: Map<out K, V>): Boolean {
+        var res= false
+        for((index, e) in entries)
+            res= remove(index, e) || res
         return res
     }
     override fun removeAt(index: Int): V {

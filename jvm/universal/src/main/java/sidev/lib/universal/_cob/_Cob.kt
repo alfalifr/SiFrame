@@ -57,23 +57,84 @@ class InvarBuger: Invar<Burger>()
 
 class ArrOwner(var arr: Array<Int> = arrayOf(3, 4, 5))
 
+class iA//: iAa, iB
+
+interface iAa
+interface iB: iAa
+
+private operator fun <K, V> java.util.HashMap<K, V>.getValue(
+    v: Any?, property: KProperty<*>
+): MutableMap<K, V> = HashMap()
+
+//operator fun iA.provideDelegate(ref: Any?, prop: KProperty <*>): iB= object : iB{}
+private operator fun iA.getValue(owner: Any?, property: KProperty<*>): iB {
+    prine("iA.getValue owner= $owner prop= $property")
+    prine("prop returnType= ${property.returnType}")
+    return object : iB{}
+}
+
+//operator fun iB.provideDelegate(ref: iB, prop: KProperty <*>): iB= ref
+//private operator fun iA.getValue(nothing: iB, property: KProperty<*>): iB = nothing
+
 @ExperimentalStdlibApi
 fun main(args: Array<String>) {
 
-    val commonList= commonIndexedMutableListOf(1, 3, 1, 4)
+    val map= HashMap<Int, String>()
+    val map2= object: MutableMap<Int, String> by map{}
+    val ia= iA()
+    val ib: iB by ia
+
+    val commonIndexeList= commonIndexedListOf(1,10,7)
+    val map3= commonIndexeList.asList()
+//    val a= map3[2]
+    prin("map= $map")
+    prin("map2= $map2")
+    prin("map3= $map3")
+    prin("map3[2]= ${map3[2]}")
+
+    val commonMutableList= commonMutableListOf(
+        0 to 1, 1 to 2, 2 to 3
+    )
+    val mutableMap= commonMutableList.asMutableMap()
+    prin("mutableMap= $mutableMap")
+
+//    ::ib
+
+    prin("ib= $ib")
+
+    val commonList= commonMutableListOf(
+        "key0" to 1, "key1" to 3, 2 to 1, 3 to 4
+    )
     val commonList2= commonIndexedMutableListOf(100, 300, 100, 400)
     val list__= listOf(4,5,6)
     val commonListMap= commonMutableListOf<String, Int>(
 //        "str1" to 1, "str2" to 2, "str3" to 3
     )
+    val intMap= mapOf(0 to 1, 1 to 3, 2 to 1)
     commonListMap.put("str1", 10)
     commonListMap.addAll(list__)
     commonListMap["pao"]= 12
+//    commonListMap//.toCommonList()
 
-    prin("commonListMap= $commonListMap \n commonListMap[\"pao\"]= ${commonListMap["pao"]} commonListMap[3]= ${commonListMap[3]}")
+    prin("commonListMap= $commonListMap")
+    prin("commonListMap[\"pao\"]= ${commonListMap["pao"]} commonListMap[3]= ${commonListMap[3]}")
 
     commonList[1]= 111
-    commonList += commonList2
+    commonList += commonList2 //as Map<Int, Int>
+    commonList -= listOf(1)
+
+    val nativeList= mutableListOf(1,2,1,4)
+    nativeList.removeAll(listOf(1))
+
+    prin("\n=================== nativeList ===================\n")
+    for((i, e) in nativeList.withIndex()){
+        prin("i= $i e= $e")
+    }
+
+    prin("\n=================== commonList List ===================\n")
+    for((i, e) in commonList.keyValueIterator.withIndex()){
+        prin("i= $i e= $e")
+    }
 
     prin("\n=================== commonListMap List ===================\n")
     for((i, e) in commonListMap.keyValueIterator.withIndex()){
@@ -85,15 +146,22 @@ fun main(args: Array<String>) {
     val commonItr= commonIterableOf("commItr1", "commItr2", "commItr0")
     val arrayWrap= arrayWrapperOf(12, 'a', 1, 11, 10, "atr", 2, "a", 4, "str")
 //    commonList + arrayWrap
-    val resCommon= (commonList + arrayWrap)  as CommonMutableList<Int, Comparable<Any>>
+    val resCommon= (commonList + arrayWrap) as CommonMutableList<Int, Comparable<Any>>
     val commItrRes= commonItr + arrayWrap
+
+    val arrayFromWrap: Array<Any> by arrayWrap
+    prin("\n=================== arrayFromWrap ===================\n")
+    for((i, e) in arrayFromWrap.withIndex()){
+        prin("i= $i e= $e")
+    }
+
 
     prin("\n=================== commItrRes ===================\n")
     for((i, e) in commItrRes.withIndex()){
         prin("i= $i e= $e")
     }
 
-    val commItrResAsList= commItrRes.asCommonIndexedList()
+    val commItrResAsList= commItrRes.toCommonIndexedList()
     prin("\n=================== commItrResAsList ===================\n")
     for((i, e) in commItrResAsList.withIndex()){
         prin("i= $i e= $e")
@@ -110,20 +178,20 @@ fun main(args: Array<String>) {
     prin("'a'.toInt()= ${'a'.toInt()}")
 
     prin("\n=================== resCommon List ===================\n")
-    for((i, e) in resCommon.withIndex()){
+    for((i, e) in resCommon.keyValueIterator.withIndex()){
         prin("i= $i e= $e")
     }
 
     resCommon.sort(::asc)
     prin("resCommon= $resCommon")
     prin("\n=================== resCommon List sort ::asc ===================\n")
-    for((i, e) in resCommon.withIndex()){
+    for((i, e) in resCommon.keyValueIterator.withIndex()){
         prin("i= $i e= $e")
     }
 
     resCommon.sort(::desc)
     prin("\n=================== resCommon List sort ::desc ===================\n")
-    for((i, e) in resCommon.withIndex()){
+    for((i, e) in resCommon.keyValueIterator.withIndex()){
         prin("i= $i e= $e")
     }
 

@@ -1,59 +1,71 @@
 package sidev.lib.universal.structure.collection.common
 
+import sidev.lib.universal.`fun`.forcedGet
 import sidev.lib.universal.`fun`.sort
+import sidev.lib.universal.`fun`.string
 import sidev.lib.universal.`val`.SuppressLiteral
+import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberProperties
 
 
 val CommonList<*, *>.indices: IntRange
     get()= 0 until size
-
-fun <V> CommonIterable<V>.asCommonIndexedList(): CommonIndexedList<V> = (this as Iterable<V>).toList().asCommonIndexedList()!!
-fun <V> CommonIterable<V>.asCommonIndexedMutableList(): CommonIndexedMutableList<V> = (this as Iterable<V>).toMutableList().asCommonIndexedMutableList()!!
+/*
+fun <K, V> CommonIterable<V>.toCommonList(): CommonList<K, V> = when(this){
+    is CommonList<*, *> -> this as CommonList<K, V>
+    else -> (this as Iterable<V>).toMutableList().toCommonList() as CommonList<K, V>
+}
+fun <K, V> CommonIterable<V>.toCommonMutableList(): CommonMutableList<K, V> = when(this){
+    is CommonMutableList<*, *> -> this as CommonMutableList<K, V>
+    else -> (this as Iterable<V>).toMutableList().toCommonMutableList() as CommonMutableList<K, V>
+}
+ */
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
-fun <K, V> Any.asCommonList(): CommonList<K, V>?{
+fun <K, V> Any.toCommonList(): CommonList<K, V>?{
     return when(this){
         is CommonList<*, *> -> this as CommonList<K, V>
-        is List<*> -> (this as List<V>).asCommonList() as CommonList<K, V>
-        is Map<*, *> -> (this as Map<K, V>).asCommonList()
-        is Array<*> -> (this as Array<V>).asCommonList() as CommonList<K, V>
-        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).asCommonList() as CommonList<K, V>
+        is List<*> -> (this as List<V>).toCommonList() as CommonList<K, V>
+        is Map<*, *> -> (this as Map<K, V>).toCommonList()
+        is Array<*> -> (this as Array<V>).toCommonList() as CommonList<K, V>
+        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).toCommonList() as CommonList<K, V>
         else -> null
     }
 }
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
-fun <K, V> Any.asCommonMutableList(): CommonMutableList<K, V>?{
+fun <K, V> Any.toCommonMutableList(): CommonMutableList<K, V>?{
     return when(this){
         is CommonMutableList<*, *> -> this as CommonMutableList<K, V>
-        is MutableList<*> -> (this as MutableList<V>).asCommonMutableList() as CommonMutableList<K, V>
-        is MutableMap<*, *> -> (this as MutableMap<K, V>).asCommonMutableList()
-        is Array<*> -> (this as Array<V>).asCommonMutableList() as CommonMutableList<K, V>
-        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).asCommonMutableList() as CommonMutableList<K, V>
+        is MutableList<*> -> (this as MutableList<V>).toCommonMutableList() as CommonMutableList<K, V>
+        is MutableMap<*, *> -> (this as MutableMap<K, V>).toCommonMutableList()
+        is Array<*> -> (this as Array<V>).toCommonMutableList() as CommonMutableList<K, V>
+        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).toCommonMutableList() as CommonMutableList<K, V>
         else -> null
     }
 }
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
-fun <V> Any.asCommonIndexedList(): CommonIndexedList<V>?{
+fun <V> Any.toCommonIndexedList(): CommonIndexedList<V>?{
     return when(this){
         //is CommonList<*, *> tidak dicek karena bisa saja K bkn Int
-        is List<*> -> (this as List<V>).asCommonList() as CommonIndexedList<V>
-        is Map<*, *> -> (this as Map<*, V>).map { it.value }.asCommonList() as CommonIndexedList<V>
-        is Array<*> -> (this as Array<V>).asCommonList() as CommonIndexedList<V>
-        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).asCommonList() as CommonIndexedList<V>
+        is List<*> -> (this as List<V>).toCommonList() //as CommonIndexedList<V>
+        is Map<*, *> -> (this as Map<*, V>).map { it.value }.toCommonList() //as CommonIndexedList<V>
+        is Array<*> -> (this as Array<V>).toCommonList() //as CommonIndexedList<V>
+        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).toCommonList() //as CommonIndexedList<V>
         else -> null
     }
 }
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
-fun <V> Any.asCommonIndexedMutableList(): CommonIndexedMutableList<V>?{
+fun <V> Any.toCommonIndexedMutableList(): CommonIndexedMutableList<V>?{
     return when(this){
         //is CommonMutableList<*, *> tidak dicek karena bisa saja K bkn Int
-        is MutableList<*> -> (this as MutableList<V>).asCommonMutableList() as CommonIndexedMutableList<V>
-        is MutableMap<*, *> -> ((this as MutableMap<*, V>).map { it.value } as MutableList<V>).asCommonMutableList() as CommonIndexedMutableList<V>
-        is Array<*> -> (this as Array<V>).asCommonMutableList() as CommonIndexedMutableList<V>
-        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).asCommonMutableList() as CommonIndexedMutableList<V>
+        is MutableList<*> -> (this as MutableList<V>).toCommonMutableList() //as CommonIndexedMutableList<V>
+        is MutableMap<*, *> -> ((this as MutableMap<*, V>).map { it.value } as MutableList<V>).toCommonMutableList() //as CommonIndexedMutableList<V>
+        is Array<*> -> (this as Array<V>).toCommonMutableList() //as CommonIndexedMutableList<V>
+        is ArrayWrapper<*> -> (this as ArrayWrapper<V>).toCommonMutableList() //as CommonIndexedMutableList<V>
         else -> null
     }
 }
@@ -70,82 +82,131 @@ fun <T> commonIndexedMutableListOf(vararg elements: T): CommonIndexedMutableList
         = CommonMutableListImpl_Array(elements as Array<T>)
 
 
-fun <T> List<T>.asCommonList(): CommonList<Int, T> = CommonListImpl_List(this)
-fun <T> MutableList<T>.asCommonMutableList(): CommonMutableList<Int, T> = CommonMutableListImpl_List(this)
+fun <T> List<T>.toCommonList(): CommonIndexedList<T> = CommonListImpl_List(this)
+fun <T> MutableList<T>.toCommonMutableList(): CommonIndexedMutableList<T> = CommonMutableListImpl_List(this)
 
-fun <T> Array<T>.asCommonList(): CommonList<Int, T> = CommonListImpl_Array(this)
-fun <T> Array<T>.asCommonMutableList(): CommonMutableList<Int, T> = CommonMutableListImpl_Array(this)
+fun <T> Array<T>.toCommonList(): CommonIndexedList<T> = CommonListImpl_Array(this)
+fun <T> Array<T>.toCommonMutableList(): CommonIndexedMutableList<T> = CommonMutableListImpl_Array(this)
 
-fun <T> ArrayWrapper<T>.asCommonList(): CommonList<Int, T> = CommonListImpl_ArrayWrapper(this)
-fun <T> ArrayWrapper<T>.asCommonMutableList(): CommonMutableList<Int, T>
+fun <T> ArrayWrapper<T>.toCommonList(): CommonIndexedList<T> = CommonListImpl_ArrayWrapper(this)
+fun <T> ArrayWrapper<T>.toCommonMutableList(): CommonIndexedMutableList<T>
         = CommonMutableListImpl_ArrayWrapper(this)
 
-fun <K, V> Map<K, V>.asCommonList(): CommonList<K, V> = CommonListImpl_Map(this)
-fun <K, V> MutableMap<K, V>.asCommonMutableList(): CommonMutableList<K, V>
+fun <K, V> Map<K, V>.toCommonList(): CommonList<K, V> = CommonListImpl_Map(this)
+fun <K, V> MutableMap<K, V>.toCommonMutableList(): CommonMutableList<K, V>
         = CommonMutableListImpl_Map(this)
 
 fun <V> CommonList<*, V>.withIndex(): Iterator<IndexedValue<V>> = iterator().withIndex()
 fun <V> ArrayWrapper<V>.withIndex(): Iterator<IndexedValue<V>> = iterator().withIndex()
 fun <V> CommonIterable<V>.withIndex(): Iterator<IndexedValue<V>> = iterator().withIndex()
 
+fun <V> CommonList<*, V>.asList(): List<V> = this
+fun <K, V> CommonList<K, V>.asMap(): Map<K, V> = this
+///*
+fun <V> CommonMutableList<*, V>.asMutableList(): MutableList<V> = this
+fun <K, V> CommonMutableList<K, V>.asMutableMap(): MutableMap<K, V> = when(this){
+    is CommonMutableListImpl_Map<*, *> -> object : MutableMap<K, V> by (map as MutableMap<K, V>){
+        override fun toString(): String = map.toString()
+    }
+    else -> {
+        val res: MutableMap<K, V> by this
+        res
+    }
+}
+// */
 
-operator fun <V> CommonIterable<V>.plus(other: CommonIterable<V>): CommonIterable<V>
-    = ((this as Iterable<V>) + (other as Iterable<V>)).asCommonIterable()
+//operator fun <K, V> CommonMutableList<K, V>.getValue(owner: Any?, property: KProperty<*>): MutableList<K, V>{}
 
-fun <V> CommonIterable<V>.asSequence(): Sequence<V> = this
+/** Fungsi delegasi untuk [Array]. */
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+inline operator fun <reified T> ArrayWrapper<T>.getValue(owner: Any?, prop: KProperty<*>): Array<T> = when(this){
+    is ArrayWrapperImpl -> (this::class.memberProperties.find { it.name == "array" }!! as KProperty1<ArrayWrapper<T>, Any?>)
+        .forcedGet(this)!! as Array<T>
+    else -> Array(size){ this[it] }
+}
+/** Extension delegate function ini dibuat dg alasan karena [CommonMutableList] tidak meng-extend [MutableMap]. */
+operator fun <K, V> CommonMutableList<K, V>.getValue(owner: Any?, property: KProperty<*>): MutableMap<K, V>{
+    return when(this){
+        is CommonMutableListImpl_Map<*, *> -> object : MutableMap<K, V> by (map as MutableMap<K, V>){
+            override fun toString(): String = map.toString()
+        }
+        else -> {
+            val thisEx= this
+            object : MutableMap<K, V> {
+                override val size: Int get() = thisEx.size
+                override val keys: MutableSet<K> get() = thisEx.keys
+                override val values: MutableCollection<V> get() = thisEx.values
+                override val entries: MutableSet<MutableMap.MutableEntry<K, V>> get() = thisEx.entries
+                override fun get(key: K): V? = thisEx[key]
+                override fun put(key: K, value: V): V? = thisEx.put(key, value)
+                override fun putAll(from: Map<out K, V>) = thisEx.putAll(from)
+                override fun clear() = thisEx.clear()
+                override fun containsKey(key: K): Boolean = thisEx.containsKey(key)
+                override fun containsValue(value: V): Boolean = thisEx.containsValue(value)
+                override fun remove(key: K): V? = thisEx.removeKey(key)
+                override fun isEmpty(): Boolean = thisEx.isEmpty()
+                override fun toString(): String = string
+            }
+        }
+    }
+}
+
+/*
+fun <K, V, M: MutableMap<K, V>> CommonMutableList<K, V>.mutableMapDelegate(): MutableMap<K, V>{
+}
+ */
+
 
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
-operator fun <K, V> CommonList<K, out V>.plus(other: CommonIterable<V>): CommonList<K, V>{
+operator fun <K, V> CommonList<out K, out V>.plus(other: CommonIterable<V>): CommonList<K, V>{
+    if(other is CommonList<*, *>)
+        return this + other as CommonList<K, V>
+
     val res= (
-            if(!isIndexed || other is CommonList<*, *> && !other.isIndexed) commonMutableListOf<K, V>()
+            if(!isIndexed) commonMutableListOf<K, V>()
             else commonIndexedMutableListOf<V>()
     ) as CommonMutableList<K, V>
-
-    for((key, value) in keyValueIterator)
-        res.put(key, value)
-
-    try{
-        when(other){
-            is CommonIndexedList<*> -> res.addAll(other as List<V>) //CommonIndexedList juga List.
-            is CommonList<*, *> -> {
-                for((key, value) in (other as CommonList<K, V>).keyValueIterator)
-                    res.put(key, value)
-            }
-            else -> res.addAll(other as Iterable<V>)
-        }
-    } catch (e: ClassCastException){ //Jika ternyata Iterable juga CommonList, namun tipe data key-nya salah, maka tambah sprti Iterable biasa.
-        res.addAll(other as Iterable<V>)
-    }
+    res += this
+    res += other
+    return res
+}
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+operator fun <K, V> CommonList<out K, out V>.plus(other: CommonList<out K, out V>): CommonList<K, V>{
+    val res= (
+            if(!isIndexed || !other.isIndexed) commonMutableListOf<K, V>()
+            else commonIndexedMutableListOf<V>()
+    ) as CommonMutableList<K, V>
+    res += this
+    res += other
     return res
 }
 
 
 operator fun <V> CommonIterable<V>.minus(other: CommonIterable<V>): CommonIterable<V>
-    = ((this as Iterable<V>) - (other as Iterable<V>)).asCommonIterable()
+    = ((this as Iterable<V>) - (other as Iterable<V>)).toCommonIterable()
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
-operator fun <K, V> CommonList<K, V>.minus(other: CommonIterable<V>): CommonList<K, V>{
-    val res= commonMutableListOf<K, V>()
-    when(this){
-        is CommonIndexedList<*> -> res.addAll(this)
-        else -> {
-            for((key, value) in keyValueIterator)
-                res.put(key, value)
-        }
-    }
-    try{
-        when(other){
-            is CommonIndexedList<*> -> res.removeAll(other as List<V>) //CommonIndexedList juga List.
-            is CommonList<*, *> -> {
-                for(key in (other as CommonList<K, V>).keys)
-                    res.removeKey(key)
-            }
-            else -> res.removeAll(other as Iterable<V>)
-        }
-    } catch (e: ClassCastException){ //Jika ternyata Iterable juga CommonList, namun tipe data key-nya salah, maka tambah sprti Iterable biasa.
-        res.removeAll(other as Iterable<V>)
-    }
+operator fun <K, V> CommonList<out K, out V>.minus(other: CommonIterable<V>): CommonList<K, V>{
+    if(other is CommonList<*, *>)
+        return this - other as CommonList<K, V>
+
+    val res= (
+            if(!isIndexed) commonMutableListOf<K, V>()
+            else commonIndexedMutableListOf<V>()
+    ) as CommonMutableList<K, V>
+    res += this
+    res -= other
+    return res
+}
+@Suppress(SuppressLiteral.UNCHECKED_CAST)
+operator fun <K, V> CommonList<out K, out V>.minus(other: CommonList<out K, out V>): CommonList<K, V>{
+    val res= (
+            if(!isIndexed || !other.isIndexed) commonMutableListOf<K, V>()
+            else commonIndexedMutableListOf<V>()
+    ) as CommonMutableList<K, V>
+    res += this
+    res -= other
     return res
 }
 
@@ -153,39 +214,50 @@ operator fun <K, V> CommonList<K, V>.minus(other: CommonIterable<V>): CommonList
 operator fun <V> CommonIterable<V>.plusAssign(other: CommonIterable<V>): Unit
     = ((this as Iterable<V>) + (other as Iterable<V>)).asCommonIterable()
  */
-
+///*
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
 operator fun <K, V> CommonMutableList<K, V>.plusAssign(other: CommonIterable<V>){
     try{
         when(other){
-            is CommonIndexedList<*> -> addAll(other as List<V>) //CommonIndexedList juga List.
-            is CommonList<*, *> -> {
-                for((key, value) in (other as CommonList<K, V>).keyValueIterator)
-                    put(key, value)
-            }
-            else -> addAll(other as Iterable<V>)
+            is CommonList<*, *> -> plusAssign(other as CommonList<K, V>)
+            else -> (this as CommonMutableList<Any?, Any?>).addAll(other as Iterable<V>)
         }
     } catch (e: ClassCastException){ //Jika ternyata Iterable juga CommonList, namun tipe data key-nya salah, maka tambah sprti Iterable biasa.
-        addAll(other as Iterable<V>)
+        (this as CommonMutableList<Any?, Any?>).addAll(other as Iterable<V>)
     }
 }
+operator fun <K, V> CommonMutableList<K, V>.plusAssign(other: CommonList<out K, out V>){
+    when{
+        other.isIndexed -> addAll(other as List<V>) //CommonIndexedList juga List.
+        else -> putAll(other as Map<out K, V>)
+    }
+}
+operator fun <K, V> CommonMutableList<K, V>.plusAssign(other: Map<out K, V>) = putAll(other)
+// */
 
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
 operator fun <K, V> CommonMutableList<K, V>.minusAssign(other: CommonIterable<V>){
     try{
         when(other){
-            is CommonIndexedList<*> -> removeAll(other as List<V>) //CommonIndexedList juga List.
-            is CommonList<*, *> -> {
-                for(key in (other as CommonList<K, V>).keys)
-                    removeKey(key)
-            }
-            else -> removeAll(other as Iterable<V>)
+            is CommonList<*, *> -> minusAssign(other as CommonList<K, V>)
+            else -> (this as CommonMutableList<Any?, Any?>).removeAll(other as Iterable<V>)
         }
     } catch (e: ClassCastException){ //Jika ternyata Iterable juga CommonList, namun tipe data key-nya salah, maka tambah sprti Iterable biasa.
-        removeAll(other as Iterable<V>)
+        (this as CommonMutableList<Any?, Any?>).removeAll(other as Iterable<V>)
     }
 }
+operator fun <K, V> CommonMutableList<K, V>.minusAssign(other: CommonList<out K, out V>){
+    when{
+        other.isIndexed -> removeAll(other as List<V>) //CommonIndexedList juga List.
+        else -> removeAll(other as Map<out K, V>)
+    }
+}
+operator fun <K, V> CommonMutableList<K, V>.minusAssign(other: Map<out K, V>){
+    removeAll(other)
+}
+
+
 
 @Suppress(SuppressLiteral.UNCHECKED_CAST)
 fun <C: CommonIndexedMutableList<V>, V: Comparable<V>> C.sort(func: (V, V) -> Boolean): C

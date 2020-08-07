@@ -1,5 +1,7 @@
 package sidev.lib.universal.structure.collection.common
 
+import kotlin.reflect.KProperty
+
 /** Digunakan sbg interface common yg menunjukan sifat iterable dari [Array]. */
 interface ArrayIterable<out T>: Iterable<T>
 
@@ -103,16 +105,16 @@ fun CharArray.asWrapped(): MutableArrayWrapper<Char> =
 
 fun <T> arrayWrapperOf(vararg element: T): ArrayWrapper<T>
     = object : ArrayWrapper<T> {
-    private val array= element//arrayOf(*element)
+    private val array= element as Array<T>
 
     override fun get(index: Int): T = array[index]
     override val size: Int get() = array.size
     override fun iterator(): Iterator<T> = array.iterator()
+//    override fun getValue(owner: Any?, prop: KProperty<*>): Array<T> = array
 }
 
 fun <T> mutableArrayWrapperOf(vararg element: T): MutableArrayWrapper<T>
-    = object :
-    MutableArrayWrapper<T> {
+    = object : MutableArrayWrapper<T> {
     private val array= element as Array<T>
 
     override fun get(index: Int): T = array[index]
@@ -123,19 +125,19 @@ fun <T> mutableArrayWrapperOf(vararg element: T): MutableArrayWrapper<T>
     }
     override val size: Int get() = array.size
     override fun iterator(): Iterator<T> = array.iterator()
+//    override fun getValue(owner: Any?, prop: KProperty<*>): Array<T> = array
 }
 
 
-internal open class ArrayWrapperImpl<T>(protected val array: Array<T>):
-    ArrayWrapper<T> {
+internal open class ArrayWrapperImpl<T>(val array: Array<T>): ArrayWrapper<T> {
     //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
     override fun get(index: Int): T = array[index]
     override val size: Int get() = array.size
     override fun iterator(): Iterator<T> = array.iterator()
+//    override fun getValue(owner: Any?, prop: KProperty<*>): Array<T> = array
 }
 
-internal class MutableArrayWrapperImpl<T>(array: Array<T>): ArrayWrapperImpl<T>(array),
-    MutableArrayWrapper<T> {
+internal class MutableArrayWrapperImpl<T>(array: Array<T>): ArrayWrapperImpl<T>(array), MutableArrayWrapper<T> {
     override fun set(index: Int, element: T): T {
         val prevVal= array[index]
         array[index]= element
@@ -143,21 +145,14 @@ internal class MutableArrayWrapperImpl<T>(array: Array<T>): ArrayWrapperImpl<T>(
     }
 }
 
+
 /*
 ==============
 IntArray
 ==============
  */
-internal open class ArrayWrapperImpl_Int(protected val array: IntArray):
-    ArrayWrapper<Int> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Int = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Int> = array.iterator()
-}
-
-internal class MutableArrayWrapperImpl_Int(array: IntArray): ArrayWrapperImpl_Int(array),
-    MutableArrayWrapper<Int> {
+internal open class ArrayWrapperImpl_Int(primitiveArray: IntArray): ArrayWrapperImpl<Int>(primitiveArray.toTypedArray())
+internal class MutableArrayWrapperImpl_Int(array: IntArray): ArrayWrapperImpl_Int(array), MutableArrayWrapper<Int> {
     override fun set(index: Int, element: Int): Int {
         val prevVal= array[index]
         array[index]= element
@@ -170,14 +165,7 @@ internal class MutableArrayWrapperImpl_Int(array: IntArray): ArrayWrapperImpl_In
 LongArray
 ==============
  */
-internal open class ArrayWrapperImpl_Long(protected val array: LongArray):
-    ArrayWrapper<Long> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Long = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Long> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Long(primitiveArray: LongArray): ArrayWrapperImpl<Long>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Long(array: LongArray): ArrayWrapperImpl_Long(array),
     MutableArrayWrapper<Long> {
     override fun set(index: Int, element: Long): Long {
@@ -192,14 +180,7 @@ internal class MutableArrayWrapperImpl_Long(array: LongArray): ArrayWrapperImpl_
 ShortArray
 ==============
  */
-internal open class ArrayWrapperImpl_Short(protected val array: ShortArray):
-    ArrayWrapper<Short> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Short = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Short> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Short(primitiveArray: ShortArray): ArrayWrapperImpl<Short>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Short(array: ShortArray): ArrayWrapperImpl_Short(array),
     MutableArrayWrapper<Short> {
     override fun set(index: Int, element: Short): Short {
@@ -214,14 +195,7 @@ internal class MutableArrayWrapperImpl_Short(array: ShortArray): ArrayWrapperImp
 FloatArray
 ==============
  */
-internal open class ArrayWrapperImpl_Float(protected val array: FloatArray):
-    ArrayWrapper<Float> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Float = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Float> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Float(primitiveArray: FloatArray): ArrayWrapperImpl<Float>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Float(array: FloatArray): ArrayWrapperImpl_Float(array),
     MutableArrayWrapper<Float> {
     override fun set(index: Int, element: Float): Float {
@@ -236,14 +210,7 @@ internal class MutableArrayWrapperImpl_Float(array: FloatArray): ArrayWrapperImp
 DoubleArray
 ==============
  */
-internal open class ArrayWrapperImpl_Double(protected val array: DoubleArray):
-    ArrayWrapper<Double> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Double = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Double> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Double(primitiveArray: DoubleArray): ArrayWrapperImpl<Double>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Double(array: DoubleArray): ArrayWrapperImpl_Double(array),
     MutableArrayWrapper<Double> {
     override fun set(index: Int, element: Double): Double {
@@ -258,14 +225,7 @@ internal class MutableArrayWrapperImpl_Double(array: DoubleArray): ArrayWrapperI
 ByteArray
 ==============
  */
-internal open class ArrayWrapperImpl_Byte(protected val array: ByteArray):
-    ArrayWrapper<Byte> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Byte = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Byte> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Byte(primitiveArray: ByteArray): ArrayWrapperImpl<Byte>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Byte(array: ByteArray): ArrayWrapperImpl_Byte(array),
     MutableArrayWrapper<Byte> {
     override fun set(index: Int, element: Byte): Byte {
@@ -280,14 +240,7 @@ internal class MutableArrayWrapperImpl_Byte(array: ByteArray): ArrayWrapperImpl_
 BooleanArray
 ==============
  */
-internal open class ArrayWrapperImpl_Boolean(protected val array: BooleanArray):
-    ArrayWrapper<Boolean> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Boolean = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Boolean> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Boolean(primitiveArray: BooleanArray): ArrayWrapperImpl<Boolean>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Boolean(array: BooleanArray): ArrayWrapperImpl_Boolean(array),
     MutableArrayWrapper<Boolean> {
     override fun set(index: Int, element: Boolean): Boolean {
@@ -302,14 +255,7 @@ internal class MutableArrayWrapperImpl_Boolean(array: BooleanArray): ArrayWrappe
 CharArray
 ==============
  */
-internal open class ArrayWrapperImpl_Char(protected val array: CharArray):
-    ArrayWrapper<Char> {
-    //    constructor(size: Int, init: (Int) -> T): this(Array<T>(size, init))
-    override fun get(index: Int): Char = array[index]
-    override val size: Int get() = array.size
-    override fun iterator(): Iterator<Char> = array.iterator()
-}
-
+internal open class ArrayWrapperImpl_Char(primitiveArray: CharArray): ArrayWrapperImpl<Char>(primitiveArray.toTypedArray())
 internal class MutableArrayWrapperImpl_Char(array: CharArray): ArrayWrapperImpl_Char(array),
     MutableArrayWrapper<Char> {
     override fun set(index: Int, element: Char): Char {

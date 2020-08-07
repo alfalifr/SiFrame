@@ -10,7 +10,7 @@ import sidev.lib.android.siframe.model.FK_Row
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util._BitmapUtil
 import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.structure.collection.common.asCommonIndexedList
+import sidev.lib.universal.structure.collection.common.toCommonIndexedList
 import java.io.File
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -370,7 +370,7 @@ object _ModelUtil {
     }
 
     fun clearEmptyFk(model: Any){
-        model.asCommonIndexedList<Any>().notNull {
+        model.toCommonIndexedList<Any>().notNull {
 //            val ind=
             for(i in it.indices){
                 val e= it[i]
