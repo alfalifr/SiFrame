@@ -121,7 +121,8 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                                             rv.post {
                                                 //TODO <4 Agustus 2020> => Udah bisa perhitungan bottomFrag, namun kadang" msh nge-lag.
                                                 _initBottomView(view)
-                                                view.post { postBottomFrag(view, lm) }
+//                                                view.post { postBottomFrag(view, lm) }
+                                                postBottomFrag(view, lm)
                                             }
                                         }
                                     }
