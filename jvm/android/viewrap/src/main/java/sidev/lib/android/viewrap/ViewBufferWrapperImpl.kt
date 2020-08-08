@@ -9,19 +9,23 @@ import sidev.lib.universal.`fun`.isElementZero
 
 abstract class ViewBufferWrapperImpl<V: View>(final override val context: Context): ViewBufferWrapper<V>{
     override var view: V?= null
-/*
-        set(v){
-            field= v
-            configureBufferView()
-        }
- */
+    override var isBufferShown: Boolean= false
+        protected set
+
+    /*
+            set(v){
+                field= v
+                configureBufferView()
+            }
+     */
     final override var bufferAnimation: Animation? = null
         set(v){
             field= v
             bufferView?.animation= v
         }
     private var mIsBufferViewConfigured: Boolean= false
-/*
+
+    /*
     override fun showBuffer(show: Boolean, keepView: Boolean){
         if(show && bufferView != null){
 //            if(!mIsBufferViewConfigured)
@@ -54,6 +58,10 @@ abstract class ViewBufferWrapperImpl<V: View>(final override val context: Contex
         }
     }
  */
+    override fun showBuffer(show: Boolean, keepView: Boolean) {
+        isBufferShown= show
+        super.showBuffer(show, keepView)
+    }
 
     private fun configureBufferView(){
         if((view?.size?.isElementZero() == false).also { mIsBufferViewConfigured= it }){

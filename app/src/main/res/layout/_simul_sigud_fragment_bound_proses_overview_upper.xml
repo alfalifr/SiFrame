@@ -47,6 +47,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~(INB/20190831/XIX/VIII/36125289)"/>
                 </RelativeLayout>
 
@@ -96,6 +97,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~31 / 01 / 2020"/>
                 </RelativeLayout>
 
@@ -145,6 +147,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~Gudang Aryatama"/>
                 </RelativeLayout>
 
@@ -194,6 +197,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~Citra Buana"/>
                 </RelativeLayout>
 
@@ -264,6 +268,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~JNE"/>
                 </RelativeLayout>
 
@@ -313,6 +318,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~Jl. In Aja"/>
                 </RelativeLayout>
 
@@ -369,6 +375,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~902747025"/>
                 </RelativeLayout>
 
@@ -418,6 +425,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~Cak Jo"/>
                 </RelativeLayout>
 
@@ -467,6 +475,7 @@
                         android:singleLine="true"
                         android:textSize="@dimen/txt_sm"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:text="~~031xxxxxxxxxx"/>
                 </RelativeLayout>
 

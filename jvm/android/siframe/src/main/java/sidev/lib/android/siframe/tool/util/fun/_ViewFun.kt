@@ -552,3 +552,37 @@ val Context.screenHeight: Int
 
 val View.animator: _ViewUtil.SimpleAnimator
     get()= _ViewUtil.SimpleAnimator(this)
+
+/** Menunjukan apakah view dalam `this.extension` dapat ditumpuk. */
+val ViewGroup.isChildStackable: Boolean
+    get()= this !is LinearLayout
+
+/**
+ * Menunjukan apakah `this.extension` view dapat ditumpuk.
+ * @return -> `true` jika `this.extension` berada di dalam ViewGroup selain [LinearLayout],
+ *   -> `false` jika sebaliknya atau tidak berada di dalam [ViewGroup].
+ */
+val View.isStackable: Boolean
+    get()= parent.asNotNullTo { vg: ViewGroup -> vg !is LinearLayout } ?: false
+
+/**
+ * Menjadikan `this.extension` view stackable, yaitu dg membungkusnya ke dalam [RelativeLayout]
+ * atau membiarkannya jika sudah [isStackable].
+ *
+ * @return -> [ViewGroup] yg merupakan [View.getParent] dari `this.extension`,
+ *   -> `null` jika `this.extension` tidak dapat dijadikan stackable karena `this.extension`
+ *   belum menempel pada ViewGroup apapun.
+ */
+fun View.makeStackable(): ViewGroup? {
+    return if(isStackable) parent as ViewGroup
+    else {
+        parent.asNotNullTo { vg: ViewGroup ->
+            val vgWrapper= RelativeLayout(context)
+            vgWrapper.layoutParams= layoutParams
+            layoutParams= RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+            vg.addView(vgWrapper, indexInParent)
+            vgWrapper.forcedAddView(this)
+            vgWrapper
+        }
+    }
+}

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.universal.`fun`.isNegative
+import sidev.lib.universal.`fun`.isNotNegative
 import sidev.lib.universal.`fun`.notNull
 import sidev.lib.universal.`fun`.string
 
@@ -17,6 +18,7 @@ import sidev.lib.universal.`fun`.string
 interface ViewBufferWrapper<V: View>: ViewWrapper<V>{
     val bufferView: View?
     val bufferAnimation: Animation?
+    val isBufferShown: Boolean
 
     /*
         fun showAnimation(show: Boolean= true){
@@ -36,17 +38,21 @@ interface ViewBufferWrapper<V: View>: ViewWrapper<V>{
     fun showBuffer(show: Boolean= true, keepView: Boolean= false){
         if(show && bufferView != null){
             view?.addOnGlobalLayoutListener { v ->
+                if(!isBufferShown) return@addOnGlobalLayoutListener
+                    //Karena addOnGlobalLayoutListener terjadi nti setelah semua kode di sini dijalankan.
+
                 bufferView!!.layoutParams= v.layoutParams
                 if(v.layoutParams.width.isNegative())
                     bufferView!!.layoutParams.width= v.width
                 if(v.layoutParams.height.isNegative())
                     bufferView!!.layoutParams.height= v.height
 
-                v.indexInParent.notNull {
-                    if(!it.isNegative()) {
-                        if(!keepView) detachViewFromParent()?.addView(bufferView, it)
-                        else (v.parent as ViewGroup).addView(bufferView, it +1)
-                    }
+                v.makeStackable()
+                val viewIndex= v.indexInParent
+                loge("bufferView.parent= ${bufferView!!.parent} viewIndex= $viewIndex")
+                if(viewIndex.isNotNegative()){
+                    if(!keepView) detachViewFromParent()?.addView(bufferView, viewIndex)
+                    else (v.parent as ViewGroup).addView(bufferView, viewIndex +1)
                 }
             }
 /*

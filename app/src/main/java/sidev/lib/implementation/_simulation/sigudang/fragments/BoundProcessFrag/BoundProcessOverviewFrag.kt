@@ -18,6 +18,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.idName
+import sidev.lib.android.viewrap.AnimatedGradientViewWrapper
+import sidev.lib.android.viewrap.wrapChildWithBuffer
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.dummy.warehouseList_full
 import sidev.lib.universal.`fun`.notNull
@@ -120,9 +122,13 @@ class BoundProcessOverviewFrag : Frag(){
                 .notNull { columnViewList[it].visibility= vis }
         }
 
+    lateinit var viewBufferWrapper: List<AnimatedGradientViewWrapper>
+        private set
 
     override fun _initView(layoutView: View) {
         loge("BoundProcessOverviewFrag _initView()")
+        viewBufferWrapper= layoutView.wrapChildWithBuffer().also{ it.forEach { it.showBuffer(keepView = true) } }
+
         initColumnViewList()
         initTopViewEditableList(layoutView)
 
@@ -201,6 +207,7 @@ class BoundProcessOverviewFrag : Frag(){
             }
             layoutView.comp_cb_send_kind_same.cb.isChecked= isSendMethodSame
             layoutView.comp_cb_send_address_same.cb.isChecked= isSendAddressSame
+            viewBufferWrapper.forEach { it.showBuffer(false) }
         } catch (e: UninitializedPropertyAccessException){ /*ignore*/ }
     }
 }

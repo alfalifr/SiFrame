@@ -25,6 +25,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.android.siframe.tool.util.idName
+import sidev.lib.android.viewrap.AnimatedGradientViewWrapper
+import sidev.lib.android.viewrap.wrapChildWithBuffer
 import sidev.lib.universal.`fun`.*
 import sidev.lib.universal.tool.util.ThreadUtil
 import kotlin.Exception
@@ -119,6 +121,8 @@ abstract class BoundSingleProcessAbsFrag
     override var middleContainer: ViewGroup?= null
     override var topContainer: ViewGroup?= null
 
+//    lateinit var viewBufferWrapper: List<AnimatedGradientViewWrapper>//?= null
+
 
 //============Layout component data===========
     open val isOverviewVisible: Boolean
@@ -177,6 +181,8 @@ abstract class BoundSingleProcessAbsFrag
 
     @CallSuper
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
+//        viewBufferWrapper.forEach { it.showBuffer(false) }
+        super<RvFrag>.onActive(parentView, callingLifecycle, pos)
         ThreadUtil.printCurrentStackTrace()
         for((i, stack) in Thread.currentThread().stackTrace.withIndex())
             loge("i= $i stack= $stack")
@@ -205,6 +211,7 @@ abstract class BoundSingleProcessAbsFrag
 */
         __initTopMiddleBottomView(layoutView)
         loge("${this::class} __initView()")
+//        viewBufferWrapper= layoutView.wrapChildWithBuffer().also { it.forEach { it.showBuffer(keepView = true) } }
 
         rv.addOnGlobalLayoutListener {
             loge("rv.yEndInWindow= ${rv.yEndInWindow} typedTopFragment.layoutView.size.string= ${try{ typedTopFragment.layoutView.size.string} catch (e: Exception){ null }}")
