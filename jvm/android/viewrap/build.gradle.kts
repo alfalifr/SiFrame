@@ -27,9 +27,11 @@ plugins{
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-android-extensions")
+    id("com.github.dcendents.android-maven")
 }
 
 group="sidev.lib.jvm.viewrap"
+
 
 android {
     compileSdkVersion(29)
