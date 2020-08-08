@@ -25,7 +25,7 @@ interface FragBase: ActFragBase, ParentLifecycleProp{
      * @param callingLifecycle merupakan turunan [LifecycleViewBase] tempat [ActFragBase] ini menempel.
      *   Null jika yg memanggil fungsi [onActive] ini bkn merupakan [LifecycleViewBase].
      */
-    @CallSuper
+//    @CallSuper
     fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int){}
 
     /**

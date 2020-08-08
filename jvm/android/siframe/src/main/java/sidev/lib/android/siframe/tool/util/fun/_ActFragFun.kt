@@ -31,6 +31,7 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.asResNameBy
 import sidev.lib.android.siframe.tool.util.isIdDuplicatedInView
 import sidev.lib.universal.`fun`.notNull
+import sidev.lib.universal.annotation.Unsafe
 import java.lang.Exception
 
 
@@ -311,7 +312,7 @@ fun resetSingleFragActToDefault(){
 }
 
 
-
+@Unsafe("Act yg dihasilkan tidak dapat di-reinstantiate pada Android.")
 fun createSimpleAct(layoutId: Int, initViewFunc: ((View) -> Unit)?= null): Act = object : Act(){
     override val layoutId: Int get() = layoutId
     override fun _initView(layoutView: View) {
@@ -319,6 +320,7 @@ fun createSimpleAct(layoutId: Int, initViewFunc: ((View) -> Unit)?= null): Act =
     }
 }
 
+@Unsafe("Frag yg dihasilkan tidak dapat di-reinstantiate pada Android.")
 fun createSimpleFrag(layoutId: Int, initViewFunc: ((View) -> Unit)?= null): Frag = object : Frag(){
     override val layoutId: Int get() = layoutId
     override fun _initView(layoutView: View) {
