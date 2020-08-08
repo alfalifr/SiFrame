@@ -21,8 +21,10 @@ import androidx.lifecycle.LifecycleOwner
 import org.jetbrains.anko.contentView
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
+import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.tool.util._BitmapUtil
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
+import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.FragmentInstantiator
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
@@ -306,4 +308,20 @@ fun <T: Activity> setSingleFragAct(cls: Class<T>, asDefault: Boolean= false){
 
 fun resetSingleFragActToDefault(){
     _SIF_Config.CLASS_SINGLE_FRAG_ACT= _SIF_Config.CLASS_SINGLE_FRAG_ACT_DEFAULT
+}
+
+
+
+fun createSimpleAct(layoutId: Int, initViewFunc: ((View) -> Unit)?= null): Act = object : Act(){
+    override val layoutId: Int get() = layoutId
+    override fun _initView(layoutView: View) {
+        initViewFunc?.invoke(layoutView)
+    }
+}
+
+fun createSimpleFrag(layoutId: Int, initViewFunc: ((View) -> Unit)?= null): Frag = object : Frag(){
+    override val layoutId: Int get() = layoutId
+    override fun _initView(layoutView: View) {
+        initViewFunc?.invoke(layoutView)
+    }
 }
