@@ -33,7 +33,8 @@ group="sidev.lib.jvm.viewrap"
 
 android {
     compileSdkVersion(29)
-    buildToolsVersion = "30.0.0"
+    buildToolsVersion = "29.0.3"
+//    buildToolsVersion = "30.0.0"
 
     defaultConfig {
         minSdkVersion(21)

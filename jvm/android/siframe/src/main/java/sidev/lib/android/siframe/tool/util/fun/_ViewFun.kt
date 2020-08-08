@@ -563,7 +563,7 @@ val ViewGroup.isChildStackable: Boolean
  *   -> `false` jika sebaliknya atau tidak berada di dalam [ViewGroup].
  */
 val View.isStackable: Boolean
-    get()= parent.asNotNullTo { vg: ViewGroup -> vg !is LinearLayout } ?: false
+    get()= parent.asNotNullTo { vg: ViewGroup -> vg.isChildStackable } ?: false
 
 /**
  * Menjadikan `this.extension` view stackable, yaitu dg membungkusnya ke dalam [RelativeLayout]
