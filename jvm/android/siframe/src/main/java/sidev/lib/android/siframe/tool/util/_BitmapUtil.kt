@@ -16,6 +16,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.jvm.tool.util.TimeUtil
 
 
 object _BitmapUtil{
@@ -136,7 +137,7 @@ object _BitmapUtil{
     }
 
     fun savePict(bm: Bitmap, pathFile: String,
-                 fileName: String= sidev.lib.universal.tool.util.TimeUtil.timestamp()
+                 fileName: String= TimeUtil.timestamp()
     ): File? {
         val fileNameExt= fileName +".jpg"
         val pathFile= File(pathFile)

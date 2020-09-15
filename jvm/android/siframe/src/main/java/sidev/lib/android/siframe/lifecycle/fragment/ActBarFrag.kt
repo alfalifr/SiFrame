@@ -4,7 +4,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
-import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.check.asNotNull
 
 abstract class ActBarFrag : Frag(), ActBarFragBase{
     final override var actBarView: View?= null

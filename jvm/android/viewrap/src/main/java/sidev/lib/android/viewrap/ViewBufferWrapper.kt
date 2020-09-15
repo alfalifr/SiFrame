@@ -4,10 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.isNegative
-import sidev.lib.universal.`fun`.isNotNegative
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.string
+import sidev.lib.check.notNull
+import sidev.lib.number.isNegative
+import sidev.lib.number.isNotNegative
 
 
 /**

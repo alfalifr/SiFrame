@@ -5,8 +5,8 @@ import sidev.lib.android.siframe.arch._obj.InternalFiewModel
 import sidev.lib.android.siframe.arch.type.Mvvm
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.tool.ViewContentExtractor
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
 
 /**
  * Hanya sbg penanda bahwa kelas turunan ini merupakan komponen View pada arsitektur MVVM.

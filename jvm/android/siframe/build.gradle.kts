@@ -1,8 +1,9 @@
-//import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.android.build.gradle.LibraryExtension //.LibraryExtension_Decorated
+import com.jfrog.bintray.gradle.BintrayExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-//import sidev.lib.gradle
-//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Date
+import java.io.FileInputStream
+import java.util.Properties
 
 
 fun Project.android(configure: LibraryExtension.() -> Unit) =
@@ -20,8 +21,26 @@ fun DependencyHandler.testImplementation(dependencyNotation: Any): Dependency? =
 fun DependencyHandler.androidTestImplementation(dependencyNotation: Any): Dependency? =
     add("androidTestImplementation", dependencyNotation)
 
+fun File.withInputStream(): FileInputStream = FileInputStream(this)
+
 val kotlin_version= findProperty("kotlin_version")
 val anko_version= findProperty("anko_version")
+
+val GROUP_ID= "sidev.lib.jvm.android"
+val ARTIFACT_ID= project.name //"SiFrame"
+val BINTRAY_REPOSITORY= "JvmLib"
+val BINTRAY_ORGINIZATION= ""
+val ISSUE_URL= ""
+val SITE_URL= ""
+val VCS_URL= "https://github.com/alfalifr/SiFrame/tree/master/jvm/android/siframe"
+val LIBRARY_VERSION_NAME= "0.0.1x"
+
+val prop= Properties().apply { load(file("../../../setting.properties").withInputStream()) }
+
+val bintrayUser= prop["bintrayUser"] as String //prop.loadPropertyFromResources("setting.properties", "bintrayUser")
+val bintrayApiKey= prop["bintrayApiKey"] as String //prop.loadPropertyFromResources("setting.properties", "bintrayApiKey")
+val aarDir= properties["aar_dir"]
+val aarArtifact= "$aarDir/$ARTIFACT_ID-release.aar"
 
 
 // /*
@@ -30,10 +49,17 @@ plugins{
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("com.github.dcendents.android-maven")
+//    id("base")
+    id("maven-publish")
 }
 
-group="sidev.lib.jvm.android"
-//version="1.0cob"
+group= GROUP_ID //"sidev.lib.jvm.android"
+version= LIBRARY_VERSION_NAME //"1.0cob"
+
+apply("plugin" to "maven-publish")
+apply("plugin" to "com.jfrog.bintray")
+//apply("from" to "setting.properties")
+
 
 android {
     compileSdkVersion(29)
@@ -83,9 +109,17 @@ dependencies {
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test.ext:junit:1.1.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
-    implementation(project("path" to ":jvm:universal"))
-    implementation(project("path" to ":jvm:android:external"))
-    implementation(project("path" to ":jvm:android:siframe:customizable"))
+
+//    implementation(project("path" to ":jvm:universal"))
+    //SidevLib
+    implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx")
+    implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x")
+    implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x")
+    implementation(project(":Android-External"))
+    implementation(project(":SiFrame-Customizable"))
+
+//    implementation(project("path" to ":jvm:android:external"))
+//    implementation(project("path" to ":jvm:android:siframe:customizable"))
 
     //anko
     implementation("org.jetbrains.anko:anko:$anko_version")
@@ -185,3 +219,90 @@ dependencies {
 }
 // */
 
+
+/*
+========================
+Template Task
+========================
+ */
+
+val javadocJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from("javadoc")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("androidLibrary"){
+            artifact(javadocJar)
+            artifact(aarArtifact)
+
+            pom {
+                name.set(ARTIFACT_ID)
+//                description = "WebDriver binary manager for java"
+                url.set(ISSUE_URL)
+//                licenses = ['Apache-2.0']
+
+                licenses {
+                    license {
+                        name.set("Apache-2.0") //"MIT"
+//                        url = "https://github.com/rosolko/wdm4j/blob/master/LICENSE"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("alfalifr")
+                        name.set("Aliffiro") //"Aliaksandr Rasolka"
+                        email.set("fathf48@gmail.com")
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+tasks.register ("testOh") {
+    doFirst {
+        println("test inside testOh ....  ${properties["bintray"]!!::class}")
+        println("test inside testOh ....  ${sourceSets}")
+        println("test inside testOh ....  ${components.getByName("java")}")
+    }
+}
+
+(properties["bintray"] as BintrayExtension/*_Decorated*/).apply {
+            //A user name of bintray to A, and API key of Bintray to B.I do not want to include API Key in git,
+            // so I am gradle.properties writing locally.
+            // Gradle's property file is read in the order of gradle in the home directory> gradle in the project directory,
+            // so if it is written in property in the home directory, it will be useful for other projects as well.
+    user = bintrayUser //getBintrayUserProperty()
+    key = bintrayApiKey //getBintrayApiKeyProperty()
+            //f you set publish to true, the new version will be published the moment you upload to bintray. If false, it will not be published unless you press the publish button on the bintray web.
+            // It is recommended that you make it false because it can prevent an accident that you accidentally release the latest version.
+    publish = false
+//    publications
+    setPublications("androidLibrary")
+
+    pkg.apply {
+        repo = BINTRAY_REPOSITORY
+        name = ARTIFACT_ID
+        userOrg = BINTRAY_ORGINIZATION
+        setLicenses("Apache-2.0")
+        vcsUrl = VCS_URL
+        websiteUrl = SITE_URL
+        issueTrackerUrl = ISSUE_URL
+
+        version.apply {
+            name = LIBRARY_VERSION_NAME
+            vcsTag = LIBRARY_VERSION_NAME
+            released = Date().toString()
+        }
+    }
+}
+
+tasks["bintrayUpload"].dependsOn("bundleReleaseAar")
+tasks["bintrayUpload"].dependsOn("publishToMavenLocal")
+
+// */

@@ -4,12 +4,12 @@ import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
+import sidev.lib.android.siframe.tool.util._ThreadUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.collection.copyGrowTimely
+import sidev.lib.collection.toArrayList
 import sidev.lib.implementation._cob.contentList
 import sidev.lib.implementation.intent_state.*
-import sidev.lib.universal.`fun`.copyGrowTimely
-import sidev.lib.universal.`fun`.toArrayList
-import sidev.lib.universal.tool.util.ThreadUtil
 
 class MviContentPresenter(c: StateProcessor<CFIntent, CFRes, CFState<*>>?)
     : MviPresenter<CFIntent, CFRes, CFState<*>>(c){
@@ -64,13 +64,13 @@ class MviContentPresenter(c: StateProcessor<CFIntent, CFRes, CFState<*>>?)
  */
     @ViewIntentFunction(ContentFragConf.Intent.Login::class)
     fun login(uname: String){
-        ThreadUtil.delayRun(3000){
+        _ThreadUtil.delayRun(3000){
             if(uname == "uname")
                 postSucc(ContentFragConf.Result.Login(true), null)
             else
                 postSucc(ContentFragConf.Result.Login(false, "Uname != uname :( uname= $uname")) //"Uname != uname :( uname= $uname"
         }
-        ThreadUtil.delayRun(5000){
+        _ThreadUtil.delayRun(5000){
             postFail(msg= "Error login bro dari presenter")
         }
     }
@@ -78,7 +78,7 @@ class MviContentPresenter(c: StateProcessor<CFIntent, CFRes, CFState<*>>?)
     @ViewIntentFunction(ContentFragConf.Intent.DownloadData::class)
     fun getContent(){
         loge("getContent()")
-        ThreadUtil.delayRun(3000){
+        _ThreadUtil.delayRun(3000){
             loge("getContent() ThreadUtil.delayRun(3000)")
             postSucc(ContentFragConf.Result.DownloadData(contentList.toArrayList().copyGrowTimely(10) as ArrayList))
         }

@@ -1,15 +1,6 @@
 package sidev.lib.android.siframe.intfc.adp
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.notNull
 
 interface MultiViewAdp<D, V: RecyclerView.ViewHolder>: Adp {
     /**

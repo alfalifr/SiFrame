@@ -8,13 +8,16 @@ import sidev.lib.android.siframe.arch.presenter.InteractivePresenterDependentCom
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.arch.view.ArchView
-import sidev.lib.universal.exception.RuntimeExc
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableLinkBase
 import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.tool.util.`fun`.toast
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
+import sidev.lib.exception.RuntimeExc
 
 /**
  * <27 Juni 2020> => Ditujukan untuk penyimpanan data dari view.

@@ -11,8 +11,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sigudang.android.utilities.constant.Constants
-import sidev.lib.universal.tool.util.ReflexUtil
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.jvm.tool.util.ThreadUtil
 import java.io.File
 
 object Util{

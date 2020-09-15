@@ -2,8 +2,8 @@ package sidev.lib.android.siframe.tool.util.`fun`
 
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.StaticManager
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
 
 /**
  * @return true jika blok func dijalankan.

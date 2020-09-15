@@ -39,11 +39,10 @@ import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.isZero
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.notNullTo
-import sidev.lib.universal.`fun`.string
-import sidev.lib.universal.tool.util.FileUtil
+import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
+import sidev.lib.jvm.tool.util.FileUtil
+import sidev.lib.number.isZero
 import kotlin.math.abs
 
 //class ini digunakan tempat utility khusus view

@@ -12,3 +12,11 @@
 /captures
 .externalNativeBuild
 .cxx
+
+
+setting.properties
+
+/jvm/android/siframe/build
+/jvm/android/external/build
+/jvm/android/viewrap/build
+/jvm/universal/build

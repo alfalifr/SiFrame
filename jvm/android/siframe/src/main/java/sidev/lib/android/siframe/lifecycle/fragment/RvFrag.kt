@@ -16,10 +16,9 @@ import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.intfc.listener.RvScrollListener
 import sidev.lib.android.siframe.intfc.prop.RvAdpProp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
 
 //import sidev.lib.android.siframe.tool.util.`fun`.loge
 

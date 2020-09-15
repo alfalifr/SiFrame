@@ -10,6 +10,7 @@ import com.sigudang.android.models.Category
 import com.sigudang.android.models.Unit_
 import com.sigudang.android.utilities.constant.Constants
 import kotlinx.android.synthetic.main._simul_sigud_content_bs_add_product.view.*
+import sidev.lib.check.notNull
 //import kotlinx.android.synthetic.main.content_bs_add_product.view.*
 //import kotlinx.android.synthetic.main.content_bs_add_product.view.comp_btn_add_photo
 //import kotlinx.android.synthetic.main.content_bs_add_product.view.iv_pict_pick
@@ -19,7 +20,6 @@ import sidev.lib.implementation._simulation.sigudang.dummy.categoryProductList
 import sidev.lib.implementation._simulation.sigudang.dummy.unitProductList
 import sidev.lib.implementation._simulation.sigudang.util.T_BitmapUtil
 import sidev.lib.implementation._simulation.sigudang.util.customview.ImageViewResp
-import sidev.lib.universal.`fun`.notNull
 
 class BsAddProductFr : BottomSheetAbsFr<Product>(), ImageViewResp.OnDrawableChangeListener {
     override val bottomSheetType: BottomSheetType

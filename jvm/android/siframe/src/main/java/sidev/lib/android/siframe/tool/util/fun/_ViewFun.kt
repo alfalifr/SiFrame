@@ -17,16 +17,19 @@ import org.jetbrains.anko.layoutInflater
 import sidev.lib.android.external._AnkoInternals.runOnUiThread
 //import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.universal.exception.ClassCastExc
-import sidev.lib.universal.exception.ParameterExc
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.*
-import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.`val`.RoundMethod
-import sidev.lib.universal.structure.collection.iterator.NestedIterator
-import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimple
-import sidev.lib.universal.structure.collection.iterator.NestedIteratorSimpleImpl
-import sidev.lib.universal.structure.collection.sequence.NestedSequence
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNullTo
+import sidev.lib.collection.iterator.iteratorSimple
+import sidev.lib.collection.sequence.NestedSequence
+import sidev.lib.collection.sequence.nestedSequenceSimple
+import sidev.lib.exception.ClassCastExc
+import sidev.lib.exception.ParameterExc
+import sidev.lib.number.notNegativeOr
+import sidev.lib.number.plus
+import sidev.lib.number.round
+import sidev.lib.number.toNumber
 import java.lang.ClassCastException
 
 
@@ -67,6 +70,11 @@ fun View.iterateChildren(func: (child: View) -> Unit){
  * Menggunakan metode Depth-First Pre-Order.
  */
 val View.childrenTree: NestedSequence<View>
+    get()= nestedSequenceSimple(this){
+        if(it is ViewGroup && it.childCount > 0) it.children.iterator()
+        else null
+    }
+/*
     get()= object :
         NestedSequence<View> {
         override fun iterator(): NestedIteratorSimple<View>
@@ -77,6 +85,7 @@ val View.childrenTree: NestedSequence<View>
             }
         }
     }
+ */
 /*
 val View.childrenTree: MutableIterator<View>
     get()= object: MutableIterator<View>{
@@ -109,6 +118,10 @@ val View.childrenTree: MutableIterator<View>
  * Properti untuk meng-iterasi parent yg merupakan satu garis hirarki.
  */
 val View.parentsTree: NestedSequence<View>
+    get()= nestedSequenceSimple(this){
+        it.parent.asNotNullTo { v: View -> iteratorSimple(v) }
+    }
+/*
     get()= object : NestedSequence<View>{
         override fun iterator(): NestedIterator<*, View>
             = object : NestedIteratorSimpleImpl<View>(this@parentsTree){
@@ -116,6 +129,7 @@ val View.parentsTree: NestedSequence<View>
                 = nowInput.parent.asNotNullTo { v: View -> newIteratorSimple(v) }
         }
     }
+ */
 /*
     get()= object: Sequence<View>{
         override fun iterator(): Iterator<View>

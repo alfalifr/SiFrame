@@ -1,15 +1,11 @@
 package sidev.lib.android.siframe.intfc.listener
 
-import android.content.Context
-import android.util.Log
-import android.view.View
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNullTo
 
 open class RvScrollListener : RecyclerView.OnScrollListener(), Listener{
     override var tag: Any?= null

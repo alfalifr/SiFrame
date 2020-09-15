@@ -10,12 +10,12 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomF
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
+import sidev.lib.android.siframe.tool.util._ThreadUtil
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.collection.string
+import sidev.lib.collection.toArrayList
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.StrAdp
-import sidev.lib.universal.`fun`.string
-import sidev.lib.universal.`fun`.toArrayList
-import sidev.lib.universal.tool.util.ThreadUtil
 
 class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
     override var topContainer: ViewGroup?= null
@@ -114,7 +114,7 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
         }
 
         showLoading()
-        ThreadUtil.delayRun(3000){
+        _ThreadUtil.delayRun(3000){
             scrollToPosition(6)
             showLoading(false)
         }

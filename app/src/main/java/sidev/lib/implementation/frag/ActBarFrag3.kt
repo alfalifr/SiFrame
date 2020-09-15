@@ -10,9 +10,9 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.check.asNotNull
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.notNull
 
 class ActBarFrag3 : ActBarFrag(){
     override val layoutId: Int

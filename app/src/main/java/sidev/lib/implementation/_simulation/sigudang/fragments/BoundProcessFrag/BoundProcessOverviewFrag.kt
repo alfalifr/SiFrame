@@ -20,12 +20,11 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.idName
 import sidev.lib.android.viewrap.AnimatedGradientViewWrapper
 import sidev.lib.android.viewrap.wrapChildWithBuffer
+import sidev.lib.check.notNull
+import sidev.lib.collection.toArrayList
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.dummy.warehouseList_full
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.toArrayList
 import java.lang.Exception
-import sidev.lib.universal.`fun`.plus
 
 class BoundProcessOverviewFrag : Frag(){
     override val layoutId: Int

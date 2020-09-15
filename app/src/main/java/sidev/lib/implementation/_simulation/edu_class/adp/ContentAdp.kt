@@ -23,11 +23,11 @@ import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getTvNote
 import sidev.lib.android.siframe.tool.util._ViewUtil.setColorRes
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.check.*
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edu_class.model.Content
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_ViewUtil.Comp.enableEd
-import sidev.lib.universal.`fun`.*
 import java.lang.Exception
 
 class ContentAdp(c: Context, data: ArrayList<Content>?)
@@ -52,7 +52,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
         }
 
     init{
-        val cName= c.classSimpleName()
+        val cName= c.javaClass.simpleName //.classSimpleName()
         loge("init{} cName= $cName")
     }
 

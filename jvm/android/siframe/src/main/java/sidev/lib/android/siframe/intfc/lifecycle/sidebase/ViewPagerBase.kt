@@ -20,9 +20,9 @@ import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.toArrayList
-import sidev.lib.universal.`fun`.trya
+import sidev.lib.check.asNotNull
+import sidev.lib.check.trya
+import sidev.lib.collection.toArrayList
 import java.lang.Exception
 
 interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {

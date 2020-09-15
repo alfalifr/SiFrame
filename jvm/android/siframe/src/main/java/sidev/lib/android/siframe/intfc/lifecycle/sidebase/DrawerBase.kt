@@ -17,9 +17,9 @@ import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.prop.BackBtnBaseProp
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.notNullTo
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
 import java.lang.IllegalArgumentException
 
 interface DrawerBase: ComplexLifecycleSideBase,

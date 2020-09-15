@@ -4,9 +4,9 @@ import com.sigudang.android.Model.Product
 import com.sigudang.android.Model.Warehouse
 import com.sigudang.android.models.*
 import com.sigudang.android.utilities.constant.Constants
+import sidev.lib.collection.toArrayList
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.models.PictModel
-import sidev.lib.universal.`fun`.toArrayList
 
 //try{}catch(e: Exception){}
 

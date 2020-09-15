@@ -11,7 +11,7 @@ import com.sigudang.android.models.BoundProductSendModel
 import kotlinx.android.synthetic.main._simul_sigud_component_bar_fill.view.*
 import kotlinx.android.synthetic.main._simul_sigud_content_item_product_bound_send_overview.view.*
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.isZero
+import sidev.lib.number.isZero
 
 /**
  * <9 Juli 2020> => Copy-an dari [BoundProductSendAdp_WarehouseOld].

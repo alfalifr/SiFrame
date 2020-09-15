@@ -5,7 +5,6 @@ import com.sigudang.android.adapters.BoundProductListAdp.BoundProductListAdp
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.implementation._simulation.sigudang.dummy.sendKindModel_list_full
-import sidev.lib.universal.tool.util.ThreadUtil
 
 class BoundSingleProcessAbsFrag_impl : BoundSingleProcessAbsFrag(){
     override val isOverviewVisible: Boolean get() = true

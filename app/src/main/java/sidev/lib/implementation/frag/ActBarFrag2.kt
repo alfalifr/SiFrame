@@ -8,8 +8,8 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.asNotNull
 
 class ActBarFrag2 : ActBarFrag(){
     override val layoutId: Int

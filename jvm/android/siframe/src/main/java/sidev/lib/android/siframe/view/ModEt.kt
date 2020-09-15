@@ -3,10 +3,8 @@ package sidev.lib.android.siframe.view
 import android.content.Context
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.widget.EditText
 import sidev.lib.android.siframe.intfc.customview.CustomView
-import sidev.lib.universal.`fun`.isNotNullAndEmpty
-import sidev.lib.universal.`fun`.notNullTo
+import sidev.lib.check.notNullTo
 
 open class ModEt: androidx.appcompat.widget.AppCompatEditText, CustomView{
     private var mListener: ArrayList<TextWatcher>?= null

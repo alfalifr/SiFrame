@@ -2,13 +2,12 @@ package sidev.lib.android.siframe.tool.manager
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
-import sidev.lib.universal.exception.IllegalAccessExc
 import sidev.lib.android.siframe.tool.ActLifecycleObs
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.className
-import sidev.lib.universal.`fun`.copy
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.collection.copy
+import sidev.lib.exception.IllegalAccessExc
+import sidev.lib.jvm.tool.util.ThreadUtil
 import java.lang.ClassCastException
 import java.util.*
 
@@ -54,8 +53,8 @@ object ActManager {
     }
 
     private fun popStack(act: Activity){
-        val topActName= actStack.peek().className()
-        val actName= act.className()
+        val topActName= actStack.peek().javaClass.name //.className()
+        val actName= act.javaClass.name //.className()
 
         if(topActName == actName)
             actStack.pop()

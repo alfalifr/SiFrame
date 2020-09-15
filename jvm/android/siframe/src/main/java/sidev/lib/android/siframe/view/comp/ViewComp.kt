@@ -11,14 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.universal.structure.data.BoxedVal
-import sidev.lib.universal.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
+import sidev.lib.collection.iterator.SkippableIteratorImpl
+import sidev.lib.collection.iterator.iteratorSimple
+import sidev.lib.collection.iterator.toOtherIterator
+import sidev.lib.exception.ResourceNotFoundExc
+import sidev.lib.number.notNegativeOr
+import sidev.lib.structure.data.value.Val
 //import sidev.lib.universal.`fun`.iterator
-import sidev.lib.universal.structure.collection.iterator.SkippableIteratorImpl
 
 /**
  * Komponen yg digunakan sbg wadah paket view yg memiliki operasi uniknya masing-masing.
@@ -42,7 +46,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 //    final override var isInit: Boolean= false
 
     abstract val viewLayoutId: Int
-    private val mData= SparseArray<BoxedVal<D>>()
+    private val mData= SparseArray<Val<D>>()
     private var mAdditionalData: SparseArray<Any>?= null //by lazy{ SparseArray<Any>() }
     /** Yg disimpan adalah view dg id [compId], atau view yg didapatkan dari [onBind] scr penuh jika [compId] tidak ditemukan. */
     private var mView: SparseArray<View>?= null
@@ -113,7 +117,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 
     /** Iterator view yg disimpan di dalam [ViewComp] ini. */
     val viewIterator: Iterator<View>
-        get()= mView?.iterator()?.toOtherIterator { it.second } ?: newIteratorSimple()
+        get()= mView?.iterator()?.toOtherIterator { it.second } ?: iteratorSimple()
 /*
             get()= object: Iterator<View>{
         private var innerIterator= mView?.iterator()
@@ -130,7 +134,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
     /** @param [skipNulls] true jika iterator yg dihasilkan tidak menampilkan data null pada [mData]. */
     fun additionalDataIterator(skipNulls: Boolean= true): Iterator<Any?>
         = object: SkippableIteratorImpl<Any?>(
-        mAdditionalData?.iterator()?.toOtherIterator { it.second } ?: newIteratorSimple()
+        mAdditionalData?.iterator()?.toOtherIterator { it.second } ?: iteratorSimple()
     ){
         override fun skip(now: Any?): Boolean = now == null && skipNulls
     }
@@ -215,7 +219,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         var valueBox= mData[dataPos]
 
         if(valueBox == null){
-            valueBox= BoxedVal()
+            valueBox= Val()
             valueBox.value= initData(dataPos, inputData)
             mData[dataPos]= valueBox
         }
@@ -283,7 +287,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * Param [dataPos] adalah posisi data yg sebenarnya yg terdapat pada [rvAdp].
      * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
      */
-    open fun onDataRecycled(dataPos: Int, valueBox: BoxedVal<D>, additionalData: Any?){}
+    open fun onDataRecycled(dataPos: Int, valueBox: Val<D>, additionalData: Any?){}
 
     /**
      * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
@@ -294,7 +298,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * @param v adalah view hasil inflate dari [viewLayoutId].
      * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
      */
-    abstract fun bindComponent(adpPos: Int, v: View, valueBox: BoxedVal<D>, additionalData: Any?, inputData: I?)
+    abstract fun bindComponent(adpPos: Int, v: View, valueBox: Val<D>, additionalData: Any?, inputData: I?)
 
     /**
      * Fungsi yg digunakan untuk me-enabled atau tidak komponen view yg dikelola oleh kelas [ViewComp] ini.

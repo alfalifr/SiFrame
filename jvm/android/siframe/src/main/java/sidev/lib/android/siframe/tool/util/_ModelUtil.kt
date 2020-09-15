@@ -9,8 +9,12 @@ import sidev.lib.android.siframe.model.FK_M
 import sidev.lib.android.siframe.model.FK_Row
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util._BitmapUtil
-import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.structure.collection.common.toCommonIndexedList
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+import sidev.lib.collection.common.toCommonIndexedList
+import sidev.lib.reflex.jvm.forceGet
+import sidev.lib.reflex.jvm.forceSet
+import sidev.lib.reflex.jvm.getFieldOf
 import java.io.File
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -23,7 +27,7 @@ object _ModelUtil {
             val idField= try{ model::class.java.getDeclaredField("id") }
             catch (e: NoSuchFieldException){ model::class.java.getDeclaredField("_id") }
 
-            idField.getV(model)
+            idField.forceGet(model)
         }
     }
 
@@ -115,7 +119,7 @@ object _ModelUtil {
 
             val res= ArrayList<FROM>()
             for(d in list){
-                val fk= fkField.getV<FK_M<TO>>(d)!!
+                val fk= fkField.forceGet<FK_M<TO>>(d)!!
                 for(toId in fk.toId)
                     if(toId == independentId){
                         res.add(d)
@@ -133,7 +137,7 @@ object _ModelUtil {
 
             val res= ArrayList<FROM>()
             for(d in list){
-                val fk= fkField.getV<FK_M<TO>>(d)!!
+                val fk= fkField.forceGet<FK_M<TO>>(d)!!
                 for(toId in fk.toId){
 //                    Log.e("MODEUL_UTIL", "toId= $toId")
 
@@ -172,7 +176,7 @@ object _ModelUtil {
             val res= ArrayList<FROM>()
 //            Log.e("MODEL_UTIL", "FROM= ${FROM::class.java.simpleName}")
             for(d in list){
-                val fk= fkField.getV<FK_M<TO>>(d)!!
+                val fk= fkField.forceGet<FK_M<TO>>(d)!!
                 for(toId in fk.toId){
 //                    Log.e("MODEUL_UTIL", "toId= $toId")
 
@@ -230,7 +234,7 @@ object _ModelUtil {
 
             val fkDb= FK_DB<FROM, TO>()
             for(fromData in fromDatalist){
-                (fkField?.getV<FK_M<TO>>(fromData))
+                (fkField?.forceGet<FK_M<TO>>(fromData))
                     .notNull { fk ->
                         var toObjList= ArrayList<TO>()
                         for(id in fk.toId){
@@ -261,7 +265,7 @@ object _ModelUtil {
             var fkField= getFkField<TO>(fromDatalist[0])
 
             for(fromData in fromDatalist){
-                (fkField?.getV<FK_M<TO>>(fromData))
+                (fkField?.forceGet<FK_M<TO>>(fromData))
                     .notNull { fk ->
                         var toObjList= ArrayList<TO>()
                         for(id in fk.toId){
@@ -287,7 +291,7 @@ object _ModelUtil {
 //            Log.e("MODEL_UTIL", "fkField.name= ${fkField?.name}")
 
             for(fromData in fromDatalist){
-                (fkField?.getV<FK_M<TO>>(fromData))
+                (fkField?.forceGet<FK_M<TO>>(fromData))
                     .notNull { fk ->
                         var toObjList= ArrayList<TO>()
                         for(id in fk.toId){
@@ -316,7 +320,7 @@ object _ModelUtil {
             val toId= getId(toData)
 
             for(fromData in fromDatalist){
-                (fkField?.getV<FK_M<TO>>(fromData))
+                (fkField?.forceGet<FK_M<TO>>(fromData))
                     .notNull { fk ->
                         var toObjList= ArrayList<TO>()
                         for(id in fk.toId){
@@ -337,9 +341,11 @@ object _ModelUtil {
      * agar tidak terjadi error parsing Parcelable.
      */
     fun preparePictForIntentPass(datalist: Array<*>){
-        val pictField= datalist.first()!!.getField<PictModel>()!!
+        val cls= PictModel::class.java
+        val pictField= datalist.first()!!.javaClass.fields.find { cls.isAssignableFrom(it.type) } //.getField<PictModel>()!!
+            .also { if(it == null) return }
         for(data in datalist){
-            val pict= pictField.getV<PictModel>(data!!)
+            val pict= pictField!!.forceGet<PictModel>(data!!)
             pict?.bm= null
         }
     }
@@ -349,9 +355,9 @@ object _ModelUtil {
      * udah diisi direktori gambarnya diproses dg fungsi ini agar bm nya gak null.
      */
     fun fillPict(c: Context, datalist: Array<*>){
-        val pictField= datalist.first()!!.getField<PictModel>()!!
+        val pictField= datalist.first()!!.javaClass.getFieldOf<PictModel>()!!
         for(data in datalist){
-            val pict= pictField.getV<PictModel>(data!!)!!
+            val pict= pictField.forceGet<PictModel>(data!!)!!
 //            Log.e("MODEL_UTIL", "AWAL====== pict.bm != null = ${pict.bm != null} pict.dir= ${pict.dir}")
             if(pict.dir == null){
                 if(pict.file != null) pict.dir= pict.file!!.toUri().toString()
@@ -376,7 +382,7 @@ object _ModelUtil {
                 val e= it[i]
                 val fkField= getFkField<Any>(e)
                 var fkIsEmpty= false
-                fkField?.getV<FK_M<*>>(e)
+                fkField?.forceGet<FK_M<*>>(e)
                     .notNull { fk ->
                         fkIsEmpty = fk.toId.isEmpty()
                                 && (fk.toObj == null ||
@@ -384,13 +390,13 @@ object _ModelUtil {
                                 )
                     }
                 if(fkIsEmpty)
-                    fkField?.setV(e, null)
+                    fkField?.forceSet(e, null)
             }
         }.isNull {
             val e= model
             val fkField= getFkField<Any>(e)
             var fkIsEmpty= false
-            fkField?.getV<FK_M<*>>(e)
+            fkField?.forceGet<FK_M<*>>(e)
                 .notNull { fk ->
                     fkIsEmpty = fk.toId.isEmpty()
                             && (fk.toObj == null ||
@@ -398,7 +404,7 @@ object _ModelUtil {
                             )
                 }
             if(fkIsEmpty)
-                fkField?.setV(e, null)
+                fkField?.forceSet(e, null)
         }
     }
 
@@ -413,7 +419,7 @@ Convert Zone
 
         for(field in fields){
             val name= field.name
-            val valueTemp= field.getV<Any>(model)
+            val valueTemp= field.forceGet<Any>(model)
 
             val value=
                 when(valueTemp){

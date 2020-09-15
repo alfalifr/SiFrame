@@ -3,11 +3,7 @@ package sidev.lib.android.siframe.arch.presenter
 import androidx.annotation.CallSuper
 import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.type.Mvp
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.clazz
-import sidev.lib.universal.exception.TypeExc
 import java.lang.Exception
-import kotlin.reflect.full.memberFunctions
 
 /*
 <27 Juni 2020> => Perubahan nama dari Presenter menjadi Repository. Perubahan nama menjadi Repository

@@ -10,9 +10,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.android.viewrap.wrapWithBuffer
+import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.tool.util.ThreadUtil
 
 class CobFrag : Frag(){
     override val layoutId: Int
@@ -50,7 +49,7 @@ class CobFrag : Frag(){
 
         val wrapper= layoutView.rl_top_container.wrapWithBuffer()
         wrapper.showBuffer()
-        ThreadUtil.delayRun(7000){
+        _ThreadUtil.delayRun(7000){
 //            wrapper.showAnimation(false)
         }
 

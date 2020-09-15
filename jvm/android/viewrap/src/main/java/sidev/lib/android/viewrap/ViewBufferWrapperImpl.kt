@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.animation.Animation
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.isElementZero
+import sidev.lib.collection.isElementZero
 
 
 abstract class ViewBufferWrapperImpl<V: View>(final override val context: Context): ViewBufferWrapper<V>{

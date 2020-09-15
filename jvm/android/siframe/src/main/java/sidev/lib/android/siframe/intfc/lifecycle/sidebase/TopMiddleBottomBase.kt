@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
 
 interface TopMiddleBottomBase: LifecycleSideBase {
     var topContainer: ViewGroup?

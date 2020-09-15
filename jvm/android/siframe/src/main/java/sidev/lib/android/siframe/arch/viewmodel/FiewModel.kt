@@ -3,8 +3,8 @@ package sidev.lib.android.siframe.arch.viewmodel
 import androidx.annotation.CallSuper
 import androidx.lifecycle.*
 import sidev.lib.android.siframe.arch.type.Mvvm
-import sidev.lib.universal.exception.TypeExc
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.notNullTo
+import sidev.lib.exception.TypeExc
 
 /**
  * <27 Juni 2020> => Ditujukan untuk penyimpanan data dari view.

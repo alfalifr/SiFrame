@@ -8,9 +8,9 @@ import androidx.lifecycle.Observer
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.listener.OnFailLifecycleBoundListener
-import sidev.lib.universal.structure.prop.TagProp
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.runWithParamTypeSafety
+import sidev.lib.android.siframe.tool.util.`fun`.runWithParamTypeSafety
+import sidev.lib.structure.prop.TagProp
 
 //Nullable karena kemungkinan user pingin ada kondisi saat value == null
 open class LifeData<T> : MutableLiveData<T>(), ExpirableBase,

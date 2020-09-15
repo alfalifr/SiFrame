@@ -12,7 +12,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/jvm" />
-            <option value="$PROJECT_DIR$/jvm/android" />
             <option value="$PROJECT_DIR$/jvm/android/external" />
             <option value="$PROJECT_DIR$/jvm/android/siframe" />
             <option value="$PROJECT_DIR$/jvm/android/siframe/customizable" />

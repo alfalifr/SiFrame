@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.intfc.prop.ActProp
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.notNullTo
+import sidev.lib.check.notNullTo
 
 interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, ActProp {
     override val actBarId: Int

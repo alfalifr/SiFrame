@@ -1,12 +1,10 @@
 package sidev.lib.android.siframe.arch.intent_state
 
 import android.view.View
-import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner
-import sidev.lib.universal.`fun`.classSimpleName
-import sidev.lib.universal.tool.util.StringUtil
+//import sidev.lib.universal.tool.util.StringUtil
 
 /**
  * <2 Juli 2020> => Sementara hanya sebagai penanda kelas turunan ini sbg Intent dalam arsitektur MVI.
@@ -17,7 +15,7 @@ import sidev.lib.universal.tool.util.StringUtil
 
 open class ViewIntent: Mvi{
     open val equivalentReqCode: String
-        = StringUtil.toSnakeCase(this.classSimpleName(), true) //this.getSealedClassName(true)!!
+        = sidev.lib.jvm.tool.util.StringUtil.toSnakeCase(javaClass.simpleName, true) //this.getSealedClassName(true)!!
 
     /**
      * Flag apakah [ViewState] yg dihasilkan oleh [ViewIntent] ini bersifat sementara atau tidak.

@@ -79,6 +79,8 @@ private operator fun iA.getValue(owner: Any?, property: KProperty<*>): iB {
 @ExperimentalStdlibApi
 fun main(args: Array<String>) {
 
+    "afaf".toRegex().matchEntire("asa")?.groups
+
     val map= HashMap<Int, String>()
     val map2= object: MutableMap<Int, String> by map{}
     val ia= iA()

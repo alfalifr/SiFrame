@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import sidev.lib.universal.`fun`.removeAllValue
+import sidev.lib.collection.removeAllValue
 
 open class SimpleService : Service(){
     private val bcReceivers= HashMap<Array<out String>, SimpleAbsBcReceiver>()

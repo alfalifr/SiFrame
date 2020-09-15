@@ -1,6 +1,5 @@
 package sidev.lib.android.siframe.tool
 
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.util.Size
 import android.view.View
@@ -8,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.*
 
 
 open class ViewContentExtractor{

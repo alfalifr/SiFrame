@@ -10,22 +10,23 @@ import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
 import kotlinx.android.synthetic.main.bar_top_utility.view.*
 import kotlinx.android.synthetic.main.comp_performance_bar.view.*
 import org.jetbrains.anko.support.v4.runOnUiThread
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.tool.dialog.DialogListView
+import sidev.lib.check.asNotNull
+import sidev.lib.check.notNull
+import sidev.lib.collection.copyGrowExponentially
+import sidev.lib.collection.growTimely
 import sidev.lib.implementation.R
 import sidev.lib.implementation._cob.dum_transaction
 import sidev.lib.implementation._simulation.edc.adp.TransacAdp
 import sidev.lib.implementation._simulation.edc.model.Transaction
 import sidev.lib.implementation._simulation.edc.util.Edc_Const
-import sidev.lib.universal.`fun`.*
 
 class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
     override var topContainer: ViewGroup?= null

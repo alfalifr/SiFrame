@@ -7,19 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.universal.exception.PropertyAccessExc
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
-import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.tool.util.ReflexUtil
+import sidev.lib.check.asNotNull
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+import sidev.lib.exception.PropertyAccessExc
+import sidev.lib.jvm.tool.util.ReflexUtil
 
 interface SingleFragActBase: ComplexLifecycleSideBase{
     override val layoutId: Int

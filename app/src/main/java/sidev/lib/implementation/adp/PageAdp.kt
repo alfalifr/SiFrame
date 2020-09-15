@@ -9,11 +9,11 @@ import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.NumberPickerComp
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation.model.Page
 import sidev.lib.implementation.util.PageSqlite
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
 
 class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, data){
     override val itemLayoutId: Int

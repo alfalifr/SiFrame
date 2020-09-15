@@ -16,7 +16,7 @@ import java.util.Date;
 
 import sidev.lib.android.siframe._customizable._Config;
 import sidev.lib.android.siframe.tool.util._EnvUtil;
-import sidev.lib.universal.tool.util.TimeUtil;
+import sidev.lib.jvm.tool.util.TimeUtil;
 
 public class LogHP {
     public final String FOLDER_LOG_APP;

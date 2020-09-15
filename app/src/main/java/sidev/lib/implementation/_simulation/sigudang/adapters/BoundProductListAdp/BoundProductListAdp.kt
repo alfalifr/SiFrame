@@ -18,9 +18,9 @@ import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.ViewComp
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.new
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.reflex.full.new
 import kotlin.reflect.KMutableProperty0
 
 open class BoundProductListAdp(c: Context)

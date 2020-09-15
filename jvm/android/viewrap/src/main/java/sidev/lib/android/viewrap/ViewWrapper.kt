@@ -2,15 +2,11 @@ package sidev.lib.android.viewrap
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.drawable.AnimationDrawable
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import androidx.annotation.IdRes
-import kotlinx.android.synthetic.main.buffer_anim_gradient_rotation.view.*
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.*
 
 /**
  * Common interface yg digunakan untuk menandai bahwa suatu kelas merupakan

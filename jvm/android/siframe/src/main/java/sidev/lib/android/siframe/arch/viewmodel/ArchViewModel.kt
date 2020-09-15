@@ -1,9 +1,6 @@
 package sidev.lib.android.siframe.arch.viewmodel
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
-import sidev.lib.universal.`fun`.notNullTo
 
 /**
  * Sbg penanda bahwa kelas turunan ini merupakan ViewModel dalam arsitektur.

@@ -10,7 +10,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
 
 interface TopMiddleBottomFragmentBase: TopMiddleBottomBase, FragmentHostBase {
     var topFragment: Frag?

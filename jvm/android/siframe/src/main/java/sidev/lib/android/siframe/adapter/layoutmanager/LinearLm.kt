@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
 
 open class LinearLm(c: Context) : LinearLayoutManager(c), LayoutManagerResp{
     companion object{

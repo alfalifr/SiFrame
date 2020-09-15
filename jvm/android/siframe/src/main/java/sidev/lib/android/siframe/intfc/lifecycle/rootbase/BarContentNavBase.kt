@@ -12,8 +12,8 @@ import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.asNotNull
+import sidev.lib.check.notNull
 import java.lang.Exception
 
 interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {

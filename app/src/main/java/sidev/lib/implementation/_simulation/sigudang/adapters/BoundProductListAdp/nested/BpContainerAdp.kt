@@ -13,9 +13,8 @@ import kotlinx.android.synthetic.main._simul_sigud_item_bound_track_amount.view.
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.notNull
-import kotlin.math.absoluteValue
 
 //import sidev.lib.android.siframe.view.comp.NumberPickerComp
 

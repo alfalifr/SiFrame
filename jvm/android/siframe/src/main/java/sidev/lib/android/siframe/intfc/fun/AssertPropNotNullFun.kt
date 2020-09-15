@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.`fun`
 
-import sidev.lib.universal.exception.PropertyAccessExc
+import sidev.lib.exception.PropertyAccessExc
 import java.lang.ClassCastException
 
 interface AssertPropNotNullFun {

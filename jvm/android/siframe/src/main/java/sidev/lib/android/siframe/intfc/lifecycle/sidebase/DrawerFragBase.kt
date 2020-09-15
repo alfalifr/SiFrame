@@ -13,8 +13,8 @@ import sidev.lib.android.siframe.tool.util._ResUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.asNotNull
+import sidev.lib.check.notNull
 
 interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
     override val layoutId: Int

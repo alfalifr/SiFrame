@@ -13,7 +13,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
-import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.check.asNotNullTo
 import java.lang.Exception
 
 abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{

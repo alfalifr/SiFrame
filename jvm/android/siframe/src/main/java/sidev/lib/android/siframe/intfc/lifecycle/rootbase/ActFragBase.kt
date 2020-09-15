@@ -18,7 +18,7 @@ import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.jvm.tool.util.ThreadUtil
 
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.

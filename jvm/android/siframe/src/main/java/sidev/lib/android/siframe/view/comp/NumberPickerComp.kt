@@ -4,24 +4,22 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import sidev.lib.`val`.Assignment
 import sidev.lib.android.siframe.R
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.universal.structure.data.BoxedVal
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
-import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.notNullTo
-import sidev.lib.universal.`fun`.roundClosest
-import sidev.lib.universal.`val`.Assignment
+import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
+import sidev.lib.number.roundClosest
+import sidev.lib.structure.data.value.Val
 
 open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
@@ -48,7 +46,7 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
         = NumberPickerData(getDefaultInitNumber(dataPos, inputData), defaultLowerBorder, defaultUpperBorder)
 
     override fun bindComponent(adpPos: Int, v: View,
-                               valueBox: BoxedVal<NumberPickerData>,
+                               valueBox: Val<NumberPickerData>,
                                additionalData: Any?,
                                inputData: I?) {
         val ivPlus= v.findViewById<ImageView>(ivPlusId)!!

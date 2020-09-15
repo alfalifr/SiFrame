@@ -9,10 +9,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.keys
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.clazz
-import sidev.lib.universal.`fun`.clone
+import sidev.lib.check.asNotNullTo
+import sidev.lib.reflex.clazz
 
 interface BoundProcessRootFrag: FragBase{
 

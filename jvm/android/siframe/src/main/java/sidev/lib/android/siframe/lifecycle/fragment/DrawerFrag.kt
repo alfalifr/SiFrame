@@ -1,6 +1,5 @@
 package sidev.lib.android.siframe.lifecycle.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
-import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.check.asNotNullTo
 
 abstract class DrawerFrag : Frag(), DrawerFragBase {
     final override val _prop_act: AppCompatActivity?

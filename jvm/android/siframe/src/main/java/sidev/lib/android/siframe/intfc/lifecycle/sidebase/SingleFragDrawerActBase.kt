@@ -2,7 +2,7 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout
-import sidev.lib.universal.exception.RuntimeExc
+import sidev.lib.exception.RuntimeExc
 
 /**
  * Interface yg digunakan untuk menggabungkan fungsionalitas SingleFragActBase dan DrawerActBase.

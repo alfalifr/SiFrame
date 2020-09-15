@@ -7,9 +7,9 @@ import com.sigudang.android.models.BoundProduct
 import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addition.view.*
 //import sidev.lib.android.siframe.arch.value.BoxedVal
 import sidev.lib.android.siframe.view.comp.ViewComp
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.structure.data.BoxedVal
+import sidev.lib.structure.data.value.Val
 
 //import com.sigudang.android.utilities.view.component.ViewComp
 
@@ -26,7 +26,7 @@ class BpContainerComp(c: Context) : ViewComp<BpContainerAdp, BoundProduct>(c){
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: BoxedVal<BpContainerAdp>,
+        valueBox: Val<BpContainerAdp>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

@@ -9,15 +9,17 @@ import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.universal.exception.TypeExc
+//import sidev.lib.universal.exception.TypeExc
 import sidev.lib.android.siframe.intfc.listener.Listener
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.android.siframe.tool.util.`fun`.addLast
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+//import sidev.lib.universal.`fun`.isNull
+//import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
 

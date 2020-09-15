@@ -14,7 +14,10 @@ import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
 import java.lang.Exception
 
 interface MviView<I: ViewIntent, R: IntentResult, S: ViewState<*>>: ArchView, Mvi,
@@ -182,7 +185,7 @@ interface MviView<I: ViewIntent, R: IntentResult, S: ViewState<*>>: ArchView, Mv
     override fun extractAllViewContent() {
         loge("extractAllViewContent() mulai")
 
-        val calname= presenter?.callback?.classSimpleName()
+        val calname= presenter?.callback?.javaClass?.simpleName //classSimpleName()
         val calnull= presenter?.callback == null
         loge("calnull= $calnull calname= $calname")
 

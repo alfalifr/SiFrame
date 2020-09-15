@@ -7,13 +7,12 @@ import com.sigudang.android.adapters.BoundProductListAdp.BoundProductListAdp
 import com.sigudang.android.models.BoundProduct
 import com.sigudang.android.utilities.view.component.NumberPickerComp
 import kotlinx.android.synthetic.main._simul_sigud_content_item_product_bound.view.*
+import sidev.lib.`val`.Assignment
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
+import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
-import sidev.lib.implementation._simulation.edc.model.Transaction
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`val`.Assignment
-import sidev.lib.universal.structure.data.BoxedVal
+import sidev.lib.structure.data.value.Val
 
 class BpProductCountComp(c: Context) : NumberPickerComp<BoundProduct>(c){
     override val compId: Int
@@ -35,7 +34,7 @@ class BpProductCountComp(c: Context) : NumberPickerComp<BoundProduct>(c){
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: BoxedVal<NumberPickerData>,
+        valueBox: Val<NumberPickerData>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

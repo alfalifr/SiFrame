@@ -6,6 +6,8 @@ import sidev.lib.universal.structure.collection.lazy_list.CachedSequence
 import sidev.lib.universal.structure.collection.lazy_list.LazyHashMap
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.full.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 internal annotation class Ano
 internal annotation class Anotasi<T: Number, O>(val a: Int= 1) //: Ano()
@@ -120,9 +122,21 @@ internal class Tujuan{
 
 internal class NoConstr private constructor()
 
+@ExperimentalTime
 @Suppress("UNREACHABLE_CODE")
 fun main(args: Array<String>){
     prin("A::class.isAbstract = ${A::class.isAbstract}")
+
+    println("\n============= BATAS AC members ==============\n")
+    for((i, member) in AC::class.members.withIndex()){
+        prin("i= $i member= $member")
+    }
+    println("\n============= BATAS AC functions ==============\n")
+    for((i, member) in AC::class.functions.withIndex()){
+        prin("i= $i member= $member")
+        for((u, param) in member.parameters.withIndex())
+            prin("--u= $u param= $param")
+    }
 /*
     println("\n============= BATAS Exc ==============\n")
     val err = try{ "aad".toInt(); null }
@@ -218,7 +232,10 @@ fun main(args: Array<String>){
     }
 
     val poin= Poin(y= 11)
-    ac.callAnnotatedFunctionWithParamContainer(FunAnot::class, poin){ it.a == 2 }
+    var time = measureTime { ac.callAnnotatedFunctionWithParamContainer(FunAnot::class, poin){ it.a == 2 } }
+    prin("time = $time")
+    time = measureTime { ac.callAnnotatedFunctionWithParamContainer(FunAnot::class, poin){ it.a == 2 } }
+    prin("time = $time")
 //    val aaaaa= Anotasi<Int, String>(1)
 
     val ano1= AC::class.findAnnotation<Anotasi<Int, *>>()
@@ -648,6 +665,7 @@ internal suspend fun aga(): Int{
 }
 
 internal fun asa(){
+    A::class.memberProperties
 }
 
 

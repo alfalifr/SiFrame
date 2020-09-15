@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.page_rv_btn.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp
 import sidev.lib.implementation.model.Content
 import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.viewmodel.ContentVm
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.jvm.tool.util.ThreadUtil
 
 class ContentVmFrag : Frag(){
     override val layoutId: Int

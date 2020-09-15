@@ -1,9 +1,9 @@
 package sidev.lib.android.siframe.arch.intent_state
 
 import sidev.lib.android.siframe.arch.type.Mvi
-import sidev.lib.universal.`fun`.getAllFields
-import sidev.lib.universal.`fun`.getSealedClassName
-import sidev.lib.universal.`fun`.new
+import sidev.lib.reflex.full.getSealedClassName
+import sidev.lib.reflex.full.nativeNewK
+import sidev.lib.reflex.jvm.declaredFieldsTree
 import java.lang.reflect.Field
 import kotlin.reflect.KParameter
 
@@ -35,7 +35,7 @@ class IntentDataCollector<I: ViewIntent>(var intentConverter: IntentConverter<I>
         val key= I::class.getSealedClassName()!!
         var viewIntentObj= `access$intentObj`!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new(I::class, defParamValFunc= defParamValFunc)!!
+            viewIntentObj= nativeNewK(I::class, defParamValFunc= defParamValFunc)!!
             `access$intentObj`!![key]= viewIntentObj
         }
         return viewIntentObj.equivalentReqCode
@@ -57,8 +57,8 @@ class IntentDataCollector<I: ViewIntent>(var intentConverter: IntentConverter<I>
         var viewIntentObj= `access$intentObj`!![key]
         var viewIntentField= `access$intentObjFieldMap`!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new(I2::class, defParamValFunc = defObjValInit)!!
-            viewIntentField= viewIntentObj.getAllFields(justPublic = false)
+            viewIntentObj= nativeNewK(I2::class, defParamValFunc = defObjValInit)!!
+            viewIntentField= viewIntentObj.javaClass.declaredFieldsTree.toList() //.getAllFields(justPublic = false)
             `access$intentObj`!![key]= viewIntentObj
             if(viewIntentField != null)
                 `access$intentObjFieldMap`!![key]= viewIntentField

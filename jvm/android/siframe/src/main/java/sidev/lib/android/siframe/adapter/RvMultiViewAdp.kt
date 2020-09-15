@@ -1,16 +1,11 @@
 package sidev.lib.android.siframe.adapter
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.universal.`fun`.notNull
+//import sidev.lib.android.siframe.tool.util.`fun`.inflate
+//import sidev.lib.universal.`fun`.notNull
 
 abstract class RvMultiViewAdp<D, LM: RecyclerView.LayoutManager>(ctx: Context)
     : RvAdp<D, LM>(ctx), MultiViewAdp<D, SimpleRvAdp<D, LM>.SimpleViewHolder>{

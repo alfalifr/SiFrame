@@ -7,8 +7,8 @@ import kotlinx.android.synthetic.main._simul_edu_dialog_content_frag_quiz.view.*
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.setBtnHollow
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.setBtnSolid
 import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.notNull
 
 class ContentWarningDialog(c: Context) : DialogAbsView<ContentWarningDialog>(c){
     override val layoutId: Int

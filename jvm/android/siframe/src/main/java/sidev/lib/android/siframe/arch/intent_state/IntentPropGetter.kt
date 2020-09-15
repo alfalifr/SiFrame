@@ -1,8 +1,8 @@
 package sidev.lib.android.siframe.arch.intent_state
 
 import sidev.lib.android.siframe.arch.type.Mvi
-import sidev.lib.universal.`fun`.getSealedClassName
-import sidev.lib.universal.`fun`.new
+import sidev.lib.reflex.full.getSealedClassName
+import sidev.lib.reflex.full.nativeNewK
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
@@ -25,7 +25,7 @@ class IntentPropGetter: Mvi {
         val key= intentClass.getSealedClassName()!!
         var viewIntentObj= intentObj!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new(intentClass, defParamValFunc = defParamValFunc)!!
+            viewIntentObj= nativeNewK(intentClass, defParamValFunc = defParamValFunc)!!
             intentObj!![key]= viewIntentObj
         }
         return viewIntentObj.equivalentReqCode
@@ -40,7 +40,7 @@ class IntentPropGetter: Mvi {
         val key= intentClass.getSealedClassName()!!
         var viewIntentObj= intentObj!![key]
         if(viewIntentObj == null){
-            viewIntentObj= new(intentClass, defParamValFunc = defParamValFunc)!!
+            viewIntentObj= nativeNewK(intentClass, defParamValFunc = defParamValFunc)!!
             intentObj!![key]= viewIntentObj
         }
         return viewIntentObj.isResultTemporary

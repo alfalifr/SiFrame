@@ -15,11 +15,13 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import kotlin.jvm.JvmClassMappingKt;
 import sidev.lib.android.siframe.adapter.RvAdp;
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent;
 import sidev.lib.implementation.intent_state.ContentFragConf;
 import sidev.lib.implementation.viewmodel.ContentVm;
-import sidev.lib.universal.fun.KReflexFunKt;
+import sidev.lib.reflex._DefaultValueFunKt;
+//import sidev.lib.universal.fun.KReflexFunKt;
 //import sidev.lib.universal.fun.KReflexFunKt;
 
 public class Cob {
@@ -97,7 +99,7 @@ public class Cob {
 
 //        for(Class cls : Z.class)
 //        System.out.println("");
-        int defa= KReflexFunKt.defaultPrimitiveValue(KReflexFunKt.getKClass(int.class));
+        int defa= _DefaultValueFunKt.defaultPrimitiveValue(JvmClassMappingKt.getKotlinClass(int.class)); //KReflexFunKt.defaultPrimitiveValue(KReflexFunKt.getKClass(int.class));
         System.out.println("default int= " +defa);
     }
 }

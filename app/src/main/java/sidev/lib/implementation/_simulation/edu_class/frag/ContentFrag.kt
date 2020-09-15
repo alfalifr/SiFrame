@@ -13,6 +13,10 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.mvp.MvpRvFrag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.orDefault
+import sidev.lib.collection.string
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edu_class.adp.ContentAdp
 import sidev.lib.implementation._simulation.edu_class.dialog.ContentWarningDialog
@@ -20,7 +24,6 @@ import sidev.lib.implementation._simulation.edu_class.model.Content
 import sidev.lib.implementation._simulation.edu_class.pres.PageContentPres
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
 //import sidev.lib.implementation.adp.ContentAdp
-import sidev.lib.universal.`fun`.*
 
 class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
     //    lateinit var moduleId: String
@@ -143,7 +146,7 @@ class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
         loge("sendQuizAnswer()")
         var i= -1
         for((questionId, answer) in answerList)
-            loge("i= ${++i} questionId= $questionId => answer= ${answer.toSimpleString()}")
+            loge("i= ${++i} questionId= $questionId => answer= ${answer.string}")
     }
 
 

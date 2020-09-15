@@ -1,11 +1,10 @@
 package sidev.lib.implementation._simulation.sigudang
 
 import com.sigudang.android.models.Bound
-import kotlinx.coroutines.*
+import sidev.lib.console.prin
 import sidev.lib.implementation._simulation.sigudang.dummy.inboundList_created
-import sidev.lib.universal.`fun`.clone
-import sidev.lib.universal.`fun`.nestedImplementedPropertiesValueMapTree
-import sidev.lib.universal.`fun`.prin
+import sidev.lib.reflex.full.clone
+import sidev.lib.reflex.full.implementedNestedPropertyValuesTree
 
 suspend fun Bound.cloneIt(): Bound = clone()
 
@@ -61,17 +60,17 @@ fun main(){
     prin("oldProd == newProd => ${oldProd == newProd} oldProd?.name= ${oldProd?.name} newProd?.name= ${newProd?.name} nBoundNProd= $nBoundNProd")
 
     prin("\n\n=============== BATAS oldProd props =============\n\n")
-    for((i, valMap) in oldProd!!.nestedImplementedPropertiesValueMapTree.withIndex()){
+    for((i, valMap) in oldProd!!.implementedNestedPropertyValuesTree.withIndex()){ //nestedImplementedPropertiesValueMapTree
         prin("i= $i prop= $valMap")
     }
 
     prin("\n\n=============== BATAS productList props =============\n\n")
-    for((i, valMap) in newBound!!.productList!!.nestedImplementedPropertiesValueMapTree.withIndex()){
+    for((i, valMap) in newBound!!.productList!!.implementedNestedPropertyValuesTree.withIndex()){ //nestedImplementedPropertiesValueMapTree
         prin("i= $i prop= $valMap")
     }
 
     prin("\n\n=============== BATAS newProd props =============\n\n")
-    for((i, valMap) in newProd!!.nestedImplementedPropertiesValueMapTree.withIndex()){
+    for((i, valMap) in newProd!!.implementedNestedPropertyValuesTree.withIndex()){ //nestedImplementedPropertiesValueMapTree
         prin("i= $i prop= $valMap")
     }
 
@@ -80,11 +79,11 @@ fun main(){
     prin("oldBound == newBound => ${oldBound == newBound} oldBound.productList?.get(2)?.product == newBound.productList?.get(2)?.product => ${oldBound.productList?.get(2)?.product == newBound!!.productList?.get(2)?.product}")
 
     prin("\n\n=============== BATAS oldBound =============\n\n")
-    for((i, valMap) in oldBound.nestedImplementedPropertiesValueMapTree.withIndex()){
+    for((i, valMap) in oldBound.implementedNestedPropertyValuesTree.withIndex()){
         prin("i= $i prop= $valMap")
     }
     prin("\n\n=============== BATAS newBound =============\n\n")
-    for((i, valMap) in newBound!!.nestedImplementedPropertiesValueMapTree.withIndex()){
+    for((i, valMap) in newBound!!.implementedNestedPropertyValuesTree.withIndex()){
         prin("i= $i prop= $valMap")
     }
 

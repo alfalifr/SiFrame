@@ -11,12 +11,12 @@ import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import com.sigudang.android._template.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.tool.RunQueue
+import sidev.lib.check.notNull
+import sidev.lib.collection.copy
+import sidev.lib.exception.Exc
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.util.RequestUtil
 import sidev.lib.implementation._simulation.sigudang.util.filter
-import sidev.lib.universal.`fun`.copy
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.exception.Exc
 
 //!!!!!!@@ 18 Jan 2020
 abstract class SimpleAbsRecyclerViewAdapter <D, LM: RecyclerView.LayoutManager> (

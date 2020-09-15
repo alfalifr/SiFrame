@@ -8,9 +8,9 @@ import com.sigudang.android.models.BoundProduct
 import com.sigudang.android.models.SendMethodModel
 import com.sigudang.android.utilities.view.component.ViewComp_
 import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addition.view.*
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.structure.data.BoxedVal
+import sidev.lib.structure.data.value.Val
 
 //import sidev.lib.android.siframe.arch.value.BoxedVal
 
@@ -57,7 +57,7 @@ class BpSendComp_Lessee(c: Context)
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: BoxedVal<BpSendAdp_Lessee>,
+        valueBox: Val<BpSendAdp_Lessee>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

@@ -18,10 +18,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.forcedAddView
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.exception.ResourceNotFoundExc
+import sidev.lib.check.notNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 

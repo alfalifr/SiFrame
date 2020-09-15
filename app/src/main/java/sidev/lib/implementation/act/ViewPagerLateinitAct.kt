@@ -8,9 +8,9 @@ import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.siframe.tool.util._ThreadUtil
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
-import sidev.lib.universal.tool.util.ThreadUtil
 
 class ViewPagerLateinitAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
     override var vpFragList: Array<Frag> =
@@ -30,7 +30,7 @@ class ViewPagerLateinitAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottom
     override fun _initNavBar(navBarView: BottomNavigationView) {}
     override fun _initView(layoutView: View) {
         __initTopMiddleBottomView(layoutView)
-        ThreadUtil.delayRun(2000){
+        _ThreadUtil.delayRun(2000){
             setFragList(arrayOf(
                 ActBarFrag(),
                 ActBarFrag2(),
@@ -40,7 +40,7 @@ class ViewPagerLateinitAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottom
                 ActBarFrag6()
             ))
         }
-        ThreadUtil.delayRun(7000){
+        _ThreadUtil.delayRun(7000){
             setFragList(arrayOf(
                 ActBarFrag4(),
                 Frag3(),

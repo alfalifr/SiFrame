@@ -8,8 +8,8 @@ import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.enableFillTxt
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getEt
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.notNull
 
 object Edu_Class_ViewUtil {
     fun setImg(iv: ImageView, img: PictModel?){

@@ -4,14 +4,13 @@ import android.content.Context
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.type.Mvp
 import sidev.lib.android.siframe.arch.view.MvpView
-import sidev.lib.universal.exception.DataIntegrityExc
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asntNotNull
-import sidev.lib.universal.`fun`.classSimpleName
-import sidev.lib.universal.`fun`.isNull
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asntNotNull
+import sidev.lib.check.isNull
+import sidev.lib.exception.DataIntegrityExc
 import java.lang.Exception
 
 /**
@@ -64,8 +63,8 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
             else
                 DataIntegrityExc(this::class, "Pengecekan keluar di presenter")
         }.isNull {
-            val clsName= this.classSimpleName()
-            val callbackName= callback?.classSimpleName()
+            val clsName= javaClass.simpleName //classSimpleName()
+            val callbackName= callback?.javaClass?.simpleName //classSimpleName()
             loge("$clsName.postRequest() callback= $callbackName.isExpired == TRUE")
             callback= null
         }
@@ -97,8 +96,8 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
             else
                 DataIntegrityExc(this::class, "Pengecekan masuk di presenter")
         }.isNull {
-            val clsName= this.classSimpleName()
-            val callbackName= callback?.classSimpleName()
+            val clsName= javaClass.simpleName //this.classSimpleName()
+            val callbackName= callback?.javaClass?.simpleName //classSimpleName()
             loge("$clsName.postSucc() callback= $callbackName.isExpired == TRUE")
             callback= null
         }
@@ -123,8 +122,8 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
                 callback!!.onPresenterFail(sentReqCode, result, msg, e, resCode)
             }
         }.isNull {
-            val clsName= this.classSimpleName()
-            val callbackName= callback?.classSimpleName()
+            val clsName= javaClass.simpleName //this.classSimpleName()
+            val callbackName= callback?.javaClass?.simpleName //classSimpleName()
             loge("$clsName.postFail() callback= $callbackName.isExpired == TRUE")
             callback= null
         }

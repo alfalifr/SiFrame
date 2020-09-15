@@ -4,17 +4,23 @@ import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.*
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.annotation.AnnotatedFunctionClassImpl
+import sidev.lib.check.isNull
+import sidev.lib.reflex.annotation.AnnotatedFunctionClass
+import sidev.lib.reflex.annotation.NativeAnnotatedFunctionClassDef
+import sidev.lib.reflex.annotation.NativeAnnotatedFunctionClassManager
+//import sidev.lib.universal.`fun`.*
+//import sidev.lib.universal.annotation.AnnotatedFunctionClassImpl
 import java.lang.Exception
 
 
 abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
     @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: StateProcessor<I, R, S>? //PresenterCallback<I>?): Presenter(){
-): AnnotatedFunctionClassImpl(), ArchPresenter<I, R, StateProcessor<I, R, S>> {
+): ArchPresenter<I, R, StateProcessor<I, R, S>>, NativeAnnotatedFunctionClassDef { //AnnotatedFunctionClassImpl()
     final override lateinit var reqCode: I
         private set
-/*
+    override val nativeAnnotatedFunctionCLassManager: NativeAnnotatedFunctionClassManager?
+            = NativeAnnotatedFunctionClassManager(nativeAnnotatedFunctionCLassOwner)
+    /*
     private var intentPropGetter: IntentPropGetter?= null
 
     fun <I: ViewIntent> getEquivReqCode(
@@ -73,8 +79,8 @@ abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
  */
             //(callback as? StateProcessor<S, *>)?.postPreResult(reqCode, data, )
         }.isNull {
-            val clsName= this.classSimpleName()
-            val callbackName= callback?.classSimpleName()
+            val clsName= javaClass.simpleName //this.classSimpleName()
+            val callbackName= callback?.javaClass?.simpleName //classSimpleName()
             loge("$clsName.onPreRequest() callback= $callbackName.isExpired == TRUE")
             callback= null
         }

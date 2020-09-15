@@ -8,11 +8,15 @@ import sidev.lib.android.siframe.arch.presenter.PresenterCallback
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner
 import sidev.lib.android.siframe.arch.view.MviView
-import sidev.lib.universal.exception.RuntimeExc
 import sidev.lib.android.siframe.tool.ViewContentExtractor
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.exception.Exc
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
+import sidev.lib.exception.Exc
+import sidev.lib.exception.RuntimeExc
+import sidev.lib.exception.createErrorSimple
+import sidev.lib.reflex.jvm.forceCall
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KParameter
@@ -128,7 +132,7 @@ abstract class StateProcessor<I: ViewIntent, R: IntentResult, S: ViewState<*>>(v
                                 false
                             } else true
                         } else false
-                    } as? KMutableProperty<*>)?.setter?.forcedCall(state, result)
+                    } as? KMutableProperty<*>)?.setter?.forceCall(state, result)
                 }
                 state.error= e
 //                currentStateIsPreState= false

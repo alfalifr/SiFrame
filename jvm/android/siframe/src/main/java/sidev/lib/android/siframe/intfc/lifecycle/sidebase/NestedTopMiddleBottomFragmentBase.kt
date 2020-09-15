@@ -2,21 +2,14 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import org.jetbrains.anko.runOnUiThread
 import sidev.lib.android.siframe.R
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.exception.IllegalStateExc
+import sidev.lib.check.*
 
 interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, NestedTopMiddleBottomBase {
     override val topLayoutId: Int

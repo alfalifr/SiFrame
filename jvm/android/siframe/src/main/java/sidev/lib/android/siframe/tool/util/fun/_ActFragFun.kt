@@ -6,11 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,20 +16,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
-import org.jetbrains.anko.contentView
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.tool.util._BitmapUtil
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.FragmentInstantiator
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.asResNameBy
-import sidev.lib.android.siframe.tool.util.isIdDuplicatedInView
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.annotation.Unsafe
+import sidev.lib.annotation.Unsafe
+import sidev.lib.check.notNull
 import java.lang.Exception
 
 

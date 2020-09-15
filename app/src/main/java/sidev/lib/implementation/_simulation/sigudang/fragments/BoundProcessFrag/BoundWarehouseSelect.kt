@@ -26,9 +26,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.dp
 import sidev.lib.android.siframe.tool.util.`fun`.setPadding_
+import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.dummy.warehouseList_full
-import sidev.lib.universal.`fun`.asNotNull
 
 open class BoundWarehouseSelect : Frag(), BoundProcessRootFrag, TopMiddleBottomBase, InitPropFun{
     final override var isInit: Boolean= false

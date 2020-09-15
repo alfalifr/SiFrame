@@ -13,10 +13,10 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.trya
+import sidev.lib.check.asNotNull
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+import sidev.lib.check.trya
 import java.lang.Exception
 
 interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFragBase{

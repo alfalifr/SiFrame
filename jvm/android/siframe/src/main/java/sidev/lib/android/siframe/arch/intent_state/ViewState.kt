@@ -1,9 +1,7 @@
 package sidev.lib.android.siframe.arch.intent_state
 
-import androidx.annotation.Keep
-import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.arch.type.Mvi
-import sidev.lib.universal.exception.Exc
+import sidev.lib.exception.Exc
 
 /**
  * <2 Juli 2020> => Sementara hanya sebagai penanda kelas turunan ini sbg State dalam arsitektur MVI.

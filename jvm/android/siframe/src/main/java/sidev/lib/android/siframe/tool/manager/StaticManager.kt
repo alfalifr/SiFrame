@@ -5,8 +5,6 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.className
-import sidev.lib.universal.`fun`.classSimpleName
 
 object StaticManager: LifecycleObserver {
     private var lifecycleOwner: ArrayList<LifecycleOwner>?= null
@@ -75,7 +73,7 @@ object StaticManager: LifecycleObserver {
             staticObjList = HashMap()
         staticObjList!![getObjKeyForOwner(
             key,
-            lifecycleOwner.className()
+            lifecycleOwner.javaClass.name //.className()
         )]= obj
         loge("object attached obj= ${obj::class.java.simpleName} to lifecycle= ${lifecycleOwner::class.java.simpleName}")
         registerLifecycleOwner(
@@ -94,14 +92,14 @@ object StaticManager: LifecycleObserver {
     fun removeObjAttachedToLifecyle(callingOwner: LifecycleOwner){
         if(staticObjList != null){
             val keys= staticObjList!!.keys
-            val ownerName= callingOwner.className()
+            val ownerName= callingOwner.javaClass.name //.className()
             val removedObjList= ArrayList<Any>()
             for(key in keys){
                 if(key.startsWith(ownerName)){
                     val obj= staticObjList!![key] //staticObjList!!.remove(key)
                     if(obj != null)
                         removedObjList.add(obj)
-                    loge("obj= ${obj?.classSimpleName()} key= $key")
+                    loge("obj= ${obj?.javaClass?.simpleName} key= $key")
                 }
             }
             for(obj in removedObjList)

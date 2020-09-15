@@ -19,12 +19,15 @@ import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.tool.dialog.DialogListView
+import sidev.lib.check.asNotNull
+import sidev.lib.check.notNull
+import sidev.lib.collection.copyGrowExponentially
+import sidev.lib.collection.growTimely
 import sidev.lib.implementation.R
 import sidev.lib.implementation._cob.dum_transaction
 import sidev.lib.implementation._simulation.edc.adp.TransacAdp_Old
 import sidev.lib.implementation._simulation.edc.model.Transaction
 import sidev.lib.implementation._simulation.edc.util.Edc_Const
-import sidev.lib.universal.`fun`.*
 
 class TransacFrag_Old : Frag(), TopMiddleBottomBase{
     override val layoutId: Int

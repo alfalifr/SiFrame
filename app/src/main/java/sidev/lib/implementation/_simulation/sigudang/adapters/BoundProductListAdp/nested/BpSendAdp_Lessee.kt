@@ -17,12 +17,12 @@ import kotlinx.android.synthetic.main._simul_edu_comp_nav_modul_item.view.tv
 import kotlinx.android.synthetic.main._simul_sigud_component_bar_dropdown.view.*
 import kotlinx.android.synthetic.main._simul_sigud_component_bar_fill.view.*
 import kotlinx.android.synthetic.main._simul_sigud_content_item_product_bound_send.view.*
+import sidev.lib.`val`.Assignment
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.util.ViewUtil
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`val`.Assignment
 
 class BpSendAdp_Lessee(c: Context)
     : BpSendAdp_Abs(c){ //RvAdp<BoundProductSendModel, LinearLayoutManager>(c){

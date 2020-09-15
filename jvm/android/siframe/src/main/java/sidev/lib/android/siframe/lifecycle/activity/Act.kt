@@ -3,7 +3,6 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
@@ -13,10 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.arch.presenter.*
-import sidev.lib.universal.intfc.Inheritable
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
@@ -30,11 +26,10 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.`var`._SIF_Config
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.exception.IllegalStateExc
+import sidev.lib.check.asNotNull
+import sidev.lib.exception.IllegalStateExc
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
@@ -42,7 +37,7 @@ import sidev.lib.universal.exception.IllegalStateExc
  * Scr default semua kelas turunan Activity pada framework ini
  * menggunakan arsitektur MVVM, namun tidak meng-extend interface [MvvmView].
  */
-abstract class Act : AppCompatActivity(), Inheritable,
+abstract class Act : AppCompatActivity(), //Inheritable,
     ActFragBase,
     ViewModelBase, //Scr default, smua Activity pada framework ini menggunakan MVP dan MVVM.
                    //Knp kok gak bisa default MVP atau MVI?. Karena MVVM merupakan arsitektur bawaan
@@ -64,8 +59,8 @@ abstract class Act : AppCompatActivity(), Inheritable,
     final override var isBusy: Boolean= false
     final override var busyOfWhat: String= InterruptableBase.DEFAULT_BUSY_OF_WHAT
 
-    override var isInherited: Boolean= false
-    override fun _configInheritable(){}
+//    override var isInherited: Boolean= false
+//    override fun _configInheritable(){}
 
     /*
     override val lifecycleCtx: Context
@@ -132,9 +127,9 @@ abstract class Act : AppCompatActivity(), Inheritable,
 //        val v=  findViewById<View>(android.R.id.content).rootView
 //        layoutView= v
 
-        doWhenNotIherited {
+//        doWhenNotIherited {
             ___initRootBase(this, getRootView())
-        }
+//        }
         ___initSideBase()
 
         currentState= LifecycleBase.State.CREATED

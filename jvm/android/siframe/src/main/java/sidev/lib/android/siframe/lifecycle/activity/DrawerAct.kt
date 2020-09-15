@@ -5,9 +5,6 @@ import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
-import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.universal.`fun`.asNotNullTo
 
 abstract class DrawerAct: Act(), DrawerActBase {
     final override lateinit var rootDrawerLayout: DrawerLayout

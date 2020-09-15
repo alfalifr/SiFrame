@@ -4,12 +4,8 @@ import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.intent_state.ViewState
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.asNotNullTo
-import sidev.lib.universal.`fun`.classSimpleName
-import sidev.lib.universal.`fun`.isNull
+import sidev.lib.check.asNotNullTo
 
 /**
  * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
@@ -32,7 +28,7 @@ interface MviInteractivePresenterDependent<I: ViewIntent, P: MviPresenter<I, *, 
             //<4 Juli 2020> => Definisi baru.
             if(intentConverter == null){
                 initIntentConverter()
-                loge("${this.classSimpleName()}.downloadData() -> intentConverter di-assign dg default obj.")
+                loge("${javaClass.simpleName}.downloadData() -> intentConverter di-assign dg default obj.")
             }
             intentConverter!!.postRequest(reqCode)
         }
@@ -53,7 +49,7 @@ interface MviInteractivePresenterDependent<I: ViewIntent, P: MviPresenter<I, *, 
             //<4 Juli 2020> => Definisi baru.
             if(intentConverter == null){
                 initIntentConverter()
-                loge("${this.classSimpleName()}.uploadData() -> intentConverter di-assign dg default obj.")
+                loge("${javaClass.simpleName}.uploadData() -> intentConverter di-assign dg default obj.")
             }
             intentConverter!!.postRequest(reqCode)
         }
@@ -74,7 +70,7 @@ interface MviInteractivePresenterDependent<I: ViewIntent, P: MviPresenter<I, *, 
             //<4 Juli 2020> => Definisi baru.
             if(intentConverter == null){
                 initIntentConverter()
-                loge("${this.classSimpleName()}.sendRequest() -> intentConverter di-assign dg default obj.")
+                loge("${javaClass.simpleName}.sendRequest() -> intentConverter di-assign dg default obj.")
             }
             intentConverter!!.postRequest(reqCode)
         }

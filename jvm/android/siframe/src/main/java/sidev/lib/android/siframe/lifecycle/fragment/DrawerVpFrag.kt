@@ -4,11 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
-import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.check.asNotNullTo
 
 abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
     final override val layoutId: Int

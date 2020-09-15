@@ -3,8 +3,8 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.siframe.tool.util._ThreadUtil
 import sidev.lib.implementation.R
-import sidev.lib.universal.tool.util.ThreadUtil
 import java.lang.Exception
 
 class CrashFrag : Frag(){
@@ -26,7 +26,7 @@ class CrashFrag : Frag(){
      * @param func dilakukan sampai iterasi ke-0.
      */
     fun countDown(iterate: Int, func: (Int) -> Unit){
-        ThreadUtil.delayRun(1000){
+        _ThreadUtil.delayRun(1000){
             func(iterate)
             if(iterate >= 0)
                 countDown(iterate -1, func)

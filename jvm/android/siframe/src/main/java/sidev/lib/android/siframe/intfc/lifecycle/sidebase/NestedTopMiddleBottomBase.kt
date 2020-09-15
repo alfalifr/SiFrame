@@ -1,12 +1,11 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.prop.RvAdpProp
 import sidev.lib.android.siframe.tool.util.`fun`.*
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.*
 
 /** [TopMiddleBottomBase] yg [topView] dan [bottomView]-nya dapat di nested ke dalam [SimpleRvAdp] */
 interface NestedTopMiddleBottomBase: TopMiddleBottomBase, RvAdpProp{

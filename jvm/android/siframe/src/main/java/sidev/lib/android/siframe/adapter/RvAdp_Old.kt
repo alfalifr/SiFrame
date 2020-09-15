@@ -12,8 +12,7 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.filter
-import sidev.lib.universal.`fun`.notNull
+import sidev.lib.check.notNull
 
 //!!!!!!@@ 18 Jan 2020
 abstract class RvAdp_Old <D, LM: RecyclerView.LayoutManager> (
@@ -536,7 +535,7 @@ abstract class RvAdp_Old <D, LM: RecyclerView.LayoutManager> (
  */
 
     fun filter(func: (pos: Int, data: D) -> Boolean){
-        dataListFull?.filter { pos, el ->
+        dataListFull?.filterIndexed { pos, el ->
             func(pos, el)
         }.notNull { list ->
             `access$setDataListSetFromInternal` {

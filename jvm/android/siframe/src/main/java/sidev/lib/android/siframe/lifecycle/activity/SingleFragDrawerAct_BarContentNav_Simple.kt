@@ -5,11 +5,10 @@ import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
-import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.check.asNotNull
 
 /**
  * Kelas yg properti abstraknya dapat di-lateinit.

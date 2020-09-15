@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.clazz
+import sidev.lib.reflex.clazz
 
 class Frag1 : ActBarFrag(){
     override val actBarId: Int

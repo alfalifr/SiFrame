@@ -31,12 +31,12 @@ import sidev.lib.android.siframe.tool.util.`fun`.getRootView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.android.siframe.view.ModVp
+import sidev.lib.check.asNotNull
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edu_class.adp.PageNavAdp
 import sidev.lib.implementation._simulation.edu_class.pres.PageContentPres
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
-import sidev.lib.universal.`fun`.asNotNull
-import sidev.lib.universal.`fun`.notNull
 
 class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCommon{
     override val startDrawerLayoutId: Int

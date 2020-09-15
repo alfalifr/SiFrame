@@ -11,8 +11,8 @@ import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.DrawerFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.asNotNull
 
 class Frag4 : DrawerFrag(){
 ///*

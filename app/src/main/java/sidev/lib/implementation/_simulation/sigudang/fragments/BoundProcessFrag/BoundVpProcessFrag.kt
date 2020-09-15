@@ -20,9 +20,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.siframe.tool.util.`fun`.keys
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.clone
-import sidev.lib.universal.tool.util.ThreadUtil
-import java.util.ArrayList
+import sidev.lib.reflex.full.clone
 
 abstract class BoundVpProcessFrag: VpFrag<Frag>(), TopMiddleBottomBase{
     final override var bottomContainer: ViewGroup?= null

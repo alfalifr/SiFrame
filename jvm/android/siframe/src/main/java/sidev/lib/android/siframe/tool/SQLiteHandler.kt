@@ -17,8 +17,8 @@ import sidev.lib.android.siframe.model.intfc.StorageKind
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.ToastApp
-import sidev.lib.universal.tool.util.StringUtil
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.jvm.tool.util.StringUtil
+import sidev.lib.jvm.tool.util.ThreadUtil
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 

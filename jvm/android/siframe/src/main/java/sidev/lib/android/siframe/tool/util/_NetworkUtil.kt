@@ -11,8 +11,8 @@ import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
-import sidev.lib.universal.exception.NetworkExc
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.exception.NetworkExc
+import sidev.lib.jvm.tool.util.ThreadUtil
 
 object _NetworkUtil{
     enum class Method{
@@ -26,7 +26,7 @@ object _NetworkUtil{
         fun onSucc(code: Int, response: String?)
         fun onFail(code: Int, response: String?, error: Throwable?){}
         fun onNetworkNotActive(){
-            ThreadUtil.delayRun(2000){
+            _ThreadUtil.delayRun(2000){
                 onFail(CODE_FAIL_NO_INTERNET, null, NetworkExc(msg = "Jaringan tidak aktif"))
             }
         }

@@ -31,10 +31,12 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.logew
-import sidev.lib.universal.`fun`.*
-import sidev.lib.universal.exception.IllegalStateExc
-import sidev.lib.universal.tool.manager.ListenerManager
-import sidev.lib.universal.tool.manager.createSimpleListener
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.exception.IllegalStateExc
+import sidev.lib.jvm.tool.manager.ListenerManager
+import sidev.lib.jvm.tool.manager.createSimpleListener
+import sidev.lib.reflex.clazz
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg Fragment sbg pengganti dari [Fragment].

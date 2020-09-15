@@ -8,7 +8,13 @@ import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.isNull
+import sidev.lib.check.notNull
+import sidev.lib.collection.add
+import sidev.lib.reflex.full.getSealedClassName
+import sidev.lib.reflex.jvm.declaredFieldsTree
+import sidev.lib.reflex.jvm.forceGet
+//import sidev.lib.universal.`fun`.*
 import java.lang.reflect.Field
 
 /**
@@ -67,23 +73,22 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
      */
     fun getIntentDataMap(intent: I): Map<String, Any>?{
         val map= HashMap<String, Any>()
-        intent.getAllFields(justPublic = false).notNull { fields ->
-            for(field in fields){
-                //Field yg gak boleh dimodifikasi definisi pair datanya adalah
-                // dua field yg namanya ada di dalam konstanta di bawah.
-                if(field.name != INTENT_EQUIVALENT_REQ_CODE
-                    && field.name != INTENT_IS_RESULT_TEMPORARY)
-                    getIntentDataPair(intent, field).notNull { map.add(it) }
-                else
-                    getDefaultIntentDataPair(intent, field).notNull { map.add(it) }
-            }
+//        intent.getAllFields(justPublic = false).notNull { fields -> }
+        for(field in intent.javaClass.declaredFieldsTree){
+            //Field yg gak boleh dimodifikasi definisi pair datanya adalah
+            // dua field yg namanya ada di dalam konstanta di bawah.
+            if(field.name != INTENT_EQUIVALENT_REQ_CODE
+                && field.name != INTENT_IS_RESULT_TEMPORARY)
+                getIntentDataPair(intent, field).notNull { map.add(it) }
+            else
+                getDefaultIntentDataPair(intent, field).notNull { map.add(it) }
         }
         return if(map.isNotEmpty()) map
         else null
     }
 
     fun getDefaultIntentDataPair(intent: I, field: Field): Pair<String, Any>?{
-        return try{ Pair(field.name, field.getV(intent)!!) } //Dg anggapan pengambilan nilai dapat dilakukan lewat refleksi.
+        return try{ Pair(field.name, field.forceGet(intent)!!) } //Dg anggapan pengambilan nilai dapat dilakukan lewat refleksi.
         catch (e: Exception){ null } //Jika ternyata refleksi dilarang oleh sistem.
     }
 
@@ -116,8 +121,8 @@ open class IntentConverter<I: ViewIntent>(var expirableView: ExpirableBase?, var
             stateProcessor?.postPreResult(intent, map)
             presenter?.postRequest(reqCode, map)
         }.isNull {
-            val clsName= this.classSimpleName()
-            val viewName= expirableView?.classSimpleName()
+            val clsName= javaClass.simpleName //classSimpleName()
+            val viewName= expirableView?.javaClass?.simpleName //classSimpleName()
             loge("$clsName.postRequest() view= $viewName.isExpired == TRUE")
             expirableView= null
         }

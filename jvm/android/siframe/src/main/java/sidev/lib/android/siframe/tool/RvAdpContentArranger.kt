@@ -4,7 +4,7 @@ package sidev.lib.android.siframe.tool
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.`fun`.AssertPropNotNullFun
-import sidev.lib.universal.`fun`.asNotNullTo
+import sidev.lib.check.asNotNullTo
 
 class RvAdpContentArranger<T> : ContentArranger<T>(), AssertPropNotNullFun{
     var rvAdp: SimpleRvAdp<T, *>?= null

@@ -1,18 +1,13 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
-import android.content.Context
-import android.content.Intent
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
-import sidev.lib.universal.`fun`.classSimpleName
 import java.lang.Exception
 
 abstract class BarContentNavAct_ViewPager<F: Frag>
@@ -75,7 +70,7 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
         set(v){
             field= v
             if(!v)
-                try{ setActBarTitle(this.classSimpleName()) }
+                try{ setActBarTitle(javaClass.simpleName) }
                 catch (e: Exception){}
         }
     override var isVpBackOnBackPressed: Boolean= true

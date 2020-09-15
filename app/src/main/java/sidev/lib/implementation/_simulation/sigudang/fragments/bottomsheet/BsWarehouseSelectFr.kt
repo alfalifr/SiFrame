@@ -4,9 +4,9 @@ import android.view.View
 import com.sigudang.android.Model.Warehouse
 import sidev.kuliah.agradia.template.adp.SimpleAbsRecyclerViewAdapter
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.collection.findIndexed
 import sidev.lib.implementation._simulation.sigudang.adapters.WarehouseLinearAdp
-import sidev.lib.universal.`fun`.findIndexed
-import sidev.lib.universal.`fun`.isNegative
+import sidev.lib.number.isNegative
 
 class BsWarehouseSelectFr : BsSimpleRv<WarehouseLinearAdp, Warehouse>(){
 //    private var dataList: ArrayList<Warehouse>? = warehouseList_full.toCollection(ArrayList())

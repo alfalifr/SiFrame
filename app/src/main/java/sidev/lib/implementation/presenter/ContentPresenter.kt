@@ -1,12 +1,13 @@
 package sidev.lib.implementation.presenter
 
 import sidev.lib.android.siframe.arch.presenter.*
+import sidev.lib.android.siframe.tool.util._ThreadUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.collection.copyGrowTimely
+import sidev.lib.collection.toArrayList
 import sidev.lib.implementation._cob.contentList
 import sidev.lib.implementation.util.Const
-import sidev.lib.universal.`fun`.copyGrowTimely
-import sidev.lib.universal.`fun`.toArrayList
-import sidev.lib.universal.tool.util.ThreadUtil
+import sidev.lib.jvm.tool.util.ThreadUtil
 
 class ContentPresenter(c: PresenterCallback<String, Int>?) : Presenter(c){
     companion object{
@@ -36,20 +37,20 @@ class ContentPresenter(c: PresenterCallback<String, Int>?) : Presenter(c){
     }
 
     fun login(uname: String){
-        ThreadUtil.delayRun(3000){
+        _ThreadUtil.delayRun(3000){
             if(uname == "uname")
                 postSucc(Const.RES_OK, null)
             else
                 postFail(0, msg= "Uname != uname :( uname= $uname")
         }
-        ThreadUtil.delayRun(5000){
+        _ThreadUtil.delayRun(5000){
             postFail(0, "Error login bro dari presenter")
         }
     }
 
     fun getContent(){
         loge("getContent()")
-        ThreadUtil.delayRun(3000){
+        _ThreadUtil.delayRun(3000){
             loge("getContent() ThreadUtil.delayRun(3000)")
             postSucc(Const.RES_OK, mapOf(Const.DATA_CONTENT to contentList.toArrayList().copyGrowTimely(8)))
         }

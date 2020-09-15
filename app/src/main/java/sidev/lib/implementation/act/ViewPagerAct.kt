@@ -13,7 +13,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
-import sidev.lib.universal.`fun`.classSimpleName
 
 class ViewPagerAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
 //    override val rvAdp: SimpleRvAdp<*, *>?= null
@@ -53,7 +52,7 @@ class ViewPagerAct : BarContentNavAct_ViewPager<Frag>(), TopMiddleBottomBase {
                 positionOffsetPixels: Int
             ) {}
             override fun onPageSelected(position: Int) {
-                val clsName= this.classSimpleName()
+                val clsName= javaClass.simpleName //this.classSimpleName()
                 loge("clsName= $clsName pos= $position")
             }
         })

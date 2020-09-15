@@ -8,8 +8,8 @@ import android.widget.TextView
 import sidev.lib.android.siframe.tool.util.`fun`.findView
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.asResEntryBy
+import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.notNull
 import sidev.lib.android.siframe.view.comp.NumberPickerComp as NB
 
 open class NumberPickerComp<I>(c: Context): NB<I>(c){

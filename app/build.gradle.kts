@@ -71,7 +71,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.0.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.0.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.0.0")
-    implementation(project(mapOf("path" to ":jvm:android:viewrap")))
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test.ext:junit:1.1.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
@@ -101,9 +100,19 @@ dependencies {
     //String match
     implementation("io.grpc:grpc-core:1.13.1")
     implementation("org.apache.commons:commons-lang3:3.6")
-    implementation(project("path" to ":jvm:universal"))
-    implementation(project("path" to ":jvm:android:siframe"))
-    implementation(project("path" to ":jvm:android:siframe:customizable"))
+
+
+    implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx")
+    implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x")
+    implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x")
+    implementation(project(":SiFrame"))
+    implementation(project(":SiFrame-Customizable"))
+    implementation(project(":Viewrap"))
+
+//    implementation(project(mapOf("path" to ":jvm:android:viewrap")))
+//    implementation(project("path" to ":jvm:universal"))
+//    implementation(project("path" to ":jvm:android:siframe"))
+//    implementation(project("path" to ":jvm:android:siframe:customizable"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4")
 }

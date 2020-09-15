@@ -3,7 +3,9 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.view.View
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.universal.`fun`.*
+import sidev.lib.check.asNotNull
+import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
 
 //import sidev.kuliah.agradia.R
 
@@ -36,8 +38,8 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
             this.asNotNull { act: BarContentNavAct ->
                 val title=
                     if(v) fragment.asNotNullTo { frag: Frag -> frag.fragTitle }
-                        ?: fragment.classSimpleName()
-                    else fragment.classSimpleName()
+                        ?: fragment.javaClass.simpleName //.classSimpleName()
+                    else fragment.javaClass.simpleName //.classSimpleName()
                 try{ act.setActBarTitle(title) }
                 catch (e: Exception){
                     /* Ini ditujukan agar saat terjadi kesalahan saat setActBarTitle()

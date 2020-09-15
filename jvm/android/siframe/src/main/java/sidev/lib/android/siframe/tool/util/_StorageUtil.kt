@@ -1,9 +1,8 @@
 package sidev.lib.android.siframe.tool.util
 
 import android.content.Context
-import android.util.Log
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.universal.tool.util.TimeUtil
+import sidev.lib.jvm.tool.util.TimeUtil
 
 object _StorageUtil{
 

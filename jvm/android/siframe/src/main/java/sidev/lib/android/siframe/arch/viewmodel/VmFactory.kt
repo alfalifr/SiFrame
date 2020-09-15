@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.arch.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
-import sidev.lib.universal.tool.util.ReflexUtil
+import sidev.lib.jvm.tool.util.ReflexUtil
 
 class VmFactory(val vmBase: ViewModelBase) : ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

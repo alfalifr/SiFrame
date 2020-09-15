@@ -6,7 +6,7 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.universal.`fun`.isNotNullAndEmpty
+import sidev.lib.collection.isNotNullAndEmpty
 
 interface BackBtnBase: ComplexLifecycleSideBase {
     //    val actBackBtn: Activity

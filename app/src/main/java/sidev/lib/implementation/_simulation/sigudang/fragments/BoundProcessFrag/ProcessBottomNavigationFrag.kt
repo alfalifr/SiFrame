@@ -10,11 +10,8 @@ import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
 import sidev.lib.android.siframe.tool.util.`fun`.addTxtNumberBy
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.isNull
-import sidev.lib.universal.`fun`.notNull
-import sidev.lib.universal.`fun`.round
+import sidev.lib.number.round
 import java.lang.Exception
-import sidev.lib.universal.`fun`.plus
 
 class ProcessBottomNavigationFrag : Frag(){
     override val layoutId: Int

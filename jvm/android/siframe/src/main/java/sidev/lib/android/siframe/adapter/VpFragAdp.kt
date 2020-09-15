@@ -9,7 +9,7 @@ import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.prop.ParentLifecycleProp
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.universal.exception.PropertyAccessExc
+import sidev.lib.exception.PropertyAccessExc
 import java.lang.Exception
 /*
 //class ViewPagerFragAdp (var fm: FragmentManager, vararg items: SimpleAbsFrag): PagerAdapter(){

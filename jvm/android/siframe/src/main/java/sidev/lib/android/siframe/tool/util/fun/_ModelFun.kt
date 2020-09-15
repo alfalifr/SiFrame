@@ -6,9 +6,7 @@ import androidx.core.util.isNotEmpty
 import androidx.core.util.set
 import sidev.lib.android.siframe.model.DataWithId
 import sidev.lib.android.siframe.model.FK_M
-import sidev.lib.universal.`fun`.indexOf
-import sidev.lib.universal.`fun`.search
-import sidev.lib.universal.`fun`.toArrayList
+import sidev.lib.collection.findIndexed
 
 
 fun <TO> FK_M<TO>?.toObjList(): ArrayList<TO>? {
@@ -73,7 +71,7 @@ fun <TO: DataWithId> FK_M<TO>?.tidyUp(): Boolean{
         objIdWithNoIdPairList[i]= obj.id
 
     this.toId.forEachIndexed { idInd, id ->
-        val objInd= this.toObj!!.indexOf { obj -> obj.id == id }
+        val objInd= this.toObj!!.findIndexed { (_, obj) -> obj.id == id }?.index ?: -1 //.indexOf { obj -> obj.id == id }
 
         //3. Jika ternyata ada toId yg tidak memiliki pasangan toObj, maka return false.
         if(objInd == -1) return false

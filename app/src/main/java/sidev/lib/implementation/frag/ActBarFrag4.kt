@@ -9,8 +9,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
-import sidev.lib.universal.`fun`.asNotNull
 
 class ActBarFrag4 : ActBarFrag(){
     override val layoutId: Int

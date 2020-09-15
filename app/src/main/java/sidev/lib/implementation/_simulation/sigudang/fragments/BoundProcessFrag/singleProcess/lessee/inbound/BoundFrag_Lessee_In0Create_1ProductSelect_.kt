@@ -7,7 +7,7 @@ import com.sigudang.android.fragments.BoundProcessFrag.*
 import kotlinx.android.synthetic.main._simul_sigud_fragment_bound_proses_bottom_btn.view.*
 //import kotlinx.android.synthetic.main.fragment_bound_proses_bottom_btn.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
-import sidev.lib.universal.`fun`.asNotNull
+import sidev.lib.check.asNotNull
 
 class BoundFrag_Lessee_In0Create_1ProductSelect_: BoundSingleProcessAbsFrag(){
 //    override val isOverviewVisible: Boolean
