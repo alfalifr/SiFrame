@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.arch.intent_state
 import android.content.Context
 import android.view.View
 import androidx.annotation.CallSuper
-import sidev.lib.android.external._AnkoInternals.runOnUiThread
+import sidev.lib.android.siframe._external._AnkoInternals.runOnUiThread
 import sidev.lib.android.siframe.arch.presenter.PresenterCallback
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewOwner

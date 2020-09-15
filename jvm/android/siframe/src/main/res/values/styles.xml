@@ -63,7 +63,8 @@
 
     </style>
 
-    <!-- ini untuk bottom sheet fragment -->
+<!--
+    <! - - ini untuk bottom sheet fragment - - >
 
     <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
@@ -72,5 +73,6 @@
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+-->
 
 </resources>

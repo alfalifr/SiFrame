@@ -150,6 +150,20 @@ publishing {
                         email.set("fathf48@gmail.com")
                     }
                 }
+
+                withXml {
+                    val dependenciesNode = asNode().appendNode("dependencies")
+
+                    //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                    configurations.implementation.get().allDependencies.forEach {
+                        if(it.group?.startsWith("sidev.lib") == true){
+                            val dependencyNode = dependenciesNode.appendNode("dependency")
+                            dependencyNode.appendNode("groupId", it.group)
+                            dependencyNode.appendNode("artifactId", it.name)
+                            dependencyNode.appendNode("version", it.version)
+                        }
+                    }
+                }
             }
         }
     }
@@ -186,7 +200,9 @@ publishing {
     }
 }
 
-tasks["bintrayUpload"].dependsOn("bundleReleaseAar")
-tasks["bintrayUpload"].dependsOn("publishToMavenLocal")
+tasks["bintrayUpload"].apply {
+    dependsOn("bundleReleaseAar")
+    dependsOn("publishToMavenLocal")
+}
 
 // */

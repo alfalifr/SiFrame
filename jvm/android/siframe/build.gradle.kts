@@ -49,14 +49,16 @@ plugins{
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("com.github.dcendents.android-maven")
-//    id("base")
     id("maven-publish")
 }
 
 group= GROUP_ID //"sidev.lib.jvm.android"
 version= LIBRARY_VERSION_NAME //"1.0cob"
 
+apply("plugin" to "com.android.library")
 apply("plugin" to "maven-publish")
+apply("plugin" to "kotlin-android")
+apply("plugin" to "kotlin-android-extensions")
 apply("plugin" to "com.jfrog.bintray")
 //apply("from" to "setting.properties")
 
@@ -112,11 +114,11 @@ dependencies {
 
 //    implementation(project("path" to ":jvm:universal"))
     //SidevLib
-    implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx")
-    implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x")
-    implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x")
-    implementation(project(":Android-External"))
-    implementation(project(":SiFrame-Customizable"))
+    implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x") //{ isTransitive= true }
+//    implementation(project(":Android-External")) //{ isTransitive= true }
+//    implementation(project(":SiFrame-Customizable"))
 
 //    implementation(project("path" to ":jvm:android:external"))
 //    implementation(project("path" to ":jvm:android:siframe:customizable"))
@@ -133,14 +135,14 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
 
     //Untuk nertwok
-    implementation("com.android.volley:volley:1.1.1")
-    implementation("com.loopj.android:android-async-http:1.4.9")
+    implementation("com.android.volley:volley:1.1.1") //{ isTransitive= true }
+    implementation("com.loopj.android:android-async-http:1.4.9") //{ isTransitive= true }
 
     //Gson
-    implementation("com.google.code.gson:gson:2.8.6")
+//    implementation("com.google.code.gson:gson:2.8.6")
 //    implementation(kotlinModule("reflect", "1.3.72"))
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") //{ isTransitive= true }
 }
 // */
 
@@ -257,6 +259,20 @@ publishing {
                         email.set("fathf48@gmail.com")
                     }
                 }
+
+                withXml {
+                    val dependenciesNode = asNode().appendNode("dependencies")
+
+                    //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                    configurations.implementation.get().allDependencies.forEach {
+                        if(it.group != null && it.version != null){
+                            val dependencyNode = dependenciesNode.appendNode("dependency")
+                            dependencyNode.appendNode("groupId", it.group)
+                            dependencyNode.appendNode("artifactId", it.name)
+                            dependencyNode.appendNode("version", it.version)
+                        }
+                    }
+                }
             }
         }
     }
@@ -268,7 +284,28 @@ tasks.register ("testOh") {
     doFirst {
         println("test inside testOh ....  ${properties["bintray"]!!::class}")
         println("test inside testOh ....  ${sourceSets}")
-        println("test inside testOh ....  ${components.getByName("java")}")
+//        println("test inside testOh ....  ${components.getByName("java")}")
+        println("tasks= $tasks")
+        for((i, t) in tasks.withIndex()){
+            println("i= $i task= $t")
+        }
+        println("\n========== preReleaseBuild ================ \n")
+        for((i, d) in tasks["preReleaseBuild"].dependsOn.withIndex()){
+            println("i= $i dependsOn= $d")
+        }
+        println("\n========== preBuild ================ \n")
+        for((i, d) in tasks["preBuild"].dependsOn.withIndex()){
+            println("i= $i dependsOn= $d")
+        }
+        println("\n========== properties ================ \n")
+        for((i, p) in properties.entries.withIndex()){
+            println("i= $i prop= $p")
+        }
+        println("\n========== components ================ \n")
+        for((i, p) in components.withIndex()){
+            println("i= $i comp= ${p.name}")
+        }
+        println("components[\"release\"]= ${components["release"]}")
     }
 }
 
@@ -302,7 +339,7 @@ tasks.register ("testOh") {
     }
 }
 
-tasks["bintrayUpload"].dependsOn("bundleReleaseAar")
-tasks["bintrayUpload"].dependsOn("publishToMavenLocal")
-
-// */
+tasks["bintrayUpload"].apply {
+    dependsOn("bundleReleaseAar")
+    dependsOn("publishToMavenLocal")
+}

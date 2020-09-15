@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import sidev.lib.android.siframe._external._AnkoInternals
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
@@ -170,7 +171,7 @@ fun <T: Activity> Context.startAct(actClass: Class<out T>, vararg params: Pair<S
         else { inParamsSize = params.size; null }
     val inParams= Array(inParamsSize){ if(it < params.size) params[it] else callingLifeCycleName!! }
 
-    val intent= sidev.lib.android.external._AnkoInternals.createIntent(this, actClass, inParams)
+    val intent= _AnkoInternals.createIntent(this, actClass, inParams)
     if(!waitForResult || this !is Activity)
         startActivity(intent)
     else{
@@ -204,7 +205,7 @@ fun <T: Activity> Fragment.startAct(actClass: Class<out T>, vararg params: Pair<
     val callingLifeCycleName= Pair(_SIF_Constant.CALLING_LIFECYCLE, this::class.java.name)
     val inParams= Array(params.size +1){ if(it < params.size) params[it] else callingLifeCycleName!! }
 
-    val intent= sidev.lib.android.external._AnkoInternals.createIntent(context!!, actClass, inParams)
+    val intent= _AnkoInternals.createIntent(context!!, actClass, inParams)
     if(!waitForResult)
         startActivity(intent)
     else{
@@ -282,12 +283,12 @@ inline fun <reified T: Fragment> Fragment.startSingleFragAct_config(vararg param
 
 
 fun Activity.setResult(vararg params: Pair<String, Any?>, resCode: Int= Activity.RESULT_OK, isFinished: Boolean= true) {
-    val intent= sidev.lib.android.external._AnkoInternals.createIntent<Any>(params = params)
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
     setResult(resCode, intent)
     if(isFinished) this.finish()
 }
 fun Fragment.setResult(vararg params: Pair<String, Any?>, resCode: Int= Activity.RESULT_OK, isFinished: Boolean= true) {
-    val intent= sidev.lib.android.external._AnkoInternals.createIntent<Any>(params = params)
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
     activity!!.setResult(resCode, intent)
     if(isFinished) activity!!.finish()
 }

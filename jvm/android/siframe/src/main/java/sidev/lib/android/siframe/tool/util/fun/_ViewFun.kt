@@ -14,7 +14,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.layoutInflater
-import sidev.lib.android.external._AnkoInternals.runOnUiThread
+import sidev.lib.android.siframe._external._AnkoInternals.runOnUiThread
 //import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.tool.`var`._SIF_Constant
