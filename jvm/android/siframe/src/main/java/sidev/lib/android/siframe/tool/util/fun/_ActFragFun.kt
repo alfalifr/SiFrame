@@ -38,9 +38,11 @@ val Context.fragManager: FragmentManager?
         else -> null
     }
 
+@JvmOverloads
 fun Context.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     Toast.makeText(this, msg, length).show()
 }
+@JvmOverloads
 fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
     context?.toast(msg, length)
 }
@@ -53,6 +55,7 @@ fun Fragment.toast(msg: String, length: Int= Toast.LENGTH_LONG){
  *   belum terdapat fragment dg tag [tag],
  *   -> atau fragment sebelumnya yg sudah terdapat pada `this.extension` dg tag [tag].
  */
+@JvmOverloads
 fun FragmentManager.commitFrag(fragment: Fragment,
                        fragContainerView: ViewGroup?= null,
                        @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
@@ -83,12 +86,13 @@ fun FragmentManager.commitFrag(fragment: Fragment,
     return fragment
 }
 
+@JvmOverloads
 fun FragmentActivity.commitFrag(fragment: Fragment,
                                  fragContainerView: ViewGroup?= null,
                                  @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
                                  tag: String= fragment::class.java.name, forceReplace: Boolean= true): Fragment
     = supportFragmentManager.commitFrag(fragment, fragContainerView, fragContainerId, tag, forceReplace)
-
+@JvmOverloads
 fun Fragment.commitFrag(fragment: Fragment,
                         fragContainerView: ViewGroup?= null,
                         @IdRes fragContainerId: Int= fragContainerView?.id ?: View.NO_ID,
@@ -163,7 +167,7 @@ val Activity.actReqCode: Int?
 val Fragment.actReqCode: Int?
     get()= getIntent(_SIF_Constant.REQ_CODE)
 
-
+@JvmOverloads
 fun <T: Activity> Context.startAct(actClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
     var inParamsSize= params.size +1
     val callingLifeCycleName=
@@ -199,7 +203,7 @@ inline fun <reified T: Activity> Context.startAct(vararg params: Pair<String, An
     }
 }
  */
-
+@JvmOverloads
 fun <T: Activity> Fragment.startAct(actClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
 //    context!!.startAct<T>(*params)
     val callingLifeCycleName= Pair(_SIF_Constant.CALLING_LIFECYCLE, this::class.java.name)
@@ -217,7 +221,7 @@ inline fun <reified T: Activity> Fragment.startAct(vararg params: Pair<String, A
     this.startAct(T::class.java, *params, waitForResult= waitForResult, reqCode= reqCode)
 }
 
-
+@JvmOverloads
 fun <T: Fragment> Context.startSingleFragAct(fragClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, isCustomActBar: Boolean= true) {
     startAct<SingleFragAct_Simple>(
         SingleFragAct_Simple::class.java,
@@ -249,7 +253,7 @@ inline fun <reified T: Fragment> Context.startSingleFragAct_config(vararg params
     )
 }
 
-
+@JvmOverloads
 fun <T: Fragment> Fragment.startSingleFragAct(fragClass: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, customActBar: Boolean= true) {
     startAct<SingleFragAct_Simple>(
         SingleFragAct_Simple::class.java,
@@ -281,12 +285,13 @@ inline fun <reified T: Fragment> Fragment.startSingleFragAct_config(vararg param
     )
 }
 
-
+@JvmOverloads
 fun Activity.setResult(vararg params: Pair<String, Any?>, resCode: Int= Activity.RESULT_OK, isFinished: Boolean= true) {
     val intent= _AnkoInternals.createIntent<Any>(params = params)
     setResult(resCode, intent)
     if(isFinished) this.finish()
 }
+@JvmOverloads
 fun Fragment.setResult(vararg params: Pair<String, Any?>, resCode: Int= Activity.RESULT_OK, isFinished: Boolean= true) {
     val intent= _AnkoInternals.createIntent<Any>(params = params)
     activity!!.setResult(resCode, intent)

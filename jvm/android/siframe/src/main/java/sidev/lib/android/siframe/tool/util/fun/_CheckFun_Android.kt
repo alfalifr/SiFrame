@@ -22,6 +22,7 @@ import java.lang.NullPointerException
  * Tujuan dari fungsi ini hanya sbg pengecek type-safety [paramInput] saat pertama kali diinput
  * ke [func].
  */
+@JvmOverloads
 inline fun <T, O> runWithParamTypeSafety(
     runningCls: Class<*>,
     func: (T) -> O,

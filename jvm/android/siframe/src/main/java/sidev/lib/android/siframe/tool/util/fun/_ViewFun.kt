@@ -200,6 +200,7 @@ inline fun <reified T: View> View.findViewByType(
  * @return view dg tipe [T]. View dapat berupa child, parent, ataupun
  *   view tempat fungsi ini menempel.
  */
+@JvmOverloads
 fun <T: View> View.findViewByType(
     clazz: Class<T>,
     direction: Int= _SIF_Constant.DIRECTION_DOWN,
@@ -246,6 +247,7 @@ inline fun <reified T: View> View.findView(
  * @return view dg spesifikasi yg diinputkan
  *   dan null jika tidak ada view yg cocok dalam hirarki.
  */
+@JvmOverloads
 fun <T: View> View.findView(
     clazz: Class<T>,
     @IdRes id: Int?= null,
@@ -307,6 +309,7 @@ fun View.changeView(layoutId: Int): View? {
  * @return -> [View] hasil inflate dari [layoutId],
  *   -> null jika `this.extension` dan parent bkn merupakan [ViewGroup] atau jika [layoutId] tidak bisa di-inflate.
  */
+@JvmOverloads
 fun View.addView(layoutId: Int, index: Int= -1): View? {
     return when(this){
         is ViewGroup -> this
@@ -348,6 +351,7 @@ fun ViewGroup.detachAllViews(): List<View>{
 }
 
 /** @return [ViewGroup] yg menjadi tempat [v] menempel sebelumnya, null jika [v] sebelumnya tidak nempel pada ViewGroup apapun. */
+@JvmOverloads
 fun ViewGroup.forcedAddView(v: View, index: Int= childCount): ViewGroup? {
     val previousVg= v.detachFromParent()
     addView(v, index)
@@ -435,11 +439,12 @@ fun ImageView.setBgColorRes(@ColorRes colorId: Int){
     _ViewUtil.setColorRes(this, colorId)
 }
 
-
+@JvmOverloads
 fun Context.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View? {
     return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
     catch (e: Resources.NotFoundException){ null }
 }
+@JvmOverloads
 fun Fragment.inflate(layoutId: Int, vg: ViewGroup?= null, attachToRoot: Boolean= false): View? {
     return try{ this.layoutInflater.inflate(layoutId, vg, attachToRoot) }
     catch (e: Resources.NotFoundException){ null }
@@ -493,6 +498,7 @@ fun ViewGroup.withIndex() = object : MutableIterator<Pair<Int, View>> {
  *   segera dihilangkan ([ViewTreeObserver.removeOnGlobalLayoutListener]) setelah listener dipanggil.
  * @param l ada kode fungsi listener.
  */
+@JvmOverloads
 fun View.addOnGlobalLayoutListener(justOnce: Boolean= true, l: (View) -> Unit): ViewTreeObserver.OnGlobalLayoutListener{
     val innerL= object: ViewTreeObserver.OnGlobalLayoutListener{
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -527,6 +533,7 @@ var TextView.txt: String
  * @return jml setelah ditambah [diff], null jika ternyata `this.extension` [TextView.getText]
  *   sebelumnya bkn merupakan Number.
  */
+@JvmOverloads
 fun TextView.addTxtNumberBy(diff: Number, roundDigitPlace: Int?= null): Number?{
     return try{
         var res= text.toString().toNumber() + diff
