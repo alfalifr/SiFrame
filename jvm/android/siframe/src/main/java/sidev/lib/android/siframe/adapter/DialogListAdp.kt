@@ -6,14 +6,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.StringId
 
-class DialogListAdp(ctx: Context, dataList: ArrayList<StringId>?)
-    : RvAdp<StringId, LinearLayoutManager>(ctx, dataList){
-    override val itemLayoutId: Int
-        get() = _Config.LAYOUT_COMP_ITEM_TXT_DESC
 
-    override fun bindVH(vh: SimpleViewHolder, pos: Int, data: StringId) {
-        vh.itemView.findViewById<TextView>(_Config.ID_TV).text= data.str
-    }
+open class DialogListAdp<T>(ctx: Context, dataList: ArrayList<T>?)
+    : AnyToStringAdp<T, LinearLayoutManager>(ctx, dataList){ //RvAdp<StringId, LinearLayoutManager>(ctx, dataList){
+    constructor(ctx: Context): this(ctx, null)
+
+    //Jadi `var` agar dapat dg mudah diubah lewat `DialogListView`
+//    override var searchFilterFun: (data: T, keyword: String) -> Boolean = super.searchFilterFun
+
+    override fun getString(pos: Int, data: T): String =
+        if(data !is StringId) data.toString() else data.str
+    override fun getId(pos: Int, data: T): String =
+        if(data !is StringId) pos.toString() else data.id
 
     override fun setupLayoutManager(context: Context): LinearLayoutManager {
         return LinearLayoutManager(context)

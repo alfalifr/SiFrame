@@ -10,7 +10,7 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
 
-class DialogConfirmationView(c: Context): DialogAbsView<DialogConfirmationView>(c){
+open class DialogConfirmationView(c: Context): DialogAbsView<DialogConfirmationView>(c){
     override val layoutId: Int
         get() = _Config.LAYOUT_DIALOG_CONFIRM
 

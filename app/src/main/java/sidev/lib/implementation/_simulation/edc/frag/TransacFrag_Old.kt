@@ -49,8 +49,8 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
     val totalData= LifeData<Int>()
     val shownData= LifeData<Int>()
 
-    lateinit var dialogSort: DialogListView
-    lateinit var dialogFilter: DialogListView
+    lateinit var dialogSort: DialogListView<StringId>
+    lateinit var dialogFilter: DialogListView<StringId>
     lateinit var dialogDuplicate: DialogConfirmationView
     var sortFun: ((Int, Transaction, Int, Transaction) -> Boolean)?= null
     var filterFun: ((Int, Transaction) -> Boolean)?= null
@@ -128,7 +128,7 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
     fun initDialog(){
         dialogSort= DialogListView(context!!)
         dialogSort.setTitle("Sort")
-        dialogSort.updateData(sortMenu)
+        dialogSort.dataList= sortMenu
         dialogSort.setOnItemClickListener { v, pos, data ->
             loge("sort data.id= ${data.id}")
             sortFun= when(data.id){
@@ -147,8 +147,8 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
                 else -> null
             }
         }
-        dialogSort.btnListener= object: DialogListView.DialogListBtnListener{
-            override fun onRightBtnClick(dialog: DialogListView, v: View) {
+        dialogSort.btnListener= object: DialogListView.DialogListBtnListener<StringId>{
+            override fun onRightBtnClick(dialog: DialogListView<StringId>, v: View) {
                 if(sortFun != null){
                     timeStart= System.currentTimeMillis()
                     rvAdp_old.sort(sortFun!!)
@@ -167,7 +167,7 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
                 }
                 dialog.cancel()
             }
-            override fun onLeftBtnClick(dialog: DialogListView, v: View) { dialog.cancel() }
+            override fun onLeftBtnClick(dialog: DialogListView<StringId>, v: View) { dialog.cancel() }
         }
         dialogSort.showtBtnAction()
         dialogSort.setRightBtnString("Ok")
@@ -175,7 +175,7 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
 
         dialogFilter= DialogListView(context!!)
         dialogFilter.setTitle("Filter")
-        dialogFilter.updateData(filterMenu)
+        dialogFilter.dataList= filterMenu
         dialogFilter.setOnItemClickListener { v, pos, data ->
             loge("filter data.id= ${data.id}")
             filterFun= when(data.id){
@@ -186,8 +186,8 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
                 else -> null
             }
         }
-        dialogFilter.btnListener= object: DialogListView.DialogListBtnListener{
-            override fun onRightBtnClick(dialog: DialogListView, v: View) {
+        dialogFilter.btnListener= object: DialogListView.DialogListBtnListener<StringId>{
+            override fun onRightBtnClick(dialog: DialogListView<StringId>, v: View) {
                 if(filterFun != null){
                     timeStart= System.currentTimeMillis()
                     rvAdp_old.filter(filterFun!!)
@@ -197,7 +197,7 @@ class TransacFrag_Old : Frag(), TopMiddleBottomBase{
                 }
                 dialog.cancel()
             }
-            override fun onLeftBtnClick(dialog: DialogListView, v: View) { dialog.cancel() }
+            override fun onLeftBtnClick(dialog: DialogListView<StringId>, v: View) { dialog.cancel() }
         }
         dialogFilter.showtBtnAction()
         dialogFilter.setRightBtnString("Ok")

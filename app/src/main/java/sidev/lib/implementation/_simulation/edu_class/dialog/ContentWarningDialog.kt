@@ -10,7 +10,7 @@ import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 
-class ContentWarningDialog(c: Context) : DialogAbsView<ContentWarningDialog>(c){
+open class ContentWarningDialog(c: Context) : DialogAbsView<ContentWarningDialog>(c){
     override val layoutId: Int
         get() = R.layout._simul_edu_dialog_content_frag_quiz
 

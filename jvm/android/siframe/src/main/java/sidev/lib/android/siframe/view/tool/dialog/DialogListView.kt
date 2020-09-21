@@ -13,20 +13,28 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.StringId
 import sidev.lib.android.siframe.tool.util._ViewUtil
 
-class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
+open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     override val layoutId: Int
         get() = _Config.LAYOUT_DIALOG_LIST //R.layout.dialog_list
 
-    private lateinit var adp: DialogListAdp //DialogListAdapter
+    private lateinit var adp: DialogListAdp<T> //DialogListAdapter
     private lateinit var rv: RecyclerView
-    private lateinit var autoTv: AppCompatAutoCompleteTextView
+//    private lateinit var autoTv: AppCompatAutoCompleteTextView
     private lateinit var btnActionContainer: RelativeLayout
+
+    var dataList: List<T>?
+        get()= adp.dataList
+        set(v){
+            adp.dataList= if(v is ArrayList) v
+            else v?.toMutableList() as? ArrayList
+            setNoDataViewVisible(noDataViewVis && v.isNullOrEmpty())
+        }
 /*
     var clickListener: DialogListAdapter.DialogListClickListener?= null
     var bindListener: DialogListAdapter.DialogListBindListener?= null
  */
-    var filterListener: DialogListFilterListener?= null
-    var btnListener: DialogListBtnListener?= null
+    var filterListener: DialogListFilterListener<T>?= null
+    var btnListener: DialogListBtnListener<T>?= null
 /*
     var ivEnabled= false
         set(v){
@@ -36,13 +44,17 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
  */
 
     var noDataViewVis= false
+        set(v){
+            field= v
+            setNoDataViewVisible(v && dataList.isNullOrEmpty())
+        }
 
-    interface DialogListFilterListener{
-        fun onFilterItemClick(v: View, pos: Int, data: String)
+    interface DialogListFilterListener<T>{
+        fun onFilterItemClick(v: View, pos: Int, data: T)
     }
-    interface DialogListBtnListener{
-        fun onRightBtnClick(dialog: DialogListView, v: View)
-        fun onLeftBtnClick(dialog: DialogListView, v: View)
+    interface DialogListBtnListener<T>{
+        fun onRightBtnClick(dialog: DialogListView<T>, v: View)
+        fun onLeftBtnClick(dialog: DialogListView<T>, v: View)
     }
 
     override fun initView(dialogView: View) {
@@ -57,7 +69,9 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adp.searchItem(s.toString())
+//                adp.searchItem(s.toString())
+                if(s != null)
+                    adp.searchByString(s.toString())
             }
         })
 /*
@@ -93,10 +107,11 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
         setLeftBtnString("Batal")
         setRightBtnString("Pilih")
     }
-
-    fun getListData(): ArrayList<StringId>?{
+/*
+    fun getListData(): ArrayList<T>?{
         return adp.dataList
     }
+ */
 /*
     fun setItemClickListener(func: (v: View?, selected: Boolean, pos: Int, stringId: LabelId<T>, item: MenuItem?) -> Unit): DialogListView<T> {
         clickListener= object: DialogListAdp<T>.DialogListClickListener{
@@ -121,23 +136,23 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
     }
  */
 
-    fun setFilterClickListener(func: (v: View?, pos: Int, data: String) -> Unit): DialogListView {
-        filterListener= object: DialogListFilterListener {
-            override fun onFilterItemClick(v: View, pos: Int, data: String) {
+    fun setFilterClickListener(func: (v: View?, pos: Int, data: T) -> Unit): DialogListView<T> {
+        filterListener= object: DialogListFilterListener<T> {
+            override fun onFilterItemClick(v: View, pos: Int, data: T) {
                 func(v, pos, data)
             }
         }
         return this
     }
 
-    fun setOnItemClickListener(func: ((v: View?, pos: Int, data: StringId) -> Unit)?){
+    fun setOnItemClickListener(func: ((v: View?, pos: Int, data: T) -> Unit)?){
         adp.setOnItemClickListener { v, pos, data ->
             func?.invoke(v, pos, data)
         }
     }
 
 
-    fun selectItem(pos: Int): DialogListView {
+    fun selectItem(pos: Int): DialogListView<T> {
         adp.selectItem(pos)
         return this
     }
@@ -153,7 +168,7 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
     }
  */
 
-    fun setSearchBarVisible(visible: Boolean): DialogListView {
+    fun setSearchBarVisible(visible: Boolean): DialogListView<T> {
         val vis= if(visible) View.VISIBLE
         else View.GONE
         layoutView.findViewById<View>(_Config.ID_LL_SEARCH_CONTAINER_OUTER).visibility= vis //.ll_search_container_outer.visibility= vis
@@ -169,7 +184,7 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
     }
  */
 
-    fun setNoDataViewVisible(visible: Boolean): DialogListView {
+    fun setNoDataViewVisible(visible: Boolean): DialogListView<T> {
         val vis= if(visible) View.VISIBLE
         else View.GONE
         findView<View>(_Config.ID_TV_NO_DATA).visibility= vis //R.id.tv_no_data
@@ -177,12 +192,12 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
         return this
     }
 
-    fun setNoDataString(str: String): DialogListView {
+    fun setNoDataString(str: String): DialogListView<T> {
         findView<TextView>(_Config.ID_TV_NO_DATA).text= str
         return this
     }
 
-    fun showtBtnAction(show: Boolean= true): DialogListView {
+    fun showtBtnAction(show: Boolean= true): DialogListView<T> {
         val vis= if(show) View.VISIBLE
         else View.GONE
         findView<View>(_Config.ID_RL_BTN_CONTAINER) //R.id.rl_btn_container
@@ -190,20 +205,21 @@ class DialogListView(c: Context): DialogAbsView<DialogListView>(c){
         return this
     }
 
-    fun setRightBtnString(str: String): DialogListView {
+    fun setRightBtnString(str: String): DialogListView<T> {
         btnActionContainer.findViewById<Button>(_Config.ID_BTN_RIGHT).text= str
         return this
     }
-    fun setLeftBtnString(str: String): DialogListView {
+    fun setLeftBtnString(str: String): DialogListView<T> {
         btnActionContainer.findViewById<Button>(_Config.ID_BTN_LEFT).text= str
         return this
     }
-
-    fun updateData(data: ArrayList<StringId>?){
+/*
+    fun updateData(data: ArrayList<T>?){
 //        adp.updateData(data, true)
         adp.dataList= data
         setNoDataViewVisible(noDataViewVis && data.isNullOrEmpty())
     }
+// */
 /*
     <2 Juni 2020> <Selesai:0>
     fun <T2> updateDataOfGeneric(data: Collection<T2>,
