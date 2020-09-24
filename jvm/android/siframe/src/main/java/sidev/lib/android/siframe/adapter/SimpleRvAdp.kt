@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
@@ -344,13 +345,14 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     fun notifyDataSetChanged_(f: (() -> Unit)= {}){
+        @Suppress(SuppressLiteral.UNCHECKED_CAST)
         val lm= rv?.layoutManager as LM?
         if(lm != null){
-            val recyclerViewState= rv!!.layoutManager?.onSaveInstanceState()
+//            val recyclerViewState= rv!!.layoutManager?.onSaveInstanceState()
             f()
             notifyDataSetChanged()
 //            Log.e(this::class.java.simpleName, "notifyDatasetChenged!!! name= ${this::class.java.simpleName}")
-            rv!!.layoutManager?.onRestoreInstanceState(recyclerViewState)
+//            rv!!.layoutManager?.onRestoreInstanceState(recyclerViewState)
         }
     }
 

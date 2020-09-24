@@ -242,6 +242,17 @@ inline fun <reified T: Fragment> Context.startSingleFragAct(vararg params: Pair<
     )
 }
 
+@JvmOverloads
+fun <T: Fragment> Context.startSingleFragAct_config(fragCls: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, isCustomActBar: Boolean= true) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragCls.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
 inline fun <reified T: Fragment> Context.startSingleFragAct_config(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, isCustomActBar: Boolean= true) {
     startAct(
         _SIF_Config.CLASS_SINGLE_FRAG_ACT,
@@ -274,6 +285,17 @@ inline fun <reified T: Fragment> Fragment.startSingleFragAct(vararg params: Pair
     )
 }
 
+@JvmOverloads
+fun <T: Fragment> Fragment.startSingleFragAct_config(fragCls: Class<out T>, vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, customActBar: Boolean= true) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragCls.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
 inline fun <reified T: Fragment> Fragment.startSingleFragAct_config(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0, customActBar: Boolean= true) {
     startAct(
         _SIF_Config.CLASS_SINGLE_FRAG_ACT,

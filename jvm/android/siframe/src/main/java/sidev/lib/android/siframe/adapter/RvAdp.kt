@@ -45,6 +45,8 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             field= v
             if(!isInternalEdit)
                 resetDataToInitial()
+            else
+                notifyDataSetChanged_()
 //                dataListFull= v
             updateData_int(v, isInternalEdit)
 

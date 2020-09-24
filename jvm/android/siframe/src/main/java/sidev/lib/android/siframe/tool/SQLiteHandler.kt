@@ -50,6 +50,8 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
         val ERROR= "error"
     }
 
+    open val prefixName: String= "_\$USER\$_"
+
     lateinit var sqliteHelper: SQLiteOpenHelper
         private set
     var isDbOpen= true
@@ -57,7 +59,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
 
     var primaryKey: String= ""
         protected set
-    lateinit var tableName: String
+    var tableName: String= createTableName()
         protected set
     protected abstract val modelClass: Class<M>
 
@@ -109,7 +111,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
     abstract fun createModel(petaNilai: Map<String, *>): M
 
     fun initHandler(){
-        tableName= createTableName()
+//        tableName= createTableName()
         readAttribFromModel()
     }
 
@@ -158,8 +160,8 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
     }
 
     open fun createTableName(): String{
-        var namaTabel= modelClass.simpleName
-        return StringUtil.toSnakeCase(namaTabel)
+        val namaTabel= modelClass.simpleName
+        return prefixName + StringUtil.toSnakeCase(namaTabel)
     }
 
     fun tableExists(tableName: String= this.tableName): Boolean{
@@ -237,16 +239,17 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
         val attribTypeList= ArrayList<String>(attribCount)
         for(i in 0 until attribCount){
             //Tidak mengambil private prop
-
+/*
             val pub= Modifier.isPublic(attribs[i].modifiers)
             val pro= Modifier.isProtected(attribs[i].modifiers)
             val priv= Modifier.isPrivate(attribs[i].modifiers)
             val isAc= attribs[i].isAccessible
+ */
 
             val field= attribs[i]
             val attName= field.name
 //            loge("attName= $attName pub= $pub pro= $pro priv= $priv isAc= $isAc")
-
+            //TODO: Data yg disimpan hanya berupa primitif
             if(!attName.startsWith("_")){
                 var type= when(field.type){
                     Int::class.java -> "INTEGER"
@@ -282,7 +285,7 @@ abstract class SQLiteHandler<M: DataWithId>(val ctx: Context/*= App.ctx*/){
                         }
                     attribTypeList.add(type)
 
-                    val i= attribNameList.lastIndex
+//                    val i= attribNameList.lastIndex
 //                    loge("attribFieldList[$i] = ${attribFieldList[i]} attribNameList[$i] = ${attribNameList[i]} attribTypeList[$i] = ${attribTypeList[i]}")
                 }
 /*
@@ -362,7 +365,7 @@ Koneksi
             sqliteHelper= object: SQLiteOpenHelper(ctx, _Config.DB_NAME, null, _Config.DB_VERSION){
                 override fun onCreate(db: SQLiteDatabase?) {
                     var queryPembuatanTabel= "CREATE TABLE $tableName ("
-                    for(i in 0 until attribName.size){
+                    for(i in attribName.indices){
                         queryPembuatanTabel += "${attribName[i]} ${attribType[i]}"
                         if(i < attribName.size -1)
                             queryPembuatanTabel += ", "
