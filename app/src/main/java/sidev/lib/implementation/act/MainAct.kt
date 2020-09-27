@@ -58,6 +58,7 @@ class MainAct : BarContentNavAct() {
     fun toVpPageFrag2(v: View)= startSingleFragAct_config<VpImpl2Frag>()
     fun toRvFragDbPage(v: View)= startSingleFragAct_config<RvDbFrag>()
     fun toListAllDbPage(v: View)= startSingleFragAct_config<ListAllDbFrag>()
+    fun toPolarEcgDbFrag(v: View)= startSingleFragAct_config<PolarEcgDbFrag>()
     fun toRadioFrag(v: View)= startSingleFragAct_config<RadioFrag>()
     fun toContentVmFrag(v: View)= startSingleFragAct_config<ContentVmFrag>()
     fun toContentMviFrag(v: View)= startSingleFragAct_config<ContentMviFrag>()

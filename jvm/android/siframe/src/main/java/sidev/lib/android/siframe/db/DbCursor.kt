@@ -1,11 +1,13 @@
 package sidev.lib.android.siframe.db
 
 import android.database.Cursor
+import androidx.core.database.getBlobOrNull
 import androidx.core.database.getDoubleOrNull
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.console.prine
 
 /** Wrapper dari [Cursor] yg disesuaikan dg gaya bahasa Kotlin. */
 open class DbCursor(val delegate: Cursor): Iterable<List<Pair<String, Any?>>> {
@@ -74,23 +76,31 @@ open class DbCursor(val delegate: Cursor): Iterable<List<Pair<String, Any?>>> {
         Cursor.FIELD_TYPE_STRING -> delegate.getStringOrNull(columnIndex)
         Cursor.FIELD_TYPE_INTEGER -> delegate.getIntOrNull(columnIndex)
         Cursor.FIELD_TYPE_FLOAT -> delegate.getDoubleOrNull(columnIndex)
+        Cursor.FIELD_TYPE_BLOB -> delegate.getBlobOrNull(columnIndex)
         else -> null
     } as T
 
     @Suppress(SuppressLiteral.UNCHECKED_CAST, SuppressLiteral.IMPLICIT_CAST_TO_ANY)
     operator fun <T> get(rowIndex: Int, columnIndex: Int): T{
         val beforeRowNumber= currentRowNumber
-        val res= (if(moveToPosition(rowIndex)){
-            when(getType(columnIndex)){
-                Cursor.FIELD_TYPE_STRING -> delegate.getStringOrNull(columnIndex)
-                Cursor.FIELD_TYPE_INTEGER -> delegate.getIntOrNull(columnIndex)
-                Cursor.FIELD_TYPE_FLOAT -> delegate.getDoubleOrNull(columnIndex)
-                else -> null
-            }
-        } else null) as T
+        val res= (
+                if(moveToPosition(rowIndex)) get<T>(columnIndex) //.also{ loge("DbCursor.get($rowIndex, $columnIndex)= $it") }
+                else null
+        )
 
         currentRowNumber= beforeRowNumber
-        return res
+        return res as T
+    }
+
+    /**
+     * Mengambil data untuk semua kolom pada row skrg instance DbCursor ini berada.
+     * Array yg dikembalikan (return) memiliki urutan kolom yg sama dg urutan [columnNames].
+     */
+    fun getValuesAtCurrentRow(): Array<Any?>{
+        return arrayOfNulls<Any>(columnCount).apply {
+            for(i in indices)
+                this[i]= this@DbCursor[i]
+        }
     }
 
     fun getAllColumnAtRow(rowIndex: Int): List<Pair<String, Any?>>{
@@ -125,7 +135,7 @@ open class DbCursor(val delegate: Cursor): Iterable<List<Pair<String, Any?>>> {
         }
         return resList
     }
-
+///*
     override operator fun iterator(): Iterator<List<Pair<String, Any?>>> = object : Iterator<List<Pair<String, Any?>>>{
         var itrHasStarted= false
         var index: Int= 0
@@ -133,4 +143,5 @@ open class DbCursor(val delegate: Cursor): Iterable<List<Pair<String, Any?>>> {
             if(!itrHasStarted) moveToFirst().also { itrHasStarted= true } else moveToNext()
         override fun next(): List<Pair<String, Any?>> = getAllColumnAtRow(index++)
     }
+// */
 }

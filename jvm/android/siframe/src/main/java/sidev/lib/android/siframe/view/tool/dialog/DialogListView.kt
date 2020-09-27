@@ -21,6 +21,7 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     private lateinit var rv: RecyclerView
 //    private lateinit var autoTv: AppCompatAutoCompleteTextView
     private lateinit var btnActionContainer: RelativeLayout
+    private var isInternalEdit: Boolean= false
 
     var dataList: List<T>?
         get()= adp.dataList
@@ -46,7 +47,9 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     var noDataViewVis= false
         set(v){
             field= v
+            isInternalEdit= true
             setNoDataViewVisible(v && dataList.isNullOrEmpty())
+            isInternalEdit= false
         }
 
     interface DialogListFilterListener<T>{
@@ -188,7 +191,8 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
         val vis= if(visible) View.VISIBLE
         else View.GONE
         findView<View>(_Config.ID_TV_NO_DATA).visibility= vis //R.id.tv_no_data
-        noDataViewVis= visible
+        if(!isInternalEdit)
+            noDataViewVis= visible
         return this
     }
 

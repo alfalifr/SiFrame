@@ -234,10 +234,19 @@ abstract class Act : AppCompatActivity(), //Inheritable,
  */
 
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
-        return if(i != null) super.getIntentData(key, i, default)
-        else intent?.extras?.get(key) as D? ?: default as D
-    }
+        try{
+            return if(i != null) super.getIntentData(key, i, default)
+            else intent?.extras?.get(key) as? D ?: default as D
+        } catch (e: ClassCastException){
+            throw IllegalArgumentException("Tidak ada nilai dg key: $key pada intent: $i dan default == null")
+        }
 
+    }
+    @JvmOverloads
+    fun <D> getIntentData(key: String, default: D?= null): D =
+        getIntentData(key, intent, default)
+
+    override fun <T : View> findViewById(id: Int): T = super<AppCompatActivity>.findViewById(id)
 
     fun updateActBarCustomView(layoutId: Int){
         val actBarView= layoutInflater.inflate(layoutId, null, false)

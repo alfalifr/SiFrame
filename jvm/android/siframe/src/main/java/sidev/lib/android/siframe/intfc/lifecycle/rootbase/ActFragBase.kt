@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
@@ -77,8 +78,13 @@ interface ActFragBase: LifecycleRootBase, FragmentHostBase, //ArchView,
         act.setTheme(styleId)
     }
     fun <D> getIntentData(key: String, i: Intent?= null, default: D?= null): D{
-        return i?.extras?.get(key) as D? ?: default as D
+        try{ return i?.extras?.get(key) as? D ?: default as D }
+        catch (e: ClassCastException){
+            throw IllegalArgumentException("Tidak ada nilai dg key: $key pada intent: $i dan default == null")
+        }
     }
+
+    fun <V: View> findViewById(@IdRes id: Int): V = layoutView.findViewById(id)
 
     private fun registerActiveAct(){
         try{

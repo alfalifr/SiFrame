@@ -5,5 +5,5 @@ package sidev.lib.android.siframe.model.intfc
  */
 @Retention(AnnotationRetention.RUNTIME)
 //@Target(AnnotationTarget.FIELD)
-@Target(AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
 annotation class ModelId(val kind: StorageKind= StorageKind.SQLITE)

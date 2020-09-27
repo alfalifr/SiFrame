@@ -322,11 +322,18 @@ abstract class Frag : Fragment(),
         return activity.asNotNullTo { act: ViewModelBase -> act.getViewModel(cls) }
     }
  */
-
+//    @JvmOverloads
     override fun <D> getIntentData(key: String, i: Intent?, default: D?): D {
-        return if(i != null) super.getIntentData(key, i, default)
-        else activity?.intent?.extras?.get(key) as D? ?: default as D
+        try{
+            return if(i != null) super.getIntentData(key, i, default)
+            else activity?.intent?.extras?.get(key) as? D ?: default as D
+        } catch (e: ClassCastException){
+            throw IllegalArgumentException("Tidak ada nilai dg key: $key pada intent: $i dan default == null")
+        }
     }
+    @JvmOverloads
+    fun <D> getIntentData(key: String, default: D?= null): D =
+        getIntentData(key, activity?.intent, default)
 /*
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         super.onActive(parentView, callingLifecycle, pos)
