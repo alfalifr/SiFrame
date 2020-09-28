@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.db
 
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import java.util.*
 
 //TODO: Pindahkan ke library sendiri.
@@ -27,14 +28,15 @@ interface Attribute {
                 else -> NULL
             }
             fun getByClass(typeClass: Class<*>): Type = getByName(when(typeClass){
-                Int::class.java -> INTEGER.name
-                Long::class.java -> INTEGER.name
-                Boolean::class.java -> INTEGER.name
+                Int::class.java, Integer::class.java -> INTEGER.name
+                Long::class.java, java.lang.Long::class.java -> INTEGER.name
+                Boolean::class.java, java.lang.Boolean::class.java -> INTEGER.name
                 String::class.java -> STRING.name
-                Double::class.java -> DOUBLE.name
-                Float::class.java -> DOUBLE.name
+                Double::class.java, java.lang.Double::class.java -> DOUBLE.name
+                Float::class.java, java.lang.Float::class.java -> DOUBLE.name
                 else -> NULL.name
             })
+//                .also { loge("Attribute.Type.getByClass() typeClass= $typeClass Int::class.java= ${Int::class.java}") }
         }
     }
 }

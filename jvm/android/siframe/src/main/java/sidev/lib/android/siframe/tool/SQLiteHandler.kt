@@ -44,9 +44,15 @@ import java.lang.reflect.Field
 abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
 //    val ctx: Context= App.ctx
 //    : SQLiteOpenHelper(konteks, BuildConfig.DB_NAMA, null, BuildConfig.DB_VERSI){
+
     constructor(ctx: Context, collectionTypeHandler: CollectionTypeHandler<M>): this(ctx){
         this.collectionTypeHandler= collectionTypeHandler
         initHandler()
+/*
+        // Jika kosong, langsung aja recreate
+        if(rowCount() <= 0)
+            createTable(true)
+ */
     }
 
     companion object{
@@ -200,9 +206,12 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         return liveVal
     }
 
-    fun createTable(): Exception? {
+    @JvmOverloads
+    fun createTable(recreate: Boolean= false): Exception? {
         return try{
 //            val jikaTabelAda=
+            if(recreate)
+                dropTable()
             if(!tableExists())
                 sqliteHelper.writableDatabase.execSQL(sqlCreateTable)
 //                sqliteHelper.onCreate(sqliteHelper.writableDatabase)
@@ -328,7 +337,9 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
  */
 
             val field= attribs[i]
+//            val defAccessibility= field.isAccessible
             val attName= field.name
+//            field.isAccessible= true
 //            loge("attName= $attName pub= $pub pro= $pro priv= $priv isAc= $isAc")
             //TODO: Data yg disimpan hanya berupa primitif
             if(!attName.startsWith("_")){
@@ -349,16 +360,16 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                         var type= if(fieldType.kotlin.isCollection || fieldType.isArray)
                             collectionTypeHandler?.resolveColumnType(field)?.let {
                                 Attribute.Type.getByClass(it)
+//                                    .also { attr -> loge("==DALAM== readAttr() field= $field attrType= $attr class= $it") }
                             }?.name ?: TYPE_NULL
                         else TYPE_NULL
 
                         isCollection= type != TYPE_NULL
 /*
-                        loge("readAttr() field= $field fieldType= $fieldType isCollection= $isCollection isCollectionTypePresent= $isCollectionTypePresent")
+                        loge("readAttr() field= $field fieldType= $fieldType type= $type isCollectionTypePresent= $isCollectionTypePresent")
                         loge("readAttr() field= $field fieldType.kotlin.isCollection= ${fieldType.kotlin.isCollection} fieldType.isArray= ${fieldType.isArray}")
                         loge("readAttr() field= $field collectionTypeHandler == null => ${collectionTypeHandler == null}")
- */
-
+// */
                         if(!isCollectionTypePresent && type != TYPE_NULL){
                             isCollectionTypePresent= true
                         } else if(isCollectionTypePresent && isCollection){
@@ -368,7 +379,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                             //  Hal tersebut dikarenakan akan membingungkan untuk menyimpan banyak koleksi dalam 1 tabel.
                         }
 
-
+//                        loge("readAttr() field= $field fieldType= $fieldType isCollection= $isCollection isCollectionTypePresent= $isCollectionTypePresent ==AKHIR==")
 
 //                        field.type.interfaces.forEach { i -> loge("attName= $attName i::class.java.simpleName= ${i::class.java.simpleName}") }
 /*
@@ -410,6 +421,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             }
  */
             }
+//            field.isAccessible= defAccessibility
         }
 
         //TODO: <Sabtu, 26 Sep 2020> => Untuk smtr, tabel yg memiliki kolom bertipe koleksi dan punya id,
@@ -968,6 +980,11 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             }
         }
         return liveVal
+    }
+
+    fun rowCount(): Long{
+        checkConn()
+        return DatabaseUtils.queryNumEntries(sqliteHelper.readableDatabase, tableName)
     }
 /*
     protected open fun isiData(isi: M){
