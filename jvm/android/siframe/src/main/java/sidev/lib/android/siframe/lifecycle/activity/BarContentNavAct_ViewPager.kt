@@ -8,6 +8,7 @@ import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
+import sidev.lib.annotation.ChangeLog
 import java.lang.Exception
 
 abstract class BarContentNavAct_ViewPager<F: Frag>
@@ -60,7 +61,7 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
         get() = actBarViewContainer
     final override var defaultActBarView: View?= null
 
-    //<2 Juli 2020> => Programmer gak perlu mendefinisikan scr langsung.
+    @ChangeLog("2 Juli 2020", "Programmer gak perlu mendefinisikan scr langsung.")
     override var vpFragListStartMark: Array<Int> = arrayOf()
     final override lateinit var vpAdp: VpFragAdp
     final override lateinit var vpFragListMark: Array<Int>
@@ -76,6 +77,7 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
     override var isVpBackOnBackPressed: Boolean= true
 
     final override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
+    final override var vpOnBeforePageJumpListener: ((oldPosition: Int, newPosition: Int) -> Boolean)?= null
 
 
     override fun ___initSideBase() {

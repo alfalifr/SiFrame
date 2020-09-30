@@ -17,7 +17,7 @@ abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
      * Jangan langsung memodifikasi var ini
      */
     var dialog: AlertDialog
-    protected set
+        protected set
 //    lateinit var adp: DialogListAdapter
 //    lateinit var rv: RecyclerView
     protected val layoutContainerId= _Config.LAYOUT_DIALOG_CONTAINER //R.layout.dialog_container_cardview
@@ -27,6 +27,9 @@ abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
 
     var dialogCancelOnCLick= true
     var onDismissCallback: ((DialogInterface?) -> Unit)?= null
+
+    val isShowing: Boolean
+        get()= dialog.isShowing
 
 //    private var formatter: DialogListAdapter.DialogListListener?= null
 

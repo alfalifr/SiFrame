@@ -13,6 +13,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
+import sidev.lib.annotation.ChangeLog
 import sidev.lib.check.asNotNullTo
 import java.lang.Exception
 
@@ -50,7 +51,8 @@ abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
             field= v
             if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
-    //<2 Juli 2020> => Programmer gak perlu mendefinisikan scr langsung.
+
+    @ChangeLog("2 Juli 2020", "Programmer gak perlu mendefinisikan scr langsung.")
     override var vpFragListStartMark: Array<Int> = arrayOf()
     final override var onPageFragActiveListener: SparseArray<OnPageFragActiveListener> = SparseArray()
     final override lateinit var vpAdp: VpFragAdp
@@ -61,6 +63,7 @@ abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
     override var isVpBackOnBackPressed: Boolean= true
 
     final override var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?= null
+    final override var vpOnBeforePageJumpListener: ((oldPosition: Int, newPosition: Int) -> Boolean)?= null
 
 //    override lateinit var lateVp: ViewPager
 /*

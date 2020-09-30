@@ -16,8 +16,10 @@ import sidev.lib.android.siframe.tool.RvAdpContentArranger
 import sidev.lib.android.siframe.tool.util.`fun`.addLast
 import sidev.lib.android.siframe.tool.util.`fun`.iterator
 import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.annotation.ChangeLog
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
+import sidev.lib.number.isNotNegative
 //import sidev.lib.universal.`fun`.isNull
 //import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
@@ -128,6 +130,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      */
     open val searchFilterFun: (data: D, keyword: String) -> Boolean= { _, _ -> true }
     open val selectFilterFun: ((dataFromList: D, dataFromInput: D, posFromList: Int) -> Boolean) ?= null
+
     init{
         contentArranger.rvAdp= this
         contentArranger.reset()
@@ -921,6 +924,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     @CallSuper
     open fun searchItem(keyword: String, onlyShownItem: Boolean= true){
         if(keyword.isNotEmpty()){
+            filter(!onlyShownItem) { pos, data ->
+                searchFilterFun(data, keyword)
+            }
+/*
             dataList.notNull { list ->
 //                val dataMatch= ArrayList<D>() //<28 Juni 2020> => Definisi lama.
                 val newFilter= SparseIntArray() //<28 Juni 2020> => Definisi baru.
@@ -939,6 +946,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
                 contentArranger.resultInd= newFilter
                 notifyDataSetChanged_()
             }
+ */
         } else
             resetDataToInitial()
     }

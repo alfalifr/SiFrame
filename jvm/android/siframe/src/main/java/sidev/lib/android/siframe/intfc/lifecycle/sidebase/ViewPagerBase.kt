@@ -20,6 +20,7 @@ import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
+import sidev.lib.annotation.ChangeLog
 import sidev.lib.check.asNotNull
 import sidev.lib.check.trya
 import sidev.lib.collection.toArrayList
@@ -61,11 +62,15 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
      * @see vpFragListMark seharusnya private agar vp tidak kacau
      */
     var vpFragListMark: Array<Int>
+
+    /** Penanda index yg merupakan [PAGE_MARK_START] yg akan diisikan ke [vpFragListMark]. */
     var vpFragListStartMark: Array<Int>
     var vpAdp: VpFragAdp
 //    val vpFm: FragmentManager
 //    val vpCtx: Context
+    /** Index awal [vp]. */
     var pageStartInd: Int
+    /** Index akhir [vp]. */
     var pageEndInd: Int
 
     var isVpTitleFragBased: Boolean
@@ -81,6 +86,14 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
      * yg terhubung dg [BottomNavigationView].
      */
     var vpOnPageListenerToNavBar: ViewPager.OnPageChangeListener?
+
+    /**
+     * Listener sederhana untuk perpindahan halaman pada [vp].
+     * Listener ini berbeda dg [ViewPager.OnPageChangeListener], yaitu dipanggil sebelum
+     * [vp] berpindah halaman. Hasil return dari listener digunakan untuk
+     * menentukan apakah [vp] berpindah halaman atau tidak.
+     */
+    var vpOnBeforePageJumpListener: ((oldPosition: Int, newPosition: Int) -> Boolean)? //= null
 
 
     override fun ___initSideBase() {
@@ -322,10 +335,59 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     }
 
     /**
+     * Menghitung apakah perpindahan menuju halaman ke [index]
+     * akan dilakukan. return `true` jika perpindahan dilakukan dan sebaliknya.
+     */
+    fun calculatePageJump(index: Int, checkForPageRule: Boolean= true): Boolean{
+        val current= vp.currentItem
+
+        // 1. Jika index sebelum dan sesudah sama, artinya gak pindah.
+        if(current == index)
+            return false
+
+        // 2. Cek apakah jump sesuai aturan [vpFragListMark]
+        if(checkForPageRule){
+            val firstBool= if(index > current){ // Untuk case pageForth()
+                if(vp.currentItem < (vp.adapter?.count ?: 0) -1
+                        && (vp.currentItem < /*<=*/ pageEndInd || pageEndInd < 0)){
+                    for(i in current +1 .. index)
+                        if(vpFragListMark[i] == PAGE_MARK_START)
+                            return false
+                    true
+                } else false
+//            Log.e("pageForth", "vp.currentItem = ${vp.currentItem} vpFragListMark_int[vp.currentItem +1] = ${vpFragListMark[vp.currentItem]} bool = $bool")
+//            Log.e("pageForth", "Gak masuk vp.currentItem = ${vp.currentItem} pageEndInd = $pageEndInd vp.childCount =${vp.childCount} bool = false")
+            } else { // Untuk case pageBackward()
+                if(vp.currentItem > 0
+                        && vp.currentItem > /*>=*/ pageStartInd){
+                    for(i in current downTo index +1)
+                        if(vpFragListMark[i] == PAGE_MARK_START)
+                            return false
+                    true
+                } else false
+            }
+            if(!firstBool)
+                return false
+        }
+
+        // 3. Cek apakah [vpOnBeforePageJumpListener] menghasilkan `true`
+        return (vpOnBeforePageJumpListener?.invoke(current, index) ?: true)
+    }
+    /**
+     * Untuk menuju ke halaman [index] pada [vp].
+     * return `true` jika perpindahan berhasil dilakukan.
+     */
+    fun jumpToPage(index: Int, checkForPageRule: Boolean= true): Boolean=
+        calculatePageJump(index, checkForPageRule).also { if(it) vp.currentItem= index }
+
+    /**
      * Halaman VP selanjutnya
      * @return true jika halaman VP belum terahir (berhasil pindah)
      */
+    @ChangeLog("Rabu, 30 Sep 2020", "Logika pengecekan indek udah jadi satu pada `jumpToPage`.")
     fun pageForth(): Boolean{
+        return jumpToPage(vp.currentItem +1)
+/*
         return if(vp.currentItem < (vp.adapter?.count ?: 0) -1
             && (vp.currentItem <= pageEndInd || pageEndInd < 0)){
             val bool= if(vpFragListMark[vp.currentItem +1] == PAGE_MARK_CONT){
@@ -338,13 +400,19 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
 //            Log.e("pageForth", "Gak masuk vp.currentItem = ${vp.currentItem} pageEndInd = $pageEndInd vp.childCount =${vp.childCount} bool = false")
             false
         }
+ */
     }
+    @ChangeLog("Rabu, 30 Sep 2020", "Logika pengecekan indek udah jadi satu pada `jumpToPage`.")
     fun pageBackward(): Boolean{
+        return jumpToPage(vp.currentItem -1)
+/*
         return if(vp.currentItem > 0
-            && vp.currentItem >= pageStartInd){
+            && vp.currentItem > /*>=*/ pageStartInd){
             if(vpFragListMark[vp.currentItem] == PAGE_MARK_START
+/*
                 && (vpFragListMark[vp.currentItem -1] == PAGE_MARK_CONT
                         || vpFragListMark[vp.currentItem -1] == PAGE_MARK_START)
+ */
             ){
                 false
             } else{
@@ -353,5 +421,6 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
             }
         } else
             false
+ */
     }
 }
