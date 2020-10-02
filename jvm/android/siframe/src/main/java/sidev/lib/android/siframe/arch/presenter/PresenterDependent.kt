@@ -3,6 +3,9 @@ package sidev.lib.android.siframe.arch.presenter
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 
+/**
+ * Interface yg bergantung pada sebuah [ArchPresenter].
+ */
 interface PresenterDependent: ExpirableBase { //P: ArchPresenterRoot, R, C: PresenterCallback<R>
 //    var callbackCtx: Context?
     val presenter: ArchPresenter<*, *, *>?

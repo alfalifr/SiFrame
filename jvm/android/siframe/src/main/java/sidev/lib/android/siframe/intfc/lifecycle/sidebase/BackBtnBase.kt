@@ -99,8 +99,8 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         var isHandled= false
 
         for(l in onBackPressedListenerList){
-            isHandled= isHandled || l.onBackPressed_()
             if(isBackBtnHandledGradually && isHandled) break
+            isHandled= isHandled || l.onBackPressed_()
         }
 
         isHandlingBackBtn= false

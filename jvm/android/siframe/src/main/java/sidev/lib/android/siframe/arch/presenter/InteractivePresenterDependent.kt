@@ -5,7 +5,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 
 /**
- * INterface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
+ * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
 interface InteractivePresenterDependent<Req, P: ArchPresenter<Req, *, *>> //C: PresenterCallback<R>
     : PresenterDependent, InterruptableBase, ExpirableBase {

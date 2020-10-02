@@ -27,8 +27,7 @@ class ContentMviFrag : MviFrag<CFIntent, CFRes, CFState<*>>(){
 
 
     override fun initPresenter(): MviPresenter<CFIntent, CFRes, CFState<*>>? = MviContentPresenter(null)
-    override fun initStateProcessor(): StateProcessor<CFIntent, CFRes, CFState<*>>?
-            = ContentFragStatePros(this)
+    override fun initStateProcessor(): StateProcessor<CFIntent, CFRes, CFState<*>>? = ContentFragStatePros(this)
 /*
     override fun initIntentCoverter(presenter: Presenter): IntentConverter<ContentFragIntent>?
         = ContentFragIntentConverter(null, null)

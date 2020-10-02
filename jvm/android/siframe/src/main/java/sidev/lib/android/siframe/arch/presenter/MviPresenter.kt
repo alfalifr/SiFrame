@@ -15,7 +15,10 @@ import java.lang.Exception
 
 abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
     @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: StateProcessor<I, R, S>? //PresenterCallback<I>?): Presenter(){
-): ArchPresenter<I, R, StateProcessor<I, R, S>>, NativeAnnotatedFunctionClassDef { //AnnotatedFunctionClassImpl()
+): ArchPresenter<I, R, StateProcessor<I, R, S>>,
+    //TODO: <Jumat, 2 Okt 2020> => [NativeAnnotatedFunctionClassDef] Sebaiknya ini dipisahkan saja ke kelas MviPresenter tipe baru.
+    //  biar gak berat ukurannya.
+    NativeAnnotatedFunctionClassDef { //AnnotatedFunctionClassImpl()
     final override lateinit var reqCode: I
         private set
     override val nativeAnnotatedFunctionCLassManager: NativeAnnotatedFunctionClassManager?
