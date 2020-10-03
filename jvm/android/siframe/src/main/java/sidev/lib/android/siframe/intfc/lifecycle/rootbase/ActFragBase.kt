@@ -68,7 +68,7 @@ interface ActFragBase: LifecycleRootBase, FragmentHostBase, //ArchView,
         if(layoutView != null)
             _initView(layoutView)
         else
-            loge("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName} belum diinit)")
+            loge("Act/Frag ini (${this::class.java.simpleName} belum diinit)")
     }
     override fun _initView(layoutView: View)
     @CallSuper

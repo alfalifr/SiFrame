@@ -339,7 +339,7 @@ object  _ViewUtil{
     }
 
     fun loadImageToIv(iv: ImageView, /*ivSizeType: Int, */url: String?): Boolean{
-        val isDirLocal= try{ FileUtil.isDirLocal(url!!) }
+        val isDirLocal= try{ FileUtil.dirExists(url!!) }
         catch(e: Exception){ false }
 
         val dir=
