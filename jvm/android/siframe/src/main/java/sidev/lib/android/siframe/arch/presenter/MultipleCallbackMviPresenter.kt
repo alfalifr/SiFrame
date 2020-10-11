@@ -1,30 +1,18 @@
 package sidev.lib.android.siframe.arch.presenter
 
-import androidx.annotation.RestrictTo
-import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.*
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.annotation.ChangeLog
-import sidev.lib.check.isNull
-import sidev.lib.reflex.annotation.AnnotatedFunctionClass
 import sidev.lib.reflex.annotation.NativeAnnotatedFunctionClassDef
-import sidev.lib.reflex.annotation.NativeAnnotatedFunctionClassManager
 //import sidev.lib.universal.`fun`.*
 //import sidev.lib.universal.annotation.AnnotatedFunctionClassImpl
 import java.lang.Exception
 
 
-abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
-    @RestrictTo(RestrictTo.Scope.LIBRARY) override var callback: StateProcessor<I, R, S>? //PresenterCallback<I>?): Presenter(){
-): ArchPresenter<I, R, StateProcessor<I, R, S>>,
+abstract class MultipleCallbackMviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
+    callback: StateProcessor<I, R, S>? //PresenterCallback<I>?): Presenter(){
+): MviPresenter<I, R, S>(callback), MultipleCallbackArchPresenter<I, R, StateProcessor<I, R, S>>,
     //TODO: <Jumat, 2 Okt 2020> => [NativeAnnotatedFunctionClassDef] Sebaiknya ini dipisahkan saja ke kelas MviPresenter tipe baru.
     //  biar gak berat ukurannya.
     NativeAnnotatedFunctionClassDef { //AnnotatedFunctionClassImpl()
-    @ChangeLog("Jumat, 9 Okt 2020", "private -> protected agar turunan dapat memodif. Anggapannya programmer udah tau konsekuensinya ngedit reqCode di tempat yang salah.")
-    final override lateinit var reqCode: I
-        protected set
-    override val nativeAnnotatedFunctionCLassManager: NativeAnnotatedFunctionClassManager?
-            by lazy { NativeAnnotatedFunctionClassManager(nativeAnnotatedFunctionCLassOwner) }
     /*
     private var intentPropGetter: IntentPropGetter?= null
 
@@ -46,22 +34,32 @@ abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
         return intentPropGetter!!.getResultIsTemporary(intentClass, defParamValFunc)
     }
  */
-
-    final override fun postRequest(request: I, data: Map<String, Any>?) {
+    /**
+     * Semua instance PresenterCallback harus manggil ini kalo mau request ke presenter
+     * yang menerima instance [callback] untuk request.
+     */
+    final override fun postRequest(
+        callback: StateProcessor<I, R, S>,
+        request: I,
+        data: Map<String, Any>?
+    ) {
         this.reqCode= request
-        onPreRequest(request, data)
-        super.postRequest(request, data)
+        onPreRequest(callback, request, data)
+        super<MultipleCallbackArchPresenter>.postRequest(callback, request, data)
     }
 
     /**
-     * Sesuai namanya, param data diubah namanya jadi [additionalData] karena data request
-     * dapat disertakan di dalam [request] yg berupa [ViewIntent].
+     * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest()
+     * yang menerima instance [callback] untuk request.
      *
      * Param [data] merupaka data tambahan karena data rwuest disertakan di dalam [request]
      * yang berupa [ViewIntent].
      */
-    @ChangeLog("Jumat, 9 Okt 2020", "nama param kembali ke data agar tidak terjadi konflik dg nama param supertype.")
-    abstract override fun processRequest(request: I, data: Map<String, Any>?)
+    abstract override fun processRequest(
+        callback: StateProcessor<I, R, S>,
+        request: I,
+        data: Map<String, Any>?
+    )
 
     /*
     final override fun postRequest(reqCode: String, data: Map<String, Any>?) {
@@ -70,42 +68,43 @@ abstract class MviPresenter<I: ViewIntent, R: IntentResult, S: ViewState<*>>(
     }
  */
 
-    fun onPreRequest(reqCode: I, additionalData: Map<String, Any>?){
-        doWhenLinkNotExpired {
-            callback?.postPreResult(reqCode, additionalData)
-/*
-            callback.asNotNull { sp: StateProcessor<S, I> ->
-                //Dg anggapan setiap request pada arsitektur MVI dalam framework ini
-                // selalu memberikan info ttg apakah state yg dihasilkan dari request
-                // bersifat sementara atau tidak.
-/*
-                val isStateTemporary=
-                    try{ data!![INTENT_IS_RESULT_TEMPORARY] as Boolean }
-                    catch (e: Exception){ false }
- */
-                sp.postPreResult(reqCode, additionalData)
-            }
- */
-            //(callback as? StateProcessor<S, *>)?.postPreResult(reqCode, data, )
-        }.isNull {
-            val clsName= javaClass.simpleName //this.classSimpleName()
-            val callbackName= callback?.javaClass?.simpleName //classSimpleName()
-            loge("$clsName.onPreRequest() callback= $callbackName.isExpired == TRUE")
-            callback= null
-        }
+    fun onPreRequest(callback: StateProcessor<I, R, S>, reqCode: I, additionalData: Map<String, Any>?){
+        if(callback.isExpired) return
+
+        callback.postPreResult(reqCode, additionalData)
     }
 
-    /** @return `true` jika operasi fungsi yg di-anotasi ditemukan dan berhasil dipanggil, `false` sebaliknya. */
-    protected fun callAnnotatedViewIntentFun(intent: I): Boolean
-        = callAnnotatedFunctionWithParamContainer(ViewIntentFunction::class, intent) { it.clazz == intent::class } != null
 
-
-    final override fun postSucc(result: R, data: Map<String, Any>?, resCode: Int, request: I?) {
-        super.postSucc(result, data, resCode, request)
+    /**
+     * @param request dapat digunakan untuk operasi presenter yg berbarengan sehingga this.reqCode dapat berganti sebelum
+     *      dipass ke PresenterCallback
+     *
+     * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
+     * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
+     */
+    final override fun postSucc(
+        callback: StateProcessor<I, R, S>,
+        result: R,
+        data: Map<String, Any>?,
+        resCode: Int,
+        request: I?
+    ) {
+        super<MultipleCallbackArchPresenter>.postSucc(callback, result, data, resCode, request)
     }
 
-    final override fun postFail(result: R?, msg: String?, e: Exception?, resCode: Int, request: I?) {
-        super.postFail(result, msg, e, resCode, request)
+    /**
+     * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
+     * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
+     */
+    final override fun postFail(
+        callback: StateProcessor<I, R, S>,
+        result: R?,
+        msg: String?,
+        e: Exception?,
+        resCode: Int,
+        request: I?
+    ) {
+        super<MultipleCallbackArchPresenter>.postFail(callback, result, msg, e, resCode, request)
     }
 
     /*

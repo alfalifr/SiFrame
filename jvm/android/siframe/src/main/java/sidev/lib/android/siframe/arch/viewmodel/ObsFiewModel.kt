@@ -46,7 +46,7 @@ import sidev.lib.exception.RuntimeExc
  */
 abstract class ObsFiewModel(val vmBase: ViewModelBase)
     : FiewModel(), ObservableViewModel,
-    InteractivePresenterDependentCommon<Presenter>,
+    InteractivePresenterDependentCommon,
     InterruptableLinkBase,
     PresenterCallbackCommon {
 /*

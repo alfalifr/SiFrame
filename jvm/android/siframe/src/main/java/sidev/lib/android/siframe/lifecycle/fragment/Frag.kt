@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
@@ -111,6 +112,7 @@ abstract class Frag : Fragment(),
      * Dipakai untuk judul pada TabLayout yang dipasang pada ViewPager
      */
     open val fragTitle= this::class.java.simpleName
+    override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?= null
 
     //=========Obj Listener
 //    var onViewCreatedListener: ((View, Bundle?) -> Unit)?= null//OnViewCreatedListener?= null
@@ -356,7 +358,7 @@ abstract class Frag : Fragment(),
         )
         if(this !is ViewPagerBase<*>)
             childFragmentManager.fragments.forEach {
-                it.asNotNullTo { frag: Frag -> frag.resolveOnActive(layoutView, this, 0) }
+                it.asNotNull { frag: Frag -> frag.resolveOnActive(layoutView, this, 0) }
                     ?: it.asNotNull { frag: FragBase -> frag.onActive(layoutView, this, 0) }
             }
     }
@@ -392,6 +394,34 @@ abstract class Frag : Fragment(),
         _prop_parentLifecycle= null
         _prop_hierarchyOder= 0
     }
+
+    /**
+     * Callback for the result from requesting permissions. This method
+     * is invoked for every call on [.requestPermissions].
+     *
+     *
+     * **Note:** It is possible that the permissions request interaction
+     * with the user is interrupted. In this case you will receive empty permissions
+     * and results arrays which should be treated as a cancellation.
+     *
+     *
+     * @param requestCode The request code passed in [.requestPermissions].
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     * which is either [android.content.pm.PackageManager.PERMISSION_GRANTED]
+     * or [android.content.pm.PackageManager.PERMISSION_DENIED]. Never null.
+     *
+     * @see .requestPermissions
+     */
+    final override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super<Fragment>.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super<FragBase>.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
 //    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 

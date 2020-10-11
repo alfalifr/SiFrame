@@ -100,10 +100,14 @@ interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, Nested
                                     lm?.onLayoutCompletedListener= null
                                 }
 // */
+///*
                                 frag.addOnViewCreatedListener { view, bundle ->
 //                                    loge("Nested bottom frag.addOnViewCreatedListener rv.yEnd= ${rv.yEndInWindow}")
+                                    //Agar apapun nti yg terjadi, footerView dilepas dulu agar rv ukurannya gak kepotong.
                                     view.detachFromParent()
+//                                    _initBottomView(view)
                                 }
+// */
                                 frag.addOnActiveListener { view, parent, pos ->
 //                                    loge("Nested bottom frag.addOnActiveListener frag= $frag currentState= ${frag.currentState} parent= $parent pos= $pos")
                                     if(frag.currentState == LifecycleBase.State.STARTED) return@addOnActiveListener

@@ -15,7 +15,9 @@ import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 //import sidev.lib.universal.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
+import sidev.lib.android.siframe.tool.util.`fun`.forcedAddView
 import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
@@ -313,8 +315,11 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
         v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER)!! //R.id.ll_content_container
             .notNull { vg ->
                 setupItemContainer(vg)
-                vg.addView(contentV)
+                vg.forcedAddView(contentV)
+//                vg.addView(contentV)
             }
+//        if(viewType == footerViewType)
+        loge("onCreateViewHolder() viewType == footerViewType => ${viewType == footerViewType} footerView.parent == null= ${footerView?.parent == null}")
         return SimpleViewHolder(v)
     }
 
@@ -346,14 +351,26 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
 
     fun notifyDataSetChanged_(f: (() -> Unit)= {}){
         @Suppress(SuppressLiteral.UNCHECKED_CAST)
+/*
         val lm= rv?.layoutManager as LM?
         if(lm != null){
+ */
 //            val recyclerViewState= rv!!.layoutManager?.onSaveInstanceState()
-            f()
-            notifyDataSetChanged()
+
+        //TODO <Minggu, 11 Okt 2020> => Kemungkinan ada kesalahan pada indexingnya.
+        // Karena footerView letaknya dapat dinamis (di dalam Rv maupun di luar) saat nested,
+        // sehingga terkadang saat notifyDataSetChanged() dipanggil, ntah di mana,
+        // footerView dipisahkan dari parent-nya. Oleh karena itu, attach lagi ke parent-nya
+        // headerView gak perlu di re-attach karena gak terjadi masalah.
+        if(footerView != null && footerView!!.parent == null)
+            getView(itemCount -1)
+                ?.findViewById<ViewGroup>(_Config.ID_VG_CONTENT_CONTAINER)
+                ?.addView(footerView!!)
+        f()
+        notifyDataSetChanged()
 //            Log.e(this::class.java.simpleName, "notifyDatasetChenged!!! name= ${this::class.java.simpleName}")
 //            rv!!.layoutManager?.onRestoreInstanceState(recyclerViewState)
-        }
+//        }
     }
 
     /**

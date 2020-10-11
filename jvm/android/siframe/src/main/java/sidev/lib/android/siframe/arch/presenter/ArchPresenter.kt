@@ -1,6 +1,7 @@
 package sidev.lib.android.siframe.arch.presenter
 
 import android.content.Context
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
 import sidev.lib.android.siframe.arch.type.Mvp
 import sidev.lib.android.siframe.arch.view.MvpView
@@ -61,7 +62,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
             if(checkDataIntegrity(request, Direction.OUT, data))
                 processRequest(request, data)
             else
-                DataIntegrityExc(this::class, "Pengecekan keluar di presenter")
+                throw DataIntegrityExc(this::class, "Pengecekan keluar di presenter")
         }.isNull {
             val clsName= javaClass.simpleName //classSimpleName()
             val callbackName= callback?.javaClass?.simpleName //classSimpleName()
@@ -77,6 +78,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
      * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
+    @Suppress(SuppressLiteral.IMPLICIT_CAST_TO_ANY)
     fun postSucc(result: Res, data: Map<String, Any>?= null, resCode: Int= 0, request: Req?= null){
         doWhenLinkNotExpired {
             val sentReqCode= request ?: this.reqCode!!
@@ -94,7 +96,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
                     callback!!.onPresenterSucc(sentReqCode, result, data, resCode)
                 }
             else
-                DataIntegrityExc(this::class, "Pengecekan masuk di presenter")
+                throw DataIntegrityExc(this::class, "Pengecekan masuk di presenter")
         }.isNull {
             val clsName= javaClass.simpleName //this.classSimpleName()
             val callbackName= callback?.javaClass?.simpleName //classSimpleName()

@@ -10,8 +10,8 @@ import sidev.lib.check.asNotNullTo
 /**
  * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
-interface MviInteractivePresenterDependent<I: ViewIntent, P: MviPresenter<I, *, *>>
-    : InteractivePresenterDependent<I, P> { // StateProcessor<ViewState, I>
+interface MviInteractivePresenterDependent<I: ViewIntent> //P: MviPresenter<I, *, *>
+    : InteractivePresenterDependent<I> { // StateProcessor<ViewState, I>
 //    var callbackCtx: Context?
 //    val presenter: P?
 

@@ -1,9 +1,7 @@
 package sidev.lib.android.siframe.arch.presenter
 
 import androidx.annotation.CallSuper
-import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.type.Mvp
-import sidev.lib.annotation.ChangeLog
 import java.lang.Exception
 
 /*
@@ -33,20 +31,13 @@ import java.lang.Exception
  */
 /**
  * Kelas dasar semua presenter yg ada pada framework ini.
- * Kelas [Presenter] tidak meng-extend interface [Mvp] karena kelas ini dapat
+ * Kelas [MultipleCallbackPresenter] tidak meng-extend interface [Mvp] karena kelas ini dapat
  * digunakan pada berbagai arsitektur.
  */
-abstract class Presenter(
+abstract class MultipleCallbackPresenter(
     callback: PresenterCallback<String, Int>?
-): ArchPresenter<String, Int?, PresenterCallback<String, Int?>> {
-    @ChangeLog("Jumat, 9 Okt 2020", "private -> protected agar turunan dapat memodif. Anggapannya programmer udah tau konsekuensinya ngedit reqCode di tempat yang salah.")
-    final override var reqCode: String= ""
-        protected set
+): Presenter(callback), MultipleCallbackArchPresenter<String, Int?, PresenterCallback<String, Int?>> {
 
-    @Suppress("UNCHECKED_CAST")
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override var callback: PresenterCallback<String, Int?>?
-            = if(callback != null) callback as PresenterCallback<String, Int?> else null
 /*
         set(v){
             if(v != null){
@@ -66,36 +57,60 @@ abstract class Presenter(
 //    init{ ctx= callback.callbackCtx }
 
     /**
-     * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest().
+     * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest()
+     * yang menerima instance [callback] untuk request.
      */
-    abstract override fun processRequest(request: String, data: Map<String, Any>?)
+    abstract override fun processRequest(
+        callback: PresenterCallback<String, Int?>,
+        request: String,
+        data: Map<String, Any>?
+    )
 
     /**
-     * Untuk mengecek integritas data yang didapat dari presenter.
+     * Semua instance PresenterCallback harus manggil ini kalo mau request ke presenter
+     * yang menerima instance [callback] untuk request.
      */
-    abstract override fun checkDataIntegrity(request: String, direction: ArchPresenter.Direction, data: Map<String, Any>?): Boolean
-
     @CallSuper
-    override fun postRequest(request: String, data: Map<String, Any>?) {
-        this.reqCode= request
-        super.postRequest(request, data)
+    override fun postRequest(
+        callback: PresenterCallback<String, Int?>,
+        request: String,
+        data: Map<String, Any>?
+    ) {
+        this.reqCode
+        super<MultipleCallbackArchPresenter>.postRequest(callback, request, data)
     }
 
-
-    final override fun postSucc(result: Int?, data: Map<String, Any>?, resCode: Int, request: String?) {
-        super.postSucc(result, data, resCode, request)
+    /**
+     * @param request dapat digunakan untuk operasi presenter yg berbarengan sehingga this.reqCode dapat berganti sebelum
+     *      dipass ke PresenterCallback
+     *
+     * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
+     * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
+     */
+    final override fun postSucc(
+        callback: PresenterCallback<String, Int?>,
+        result: Int?,
+        data: Map<String, Any>?,
+        resCode: Int,
+        request: String?
+    ) {
+        super<MultipleCallbackArchPresenter>.postSucc(callback, result, data, resCode, request)
     }
 
+    /**
+     * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
+     * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
+     */
     final override fun postFail(
+        callback: PresenterCallback<String, Int?>,
         result: Int?,
         msg: String?,
         e: Exception?,
         resCode: Int,
         request: String?
     ) {
-        super.postFail(result, msg, e, resCode, request)
+        super<MultipleCallbackArchPresenter>.postFail(callback, result, msg, e, resCode, request)
     }
-
 
     /*
     /**

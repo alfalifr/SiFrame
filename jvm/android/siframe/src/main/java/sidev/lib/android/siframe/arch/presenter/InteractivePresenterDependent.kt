@@ -7,33 +7,33 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 /**
  * Interface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
-interface InteractivePresenterDependent<Req, P: ArchPresenter<Req, *, *>> //C: PresenterCallback<R>
-    : PresenterDependent, InterruptableBase, ExpirableBase {
+interface InteractivePresenterDependent<Req> //P: ArchPresenter<Req, *, *>, C: PresenterCallback<R>
+    : PresenterDependent, PresenterRequester<Req>, InterruptableBase, ExpirableBase {
 //    var callbackCtx: Context?
 //    val presenter: P?
 
     @CallSuper
-    fun downloadData(reqCode: Req, vararg data: Pair<String, Any>) {
+    override fun downloadData(reqCode: Req, vararg data: Pair<String, Any>) {
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)
-            (presenter as? P)?.postRequest(reqCode, map)
+            (presenter as? ArchPresenter<Req, *, *>)?.postRequest(reqCode, map)
         }
     }
     @CallSuper
-    fun uploadData(reqCode: Req, vararg data: Pair<String, Any>) {
+    override fun uploadData(reqCode: Req, vararg data: Pair<String, Any>) {
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)
-            (presenter as? P)?.postRequest(reqCode, map)
+            (presenter as? ArchPresenter<Req, *, *>)?.postRequest(reqCode, map)
         }
     }
     @CallSuper
-    fun sendRequest(reqCode: Req, vararg data: Pair<String, Any>) {
+    override fun sendRequest(reqCode: Req, vararg data: Pair<String, Any>) {
         doWhenNotBusy {
             val map= if(data.isEmpty()) null
             else mapOf(*data)
-            (presenter as? P)?.postRequest(reqCode, map)
+            (presenter as? ArchPresenter<Req, *, *>)?.postRequest(reqCode, map)
         }
     }
 /*

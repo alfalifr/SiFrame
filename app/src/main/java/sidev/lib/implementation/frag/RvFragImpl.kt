@@ -12,6 +12,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.util._ThreadUtil
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.check.getLateinit
 import sidev.lib.collection.string
 import sidev.lib.collection.toArrayList
 import sidev.lib.implementation.R
@@ -37,6 +38,36 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
     override val isBottomContainerNestedInRv: Boolean
         get() = true
 
+    val data= arrayOf(
+        "Data 1",
+        "Data 2"
+///*
+        ,"Data 3",
+        "Data 4"
+///*
+        ,"Halo"
+///*
+            ,"Bro"
+///*
+            ,"Hoho"
+/*
+            ,"Hihe 8"
+/// *
+            ,"Hihe",
+            "Hihe 10",
+            "Hihe 11",
+            "Hihe",
+            "Hihe"
+/// *
+            ,"Hihe"
+/// *
+            ,"Hihe",
+            "Hihe",
+            "Hihe",
+            "Hihe"
+// */
+    ).toArrayList()
+
     /*
         override val topContainerId: Int
             get() = _Config.ID_RL_TOP_CONTAINER_OUTSIDE
@@ -49,6 +80,9 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         super.onActive(parentView, callingLifecycle, pos)
+
+        rvAdp.dataList= data
+        loge("RvFragImpl onActive() bottomFragment?.layoutView?.parent == null => ${bottomFragment?.getLateinit { layoutView }?.parent == null} rvAdp.size= ${rvAdp.itemCount}")
 
         rv.addOnGlobalLayoutListener {
             loge("onActive() rv.yEndInWindow= ${rv.yEndInWindow} typedTopFragment.layoutView.size.string= ${try{ topFragment?.layoutView?.size?.string} catch (e: Exception){ null }} bottomFragment?.layoutView?.size?.string= ${try{ bottomFragment?.layoutView?.size?.string} catch (e: Exception){ null }}")
@@ -63,36 +97,6 @@ class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {
         rv.addOnGlobalLayoutListener {
             loge("_initView() rv.yEndInWindow= ${rv.yEndInWindow} typedTopFragment.layoutView.size.string= ${try{ topFragment?.layoutView?.size?.string} catch (e: Exception){ null }} bottomFragment?.layoutView?.size?.string= ${try{ bottomFragment?.layoutView?.size?.string} catch (e: Exception){ null }}")
         }
-        val data= arrayOf(
-            "Data 1",
-            "Data 2"
-///*
-            ,"Data 3",
-            "Data 4"
-///*
-            ,"Halo"
-/*
-            ,"Bro"
-/// *
-            ,"Hoho"
-/// *
-            ,"Hihe 8"
-/// *
-            ,"Hihe",
-            "Hihe 10",
-            "Hihe 11",
-            "Hihe",
-            "Hihe"
-/ *
-            ,"Hihe"
-/ *
-            ,"Hihe",
-            "Hihe",
-            "Hihe",
-            "Hihe"
-// */
-        )
-        rvAdp.dataList= data.toArrayList() //ArrayList(data.toList())
 
         layoutView.addOnGlobalLayoutListener {
             loge("globalLayoutListener RVFragImpl")

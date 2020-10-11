@@ -65,3 +65,4 @@ fun removeStatic(key: String){
     StaticManager.removeObj(key)
 }
 
+

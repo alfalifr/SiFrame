@@ -6,8 +6,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 /**
  * INterface yg dapat berkomunikasi dengan presenternya menggunakan fungsi yg ada.
  */
-interface InteractivePresenterDependentCommon
-    : InteractivePresenterDependent<String> { //PresenterCallback<String>
+interface InteractiveMultipleCallbackPresenterDependentCommon<P: MultipleCallbackPresenter>
+    : InteractivePresenterDependentCommon,
+    InteractiveMultipleCallbackPresenterDependent<String, Int?, P> { //PresenterCallback<String>
 //    var callbackCtx: Context?
 //    val presenter: P?
 /*

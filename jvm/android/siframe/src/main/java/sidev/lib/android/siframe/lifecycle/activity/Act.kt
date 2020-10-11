@@ -8,6 +8,7 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -107,6 +108,8 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 //    override val lifecycleOwner: LifecycleOwner= this
 
     final override var presenter: ArchPresenter<*, *, *>?= null
+    override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?= null
+
     //    final override var presenter: Presenter?= null
 //    override var callbackCtx: Context?= this
 
@@ -204,7 +207,7 @@ abstract class Act : AppCompatActivity(), //Inheritable,
     override fun onResumeFragments() {
         loge("Activity ${this::class.simpleName} onResumeFragments()")
         super.onResumeFragments()
-        frag.asNotNull { frag: Frag -> frag.resolveOnActive(layoutView, this, 0) }
+//        frag.asNotNull { frag: Frag -> frag.resolveOnActive(layoutView, this, 0) }
 /*
         if(this !is ViewPagerBase<*> //Karena frag.onActive() dilakukan oleh interface ViewPagerActBase
             && frag != null && frag is Frag){
@@ -300,8 +303,35 @@ abstract class Act : AppCompatActivity(), //Inheritable,
             _AppUtil.toHomeScreen(this)
     }
 
+    /**
+     * Callback for the result from requesting permissions. This method
+     * is invoked for every call on [.requestPermissions].
+     *
+     *
+     * **Note:** It is possible that the permissions request interaction
+     * with the user is interrupted. In this case you will receive empty permissions
+     * and results arrays which should be treated as a cancellation.
+     *
+     *
+     * @param requestCode The request code passed in [.requestPermissions].
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     * which is either [android.content.pm.PackageManager.PERMISSION_GRANTED]
+     * or [android.content.pm.PackageManager.PERMISSION_DENIED]. Never null.
+     *
+     * @see .requestPermissions
+     */
+    @CallSuper
+    final override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super<AppCompatActivity>.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super<ActFragBase>.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
-//    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
+    //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}
 //    override fun onPresenterFail(reqCode: String, resCode: Int, msg: String?, e: Exception?) {}
 //    override fun render(state: State){}
 

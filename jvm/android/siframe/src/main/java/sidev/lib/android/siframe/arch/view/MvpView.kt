@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.arch.view
 import sidev.lib.android.siframe.arch.presenter.*
 import sidev.lib.android.siframe.arch.type.Mvp
 
-interface MvpView: ArchView, Mvp, InteractivePresenterDependentCommon<Presenter>, PresenterCallbackCommon{
+interface MvpView: ArchView, Mvp, InteractivePresenterDependentCommon, PresenterCallbackCommon{
     override fun initPresenter(): Presenter?
 
     override fun sendRequest(reqCode: String, vararg data: Pair<String, Any>) {

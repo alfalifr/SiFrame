@@ -21,7 +21,7 @@ import sidev.lib.check.notNullTo
 import java.lang.Exception
 
 interface MviView<I: ViewIntent, R: IntentResult, S: ViewState<*>>: ArchView, Mvi,
-    InteractivePresenterDependent<I, MviPresenter<I, R, S>>,
+    InteractivePresenterDependent<I>, //MviPresenter<I, R, S>
     AutoRestoreViewClient,
     ExpirableBase {
     companion object{
