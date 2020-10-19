@@ -128,6 +128,8 @@ fun Int.isIdDuplicatedInView(v: View): Boolean{
     return false
 }
 
+//val Number.dp get()= _ViewUtil.dpToPx(this.toFloat())
+
 /**
  * Properti ini tidak akan @throws [Resources.NotFoundException].
  * @return null jika this [View] tidak memiliki [View.getId].

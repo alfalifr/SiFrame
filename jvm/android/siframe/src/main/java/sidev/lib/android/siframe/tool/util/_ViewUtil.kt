@@ -51,13 +51,24 @@ object  _ViewUtil{
     val DURATION_ANIMATION_LONG : Long = 500
 
     // Untuk mengubah ukuran dari DP ke PX
-    fun dpToPx(dp: Float, context: Context): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
-    }
+    @JvmOverloads
+    fun dpToPx(dp: Float, context: Context?= null): Float = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp,
+        (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics)
+    )
 
-    fun dpToPx(dp : Int): Int {
-        return (dp*Resources.getSystem().displayMetrics.density).toInt()
+    @JvmOverloads
+    fun spToPx(sp: Float, context: Context?= null): Float = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_SP,
+        sp,
+        (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics)
+    )
+/*
+    fun dpToPx(dp : Float): Int {
+        return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
+ */
 
     fun getScreenWidth(ctx: Context) : Int {
         val dm = DisplayMetrics()
@@ -187,14 +198,14 @@ object  _ViewUtil{
     fun changeDrawableStrokeColor(color : Int, context: Context, vararg v : View){
         for(i in 0 until v.size){
             val vDrawable = v[i].background as GradientDrawable
-            vDrawable.setStroke(dpToPx(3), ContextCompat.getColor(context, color))
+            vDrawable.setStroke(dpToPx(3f).toInt(), ContextCompat.getColor(context, color))
         }
     }
 
     // untuk merubah warna dari text
     fun changeTextColor(color : Int, context: Context, vararg tv : TextView){
-        for(i in 0 until tv.size){
-            tv[i].setTextColor(ContextCompat.getColor(context, color))
+        for(element in tv){
+            element.setTextColor(ContextCompat.getColor(context, color))
         }
     }
 /*

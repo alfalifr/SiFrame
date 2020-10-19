@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Typeface
 import android.os.Build
 import android.view.*
 import android.widget.*
@@ -419,11 +420,17 @@ fun Int.dpToPx(): Int{
  */
 
 /**
- * Properti yg mengubah this [Int] dp menjadi px.
+ * Properti yg mengubah this [Number] dp menjadi px.
  * Sama dg fungsi [_ViewUtil.dpToPx].
  */
-val Int.dp: Int
-    get()= _ViewUtil.dpToPx(this)
+val Number.dp: Float get()= _ViewUtil.dpToPx(this.toFloat())
+
+/**
+ * Properti yg mengubah this [Number] sp menjadi px.
+ * Sama dg fungsi [_ViewUtil.spToPx].
+ */
+val Number.sp: Float get()= _ViewUtil.spToPx(this.toFloat())
+
 
 fun ViewGroup.changeView(v: View){
     removeAllViews()
@@ -527,6 +534,10 @@ var EditText.txt: String
 var TextView.txt: String
     set(v){ this.text= v }
     get()= this.text.toString()
+
+var TextView.textStyle: Int
+    set(v)= setTypeface(typeface, v)
+    get()= typeface.style
 
 /**
  * Menambah jml angka yg tertera pada [TextView.getText] sebanyak [diff].
