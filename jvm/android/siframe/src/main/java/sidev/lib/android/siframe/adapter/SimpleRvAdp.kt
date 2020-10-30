@@ -26,6 +26,7 @@ import sidev.lib.exception.ResourceNotFoundExc
 //import sidev.lib.universal.`fun`.isNull
 //import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
+import java.lang.IllegalStateException
 
 //!!!!!!@@ 18 Jan 2020
 /**
@@ -366,8 +367,13 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
             getView(itemCount -1)
                 ?.findViewById<ViewGroup>(_Config.ID_VG_CONTENT_CONTAINER)
                 ?.addView(footerView!!)
-        f()
-        notifyDataSetChanged()
+
+        try {
+            f()
+            notifyDataSetChanged()
+        } catch (e: IllegalStateException){
+            //Abaikan karena kemungkinan error terjadi karena notifyDataSetChangedsudah dipanggil sebelumnya.
+        }
 //            Log.e(this::class.java.simpleName, "notifyDatasetChenged!!! name= ${this::class.java.simpleName}")
 //            rv!!.layoutManager?.onRestoreInstanceState(recyclerViewState)
 //        }

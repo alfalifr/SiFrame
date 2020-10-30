@@ -45,12 +45,13 @@ android {
 
     //Ini untuk menangani masalah "Cannot inline bytecode built with JVM target 1.8 into bytecode that is being built with JVM target 1.6"
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8 //JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+//        languageVersion= "1.4"
     }
 
 // To inline the bytecode built with JVM target 1.8 into

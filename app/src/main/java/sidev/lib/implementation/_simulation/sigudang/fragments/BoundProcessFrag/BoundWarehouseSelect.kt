@@ -66,7 +66,7 @@ open class BoundWarehouseSelect : Frag(), BoundProcessRootFrag, TopMiddleBottomB
 
     @CallSuper
     override fun _initView(layoutView: View) {
-        layoutView.setPadding(10.dp)
+        layoutView.setPadding(10.dp.toInt())
         bsWarehouseSelect= BsWarehouseSelectFr()
         bsWarehouseSelect.setTitle("Pilih Gudang")
         bsWarehouseSelect.setBtnConfirmText("Pilih")

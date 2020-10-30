@@ -396,6 +396,28 @@ abstract class Frag : Fragment(),
     }
 
     /**
+     * Receive the result from a previous call to
+     * [.startActivityForResult].  This follows the
+     * related Activity API as described there in
+     * [Activity.onActivityResult].
+     *
+     * @param requestCode The integer request code originally supplied to
+     * startActivityForResult(), allowing you to identify who this
+     * result came from.
+     * @param resultCode The integer result code returned by the child activity
+     * through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     * (various data can be attached to Intent "extras").
+     */
+    @CallSuper
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        onActResultListener?.onActResult(requestCode, resultCode, data)
+    }
+
+    var onActResultListener: Act.OnActResultListener?= null
+
+    /**
      * Callback for the result from requesting permissions. This method
      * is invoked for every call on [.requestPermissions].
      *

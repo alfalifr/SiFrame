@@ -23,7 +23,7 @@ fun DependencyHandler.androidTestImplementation(dependencyNotation: Any): Depend
 
 fun File.withInputStream(): FileInputStream = FileInputStream(this)
 
-val kotlin_version= findProperty("kotlin_version")
+val kotlin_version= findProperty("kotlin_version").also{ println("${project.name} kotlin_version= $it")}
 val anko_version= findProperty("anko_version")
 
 val GROUP_ID= "sidev.lib.jvm.android"
@@ -85,6 +85,16 @@ android {
             //minifyEnabled true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+//        languageVersion= "1.4"
     }
 }
 

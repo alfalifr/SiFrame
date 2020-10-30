@@ -11,9 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
-import sidev.lib.android.siframe.tool.util.`fun`.findView
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.iterator
+import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.notNull
 import sidev.lib.collection.iterator.SkippableIteratorImpl
@@ -177,10 +175,10 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         = (rvAdp.asNotNullTo { adp: RvAdp<*, *> ->  adp.getDataShownIndex(adpPos) }
             ?: rvAdp?.getDataIndex(adpPos)
             ?: adpPos)
-            .notNegativeOr(adpPos)
+            .notNegativeOr(adpPos.notNegativeOr(0))
 
     /** Mengambil posisi yg ditampilkan pada [rvAdp]. */
-    fun getAdpPosition(dataPos: Int): Int = (rvAdp?.getRawAdpPos(dataPos) ?: dataPos).notNegativeOr(dataPos)
+    fun getAdpPosition(dataPos: Int): Int = (rvAdp?.getRawAdpPos(dataPos) ?: dataPos).notNegativeOr(dataPos.notNegativeOr(0))
 //        return if(positionFromAdp >= 0) positionFromAdp
 //        else adpPos
 
@@ -255,7 +253,9 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         }
         if(additionalData != null && isAdditionalDataRecycled)
             mAdditionalData?.remove(dataPos, additionalData)
-        mView?.remove(dataPos, v)
+
+        loge("ViewComp dataPos= $dataPos adpPos= $adpPos")
+        mView?.remove_(dataPos, v)
     }
 
     /**

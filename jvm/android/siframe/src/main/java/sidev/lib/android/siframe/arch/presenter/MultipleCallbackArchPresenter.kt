@@ -26,19 +26,23 @@ import java.lang.Exception
  */
 interface MultipleCallbackArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>
     : ArchPresenter<Req, Res, C> {
+
     /**
      * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest().
      * Implementasi default pada interface ini yaitu memanggil [processRequest] dg callback
      * adalah [callback] utama interface ini.
      */
     override fun processRequest(request: Req, data: Map<String, Any>?){
-        callback?.let { processRequest(it, request, data) }
+        callback?.also {
+            processRequest(PresenterRequestData(request, it), data)
+        }
     }
     /**
      * Fungsi yang digunakan untuk memproses request yang dipanggil dari fungsi postRequest()
      * yang menerima instance [callback] untuk request.
      */
-    fun processRequest(callback: C, request: Req, data: Map<String, Any>?)
+//    fun processRequest(callback: C, request: Req, data: Map<String, Any>?)
+    fun processRequest(request: PresenterRequest<Req, Res>, data: Map<String, Any>?)
 
     /**
      * Semua instance PresenterCallback harus manggil ini kalo mau request ke presenter
@@ -48,7 +52,7 @@ interface MultipleCallbackArchPresenter<Req, Res, C: PresenterCallback<Req, Res>
         if(callback.isExpired) return
 
         if(checkDataIntegrity(request, ArchPresenter.Direction.OUT, data))
-            processRequest(callback, request, data)
+            processRequest(PresenterRequestData(request, callback), data)
         else
             throw DataIntegrityExc(this::class, "Pengecekan keluar di presenter")
     }
@@ -61,10 +65,11 @@ interface MultipleCallbackArchPresenter<Req, Res, C: PresenterCallback<Req, Res>
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
     @Suppress(SuppressLiteral.IMPLICIT_CAST_TO_ANY)
-    fun postSucc(callback: C, result: Res, data: Map<String, Any>?= null, resCode: Int= 0, request: Req?= null) {
+    fun postSucc(request: PresenterRequest<Req, Res>, result: Res, data: Map<String, Any>?= null, resCode: Int= 0) {
+        val callback= request.callback
         if(callback.isExpired) return
 
-        val sentReqCode= request ?: this.reqCode!!
+        val sentReqCode= request.request //?: this.reqCode!!
         if(checkDataIntegrity(sentReqCode, ArchPresenter.Direction.IN, data))
             callback.asNotNull { c: MvpView ->
                 val innerSentReqCode= try{ sentReqCode as String }
@@ -86,10 +91,11 @@ interface MultipleCallbackArchPresenter<Req, Res, C: PresenterCallback<Req, Res>
      * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
-    fun postFail(callback: C, result: Res?= null, msg: String?= null, e: Exception?= null, resCode: Int= 0, request: Req?= null) {
+    fun postFail(request: PresenterRequest<Req, Res>, result: Res?= null, msg: String?= null, e: Exception?= null, resCode: Int= 0) {
+        val callback= request.callback
         if(callback.isExpired) return
 
-        val sentReqCode= request ?: this.reqCode!!
+        val sentReqCode= request.request //?: this.reqCode!!
         callback.asNotNull { c: MvpView ->
             val innerSentReqCode= try{ sentReqCode as String }
             catch (e: ClassCastException){

@@ -56,8 +56,7 @@ abstract class MultipleCallbackMviPresenter<I: ViewIntent, R: IntentResult, S: V
      * yang berupa [ViewIntent].
      */
     abstract override fun processRequest(
-        callback: StateProcessor<I, R, S>,
-        request: I,
+        request: PresenterRequest<I, R>,
         data: Map<String, Any>?
     )
 
@@ -83,13 +82,13 @@ abstract class MultipleCallbackMviPresenter<I: ViewIntent, R: IntentResult, S: V
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
     final override fun postSucc(
-        callback: StateProcessor<I, R, S>,
+//        callback: StateProcessor<I, R, S>,
+        request: PresenterRequest<I, R>,
         result: R,
         data: Map<String, Any>?,
-        resCode: Int,
-        request: I?
+        resCode: Int
     ) {
-        super<MultipleCallbackArchPresenter>.postSucc(callback, result, data, resCode, request)
+        super<MultipleCallbackArchPresenter>.postSucc(request, result, data, resCode)
     }
 
     /**
@@ -97,14 +96,14 @@ abstract class MultipleCallbackMviPresenter<I: ViewIntent, R: IntentResult, S: V
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
     final override fun postFail(
-        callback: StateProcessor<I, R, S>,
+//        callback: StateProcessor<I, R, S>,
+        request: PresenterRequest<I, R>,
         result: R?,
         msg: String?,
         e: Exception?,
-        resCode: Int,
-        request: I?
+        resCode: Int
     ) {
-        super<MultipleCallbackArchPresenter>.postFail(callback, result, msg, e, resCode, request)
+        super<MultipleCallbackArchPresenter>.postFail(request, result, msg, e, resCode)
     }
 
     /*

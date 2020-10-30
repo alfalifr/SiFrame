@@ -45,6 +45,19 @@ val SparseIntArray.values: Sequence<Int>
         }
     }
 
+/** Removes the entry for [key] only if it is mapped to [value]. */
+fun <T> SparseArray<T>.remove_(key: Int, value: T): Boolean {
+    val index = indexOfKey(key).let {
+        if(it >= -1) it else -it //Terkadang index yg dihasilkan menjadi kebalikan dari index itu, contoh 11 jadi -11 dan 5 jadi -5.
+    }
+
+    if (index != -1 && value == valueAt(index)) {
+        removeAt(index)
+        return true
+    }
+    return false
+}
+
 
 operator fun <T> SparseArray<T>.iterator(): Iterator<Pair<Int, T>> {
     return object : Iterator<Pair<Int, T>>{

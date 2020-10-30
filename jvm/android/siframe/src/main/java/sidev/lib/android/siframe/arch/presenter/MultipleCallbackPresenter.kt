@@ -2,6 +2,7 @@ package sidev.lib.android.siframe.arch.presenter
 
 import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.type.Mvp
+import sidev.lib.check.notNull
 import java.lang.Exception
 
 /*
@@ -38,7 +39,13 @@ abstract class MultipleCallbackPresenter(
     callback: PresenterCallback<String, Int>?
 ): Presenter(callback), MultipleCallbackArchPresenter<String, Int?, PresenterCallback<String, Int?>> {
 
-/*
+    /**
+     * Berguna tempat menyimpan semetara request yg nantinya diambil dari fungsi [getRequest].
+     * Field ini berguna jika hanya mekanisme hasil request berjalan sesuai First-In-Fisrt-Out (FIFO).
+     */
+    protected val requestCallbackMap= HashMap<PresenterCallback<String, Int?>, MutableList<String>>()
+
+    /*
         set(v){
             if(v != null){
                 if(v.clazz.memberFunctions.find { it.name == "onPresenterSucc" }!!
@@ -61,8 +68,8 @@ abstract class MultipleCallbackPresenter(
      * yang menerima instance [callback] untuk request.
      */
     abstract override fun processRequest(
-        callback: PresenterCallback<String, Int?>,
-        request: String,
+//        callback: PresenterCallback<String, Int?>,
+        request: PresenterRequest<String, Int?>,
         data: Map<String, Any>?
     )
 
@@ -76,7 +83,9 @@ abstract class MultipleCallbackPresenter(
         request: String,
         data: Map<String, Any>?
     ) {
-        this.reqCode
+        this.reqCode= request
+        (requestCallbackMap[callback] ?: ArrayList()) += request
+
         super<MultipleCallbackArchPresenter>.postRequest(callback, request, data)
     }
 
@@ -88,13 +97,13 @@ abstract class MultipleCallbackPresenter(
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
     final override fun postSucc(
-        callback: PresenterCallback<String, Int?>,
+//        callback: PresenterCallback<String, Int?>,
+        request: PresenterRequest<String, Int?>,
         result: Int?,
         data: Map<String, Any>?,
-        resCode: Int,
-        request: String?
+        resCode: Int
     ) {
-        super<MultipleCallbackArchPresenter>.postSucc(callback, result, data, resCode, request)
+        super<MultipleCallbackArchPresenter>.postSucc(request, result, data, resCode)
     }
 
     /**
@@ -102,14 +111,14 @@ abstract class MultipleCallbackPresenter(
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
     final override fun postFail(
-        callback: PresenterCallback<String, Int?>,
+//        callback: PresenterCallback<String, Int?>,
+        request: PresenterRequest<String, Int?>,
         result: Int?,
         msg: String?,
         e: Exception?,
-        resCode: Int,
-        request: String?
+        resCode: Int
     ) {
-        super<MultipleCallbackArchPresenter>.postFail(callback, result, msg, e, resCode, request)
+        super<MultipleCallbackArchPresenter>.postFail(request, result, msg, e, resCode)
     }
 
     /*

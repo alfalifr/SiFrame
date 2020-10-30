@@ -24,12 +24,14 @@ object StaticManager: LifecycleObserver {
         return try{
             staticObjList!![
                 if(ownerName == null) key
-                else getObjKeyForOwner(
-                    key,
-                    ownerName
-                )
+                else getObjKeyForOwner(key, ownerName)
             ] as T?
-        } catch (e: KotlinNullPointerException){ null }
+        } catch (e: Exception){
+            when(e){
+                is KotlinNullPointerException, is NullPointerException -> null
+                else -> throw e
+            }
+        }
     }
 
     private fun getObjKeyForOwner(key: String, ownerName: String): String{

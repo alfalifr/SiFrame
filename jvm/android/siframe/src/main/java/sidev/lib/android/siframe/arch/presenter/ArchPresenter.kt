@@ -28,7 +28,8 @@ import java.lang.Exception
  * [Req] adalah tipe data yg digunakan untuk mengirim request,
  * [Res] adalah tipe data yg digunakan sebagai hasil respon dari [Req].
  */
-interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLinkBase {
+interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>
+    : PresenterResultPostman<Req, Res>, ExpirableLinkBase {
     enum class Direction{
         IN, OUT
     }
@@ -79,7 +80,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
     @Suppress(SuppressLiteral.IMPLICIT_CAST_TO_ANY)
-    fun postSucc(result: Res, data: Map<String, Any>?= null, resCode: Int= 0, request: Req?= null){
+    override fun postSucc(result: Res, data: Map<String, Any>?, resCode: Int, request: Req?){
         doWhenLinkNotExpired {
             val sentReqCode= request ?: this.reqCode!!
             if(checkDataIntegrity(sentReqCode, Direction.IN, data))
@@ -109,7 +110,7 @@ interface ArchPresenter<Req, Res, C: PresenterCallback<Req, Res>>: ExpirableLink
      * Jika pada arsitektur MVI, [result] adalah hasil dari [request] dg tipe data [ViewIntent], dan [resCode] merupakan int kode hasil tersebut.
      * Jika pada arsitektur MVP, [result] dan [resCode] adalah hal yg sama.
      */
-    fun postFail(result: Res?= null, msg: String?= null, e: Exception?= null, resCode: Int= 0, request: Req?= null){
+    override fun postFail(result: Res?, msg: String?, e: Exception?, resCode: Int, request: Req?){
         doWhenLinkNotExpired {
             val sentReqCode= request ?: this.reqCode!!
             callback.asNotNull { c: MvpView ->
