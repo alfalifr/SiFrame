@@ -20,12 +20,12 @@ class ActBarFrag5 : ActBarFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag5 - Act Bar"
-        _ViewUtil.setBgColorRes(layoutView, R.color.biruLaut)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.biruLaut)
         isActBarViewFromFragment= true
     }
 
     override fun _initActBar(actBarView: View) {
-        _ViewUtil.setBgColorRes(actBarView, R.color.kuningUtama)
+        _ViewUtil.setBgColorTintRes(actBarView, R.color.kuningUtama)
         actBarView.tv.text= fragTitle
         actBarView.tv.textColorResource= _ColorRes.TEXT_DARK
     }

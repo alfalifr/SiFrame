@@ -72,8 +72,8 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
             startDrawerContainer?.layoutParams= lpStart
             endDrawerContainer?.layoutParams= lpEnd
 
-            _ViewUtil.setBgColorRes(startDrawerContainer!!, _ColorRes.COLOR_PRIMARY_DARK)
-            _ViewUtil.setBgColorRes(endDrawerContainer!!, _ColorRes.COLOR_PRIMARY_DARK)
+            _ViewUtil.setBgColorTintRes(startDrawerContainer!!, _ColorRes.COLOR_PRIMARY_DARK)
+            _ViewUtil.setBgColorTintRes(endDrawerContainer!!, _ColorRes.COLOR_PRIMARY_DARK)
 
             rootDrawerLayout= rootView.findViewByType()!!
             __initView(rootView)

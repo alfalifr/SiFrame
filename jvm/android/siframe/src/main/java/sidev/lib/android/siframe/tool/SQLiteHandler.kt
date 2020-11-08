@@ -7,7 +7,9 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.db.Attribute
 import sidev.lib.android.siframe.intfc.listener.LiveVal
@@ -514,6 +516,7 @@ Koneksi
 
                 override fun close() = sqliteHelperDelegate?.close() ?: super.close()
 
+                @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
                 override fun onConfigure(db: SQLiteDatabase?) =
                     sqliteHelperDelegate?.onConfigure(db) ?: super.onConfigure(db)
 

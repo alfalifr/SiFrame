@@ -18,7 +18,7 @@ class Frag3 : Frag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag3"
-        _ViewUtil.setBgColorRes(layoutView, R.color.merahMuda)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.merahMuda)
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {

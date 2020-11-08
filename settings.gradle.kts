@@ -1,3 +1,4 @@
+include(":AndroidStdLib")
 rootProject.name= "SiFrame_Root"
 include(":app")
 

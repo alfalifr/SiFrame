@@ -1,6 +1,5 @@
 package sidev.lib.implementation.frag
 
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -53,15 +52,15 @@ class DrawerVpImplFrag : DrawerVpFrag<Frag>(), TopMiddleBottomBase{
     override fun _initStartDrawerView(startDrawerView: View) {
         startDrawerView.iv.imageResource= R.drawable.ic_profile
         startDrawerView.findViewById<TextView>(R.id.tv).text= "_initStartDrawerView() ${this::class.java.simpleName}"
-        _ViewUtil.setColorRes(startDrawerView.iv, _ColorRes.COLOR_LIGHT)
-        _ViewUtil.setBgColorRes(startDrawerView, R.color.unguTua)
+        _ViewUtil.setColorTintRes(startDrawerView.iv, _ColorRes.COLOR_LIGHT)
+        _ViewUtil.setBgColorTintRes(startDrawerView, R.color.unguTua)
     }
 
     override fun _initEndDrawerView(endDrawerView: View) {
         endDrawerView.iv.imageResource= R.drawable.ic_cross_circle
         endDrawerView.findViewById<TextView>(R.id.tv).text= "_initEndDrawerView() ${this::class.java.simpleName}"
-        _ViewUtil.setColorRes(endDrawerView.iv, _ColorRes.RED)
-        _ViewUtil.setBgColorRes(endDrawerView, R.color.ijoRumputMuda)
+        _ViewUtil.setColorTintRes(endDrawerView.iv, _ColorRes.RED)
+        _ViewUtil.setBgColorTintRes(endDrawerView, R.color.ijoRumputMuda)
     }
 
     override fun _initView(layoutView: View) {

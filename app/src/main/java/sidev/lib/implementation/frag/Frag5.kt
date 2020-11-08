@@ -18,7 +18,7 @@ class Frag5 : Frag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag5"
-        _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumput)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.ijoRumput)
         (layoutView.btn as Button).text= "Ke CrashFrag"
         layoutView.btn.visibility= View.VISIBLE
         layoutView.btn.setOnClickListener { startSingleFragAct_config<CrashFrag>() }

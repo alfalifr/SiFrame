@@ -23,12 +23,12 @@ class ActBarFrag3 : ActBarFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag3"
-        _ViewUtil.setBgColorRes(layoutView, R.color.merah)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.merah)
         isActBarViewFromFragment= true
     }
 
     override fun _initActBar(actBarView: View) {
-        _ViewUtil.setBgColorRes(actBarView, R.color.biruLangit)
+        _ViewUtil.setBgColorTintRes(actBarView, R.color.biruLangit)
         actBarView.tv.text= fragTitle
     }
 
@@ -40,11 +40,11 @@ class ActBarFrag3 : ActBarFrag(){
         actSimple.asNotNull { act: DrawerActBase ->
             context!!.inflate(R.layout.comp_drawer_start, act.endDrawerContainer).notNull { v ->
                 v.tv.textColorResource= R.color.putih
-                _ViewUtil.setBgColorRes(v, R.color.hitam)
-                _ViewUtil.setBgColorRes(act.endDrawerContainer, R.color.unguTua)
+                _ViewUtil.setBgColorTintRes(v, R.color.hitam)
+                _ViewUtil.setBgColorTintRes(act.endDrawerContainer, R.color.unguTua)
                 act.setDrawerView(DrawerBase.Type.DRAWER_END, v)
             }
-            _ViewUtil.setBgColorRes(act.startDrawerContainer, R.color.hitam)
+            _ViewUtil.setBgColorTintRes(act.startDrawerContainer, R.color.hitam)
         }
     }
 }

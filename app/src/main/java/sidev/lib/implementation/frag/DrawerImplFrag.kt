@@ -26,8 +26,8 @@ class DrawerImplFrag : DrawerFrag(){
         loge("Tes masuk _initStartDrawerView() DrawerImplFrag")
         startDrawerView.iv.imageResource= R.drawable.ic_check_circle
         startDrawerView.tv.text= "Teks starDrawer DrawerImplFrag"
-        _ViewUtil.setColorRes(startDrawerView.iv, R.color.ijo)
-        _ViewUtil.setBgColorRes(startDrawerView, _ColorRes.COLOR_LIGHT)
+        _ViewUtil.setColorTintRes(startDrawerView.iv, R.color.ijo)
+        _ViewUtil.setBgColorTintRes(startDrawerView, _ColorRes.COLOR_LIGHT)
     }
 
     override fun _initEndDrawerView(endDrawerView: View) {

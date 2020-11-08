@@ -18,7 +18,6 @@ import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
-import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.arch.view.AutoRestoreViewClient
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.arch.view.MvvmView

@@ -26,13 +26,13 @@ class Frag4 : DrawerFrag(){
     override fun _initStartDrawerView(startDrawerView: View) {
         startDrawerView.tv.text= "Ini teks sebenarnya StartDrawer dari Frag4"
         startDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
-        _ViewUtil.setBgColorRes(startDrawerView.parent as View, R.color.ijo)
+        _ViewUtil.setBgColorTintRes(startDrawerView.parent as View, R.color.ijo)
     }
 
     override fun _initEndDrawerView(endDrawerView: View) {
         endDrawerView.tv.text= "Ini teks sebenarnya EndDrawer dari Frag4"
         endDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
-        _ViewUtil.setBgColorRes(endDrawerView.parent as View, R.color.merah)
+        _ViewUtil.setBgColorTintRes(endDrawerView.parent as View, R.color.merah)
     }
 // */
 /*
@@ -42,7 +42,7 @@ class Frag4 : DrawerFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag4"
-        _ViewUtil.setBgColorRes(layoutView, R.color.kuningMuda)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.kuningMuda)
 /*
         if(actSimple is SingleFragDrawerActBase){
             (actSimple as SingleFragDrawerActBase)._reinitEndDrawerView { drawer, startDrawer ->

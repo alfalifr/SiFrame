@@ -20,7 +20,7 @@ class Frag1 : ActBarFrag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag1"
-        _ViewUtil.setBgColorRes(layoutView, R.color.ijoRumputMuda)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.ijoRumputMuda)
         loge("Frag1 _prop_parentLifecycle?.clazz => ${_prop_parentLifecycle?.clazz}")
     }
 

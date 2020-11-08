@@ -69,7 +69,7 @@ android {
     buildToolsVersion = "29.0.3"
 
     defaultConfig {
-        minSdkVersion(21) //15
+        minSdkVersion(14) //15
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
@@ -127,6 +127,7 @@ dependencies {
     implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x") //{ isTransitive= true }
 //    implementation(project(":Android-External")) //{ isTransitive= true }
 //    implementation(project(":SiFrame-Customizable"))
+    //implementation(project(":AndroidStdLib")) //TODO 8 Nov 2020 -> Untuk smtr, lib std untuk Android blum dipisah, karena mau ngerjakan EA.
 
 //    implementation(project("path" to ":jvm:android:external"))
 //    implementation(project("path" to ":jvm:android:siframe:customizable"))

@@ -4,10 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.Point
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
+import android.graphics.*
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.*
 import android.hardware.Camera
 import android.os.Build
 import android.text.Editable
@@ -23,20 +24,24 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.annotation.MenuRes
-import androidx.annotation.RequiresApi
+import androidx.annotation.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.ViewCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.squareup.picasso.Picasso
-import org.jetbrains.anko.*
+import org.jetbrains.anko.backgroundDrawable
+import org.jetbrains.anko.layoutInflater
+import org.jetbrains.anko.textColorResource
+import org.jetbrains.anko.windowManager
 import sidev.lib.android.siframe._customizable._ColorRes
 import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe.lifecycle.app.App
 import sidev.lib.android.siframe.model.PictModel
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.check.notNull
@@ -52,14 +57,14 @@ object  _ViewUtil{
 
     // Untuk mengubah ukuran dari DP ke PX
     @JvmOverloads
-    fun dpToPx(dp: Float, context: Context?= null): Float = TypedValue.applyDimension(
+    fun dpToPx(dp: Float, context: Context? = null): Float = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp,
         (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics)
     )
 
     @JvmOverloads
-    fun spToPx(sp: Float, context: Context?= null): Float = TypedValue.applyDimension(
+    fun spToPx(sp: Float, context: Context? = null): Float = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
         sp,
         (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics)
@@ -177,7 +182,7 @@ object  _ViewUtil{
 
     // Untuk merubah dimensi layout dengan transisi
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun changeViewDimen(v : ViewGroup, newDimension : Int) {
+    fun changeViewDimen(v: ViewGroup, newDimension: Int) {
         TransitionManager.beginDelayedTransition(
             v, TransitionSet()
                 .addTransition(ChangeBounds())
@@ -188,25 +193,30 @@ object  _ViewUtil{
         v.layoutParams = params
     }
 
-    // Untuk merubah transparansi background drawable layout
-    fun setBackgroundAlpha(v : View, level : Int) {
-        val skipBackground = v.background as Drawable
-        skipBackground.alpha = ((level.toDouble()/100) * 255).toInt()
-    }
 
-    // Untuk merubah stroke color dari view background
-    fun changeDrawableStrokeColor(color : Int, context: Context, vararg v : View){
-        for(i in 0 until v.size){
-            val vDrawable = v[i].background as GradientDrawable
-            vDrawable.setStroke(dpToPx(3f).toInt(), ContextCompat.getColor(context, color))
+    /**
+     * Merubah stroke color dari view background
+     */
+    fun changeDrawableStrokeColor(@ColorRes colorId: Int, vararg v: View, context: Context?= null){
+        if(v.isEmpty())
+            return
+        val ctx= context ?: v.first().context
+        for(e in v){
+            val vDrawable = e.background// as GradientDrawable
+            if(vDrawable is GradientDrawable)
+                vDrawable.setStroke(dpToPx(3f).toInt(), _ResUtil.getColor(ctx, colorId))
         }
     }
 
-    // untuk merubah warna dari text
-    fun changeTextColor(color : Int, context: Context, vararg tv : TextView){
-        for(element in tv){
-            element.setTextColor(ContextCompat.getColor(context, color))
-        }
+    /**
+     * merubah warna dari bbrp [tv].
+     */
+    fun changeTextColor(@ColorRes colorId: Int, vararg tv: TextView, context: Context?= null){
+        if(tv.isEmpty())
+            return
+        val ctx= context ?: tv.first().context
+        for(element in tv)
+            element.setTextColor(_ResUtil.getColor(ctx, colorId))
     }
 /*
     /**
@@ -223,30 +233,31 @@ object  _ViewUtil{
  */
 
     // Untuk Fade Out View
-    fun fadeOut(vararg views : View, duration : Long= 1000) {
+    fun fadeOut(vararg views: View, duration: Long = 1000) {
         fade(1f, 0f, *views, duration = duration)
     }
 
     // Untuk Fade In View
-    fun fadeIn(vararg views : View, duration : Long= 1000) {
+    fun fadeIn(vararg views: View, duration: Long = 1000) {
         fade(0f, 1f, *views, duration = duration)
     }
 
-    fun fade(start: Float, end: Float, vararg views : View, duration : Long= 1000) {
+    fun fade(start: Float, end: Float, vararg views: View, duration: Long = 1000) {
         for(v in views){
             val alphaAnim  = AlphaAnimation(start, end)
             alphaAnim.duration = duration
 //            alphaAnim.interpolator= AccelerateInterpolator() //.setInterpolator { it }
-            alphaAnim.setAnimationListener(object : Animation.AnimationListener{
+            alphaAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationRepeat(animation: Animation?) {}
                 override fun onAnimationEnd(animation: Animation?) {
-                    v.alpha= end
-                    v.visibility = if(end > 0) View.VISIBLE
-                        else View.GONE
+                    v.alpha = end
+                    v.visibility = if (end > 0) View.VISIBLE
+                    else View.GONE
                 }
+
                 override fun onAnimationStart(animation: Animation?) {
-                    v.visibility = if(start > 0) View.VISIBLE
-                        else View.GONE
+                    v.visibility = if (start > 0) View.VISIBLE
+                    else View.GONE
                 }
             })
 //            v.animation = alphaAnim
@@ -263,14 +274,19 @@ object  _ViewUtil{
     }
 
     // Untuk menambahkan fragment
-    fun loadFragment(fragmentManager : FragmentManager, fragment : Fragment, container : Int, tag : String){
+    fun loadFragment(
+        fragmentManager: FragmentManager,
+        fragment: Fragment,
+        container: Int,
+        tag: String
+    ){
         fragmentManager
                 .beginTransaction()
                 .replace(container, fragment, tag)
                 .commit()
     }
 
-    fun <N: Number> extractNumberFromEd(ed: EditText, defaultValue: Number= 0): N{
+    fun <N : Number> extractNumberFromEd(ed: EditText, defaultValue: Number = 0): N{
         val countStr= ed.text.toString()
         return if(countStr.isNotEmpty()) countStr.toInt() as N
             else defaultValue as N
@@ -318,20 +334,123 @@ object  _ViewUtil{
         return null
     }
 
+    /**
+     * Mengambil `int` color tint dari [drawable].
+     * return -1 jika `this.extension` [drawable] tidak punya tint atau tipenya tidak diketahui.
+     */
+    @ColorInt
+    fun getColorTintInt(drawable: Drawable): Int { //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+        val color= DrawableCompat.getColorFilter(drawable)?.let { getColorTintInt(it) } ?: -1
+        return if(color >= 0) color
+        else when(drawable){
+            is ColorDrawable -> drawable.color
+            is BitmapDrawable -> drawable.paint.color
+            is PaintDrawable -> drawable.paint.color
+//            is VectorDrawableCompat -> drawable.setTintList()
+            is GradientDrawable -> {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) drawable.color?.defaultColor ?: -1
+                else -1
+            }
+            else -> when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && drawable is ColorStateListDrawable -> (drawable.current as ColorDrawable).color
+                else -> -1
+            }
+        }
+    }
+    /**
+     * Mengambil `int` color tint dari [colorFilter].
+     * return -1 jika `this.extension` [colorFilter] tidak punya tint atau tipenya tidak diketahui.
+     */
+    @ColorInt
+    fun getColorTintInt(colorFilter: ColorFilter): Int = when(colorFilter){
+        is PorterDuffColorFilter -> {
+            try {
+                PorterDuffColorFilter::class.java.getField("mColor").get(colorFilter) as Int
+            } catch (e: ClassCastException){
+                loge("_ViewUtil.getColorTintInt() tidak dapat mengambil \"mColor\" dari $colorFilter")
+                -1
+            }
+        }
+//        is ColorMatrixColorFilter ->
+        else -> when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && colorFilter is BlendModeColorFilter -> colorFilter.color
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && colorFilter is LightingColorFilter -> colorFilter.colorMultiply
+            else -> -1
+        }
+    }
+    /**
+     * Mengambil `int` color tint dari [ImageView.getDrawable].
+     * return -1 jika `this.extension` [ImageView.getDrawable] tidak punya drawable atau drawable-nya tidak punya tint.
+     */
+    @ColorInt
+    fun getColorTintInt(iv: ImageView): Int {
+        return ImageViewCompat.getImageTintList(iv)?.let {
+            it.getColorForState(iv.drawableState, it.defaultColor)
+        } ?: -1
+//        return iv.drawable?.let { getColorTintInt(it) } ?: -1
+    }
+    /**
+     * Mengambil `int` color tint dari [View.getBackground].
+     * return -1 jika `this.extension` [View.getBackground] tidak punya bg atau bg-nya tidak punya tint.
+     */
+    @ColorInt
+    fun getBgColorTintInt(v: View): Int {
+        return ViewCompat.getBackgroundTintList(v)?.let {
+            it.getColorForState(v.drawableState, it.defaultColor)
+        } ?: -1
+//        return v.background?.let { getColorTintInt(it) } ?: -1
+    }
 
-    fun setColorRes(iv: ImageView, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
-        val color= _ResUtil.getColor(iv.context, colorId)
-        DrawableCompat.setTint(iv.drawable, color)
+
+    fun setColorTintRes(drawable: Drawable, @ColorRes colorId: Int, ctx: Context?= null)=
+        setColorTintInt(drawable, _ResUtil.getColor(ctx ?: App.ctx, colorId))
+    fun setColorTintInt(drawable: Drawable, @ColorInt color: Int)= DrawableCompat.setTint(drawable, color)
+
+    fun setColorTintRes(iv: ImageView, @ColorRes colorId: Int)= setColorTintInt(iv, _ResUtil.getColor(iv.context, colorId))
+    fun setColorTintInt(iv: ImageView, @ColorInt color: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+        val drawable= iv.drawable
+        if(drawable != null)
+            ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(color))
+//            setColorTintInt(drawable, color)
+        else
+            iv.setImageDrawable(ColorDrawable(color))
 //        iv.drawable.colorFilter = BlendModeColorFilter(color, blendMode) //Masih error karena masalah kompatibilitas API
     }
 
-    fun setBgColorRes(v: View, @ColorRes colorId: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
-        val color= _ResUtil.getColor(v.context, colorId)
-        try{
-            DrawableCompat.setTint(v.background, color)
-        } catch (e: NullPointerException){
-            v.setBackgroundColor(color)
-        }
+    fun setImgRes(iv: ImageView, @DrawableRes drawableId: Int) = iv.setImageResource(drawableId)
+    fun setImgDrawable(iv: ImageView, drawable: Drawable?) = iv.setImageDrawable(drawable)
+
+    fun setBgRes(v: View, @DrawableRes drawableId: Int) = v.setBackgroundResource(drawableId)
+    fun setBgDrawable(v: View, drawable: Drawable?){
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+            v.backgroundDrawable= drawable
+        else
+            v.background= drawable
+    }
+    /**
+     * Untuk merubah transparansi background drawable dari [v] sebanyak [level].
+     * [level] dihitung dg persentase dari nilai total alpha, yaitu 255.
+     */
+    fun setBgAlpha(v: View, level: Int) {
+        val bg = v.background
+        if(bg != null)
+            bg.alpha = ((level.toDouble()/100) * 255).toInt()
+    }
+    /**
+     * Mengambil nilai alpha dari [v].
+     * Return 0 jika [v] tidak punya bg atau API level di bawah 19.
+     */
+    fun getBgAlpha(v: View): Int = v.background?.let { DrawableCompat.getAlpha(it) } ?: 0
+
+
+    fun setBgColorTintRes(v: View, @ColorRes colorId: Int) = setBgColorTintInt(v, _ResUtil.getColor(v.context, colorId))
+    fun setBgColorTintInt(v: View, @ColorInt color: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+        val drawable= v.background
+        if(drawable != null)
+            ViewCompat.setBackgroundTintList(v, ColorStateList.valueOf(color))
+//            setColorTintInt(drawable, color)
+        else
+            v.backgroundDrawable= ColorDrawable(color)
 //        v.background.colorFilter = BlendModeColorFilter(color, blendMode) //Masih error karena masalah kompatibilitas API
     }
 
@@ -351,7 +470,7 @@ object  _ViewUtil{
 
     fun loadImageToIv(iv: ImageView, /*ivSizeType: Int, */url: String?): Boolean{
         val isDirLocal= try{ FileUtil.dirExists(url!!) }
-        catch(e: Exception){ false }
+        catch (e: Exception){ false }
 
         val dir=
             if (isDirLocal) url
@@ -385,8 +504,10 @@ object  _ViewUtil{
         }
     }
 
-    fun setPopupMenu(anchorView: View, @MenuRes res: Int,
-                     onMenuItemListener: ((menuItem: MenuItem, pos: Int) -> Boolean)?= null): PopupMenu{
+    fun setPopupMenu(
+        anchorView: View, @MenuRes res: Int,
+        onMenuItemListener: ((menuItem: MenuItem, pos: Int) -> Boolean)? = null
+    ): PopupMenu{
         val popupMenu= PopupMenu(anchorView.context, anchorView)
         popupMenu.inflate(res)
         popupMenu.setOnMenuItemClickListener { menuItem ->
@@ -516,7 +637,10 @@ object  _ViewUtil{
             else null
         }
  */
-        inline fun <reified V: View> getDefView(compView: View, noinline defFunc: ((View) -> V?)?= null): V? {
+        inline fun <reified V : View> getDefView(
+            compView: View,
+            noinline defFunc: ((View) -> V?)? = null
+        ): V? {
             return if(compView is V) compView
             else defFunc?.invoke(compView)
                 ?: compView.findViewByType()
@@ -524,7 +648,7 @@ object  _ViewUtil{
         /**
          * @param onlyPb bertujuan menghilangkan iv_action yg letaknya sama dg pb
          */
-        fun showPb(compView: View, show: Boolean= true, onlyPb: Boolean= false){
+        fun showPb(compView: View, show: Boolean = true, onlyPb: Boolean = false){
             //getPb?.invoke(compView)
             getDefView(compView, getPb).notNull { pb ->
                 pb.visibility=
@@ -590,7 +714,7 @@ object  _ViewUtil{
         }
 
 
-        fun enableFillTxt(compView: View, enable: Boolean= true, type: Int= TYPE_FILL_TXT_IGNORE){
+        fun enableFillTxt(compView: View, enable: Boolean = true, type: Int = TYPE_FILL_TXT_IGNORE){
             getDefView(compView, getEt).notNull { et ->
                 et.isEnabled= enable
                 enableFillTxt?.invoke(compView, et, type)
@@ -602,10 +726,10 @@ object  _ViewUtil{
             getDefView(compView, getIv).notNull { iv -> iv.setImageResource(imgRes) }
         }
         fun setIvTint(compView: View, @ColorRes colorRes: Int){
-            getDefView(compView, getIv).notNull { iv -> setColorRes(iv, colorRes) }
+            getDefView(compView, getIv).notNull { iv -> setColorTintRes(iv, colorRes) }
         }
 
-        fun showPassword(compView: View, show: Boolean= true){
+        fun showPassword(compView: View, show: Boolean = true){
             val transfMethod =
                 if(!show) PasswordTransformationMethod.getInstance()
                 else null
@@ -615,7 +739,7 @@ object  _ViewUtil{
                 et.setSelection(et.text.toString().length)
                 getDefView(compView, getIvPswdIndication).notNull { iv ->
                     iv.setImageResource(
-                        if(!show) _Config.DRAW_PSWD_SHOWN
+                        if (!show) _Config.DRAW_PSWD_SHOWN
                         else _Config.DRAW_PSWD_HIDDEN
                     )
                 }
@@ -635,7 +759,7 @@ object  _ViewUtil{
         }
         fun setBtnSolid(btn: Button){
             btn.setBackgroundResource(_Config.DRAW_SHAPE_SOLID_RECT_ROUND_EDGE) //R.drawable.shape_solid_square_round_edge_fill
-            setBgColorRes(btn, _ColorRes.COLOR_PRIMARY_DARK)
+            setBgColorTintRes(btn, _ColorRes.COLOR_PRIMARY_DARK)
             btn.setTextColor(_ResUtil.getColor(btn.context, _ColorRes.TEXT_LIGHT))
         }
 
@@ -646,7 +770,10 @@ object  _ViewUtil{
                     isPswdShown= !isPswdShown
                     showPassword(ed, isPswdShown)
                 }
-                ed.callOnClick()
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+                    ed.performClick()
+                else
+                    ed.callOnClick()
             }
         }
 
@@ -655,7 +782,11 @@ object  _ViewUtil{
          * @return object Camera agar dapat digunakan.
          *          null jika gagal untuk meng-init SurfaceView.
          */
-        fun initSurfaceView(compView: View, callback: SurfaceHolder.Callback?, act: Activity?= null): Camera? {
+        fun initSurfaceView(
+            compView: View,
+            callback: SurfaceHolder.Callback?,
+            act: Activity? = null
+        ): Camera? {
             if(act != null)
                 _ManifestUtil.requestPermission(act, Manifest.permission.CAMERA)
             return getDefView(compView, getSfv).notNullTo { sfv ->
@@ -676,7 +807,7 @@ object  _ViewUtil{
                                 val h= size.height
                                 val ratio= w /h.toDouble()
 
-                                val diff= abs(viewRatio -ratio)
+                                val diff= abs(viewRatio - ratio)
                                 if(minDiff > diff){
                                     point.x= w
                                     point.y= h
@@ -699,7 +830,12 @@ object  _ViewUtil{
                             }
                         }
                     }
-                    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {}
+                    override fun surfaceChanged(
+                        holder: SurfaceHolder?,
+                        format: Int,
+                        width: Int,
+                        height: Int
+                    ) {}
                     override fun surfaceDestroyed(holder: SurfaceHolder?) {
                         camera.stopPreview()
                         camera.release()
@@ -716,69 +852,84 @@ object  _ViewUtil{
         fun initSingleCodeInput(vararg compViews: View){
             val lastIndex= compViews.lastIndex
             for((i, comp) in compViews.withIndex()){
-                val edPrev= try{ getDefView(compViews[i-1], getEt) }
+                val edPrev= try{ getDefView(compViews[i - 1], getEt) }
                     catch (e: Exception){ null }
-                val edNext= try{ getDefView(compViews[i-1], getEt) }
+                val edNext= try{ getDefView(compViews[i - 1], getEt) }
                     catch (e: Exception){ null }
                 val ed= getDefView(comp, getEt)
                 val c= ed?.context
 
                 ed?.addTextChangedListener(object : TextWatcher {
-                    var isTextEdited= false
-                    var newlyInputedTxt= ""
+                    var isTextEdited = false
+                    var newlyInputedTxt = ""
                     override fun afterTextChanged(s: Editable?) {
-                        if(!isTextEdited && s != null){
-                            isTextEdited= true
-                            if(s.isEmpty()){
-                                if(newlyInputedTxt.isNotEmpty() && newlyInputedTxt[0].isLetterOrDigit())
+                        if (!isTextEdited && s != null) {
+                            isTextEdited = true
+                            if (s.isEmpty()) {
+                                if (newlyInputedTxt.isNotEmpty() && newlyInputedTxt[0].isLetterOrDigit())
                                     s.append(newlyInputedTxt[0])
-                                else if(edPrev != null){
+                                else if (edPrev != null) {
                                     edPrev.requestFocus()
-                                    val imm=
+                                    val imm =
                                         c?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                                     imm?.showSoftInput(edPrev, InputMethodManager.SHOW_IMPLICIT)
                                 }
-                            } else if(s.length == 1 && (s.isBlank() || !s[0].isLetterOrDigit())){
+                            } else if (s.length == 1 && (s.isBlank() || !s[0].isLetterOrDigit())) {
                                 s.clear()
-                                if(newlyInputedTxt[0].isLetterOrDigit())
+                                if (newlyInputedTxt[0].isLetterOrDigit())
                                     s.append(newlyInputedTxt[0])
-                            } else if(s.length > 1){
-                                if(newlyInputedTxt[0].isLetterOrDigit()){
+                            } else if (s.length > 1) {
+                                if (newlyInputedTxt[0].isLetterOrDigit()) {
                                     s.clear()
                                     s.append(newlyInputedTxt[0])
                                 } else {
-                                    val str= s.toString().replace(newlyInputedTxt[0].toString(), "")
+                                    val str =
+                                        s.toString().replace(newlyInputedTxt[0].toString(), "")
                                     s.clear()
                                     s.append(str)
                                 }
                             }
 
-                            if(s.isNotBlank() && s.length == 1){
-                                if(i == lastIndex){
-                                    val imm=
+                            if (s.isNotBlank() && s.length == 1) {
+                                if (i == lastIndex) {
+                                    val imm =
                                         c?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                                     imm?.hideSoftInputFromWindow(ed.windowToken, 0)
-                                } else if(edNext != null){
+                                } else if (edNext != null) {
                                     edNext.requestFocus()
-                                    val imm=
+                                    val imm =
                                         c?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                                     imm?.showSoftInput(edNext, InputMethodManager.SHOW_IMPLICIT)
                                 }
                             }
-                            isTextEdited= false
+                            isTextEdited = false
                         }
                     }
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if(!isTextEdited){
-                            newlyInputedTxt=
-                                if(start > 0 || count == 1) {
-                                    val str= s?.toString()?.substring(start, start +count) ?: newlyInputedTxt
-                                    if(str[0].isLetterOrDigit())
+
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                        if (!isTextEdited) {
+                            newlyInputedTxt =
+                                if (start > 0 || count == 1) {
+                                    val str = s?.toString()?.substring(start, start + count)
+                                        ?: newlyInputedTxt
+                                    if (str[0].isLetterOrDigit())
                                         str
                                     else newlyInputedTxt
                                 } else {
-                                    if(s?.isNotEmpty() == true) s.toString().last().toString()
+                                    if (s?.isNotEmpty() == true) s.toString().last().toString()
                                     else ""
                                 }
                         }
@@ -796,7 +947,7 @@ object  _ViewUtil{
             val ACT_BAR_DEFAULT= 0
             val ACT_BAR_SQUARE= 1
         }
-        fun actBar_Primary(c: Context, type: Int= Type.ACT_BAR_DEFAULT): View {
+        fun actBar_Primary(c: Context, type: Int = Type.ACT_BAR_DEFAULT): View {
             val actBar= c.inflate(_Config.LAYOUT_COMP_ACT_BAR_DEFAULT) as ViewGroup
             val bg= c.inflate(_Config.LAYOUT_BG_COMP_ACT_BAR_DEFAULT) as ImageView
             if(type == Type.ACT_BAR_SQUARE)
@@ -814,9 +965,9 @@ object  _ViewUtil{
                 _ResUtil.getDimen(c, _ConfigBase.DIMEN_ACT_BAR_HEIGHT).toInt()
             )
  */
-            setColorRes(bg, _ColorRes.COLOR_PRIMARY_DARK)
-            setColorRes(ivBack, _ColorRes.COLOR_LIGHT)
-            setColorRes(ivAction, _ColorRes.COLOR_LIGHT)
+            setColorTintRes(bg, _ColorRes.COLOR_PRIMARY_DARK)
+            setColorTintRes(ivBack, _ColorRes.COLOR_LIGHT)
+            setColorTintRes(ivAction, _ColorRes.COLOR_LIGHT)
             tvTitle.textColorResource= _ColorRes.TEXT_LIGHT
 
             ivAction.setImageBitmap(null) //Secara default, gambar iv_action tidak ada.
@@ -831,7 +982,7 @@ object  _ViewUtil{
             val tvDesc= overlay.findViewById<TextView>(_Config.ID_TV_DESC)
 
             iv.setImageResource(_Config.DRAW_IC_WARNING)
-            setColorRes(iv, _ColorRes.RED)
+            setColorTintRes(iv, _ColorRes.RED)
             tvTitle.text= "Mohon Maaf"
             tvDesc.text= "Aplikasi telah kadaluwarsa.\nMohon update ke versi terbaru."
 
@@ -843,15 +994,15 @@ object  _ViewUtil{
      * Kelas untuk chaining saat pemanggilan [View.animator].
      */
     class SimpleAnimator(val v: View): Animation(){
-        fun fadeIn(duration: Long= 1000): SimpleAnimator{
+        fun fadeIn(duration: Long = 1000): SimpleAnimator{
             fadeIn(v, duration = duration)
             return this
         }
-        fun fadeOut(duration: Long= 1000): SimpleAnimator{
+        fun fadeOut(duration: Long = 1000): SimpleAnimator{
             fadeOut(v, duration = duration)
             return this
         }
-        fun fadeTo(to: Float, from: Float= v.alpha, duration: Long= 1000): SimpleAnimator{
+        fun fadeTo(to: Float, from: Float = v.alpha, duration: Long = 1000): SimpleAnimator{
             fade(from, to, v, duration = duration)
             return this
         }

@@ -15,6 +15,7 @@ import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.check.notNull
 
 //!!!!!!@@ 18 Jan 2020
+@Deprecated("Gunakan RvAdp")
 abstract class RvAdp_Old <D, LM: RecyclerView.LayoutManager> (
     val ctx: Context //, dataList: ArrayList<D>? <27 Juni 2020> => param konstruktor primer dataList jadi opsional agar menghemat waktu ngoding.
     )

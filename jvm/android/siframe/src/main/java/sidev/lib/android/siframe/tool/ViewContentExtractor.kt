@@ -1,11 +1,13 @@
 package sidev.lib.android.siframe.tool
 
 import android.graphics.drawable.Drawable
-import android.util.Size
+//import android.util.Size
+import sidev.lib.android.siframe.tool.support.Size
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import sidev.lib.android.siframe.tool.util.`fun`.bg
 import sidev.lib.android.siframe.tool.util.`fun`.loge
 import sidev.lib.check.*
 
@@ -133,7 +135,7 @@ open class ViewContentExtractor{
                         }
                         Content.BG_DRAWABLE -> {
                             val bg= content.value as? Drawable
-                            view.background= bg
+                            view.bg= bg
                         }
                         Content.TEXT -> {
                             view.asNotNull { tv: TextView -> tv.text= content.value as? String }

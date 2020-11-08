@@ -44,7 +44,7 @@ class CobFrag : Frag(){
         layoutView.rl_top_container.setOnClickListener { toast("Halo bro") }
         layoutView.rl_top_container.isClickable= false
         layoutView.rl_top_container.isClickable= true
-        layoutView.rl_top_container.setBgColorRes(R.color.colorPrimaryDark)
+        layoutView.rl_top_container.bgColorTintRes= R.color.colorPrimaryDark
 
 
         val wrapper= layoutView.rl_top_container.wrapWithBuffer()

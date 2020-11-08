@@ -4,17 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.*
 import android.widget.*
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
-import androidx.core.text.isDigitsOnly
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.layoutInflater
+import org.jetbrains.anko.textColor
 import sidev.lib.android.siframe._external._AnkoInternals.runOnUiThread
 //import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
@@ -437,13 +438,14 @@ fun ViewGroup.changeView(v: View){
     addView(v)
 }
 
-
+/*
 fun View.setBgColorRes(@ColorRes colorId: Int){
-    _ViewUtil.setBgColorRes(this, colorId)
+    _ViewUtil.setBgColorTintRes(this, colorId)
 }
+ */
 
 fun ImageView.setBgColorRes(@ColorRes colorId: Int){
-    _ViewUtil.setColorRes(this, colorId)
+    _ViewUtil.setColorTintRes(this, colorId)
 }
 
 @JvmOverloads
@@ -535,9 +537,13 @@ var TextView.txt: String
     set(v){ this.text= v }
     get()= this.text.toString()
 
-var TextView.textStyle: Int
+var TextView.txtStyle: Int
     set(v)= setTypeface(typeface, v)
     get()= typeface.style
+
+var TextView.txtColor: Int
+    set(v)= setTextColor(v)
+    get()= currentTextColor
 
 /**
  * Menambah jml angka yg tertera pada [TextView.getText] sebanyak [diff].
@@ -574,6 +580,64 @@ val View.screenWidth: Int
 
 val View.screenHeight: Int
     get()= this.context.screenHeight
+
+var View.bg: Drawable?
+    get()= background
+    set(v){ _ViewUtil.setBgDrawable(this, v) }
+
+var View.bgAlpha: Int
+    get()= _ViewUtil.getBgAlpha(this)
+    set(v){ _ViewUtil.setBgAlpha(this, v) }
+
+/**
+ * Mengambil `int` color tint
+ * return -1 jika `this.extension` tidak punya bg atau bg-nya tidak punya tint.
+ */
+@get:ColorInt
+var View.bgColorTint: Int
+    get()= _ViewUtil.getBgColorTintInt(this)
+    set(@ColorInt v){ _ViewUtil.setBgColorTintInt(this, v) }
+
+/**
+ * Mengubah warna tint dari bg menggunakan [ColorRes]. Tidak dapat mengambil [ColorRes] karena
+ * tidak mungkin dilakukan pada View.
+ */
+@get:Deprecated("Tidak dapat mengambil `bgColorTintRes` dari view", level = DeprecationLevel.ERROR)
+var View.bgColorTintRes: Int
+    get()= -1
+    set(@ColorRes v){ _ViewUtil.setBgColorTintRes(this, v) }
+
+/**
+ * Mengambil `int` color tint
+ * return -1 jika `this.extension` tidak punya drawable atau drawable-nya tidak punya tint.
+ */
+@get:ColorInt
+var ImageView.colorTint: Int
+    get()= _ViewUtil.getColorTintInt(this)
+    set(@ColorInt v){ _ViewUtil.setColorTintInt(this, v) }
+
+/**
+ * Mengubah warna tint dari drawable menggunakan [ColorRes]. Tidak dapat mengambil [ColorRes] karena
+ * tidak mungkin dilakukan pada View.
+ */
+@get:Deprecated("Tidak dapat mengambil `colorTintRes` dari view", level = DeprecationLevel.ERROR)
+var ImageView.colorTintRes: Int
+    get()= -1
+    set(@ColorRes v){ _ViewUtil.setColorTintRes(this, v) }
+
+var ImageView.img: Drawable?
+    get()= drawable
+    set(v){ _ViewUtil.setImgDrawable(this, v) }
+
+/**
+ * Mengubah warna tint dari drawable menggunakan [ColorRes]. Tidak dapat mengambil [ColorRes] karena
+ * tidak mungkin dilakukan pada View.
+ */
+@get:Deprecated("Tidak dapat mengambil `imgRes` dari ImageView", level = DeprecationLevel.ERROR)
+var ImageView.imgRes: Int
+    get()= -1
+    set(@ColorRes v){ _ViewUtil.setImgRes(this, v) }
+
 
 val Context.screenWidth: Int
     get()= _ViewUtil.getScreenWidth(this)

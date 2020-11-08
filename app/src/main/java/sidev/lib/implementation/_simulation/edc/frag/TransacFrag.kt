@@ -83,7 +83,7 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
             act.actBarViewContainer.findViewById<ImageView>(R.id.iv_action).notNull { iv ->
                 initDialog()
                 iv.setImageResource(R.drawable.ic_dot_3_vertical)
-                _ViewUtil.setColorRes(iv, R.color.putih)
+                _ViewUtil.setColorTintRes(iv, R.color.putih)
                 val popup= PopupMenu(context!!, iv)
                 popup.inflate(R.menu.popup_rv)
                 popup.setOnMenuItemClickListener { menuItem ->

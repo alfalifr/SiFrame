@@ -18,14 +18,14 @@ class Frag2 : Frag(){
 
     override fun _initView(layoutView: View) {
         layoutView.tv.text= "Frag2"
-        _ViewUtil.setBgColorRes(layoutView, R.color.biruLangit)
+        _ViewUtil.setBgColorTintRes(layoutView, R.color.biruLangit)
     }
 
     override fun onActive(parentView: View?, callingLifecycle: LifecycleViewBase?, pos: Int) {
         loge("Frag2 onActive pos= $pos")
         callingLifecycle.asNotNull { act: DrawerBase ->
             act.startDrawerContainer.asNotNull { v: View ->
-                _ViewUtil.setBgColorRes(v, R.color.ijo)
+                _ViewUtil.setBgColorTintRes(v, R.color.ijo)
                 _ViewUtil.Comp.getTv?.invoke(v).notNull { tv ->
                     tv.textColor= R.color.putih
                 }

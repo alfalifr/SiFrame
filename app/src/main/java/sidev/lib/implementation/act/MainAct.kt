@@ -69,6 +69,8 @@ class MainAct : BarContentNavAct() {
 
     fun toCobFrag(v: View)= startSingleFragAct_config<CobFrag>()
     fun toBufferFrag(v: View)= startSingleFragAct_config<BufferFrag>()
+
+    fun toViewColorFrag(v: View)= startSingleFragAct_config<ViewColorFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()

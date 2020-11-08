@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe
 
+import android.widget.ImageView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -20,5 +21,13 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("sidev.lib.android.siframe.test", appContext.packageName)
+    }
+
+    @Test
+    fun viewColorTest() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        // Context of the app under test.
+        val iv= ImageView(appContext)
+//        assertEquals("sidev.lib.android.siframe.test", appContext.packageName)
     }
 }

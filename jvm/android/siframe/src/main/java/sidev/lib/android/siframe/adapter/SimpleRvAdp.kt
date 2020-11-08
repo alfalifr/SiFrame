@@ -351,7 +351,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
     }
 
     fun notifyDataSetChanged_(f: (() -> Unit)= {}){
-        @Suppress(SuppressLiteral.UNCHECKED_CAST)
+//        @Suppress(SuppressLiteral.UNCHECKED_CAST)
 /*
         val lm= rv?.layoutManager as LM?
         if(lm != null){

@@ -21,7 +21,7 @@ import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.RvMultiViewAdp
 import sidev.lib.android.siframe.tool.util._ViewUtil
 import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getTvNote
-import sidev.lib.android.siframe.tool.util._ViewUtil.setColorRes
+import sidev.lib.android.siframe.tool.util._ViewUtil.setColorTintRes
 import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.check.*
 import sidev.lib.implementation.R
@@ -101,13 +101,13 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
 
                 v.pb.visibility= View.VISIBLE
                 v.iv_play.visibility= View.GONE
-                setColorRes(v.iv_play, R.color.putihTerawang)
+                setColorTintRes(v.iv_play, R.color.putihTerawang)
 
                 v.vv.setOnPreparedListener { mp ->
                     var isPlaying= false
                     v.pb.visibility= View.GONE
                     v.iv_play.visibility= View.VISIBLE
-                    setColorRes(v.iv_play, R.color.putihTerawang)
+                    setColorTintRes(v.iv_play, R.color.putihTerawang)
                     v.iv_play.setOnClickListener {
                         if(!isPlaying){
                             mp.start()
@@ -124,7 +124,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
                 v.vv.setOnErrorListener { mp, what, extra ->
                     v.pb.visibility= View.GONE
                     v.iv_play.setImageResource(R.drawable.ic_cross)
-                    setColorRes(v.iv_play, R.color.merah)
+                    setColorTintRes(v.iv_play, R.color.merah)
                     true
                 }
 

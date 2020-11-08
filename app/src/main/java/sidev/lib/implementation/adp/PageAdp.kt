@@ -70,8 +70,8 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
                     colDelete= R.color.abuSangatTua
                 }
                 vh.itemView.iv.imageResource= res
-                _ViewUtil.setColorRes(vh.itemView.iv, color)
-                _ViewUtil.setColorRes(vh.itemView.iv_delete, colDelete)
+                _ViewUtil.setColorTintRes(vh.itemView.iv, color)
+                _ViewUtil.setColorTintRes(vh.itemView.iv_delete, colDelete)
                 rowExists= exists
             }.isNull { loge("sqlite.ifExists() NULL!!!") }
         }
@@ -86,8 +86,8 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
                         }
                         if(map.values.first()){
                             vh.itemView.iv.imageResource= R.drawable.ic_check_circle
-                            _ViewUtil.setColorRes(vh.itemView.iv, R.color.ijo)
-                            _ViewUtil.setColorRes(vh.itemView.iv_delete, R.color.merah)
+                            _ViewUtil.setColorTintRes(vh.itemView.iv, R.color.ijo)
+                            _ViewUtil.setColorTintRes(vh.itemView.iv_delete, R.color.merah)
                             rowExists= true
                         }
                     }
@@ -107,9 +107,9 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
                             loge("delete k= $k v= $v")
                         }
                         if(map.values.first()){
-                            _ViewUtil.setColorRes(vh.itemView.iv_delete, R.color.abuSangatTua)
+                            _ViewUtil.setColorTintRes(vh.itemView.iv_delete, R.color.abuSangatTua)
                             vh.itemView.iv.imageResource= R.drawable.ic_cross_circle
-                            _ViewUtil.setColorRes(vh.itemView.iv, R.color.merah)
+                            _ViewUtil.setColorTintRes(vh.itemView.iv, R.color.merah)
                             rowExists= false
                         }
                     }
