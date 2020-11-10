@@ -39,7 +39,7 @@ allprojects {
         google()
         jcenter()
         maven { url = URI("https://dl.bintray.com/alfalifr/SidevLib") }
-        maven { url = URI("https://dl.bintray.com/alfalifr/JvmLib") }
+//        maven { url = URI("https://dl.bintray.com/alfalifr/JvmLib") }
     }
 }
 

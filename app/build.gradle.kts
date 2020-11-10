@@ -103,9 +103,9 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.6")
 
 
-    implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx")
-    implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x")
-    implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x")
+    implementation("sidev.lib.jvm:JvmStdLib:0.0.1xx")
+    implementation("sidev.lib.kotlin:KtStdLib-jvm:0.0.1x") //
+    implementation("sidev.lib.kotlin:KtReflex-jvm:0.0.1x")
     implementation(project(":SiFrame"))
     implementation(project(":SiFrame-Customizable"))
     implementation(project(":Viewrap"))

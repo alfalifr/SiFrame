@@ -27,9 +27,9 @@ fun File.withInputStream(): FileInputStream = FileInputStream(this)
 val kotlin_version= findProperty("kotlin_version").also{ println("${project.name} kotlin_version= $it")}
 val anko_version= findProperty("anko_version")
 
-val GROUP_ID= "sidev.lib.jvm.android"
+val GROUP_ID= "sidev.lib.android" //"sidev.lib.jvm.android"
 val ARTIFACT_ID= project.name //"SiFrame"
-val BINTRAY_REPOSITORY= "JvmLib"
+val BINTRAY_REPOSITORY= "SidevLib" //"JvmLib"
 val BINTRAY_ORGINIZATION= ""
 val ISSUE_URL= ""
 val SITE_URL= ""
@@ -122,9 +122,9 @@ dependencies {
 
 //    implementation(project("path" to ":jvm:universal"))
     //SidevLib
-    implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x") //{ isTransitive= true }
+    implementation("sidev.lib.jvm:JvmStdLib:0.0.1xx") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:KtStdLib-jvm:0.0.1x") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:KtReflex-jvm:0.0.1x") //{ isTransitive= true }
 //    implementation(project(":Android-External")) //{ isTransitive= true }
 //    implementation(project(":SiFrame-Customizable"))
     implementation(project(":AndroidStdLib"))

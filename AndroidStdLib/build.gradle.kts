@@ -1,9 +1,10 @@
 import com.android.build.gradle.LibraryExtension //.LibraryExtension_Decorated
+import com.jfrog.bintray.gradle.BintrayExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import java.util.Date
 import java.io.FileInputStream
 import java.util.Properties
-import java.util.Date
-import com.jfrog.bintray.gradle.BintrayExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 fun Project.android(configure: LibraryExtension.() -> Unit) =
@@ -32,10 +33,10 @@ val BINTRAY_REPOSITORY= "SidevLib" //"JvmLib"
 val BINTRAY_ORGINIZATION= ""
 val ISSUE_URL= ""
 val SITE_URL= ""
-val VCS_URL= "https://github.com/alfalifr/SiFrame/tree/master/jvm/android/viewrap"
+val VCS_URL= "https://github.com/alfalifr/SiFrame/tree/master/jvm/android/siframe"
 val LIBRARY_VERSION_NAME= "0.0.1x"
 
-val prop= Properties().apply { load(file("../../../setting.properties").withInputStream()) }
+val prop= Properties().apply { load(file("../setting.properties").withInputStream()) }
 
 val bintrayUser= prop["bintrayUser"] as String //prop.loadPropertyFromResources("setting.properties", "bintrayUser")
 val bintrayApiKey= prop["bintrayApiKey"] as String //prop.loadPropertyFromResources("setting.properties", "bintrayApiKey")
@@ -51,20 +52,17 @@ plugins{
     id("maven-publish")
 }
 
-group= GROUP_ID //"sidev.lib.jvm.viewrap"
-version= LIBRARY_VERSION_NAME //"1.0cob"
-
-apply("plugin" to "maven-publish")
+apply("plugin" to "com.android.library")
+apply("plugin" to "kotlin-android")
+apply("plugin" to "kotlin-android-extensions")
 apply("plugin" to "com.jfrog.bintray")
-
 
 android {
     compileSdkVersion(29)
-    buildToolsVersion = "29.0.3"
-//    buildToolsVersion = "30.0.0"
+    buildToolsVersion = "30.0.2"
 
     defaultConfig {
-        minSdkVersion(14) //21
+        minSdkVersion(14) //15
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
@@ -99,26 +97,29 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(
-        mapOf("dir" to "libs", "include" to listOf("*.jar"))
-    ))
+    implementation(fileTree("dir" to "libs", "include" to listOf("*.jar")))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-    implementation("androidx.core:core-ktx:1.3.0")
-    implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation("androidx.core:core-ktx:1.3.2")
+    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
     testImplementation("junit:junit:4.12")
-    androidTestImplementation("androidx.test.ext:junit:1.1.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 
+    //Load Gambar dari Server
+    implementation("com.squareup.picasso:picasso:2.71828")
+
+    //anko
+    implementation("org.jetbrains.anko:anko:$anko_version")
+    implementation("org.jetbrains.anko:anko-design:$anko_version")
+    implementation("org.jetbrains.anko:anko-sqlite:$anko_version")
+
+    //Untuk nertwok
+    implementation("com.android.volley:volley:1.1.1") //{ isTransitive= true }
+    implementation("com.loopj.android:android-async-http:1.4.9") //{ isTransitive= true }
 
     implementation("sidev.lib.jvm:JvmStdLib:0.0.1xx") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:KtStdLib-jvm:0.0.1x") //{ isTransitive= true }
-//    implementation(project(":SiFrame"))
-    implementation(project(":AndroidStdLib"))
-//    implementation(project("path" to ":jvm:android:siframe"))
-//    implementation(project("path" to ":jvm:universal"))
-
-    //Google Material
-    implementation("com.google.android.material:material:1.0.0")
 }
 
 
@@ -167,7 +168,7 @@ publishing {
 
                     //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
                     configurations.implementation.get().allDependencies.forEach {
-                        if(it.group?.startsWith("sidev.lib") == true){
+                        if(it.group != null && it.version != null){
                             val dependencyNode = dependenciesNode.appendNode("dependency")
                             dependencyNode.appendNode("groupId", it.group)
                             dependencyNode.appendNode("artifactId", it.name)
@@ -180,6 +181,36 @@ publishing {
     }
 }
 
+
+
+tasks.register ("testOh") {
+    doFirst {
+        println("test inside testOh ....  ${properties["bintray"]!!::class}")
+        println("test inside testOh ....  ${sourceSets}")
+//        println("test inside testOh ....  ${components.getByName("java")}")
+        println("tasks= $tasks")
+        for((i, t) in tasks.withIndex()){
+            println("i= $i task= $t")
+        }
+        println("\n========== preReleaseBuild ================ \n")
+        for((i, d) in tasks["preReleaseBuild"].dependsOn.withIndex()){
+            println("i= $i dependsOn= $d")
+        }
+        println("\n========== preBuild ================ \n")
+        for((i, d) in tasks["preBuild"].dependsOn.withIndex()){
+            println("i= $i dependsOn= $d")
+        }
+        println("\n========== properties ================ \n")
+        for((i, p) in properties.entries.withIndex()){
+            println("i= $i prop= $p")
+        }
+        println("\n========== components ================ \n")
+        for((i, p) in components.withIndex()){
+            println("i= $i comp= ${p.name}")
+        }
+        println("components[\"release\"]= ${components["release"]}")
+    }
+}
 
 (properties["bintray"] as BintrayExtension/*_Decorated*/).apply {
     //A user name of bintray to A, and API key of Bintray to B.I do not want to include API Key in git,
@@ -215,5 +246,3 @@ tasks["bintrayUpload"].apply {
     dependsOn("bundleReleaseAar")
     dependsOn("publishToMavenLocal")
 }
-
-// */
