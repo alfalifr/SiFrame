@@ -1,20 +1,20 @@
 package sidev.lib.android.siframe.lifecycle.app
 
-import android.app.Application
 import android.content.Context
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
+import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.lifecycle.app.StdApp
 import kotlin.system.exitProcess
 
-open class App: Application(){
+open class App: StdApp(){
     companion object{
         /**
          * Harusnya aman jika menaruh contex app sbg static karena semua proses di app pastinya
          * didahului oleh instansiasi kelas Application.
          */
-        lateinit var ctx: Context
-            private set
+        val ctx: Context
+            get()= StdApp.ctx
     }
     var logHpError: LogHP?= null
         internal set
@@ -39,7 +39,7 @@ open class App: Application(){
 
     override fun onCreate() {
         super.onCreate()
-        ctx= this
+//        ctx= this
 //        LogApp.log= BuildConfig.MODE_LOG
 
         if(_Config.LOG_ON_FILE){

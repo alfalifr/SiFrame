@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.tool.util.`fun`
 
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe._val._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.StaticManager
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull

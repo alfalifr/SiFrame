@@ -5,8 +5,8 @@ import kotlinx.android.synthetic.main.comp_page_row.view.*
 import org.jetbrains.anko.imageResource
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.NumberPickerComp
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.isNull

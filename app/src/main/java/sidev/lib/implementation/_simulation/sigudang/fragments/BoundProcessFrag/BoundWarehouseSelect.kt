@@ -1,6 +1,5 @@
 package sidev.lib.implementation._simulation.sigudang.fragments.BoundProcessFrag
 
-import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +23,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.dp
-import sidev.lib.android.siframe.tool.util.`fun`.setPadding_
+import sidev.lib.android.std.tool.util.`fun`.dp
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.dummy.warehouseList_full

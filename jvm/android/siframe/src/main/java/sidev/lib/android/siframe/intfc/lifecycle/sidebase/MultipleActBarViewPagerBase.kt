@@ -12,7 +12,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
 import sidev.lib.check.asNotNull
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
@@ -124,7 +124,7 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
                 try{ act.setActBarTitle(title) }
                 catch (e: Exception){
                     (actBarViewList[pos] ?: defaultActBarView).notNull { actBar ->
-                        _ViewUtil.Comp.setTvTitleTxt(actBar, title)
+                        _SIF_ViewUtil.Comp.setTvTitleTxt(actBar, title)
                     }
                     /* Karena act.setActBarTitle() dapat dioverride.
                      */

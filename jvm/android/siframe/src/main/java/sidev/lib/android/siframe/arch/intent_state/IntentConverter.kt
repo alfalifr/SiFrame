@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.arch.view.MviView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
 import sidev.lib.collection.add

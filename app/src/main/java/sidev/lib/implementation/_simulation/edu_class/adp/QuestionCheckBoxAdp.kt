@@ -6,7 +6,7 @@ import android.widget.CheckBox
 import androidx.core.util.set
 import androidx.recyclerview.widget.LinearLayoutManager
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
+import sidev.lib.android.std.tool.util.`fun`.findViewByType
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

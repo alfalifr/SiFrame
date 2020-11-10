@@ -4,7 +4,7 @@ import androidx.annotation.CallSuper
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNullTo
 
 /**

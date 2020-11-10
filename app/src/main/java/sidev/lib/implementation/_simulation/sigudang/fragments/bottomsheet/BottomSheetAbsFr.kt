@@ -14,7 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main._simul_sigud_bottom_sheet_header_yes.view.*
 import org.jetbrains.anko.layoutInflater
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 
 

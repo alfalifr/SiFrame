@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.prop.RvAdpProp
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util.`fun`.*
 import sidev.lib.check.*
 
 /** [TopMiddleBottomBase] yg [topView] dan [bottomView]-nya dapat di nested ke dalam [SimpleRvAdp] */

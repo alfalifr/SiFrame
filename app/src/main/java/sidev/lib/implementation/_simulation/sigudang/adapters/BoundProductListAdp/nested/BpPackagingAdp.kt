@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sigudang.android.models.PackagingModel
 //import kotlinx.android.synthetic.main.component_fill_cb__old.view.*
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
+import sidev.lib.android.std.tool.util.`fun`.findViewByType
 import sidev.lib.implementation.R
 import java.lang.Exception
 

@@ -1,10 +1,8 @@
 package com.sigudang.android.adapters.BoundProductListAdp
 ///*
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.sigudang.android.Model.Product
 import com.sigudang.android._template.util.T_Util
 import com.sigudang.android.adapters.BoundProductListAdp.component.*
@@ -14,9 +12,8 @@ import kotlinx.android.synthetic.main._simul_sigud_component_add_item.view.*
 import kotlinx.android.synthetic.main._simul_sigud_content_item_product_bound.view.*
 import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addition.view.*
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.ViewComp
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

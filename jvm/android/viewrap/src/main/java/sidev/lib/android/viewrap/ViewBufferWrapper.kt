@@ -3,7 +3,12 @@ package sidev.lib.android.viewrap
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util.`fun`.addOnGlobalLayoutListener
+import sidev.lib.android.std.tool.util.`fun`.detachFromParent
+import sidev.lib.android.std.tool.util.`fun`.forcedAddView
+import sidev.lib.android.std.tool.util.`fun`.indexInParent
+import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.makeStackable
 import sidev.lib.check.notNull
 import sidev.lib.number.isNegative
 import sidev.lib.number.isNotNegative

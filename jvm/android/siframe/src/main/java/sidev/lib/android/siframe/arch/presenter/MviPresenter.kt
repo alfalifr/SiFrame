@@ -3,10 +3,9 @@ package sidev.lib.android.siframe.arch.presenter
 import androidx.annotation.RestrictTo
 import sidev.lib.android.siframe.arch.annotation.ViewIntentFunction
 import sidev.lib.android.siframe.arch.intent_state.*
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.check.isNull
-import sidev.lib.reflex.annotation.AnnotatedFunctionClass
 import sidev.lib.reflex.annotation.NativeAnnotatedFunctionClassDef
 import sidev.lib.reflex.annotation.NativeAnnotatedFunctionClassManager
 //import sidev.lib.universal.`fun`.*

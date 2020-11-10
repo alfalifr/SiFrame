@@ -1,7 +1,7 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
 import androidx.lifecycle.LifecycleObserver
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 
 interface ExpirableBase : LifecycleBase, LifecycleObserver{
     val isExpired: Boolean

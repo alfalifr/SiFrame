@@ -9,16 +9,12 @@ import androidx.core.util.set
 import com.sigudang.android.models.Bound
 import com.sigudang.android.utilities.constant.Constants
 import kotlinx.android.synthetic.main._simul_sigud_comp_vp_dot_indicator.view.*
-import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.intent_state.ViewState
-import sidev.lib.android.siframe.arch.viewmodel.FiewModel
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
-import sidev.lib.android.siframe.lifecycle.fragment.mvi.MviVpFrag
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
-import sidev.lib.android.siframe.tool.util.`fun`.keys
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.keys
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.reflex.full.clone
 

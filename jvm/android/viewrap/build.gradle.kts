@@ -112,7 +112,8 @@ dependencies {
 
     implementation("sidev.lib.jvm:JVM_Lib:0.0.1xx")
     implementation("sidev.lib.kotlin.multi:StdLib-jvm:0.0.1x")
-    implementation(project(":SiFrame"))
+//    implementation(project(":SiFrame"))
+    implementation(project(":AndroidStdLib"))
 //    implementation(project("path" to ":jvm:android:siframe"))
 //    implementation(project("path" to ":jvm:universal"))
 

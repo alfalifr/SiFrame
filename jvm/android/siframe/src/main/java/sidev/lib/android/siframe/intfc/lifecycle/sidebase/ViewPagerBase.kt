@@ -11,15 +11,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.adapter.VpFragAdp
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnPageFragActiveListener
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.getPosFrom
+import sidev.lib.android.std.tool.util.`fun`.getPosFrom
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.check.asNotNull
 import sidev.lib.check.trya
@@ -28,7 +28,7 @@ import java.lang.Exception
 
 interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     override val layoutId: Int
-        get() = _Config.LAYOUT_VP
+        get() = _SIF_Config.LAYOUT_VP
 
     override val _prop_view: View
     override val _prop_fm: FragmentManager
@@ -36,7 +36,7 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
     var onPageFragActiveListener: SparseArray<OnPageFragActiveListener>
 
     val vp: ViewPager
-        get()= _prop_view.findViewById(_Config.ID_VP)
+        get()= _prop_view.findViewById(_SIF_Config.ID_VP)
 //    var lateVp: ViewPager
 /*
         get(){

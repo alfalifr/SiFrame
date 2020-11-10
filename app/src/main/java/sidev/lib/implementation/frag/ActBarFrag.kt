@@ -2,10 +2,10 @@ package sidev.lib.implementation.frag
 
 import android.view.View
 import kotlinx.android.synthetic.main.comp_act_bar.view.*
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
-import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
 

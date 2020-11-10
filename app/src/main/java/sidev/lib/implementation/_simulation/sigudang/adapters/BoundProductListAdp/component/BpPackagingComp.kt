@@ -7,8 +7,8 @@ import com.sigudang.android.adapters.BoundProductListAdp.nested.BpPackagingAdp
 import com.sigudang.android.models.BoundProduct
 import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addition.view.*
 //import sidev.lib.android.siframe.arch.value.BoxedVal
-import sidev.lib.android.siframe.tool.util.`fun`.findView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.findView
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.ViewComp
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

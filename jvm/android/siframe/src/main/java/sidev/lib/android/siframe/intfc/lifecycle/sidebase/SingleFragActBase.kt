@@ -1,19 +1,19 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
-import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe._val._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
@@ -22,7 +22,7 @@ import sidev.lib.jvm.tool.util.ReflexUtil
 
 interface SingleFragActBase: ComplexLifecycleSideBase{
     override val layoutId: Int
-        get() = _Config.LAYOUT_ACT_SINGLE_FRAG //.LAYOUT_ACT_SIMPLE
+        get() = _SIF_Config.LAYOUT_ACT_SINGLE_FRAG //.LAYOUT_ACT_SIMPLE
 
     override val _prop_view: View
     override val _prop_intent: Intent
@@ -36,7 +36,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
      */
 //    val fragTag: BoxedVal<String>
     val fragContainerId: Int
-        get()= _Config.ID_FR_CONTAINER //.ID_VG_CONTENT_CONTAINER
+        get()= _SIF_Config.ID_FR_CONTAINER //.ID_VG_CONTENT_CONTAINER
 //    val supportFm: FragmentManager
     /*
         companion object{

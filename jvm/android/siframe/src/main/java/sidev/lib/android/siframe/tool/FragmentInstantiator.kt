@@ -1,23 +1,17 @@
 package sidev.lib.android.siframe.tool
 
-import android.app.Activity
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.forcedAddView
+import sidev.lib.android.std.tool.util.`fun`.forcedAddView
 import sidev.lib.check.notNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance

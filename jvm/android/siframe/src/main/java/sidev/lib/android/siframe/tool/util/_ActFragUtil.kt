@@ -8,10 +8,12 @@ import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.util.ResetableUtil
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe._val._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
+import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.tool.util._BitmapUtil
+import sidev.lib.android.std.tool.util._EnvUtil
 import java.io.File
 import java.io.IOException
 import java.lang.ClassCastException
@@ -72,7 +74,7 @@ object _ActFragUtil: ResetableUtil {
             }
         return if(currentAct != null){
             val rootView= getRootView(currentAct) as ViewGroup
-            val overlay= _ViewUtil.Template.overlayBlock(currentAct)
+            val overlay= _SIF_ViewUtil.Template.overlayBlock(currentAct)
             rootView.addView(overlay)
             overlay.tag= _SIF_Constant.BLOCK_VIEW_TAG
             overlay.setOnClickListener {}

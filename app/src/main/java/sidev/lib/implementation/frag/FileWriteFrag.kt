@@ -3,18 +3,11 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.frag_file_write.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._FileUtil
-import sidev.lib.android.siframe.tool.util._FileUtil.getExternalDir
-import sidev.lib.android.siframe.tool.util.`fun`.txt
+import sidev.lib.android.std.tool.util._FileUtil
+import sidev.lib.android.std.tool.util.`fun`.txt
 import sidev.lib.jvm.tool.util.FileUtil
 import sidev.lib.jvm.tool.util.FileUtil.saveln
-import sidev.lib.jvm.tool.util.TimeUtil.timestamp
 import java.io.File
-import java.io.FileWriter
-import java.io.PrintWriter
-import java.lang.RuntimeException
-import java.util.*
-import kotlin.system.exitProcess
 
 class FileWriteFrag: Frag() {
     override val layoutId: Int = sidev.lib.implementation.R.layout.frag_file_write

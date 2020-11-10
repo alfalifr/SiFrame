@@ -109,6 +109,7 @@ dependencies {
     implementation(project(":SiFrame"))
     implementation(project(":SiFrame-Customizable"))
     implementation(project(":Viewrap"))
+    implementation(project(":AndroidStdLib"))
 
 //    implementation(project(mapOf("path" to ":jvm:android:viewrap")))
 //    implementation(project("path" to ":jvm:universal"))

@@ -4,7 +4,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
 import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.arch.viewmodel.ObsFiewModel
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.presenter.ContentPresenter
 import sidev.lib.implementation.util.Const
 

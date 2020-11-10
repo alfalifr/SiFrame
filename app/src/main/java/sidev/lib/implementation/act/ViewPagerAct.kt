@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
-import sidev.lib.android.siframe.adapter.SimpleRvAdp
 //import sidev.lib.android.siframe.intfc.customview.ModableView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
 

@@ -15,9 +15,10 @@ import kotlinx.android.synthetic.main._simul_sigud_fragment_bound_proses_overvie
 //import kotlinx.android.synthetic.main.fragment_bound_proses_overview_upper.view.*
 import org.jetbrains.anko.support.v4.act
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.idName
+import sidev.lib.android.std.tool.util.`fun`.findViewByType
+import sidev.lib.android.std.tool.util.`fun`.idName
+import sidev.lib.android.std.tool.util.`fun`.loge
+//import sidev.lib.android.std.tool.util.idName
 import sidev.lib.android.viewrap.AnimatedGradientViewWrapper
 import sidev.lib.android.viewrap.wrapChildWithBuffer
 import sidev.lib.check.notNull

@@ -8,8 +8,7 @@ import com.sigudang.android.utilities.view.component.NumberPickerComp
 import kotlinx.android.synthetic.main._simul_sigud_item_bound_track_amount.view.*
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.adapter.RvAdp
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.txt
+import sidev.lib.android.std.tool.util.`fun`.txt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

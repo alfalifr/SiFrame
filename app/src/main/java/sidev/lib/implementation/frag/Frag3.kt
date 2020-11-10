@@ -6,8 +6,8 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

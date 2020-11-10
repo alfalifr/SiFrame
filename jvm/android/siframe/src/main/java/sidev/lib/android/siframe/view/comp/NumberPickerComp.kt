@@ -9,11 +9,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import sidev.lib.`val`.Assignment
 import sidev.lib.android.siframe.R
-import sidev.lib.android.siframe._customizable._ColorRes
-import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.findView
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
+import sidev.lib.android.std._val._ColorRes
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.findView
+import sidev.lib.android.std.tool.util.`fun`.findViewByType
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.notNull
@@ -26,9 +26,9 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
         get() = R.layout._sif_comp_number_picker
     override val isViewSaved: Boolean= true
 
-    open val etNumberId: Int= _Config.ID_ET_NUMBER
-    open val ivPlusId: Int= _Config.ID_IV_PLUS
-    open val ivMinusId: Int= _Config.ID_IV_MINUS
+    open val etNumberId: Int= _SIF_Config.ID_ET_NUMBER
+    open val ivPlusId: Int= _SIF_Config.ID_IV_PLUS
+    open val ivMinusId: Int= _SIF_Config.ID_IV_MINUS
 
     open var defaultLowerBorder: Int= 0
     open var defaultUpperBorder: Int= Int.MAX_VALUE

@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import sidev.lib.android.siframe.tool.util.`fun`.bg
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.bg
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.*
 
 

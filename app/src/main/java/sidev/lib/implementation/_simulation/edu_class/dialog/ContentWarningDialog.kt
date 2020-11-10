@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main._simul_edu_dialog_content_frag_quiz.view.*
-import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.setBtnHollow
-import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.setBtnSolid
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil.Comp.setBtnHollow
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil.Comp.setBtnSolid
 import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

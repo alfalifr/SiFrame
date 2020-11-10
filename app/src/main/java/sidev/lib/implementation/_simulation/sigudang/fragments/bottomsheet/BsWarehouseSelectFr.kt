@@ -2,8 +2,7 @@ package com.sigudang.android.fragments.bottomsheet
 
 import android.view.View
 import com.sigudang.android.Model.Warehouse
-import sidev.kuliah.agradia.template.adp.SimpleAbsRecyclerViewAdapter
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.collection.findIndexed
 import sidev.lib.implementation._simulation.sigudang.adapters.WarehouseLinearAdp
 import sidev.lib.number.isNegative

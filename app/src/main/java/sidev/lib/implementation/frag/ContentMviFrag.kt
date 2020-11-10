@@ -7,7 +7,7 @@ import org.jetbrains.anko.imageResource
 import sidev.lib.android.siframe.arch.intent_state.*
 import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.lifecycle.fragment.mvi.MviFrag
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp

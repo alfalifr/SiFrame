@@ -10,7 +10,7 @@ package sidev.lib.android.siframe.tool.util.goolgevision
 import android.util.SparseArray
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Frame
-import sidev.lib.android.siframe.tool.util._BitmapUtil
+import sidev.lib.android.std.tool.util._BitmapUtil
 
 class DetectorFlex<T>(private var delegate: Detector<T>) : Detector<T>(){
     var detectionWidth= -1

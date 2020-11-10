@@ -3,7 +3,7 @@ package sidev.lib.android.viewrap
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
-import sidev.lib.android.siframe.tool.util.`fun`.childrenTree
+import sidev.lib.android.std.tool.util.`fun`.childrenTree
 
 
 //fun <V: View, T: ViewBufferWrapper<V>> View.wrapWithBuffer(): T {}

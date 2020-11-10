@@ -2,12 +2,6 @@ package sidev.lib.android.siframe.arch.presenter
 
 import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.arch.intent_state.ViewIntent
-import sidev.lib.android.siframe.arch.view.MvpView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.check.asNotNull
-import sidev.lib.check.asntNotNull
-import sidev.lib.check.isNull
-import sidev.lib.exception.DataIntegrityExc
 import java.lang.Exception
 
 /**

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
 

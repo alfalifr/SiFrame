@@ -4,8 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import sidev.lib.android.siframe.intfc.customview.CustomView
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.dp
+import sidev.lib.android.std.tool.util.`fun`.dp
 
 open class CustomSizeRV : RecyclerView, CustomView {
 

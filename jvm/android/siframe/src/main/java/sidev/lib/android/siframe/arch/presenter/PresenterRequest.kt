@@ -1,13 +1,5 @@
 package sidev.lib.android.siframe.arch.presenter
 
-import sidev.lib.android.siframe.arch.view.MvpView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.check.asNotNull
-import sidev.lib.check.asntNotNull
-import sidev.lib.check.isNull
-import sidev.lib.exception.DataIntegrityExc
-import java.lang.Exception
-
 /**
  * Interface untuk instance request tunggal yg diajukan ke [ArchPresenter].
  * Interface ini berguna pada multiple request pada [ArchPresenter] yang sama

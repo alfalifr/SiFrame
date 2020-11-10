@@ -17,12 +17,12 @@ import kotlinx.android.synthetic.main._simul_edu_comp_video.view.*
 import sidev.kuliah.tekber.edu_class.model.ContentQuestion
 import sidev.kuliah.tekber.edu_class.model.ContentRead
 import sidev.kuliah.tekber.edu_class.model.ContentVideo
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.adapter.RvMultiViewAdp
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getTvNote
-import sidev.lib.android.siframe.tool.util._ViewUtil.setColorTintRes
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil.Comp.getTvNote
+import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util._ViewUtil.setColorTintRes
+import sidev.lib.android.std.tool.util.`fun`.*
 import sidev.lib.check.*
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edu_class.model.Content

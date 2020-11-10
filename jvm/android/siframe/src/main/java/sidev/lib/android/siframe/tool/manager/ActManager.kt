@@ -3,8 +3,8 @@ package sidev.lib.android.siframe.tool.manager
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.tool.ActLifecycleObs
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.collection.copy
 import sidev.lib.exception.IllegalAccessExc
 import sidev.lib.jvm.tool.util.ThreadUtil

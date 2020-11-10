@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="colorPrimary">@color/ijoBiruMuda</color>
+    <color name="colorPrimaryDark">@color/warnaUtama</color>
+    <color name="colorAccent">@color/warnaLatarTersier</color>
+    <color name="colorDisabled">@color/abuSangatTua</color>
+    <color name="colorImmutable">@color/warnaUtamaPudar</color>
+<!--
+    <color name="colorDefault" tools:ignore="ReferenceType">@drawable/bg_default</color>
+    <color name="colorDefaultInverse" tools:ignore="ReferenceType">@drawable/bg_default_inverse</color>
+-->
+<!--
+    <color name="colorGrey">#707070</color>
+    <!- for menu ->
+    <color name="green">#06C69A</color>
+    <color name="red">#FF4E4E</color>
+    <color name="orange">#FFA700</color>
+-->
+    <!-- transparent color -->
+    <color name="colorPrimaryHalfTransparent">#7F519FF5</color>
+    <color name="colorPrimaryDarkHalfTransparent">#7F005FC7</color>
+    <color name="colorTransparent">#0000</color>
+    <color name="colorTransDark">#22000000</color>
+
+    <color name="colorText">#8E8E8E</color>
+    <color name="colorLine">#C4C4C4</color>
+    <color name="colorBorder">#F0F0F0</color>
+    <color name="colorEditText">#EAEAEA</color>
+    <color name="putih">#FFF</color>
+    <color name="transparan">#0000</color>
+
+
+    <color name="hitam">#000000</color>
+    <color name="hitamTerawang">#33000000</color>
+    <color name="putihTerawang">#33FFFFFF</color>
+    <color name="ijoTerawang">#881EA141</color>
+
+    <color name="abu">#EDEDED</color>
+    <color name="abuTua">#C9C9C9</color>
+    <color name="abuLebihTua">#ADADAD</color>
+    <color name="abuSangatTua">#A3A3A3</color>
+    <color name="abuTeks">#979797</color>
+
+    <color name="abu_drawable_default">#a9abae</color>
+
+
+    <color name="warnaUtama">#1EA141</color>
+    <color name="warnaUtamaPudar">#AAF1BD</color>
+    <color name="warnaLatarUtama">#FFFFFF</color>
+    <color name="warnaLatarSekunder">#F0F0F0</color>
+    <color name="warnaLatarTersier">#BFBFBF</color>
+
+    <color name="ijo">#1EA141</color>
+    <color name="biru">#3291B3</color>
+    <color name="merah">#DB2525</color>
+    <color name="kuningUtama">#E8EB3D</color>
+
+    <color name="ijoRumput">#59A310</color>
+    <color name="ijoRumputMuda">#4DD141</color>
+    <color name="ijoBiru">#23DB70</color>
+    <color name="ijoBiruMuda">#39F0A7</color>
+
+    <color name="biruLaut">#1A4D8C</color>
+    <color name="biruLangit">#1FDBD5</color>
+    <color name="biruTerawang">#A9E1F5</color>
+    <color name="biruMuda">#B5CFF2</color>
+
+    <color name="unguTua">#C92FD4</color>
+    <color name="unguPink">#FF94C8</color>
+    <color name="unguTerawang">#FFD4E4</color>
+
+    <color name="merahDarah">#DB2525</color>
+    <color name="merahMuda">#FF5E5E</color>
+    <color name="merahTerawang">#FFB0B0</color>
+
+    <color name="jingga">#FFAE0D</color>
+    <color name="jinggaMuda">#FFC44F</color>
+    <color name="jinggaTerawang">#FFE0A3</color>
+
+    <color name="kuning">#FCFC00</color>
+    <color name="kuningMuda">#FFFF69</color>
+    <color name="kuningTerawang">#FFFFB8</color>
+</resources>

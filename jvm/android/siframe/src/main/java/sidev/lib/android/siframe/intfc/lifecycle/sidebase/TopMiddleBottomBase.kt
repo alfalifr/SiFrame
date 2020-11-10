@@ -2,9 +2,10 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.notNull
 
@@ -25,13 +26,13 @@ interface TopMiddleBottomBase: LifecycleSideBase {
         get()= bottomContainer.asNotNullTo { vg: ViewGroup -> vg.getChildAt(0) }
 
     val topContainerId: Int
-        get()= _Config.ID_RL_TOP_CONTAINER
+        get()= _SIF_Config.ID_RL_TOP_CONTAINER
     val middleContainerId: Int
-        get()= _Config.ID_RL_MIDDLE_CONTAINER
+        get()= _SIF_Config.ID_RL_MIDDLE_CONTAINER
     val bottomContainerId: Int
-        get()= _Config.ID_RL_BOTTOM_CONTAINER
+        get()= _SIF_Config.ID_RL_BOTTOM_CONTAINER
     val rvId: Int
-        get()= _Config.ID_RV
+        get()= _SIF_Config.ID_RV
 
     val topLayoutId: Int
         get()= _Config.INT_EMPTY

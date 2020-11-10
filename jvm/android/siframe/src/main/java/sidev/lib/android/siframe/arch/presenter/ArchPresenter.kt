@@ -7,7 +7,7 @@ import sidev.lib.android.siframe.arch.type.Mvp
 import sidev.lib.android.siframe.arch.view.MvpView
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableLinkBase
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asntNotNull
 import sidev.lib.check.isNull

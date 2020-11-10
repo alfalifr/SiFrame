@@ -2,10 +2,8 @@ package sidev.lib.android.siframe.adapter
 
 import android.content.Context
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.model.StringId
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.collection.findIndexed
 import sidev.lib.text.charCodeSum
 
@@ -18,7 +16,7 @@ abstract class AnyToStringAdp<T, LM: RecyclerView.LayoutManager>(ctx: Context, d
     constructor(ctx: Context): this(ctx, null)
 
     override val itemLayoutId: Int
-        get() = _Config.LAYOUT_COMP_ITEM_TXT_DESC
+        get() = _SIF_Config.LAYOUT_COMP_ITEM_TXT_DESC
 
     //TODO: buat mekanisme cache untuk string dan id.
     /** Mengambil string yg akan ditampilkan oleh adapter ini dari [data]. */
@@ -32,7 +30,7 @@ abstract class AnyToStringAdp<T, LM: RecyclerView.LayoutManager>(ctx: Context, d
     }
 
     override fun bindVH(vh: SimpleViewHolder, pos: Int, data: T) {
-        vh.itemView.findViewById<TextView>(_Config.ID_TV).text= getString(pos, data)
+        vh.itemView.findViewById<TextView>(_SIF_Config.ID_TV).text= getString(pos, data)
     }
 
     /** Mencari data dari [dataList] yg menghasilkan id dari [getId] sama dg param [id]. */

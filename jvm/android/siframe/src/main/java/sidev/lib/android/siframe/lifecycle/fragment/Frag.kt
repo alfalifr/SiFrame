@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
@@ -29,9 +29,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.logew
+import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.logew
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo
 import sidev.lib.exception.IllegalStateExc
@@ -78,7 +78,7 @@ abstract class Frag : Fragment(),
 //    val actBarContentNavAct
 //        get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
-        get() = _Config.STYLE_APP
+        get() = _SIF_Config.STYLE_APP
     final override lateinit var layoutView: View
 /*
     override val lifecycleCtx: Context
@@ -125,7 +125,7 @@ abstract class Frag : Fragment(),
     val onActiveListener: ListenerManager<Unit, Unit> by lazy { createSimpleListener() }
     fun addOnActiveListener(tag: String= _SIF_Constant.Internal.TAG_DEFAULT_PREFIX,
                             forceReplace: Boolean= true,
-                                 func: (view: View, parent: LifecycleViewBase?, pos: Int) -> Unit): Boolean
+                            func: (view: View, parent: LifecycleViewBase?, pos: Int) -> Unit): Boolean
             = onActiveListener.addListener(tag, forceReplace){
         func(layoutView, it["parent"] as? LifecycleViewBase, it["pos"] as Int)
     }

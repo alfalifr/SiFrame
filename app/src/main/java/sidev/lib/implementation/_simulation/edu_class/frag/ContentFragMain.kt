@@ -13,24 +13,26 @@ import kotlinx.android.synthetic.main._simul_edu_comp_nav_modul_item_container.v
 //import sidev.kuliah.tekber.edu_class.frag.ContentFrag
 import sidev.kuliah.tekber.edu_class.model.Module
 import sidev.kuliah.tekber.edu_class.model.Page
+import sidev.lib.android.siframe._val._SIF_Config
 //import sidev.kuliah.tekber.edu_class.presenter.PageContentPres
 //import sidev.kuliah.tekber.edu_class.util.Const
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.BarContentNavBase
 //import sidev.lib.android.siframe.customizable._init._Config
 //import sidev.lib.android.siframe.customizable.view.ModVp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.mvp.MvpDrawerVpFrag
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
 //import sidev.lib.android.siframe.presenter.Presenter
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil.setBgColorTintRes
-import sidev.lib.android.siframe.tool.util._ViewUtil.setColorTintRes
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util._ViewUtil.setBgColorTintRes
+import sidev.lib.android.std.tool.util._ViewUtil.setColorTintRes
 import sidev.lib.android.siframe.tool.util.`fun`.getExtra
-import sidev.lib.android.siframe.tool.util.`fun`.getRootView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.getRootView
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.android.siframe.view.ModVp
+import sidev.lib.android.std._val._Config
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
@@ -120,8 +122,8 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
                 toPage(pos)
         }
 
-        _ViewUtil.Comp.getTv?.invoke(startDrawerView).notNull { tv -> tv.text= module.name }
-        _ViewUtil.Comp.getRv?.invoke(startDrawerView).notNull { rv ->
+        _SIF_ViewUtil.Comp.getTv?.invoke(startDrawerView).notNull { tv -> tv.text= module.name }
+        _SIF_ViewUtil.Comp.getRv?.invoke(startDrawerView).notNull { rv ->
             sideNavAdp.rv= rv
             loge("sideNavAdp.rv udah diisi")
         }
@@ -131,7 +133,7 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
     override fun _initView(layoutView: View) {
         activity.asNotNull { act: BarContentNavBase ->
             act.setActBarTitle(module.name)
-            act.actBarViewContainer.findViewById<ImageView>(_Config.ID_IV_BACK).notNull { iv ->
+            act.actBarViewContainer.findViewById<ImageView>(_SIF_Config.ID_IV_BACK).notNull { iv ->
                 iv.setImageResource(R.drawable.ic_hamburger)
                 setColorTintRes(iv, R.color.putih)
                 iv.rotation= 0f

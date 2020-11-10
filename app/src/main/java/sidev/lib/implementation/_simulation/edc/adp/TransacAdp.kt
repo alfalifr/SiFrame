@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.comp_item_list_text_left_3_right_2.view.*
 import sidev.lib.android.siframe.adapter.RvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.NumberPickerComp
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.edc.model.Transaction

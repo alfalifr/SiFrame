@@ -1,9 +1,7 @@
 package sidev.lib.android.siframe.adapter
 
 import android.content.Context
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.model.StringId
 
 

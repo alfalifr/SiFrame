@@ -12,20 +12,22 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import sidev.lib._config_.CodeModification
-import sidev.lib.android.siframe._external._AnkoInternals
+import sidev.lib.android.std._external._AnkoInternals
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.`var`._SIF_Config
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util._BitmapUtil
+import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.tool.util._SIF_BitmapUtil
+import sidev.lib.android.std.tool.util.`fun`.logw
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.annotation.Unsafe
 import sidev.lib.check.notNull
@@ -70,7 +72,7 @@ fun FragmentManager.commitFrag(
         fragContainerId != View.NO_ID -> fragContainerId
         fragContainerView != null -> {
             if(fragContainerView.id == View.NO_ID)
-                fragContainerView.id= View.generateViewId()
+                fragContainerView.id= ViewCompat.generateViewId() //View.generateViewId()
             fragContainerView.id
         }
         else -> View.NO_ID
@@ -199,7 +201,7 @@ fun Fragment.checkPermission(
 
 fun Activity.pickImageGallery(){
     if(this.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))
-        _BitmapUtil.pickImageGallery(
+        _SIF_BitmapUtil.pickImageGallery(
             this
         )
     else

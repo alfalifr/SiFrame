@@ -6,9 +6,8 @@ import com.sigudang.android.Model.Product
 import com.sigudang.android.models.Bound
 import kotlinx.android.synthetic.main._simul_sigud_fragment_bound_proses_bottom_btn.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.addOnGlobalLayoutListener
-import sidev.lib.android.siframe.tool.util.`fun`.addTxtNumberBy
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.addTxtNumberBy
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 import sidev.lib.number.round
 import java.lang.Exception

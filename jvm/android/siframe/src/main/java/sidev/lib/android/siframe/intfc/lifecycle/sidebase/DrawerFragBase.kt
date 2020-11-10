@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import sidev.lib.android.siframe._customizable._ColorRes
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.std._val._ColorRes
 import sidev.lib.android.siframe.intfc.prop.BackBtnBaseProp
-import sidev.lib.android.siframe.tool.util._ResUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util._ResUtil
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.findViewByType
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 
@@ -60,7 +60,7 @@ interface DrawerFragBase : DrawerBase, BackBtnBaseProp, LifecycleObserver{
             startDrawerContainer= rootView.findViewById(startDrawerContainerId)
             endDrawerContainer= rootView.findViewById(endDrawerContainerId)
 
-            val drawerWidthPercent= _ResUtil.getDimen(_prop_ctx!!, _Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
+            val drawerWidthPercent= _ResUtil.getDimen(_prop_ctx!!, _SIF_Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
             val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_prop_act!!, drawerWidthPercent)
 
             val lpStart= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)

@@ -5,17 +5,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.adapter.DialogListAdp
-import sidev.lib.android.siframe._customizable._Config
-import sidev.lib.android.siframe.model.StringId
-import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
+import sidev.lib.android.std.tool.util._ViewUtil
 
 open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     override val layoutId: Int
-        get() = _Config.LAYOUT_DIALOG_LIST //R.layout.dialog_list
+        get() = _SIF_Config.LAYOUT_DIALOG_LIST //R.layout.dialog_list
 
     private lateinit var adp: DialogListAdp<T> //DialogListAdapter
     private lateinit var rv: RecyclerView
@@ -64,7 +63,7 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
 //        layoutView= LayoutInflater.from(c).inflate(layoutId, null, false)
         adp= DialogListAdp(c, null)
 //        adp.dialog= dialog
-        rv= findView(_Config.ID_RV) //R.id.rv_list
+        rv= findView(_SIF_Config.ID_RV) //R.id.rv_list
         rv.adapter= adp
         rv.layoutManager= LinearLayoutManager(c)
 
@@ -83,18 +82,18 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
         autoTv.threshold= 1 //will start working from first character
  */
 
-        btnActionContainer= findView(_Config.ID_RL_BTN_CONTAINER) //R.id.rl_btn_container
-        val btnLeft= btnActionContainer.findViewById<Button>(_Config.ID_BTN_LEFT)
-        val btnRight= btnActionContainer.findViewById<Button>(_Config.ID_BTN_RIGHT)
+        btnActionContainer= findView(_SIF_Config.ID_RL_BTN_CONTAINER) //R.id.rl_btn_container
+        val btnLeft= btnActionContainer.findViewById<Button>(_SIF_Config.ID_BTN_LEFT)
+        val btnRight= btnActionContainer.findViewById<Button>(_SIF_Config.ID_BTN_RIGHT)
 
-        _ViewUtil.Comp.setBtnHollow(btnLeft)
+        _SIF_ViewUtil.Comp.setBtnHollow(btnLeft)
 //        btnLeft.setBackgroundResource(R.drawable.shape_border_square_round_edge_main)
 //        btnLeft.setTextColor(ContextCompat.getColor(c, R.color.colorPrimaryDark))
         btnLeft.setOnClickListener{v ->
             btnListener?.onLeftBtnClick(this, v)
         }
 
-        _ViewUtil.Comp.setBtnSolid(btnRight)
+        _SIF_ViewUtil.Comp.setBtnSolid(btnRight)
 /*
         btnActionContainer.btn_right.setBackgroundResource(R.drawable.shape_solid_square_round_edge_fill)
         btnActionContainer.btn_right.background.setColorFilter(
@@ -174,7 +173,7 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     fun setSearchBarVisible(visible: Boolean): DialogListView<T> {
         val vis= if(visible) View.VISIBLE
         else View.GONE
-        layoutView.findViewById<View>(_Config.ID_LL_SEARCH_CONTAINER_OUTER).visibility= vis //.ll_search_container_outer.visibility= vis
+        layoutView.findViewById<View>(_SIF_Config.ID_LL_SEARCH_CONTAINER_OUTER).visibility= vis //.ll_search_container_outer.visibility= vis
         return this
     }
 /*
@@ -190,31 +189,31 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     fun setNoDataViewVisible(visible: Boolean): DialogListView<T> {
         val vis= if(visible) View.VISIBLE
         else View.GONE
-        findView<View>(_Config.ID_TV_NO_DATA).visibility= vis //R.id.tv_no_data
+        findView<View>(_SIF_Config.ID_TV_NO_DATA).visibility= vis //R.id.tv_no_data
         if(!isInternalEdit)
             noDataViewVis= visible
         return this
     }
 
     fun setNoDataString(str: String): DialogListView<T> {
-        findView<TextView>(_Config.ID_TV_NO_DATA).text= str
+        findView<TextView>(_SIF_Config.ID_TV_NO_DATA).text= str
         return this
     }
 
     fun showtBtnAction(show: Boolean= true): DialogListView<T> {
         val vis= if(show) View.VISIBLE
         else View.GONE
-        findView<View>(_Config.ID_RL_BTN_CONTAINER) //R.id.rl_btn_container
+        findView<View>(_SIF_Config.ID_RL_BTN_CONTAINER) //R.id.rl_btn_container
             .visibility= vis
         return this
     }
 
     fun setRightBtnString(str: String): DialogListView<T> {
-        btnActionContainer.findViewById<Button>(_Config.ID_BTN_RIGHT).text= str
+        btnActionContainer.findViewById<Button>(_SIF_Config.ID_BTN_RIGHT).text= str
         return this
     }
     fun setLeftBtnString(str: String): DialogListView<T> {
-        btnActionContainer.findViewById<Button>(_Config.ID_BTN_LEFT).text= str
+        btnActionContainer.findViewById<Button>(_SIF_Config.ID_BTN_LEFT).text= str
         return this
     }
 /*
@@ -250,7 +249,7 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
  */
 
     fun addTextWatcher(tw: TextWatcher){
-        layoutView.findViewById<EditText>(_Config.ID_ET_SEARCH) //R.id.ed_search
+        layoutView.findViewById<EditText>(_SIF_Config.ID_ET_SEARCH) //R.id.ed_search
             .addTextChangedListener(tw)
     }
 }

@@ -9,14 +9,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.prop.BackBtnBaseProp
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
 import sidev.lib.check.notNullTo
@@ -43,7 +43,7 @@ interface DrawerBase: ComplexLifecycleSideBase,
     }
 
     override val layoutId: Int
-        get() = _Config.LAYOUT_DL
+        get() = _SIF_Config.LAYOUT_DL
 
 
     override val _prop_backBtnBase: BackBtnBase?
@@ -74,11 +74,11 @@ interface DrawerBase: ComplexLifecycleSideBase,
         }
 
     val contentContainerId
-        get()= _Config.ID_VG_CONTENT_CONTAINER
+        get()= _SIF_Config.ID_VG_CONTENT_CONTAINER
     val startDrawerContainerId
-        get()= _Config.ID_VG_START_DRAWER_CONTAINER
+        get()= _SIF_Config.ID_VG_START_DRAWER_CONTAINER
     val endDrawerContainerId
-        get()= _Config.ID_VG_END_DRAWER_CONTAINER
+        get()= _SIF_Config.ID_VG_END_DRAWER_CONTAINER
 //    open val bottomDrawerContainerId= _ConfigBase.ID_SL_BOTTOM_DRAWER_CONTAINER
 //    open val topDrawerContainerId= _ConfigBase.ID_SL_TOP_DRAWER_CONTAINER
 

@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._ThreadUtil
+import sidev.lib.android.std.tool.util._ThreadUtil
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
 

@@ -1,4 +1,4 @@
-package id.go.surabaya.ediscont.utilities.modelutil
+package sidev.lib.android.siframe.tool.util
 
 import android.content.Context
 import androidx.core.net.toUri
@@ -8,7 +8,7 @@ import sidev.lib.android.siframe.model.FK_DB
 import sidev.lib.android.siframe.model.FK_M
 import sidev.lib.android.siframe.model.FK_Row
 import sidev.lib.android.siframe.model.PictModel
-import sidev.lib.android.siframe.tool.util._BitmapUtil
+import sidev.lib.android.std.tool.util._BitmapUtil
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
 import sidev.lib.collection.common.toCommonIndexedList

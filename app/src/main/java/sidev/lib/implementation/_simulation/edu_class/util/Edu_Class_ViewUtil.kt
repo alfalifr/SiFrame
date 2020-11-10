@@ -3,11 +3,11 @@ package sidev.lib.implementation._simulation.edu_class.util
 import android.view.View
 import android.widget.ImageView
 import sidev.lib.android.siframe.model.PictModel
-import sidev.lib.android.siframe.tool.util._ResUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.enableFillTxt
-import sidev.lib.android.siframe.tool.util._ViewUtil.Comp.getEt
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil.Comp.enableFillTxt
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil.Comp.getEt
+import sidev.lib.android.std.tool.util._ResUtil
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 
@@ -17,7 +17,7 @@ object Edu_Class_ViewUtil {
         if(img.bm != null)
             iv.setImageBitmap(img.bm)
         else if(img.dir != null)
-            _ViewUtil.loadImageToIv(iv, img.dir)
+            _SIF_ViewUtil.loadImageToIv(iv, img.dir)
     }
 
     object Comp{

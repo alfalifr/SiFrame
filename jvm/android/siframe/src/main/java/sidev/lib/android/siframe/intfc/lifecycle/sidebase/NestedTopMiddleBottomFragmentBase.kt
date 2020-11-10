@@ -9,6 +9,7 @@ import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util.`fun`.*
 import sidev.lib.check.*
 
 interface NestedTopMiddleBottomFragmentBase: TopMiddleBottomFragmentBase, NestedTopMiddleBottomBase {

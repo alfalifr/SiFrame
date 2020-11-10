@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 
 /**
  * Interface ini digunakan untuk menahan interaksi dari user.

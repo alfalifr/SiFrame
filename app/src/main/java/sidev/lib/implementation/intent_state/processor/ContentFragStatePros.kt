@@ -2,7 +2,7 @@ package sidev.lib.implementation.intent_state.processor
 
 import sidev.lib.android.siframe.arch.intent_state.StateProcessor
 import sidev.lib.android.siframe.arch.view.MviView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.exception.Exc
 import sidev.lib.implementation.intent_state.*
 

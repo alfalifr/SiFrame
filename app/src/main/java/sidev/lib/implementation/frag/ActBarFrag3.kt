@@ -8,8 +8,8 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

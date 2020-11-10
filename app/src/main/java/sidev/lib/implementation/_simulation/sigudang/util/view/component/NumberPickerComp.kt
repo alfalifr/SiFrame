@@ -5,9 +5,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import sidev.lib.android.siframe.tool.util.`fun`.findView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.asResEntryBy
+import sidev.lib.android.std.tool.util.`fun`.findView
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 import sidev.lib.android.siframe.view.comp.NumberPickerComp as NB

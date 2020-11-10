@@ -3,7 +3,7 @@ package sidev.lib.implementation.intent_state.processor
 import sidev.lib.android.siframe.arch.intent_state.IntentConverter
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.intent_state.CFIntent
 import sidev.lib.implementation.intent_state.ContentFragConf
 import sidev.lib.implementation.presenter.ContentPresenter

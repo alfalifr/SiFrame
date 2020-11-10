@@ -5,8 +5,8 @@ import android.widget.RadioGroup
 import androidx.core.view.children
 import kotlinx.android.synthetic.main.page_rg.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.findViewByType
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.findViewByType
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.notNull
 //import sidev.lib.android.siframe.tool.util.`fun`.withIndex
 import sidev.lib.implementation.R

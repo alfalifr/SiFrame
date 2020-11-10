@@ -1,14 +1,9 @@
 package com.sigudang.android.fragments.BoundProcessFrag
 
-import androidx.core.util.set
-import androidx.fragment.app.Fragment
 import com.sigudang.android.models.Bound
-import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.tool.util.`fun`.keys
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNullTo
 import sidev.lib.reflex.clazz
 

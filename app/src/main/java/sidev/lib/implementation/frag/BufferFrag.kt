@@ -2,7 +2,7 @@ package sidev.lib.implementation.frag
 
 import android.view.View
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._ThreadUtil
+import sidev.lib.android.std.tool.util._ThreadUtil
 import sidev.lib.android.viewrap.wrapChildWithBuffer
 import sidev.lib.implementation.R
 

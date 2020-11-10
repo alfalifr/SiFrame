@@ -2,8 +2,8 @@ package com.sigudang.android.fragments.bottomsheet
 
 import android.view.View
 import android.widget.EditText
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.txt
+import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.txt
 import sidev.lib.implementation.R
 import sidev.lib.implementation._simulation.sigudang.util.T_TimeUtil
 import sidev.lib.number.isPositive

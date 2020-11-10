@@ -3,7 +3,7 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._ThreadUtil
+import sidev.lib.android.std.tool.util._ThreadUtil
 import sidev.lib.implementation.R
 import java.lang.Exception
 

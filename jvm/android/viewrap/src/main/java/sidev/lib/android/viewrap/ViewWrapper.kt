@@ -5,8 +5,10 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std._val._Constant
+import sidev.lib.android.std.tool.util.`fun`.detachFromParent
+import sidev.lib.android.std.tool.util.`fun`.findView
+import sidev.lib.android.std.tool.util.`fun`.forcedAddView
 
 /**
  * Common interface yg digunakan untuk menandai bahwa suatu kelas merupakan
@@ -22,7 +24,7 @@ interface ViewWrapper<V: View> {
         clazz: Class<V>,
         @IdRes id: Int?= null,
         tag: Any?= null,
-        direction: Int= _SIF_Constant.DIRECTION_DOWN,
+        direction: Int= _Constant.DIRECTION_DOWN,
         includeItself: Boolean= true
     ): V? = view?.findView(clazz, id, tag, direction, includeItself)
     fun draw(canvas: Canvas) = view?.draw(canvas)

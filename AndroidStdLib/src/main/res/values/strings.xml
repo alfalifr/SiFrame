@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">JVM_Lib</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_manage">Kelola</string>
+    <string name="title_search">Pencarian</string>
+    <string name="title_message">Pesan</string>
+    <string name="title_account">Akun</string>
+    <string name="title_activity_billing">BillingActivity</string>
+
+    <string name="billing_tab1_title">Tagihan</string>
+    <string name="billing_tab2_title">Transaksi</string>
+
+    <string name="template_msg_overlay">Ini pesan overlay</string>
+    <string name="template_msg_btn">Ini Tombol</string>
+    <string name="template_msg_title">Ini Judul</string>
+    <string name="template_msg_desc">Ini deskripsi</string>
+    <string name="template_msg_no_data">Tidak ada data</string>
+</resources>

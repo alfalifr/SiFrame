@@ -3,19 +3,18 @@ package sidev.lib.implementation.frag
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomFragmentBase
-import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.tool.util._ThreadUtil
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util._ThreadUtil
+import sidev.lib.android.std.tool.util.`fun`.addOnGlobalLayoutListener
+import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.size
+import sidev.lib.android.std.tool.util.`fun`.yEndInWindow
 import sidev.lib.check.getLateinit
 import sidev.lib.collection.string
 import sidev.lib.collection.toArrayList
-import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.StrAdp
 
 class RvFragImpl : RvFrag<StrAdp>(), NestedTopMiddleBottomFragmentBase {

@@ -4,14 +4,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.intfc.prop.ActProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 import java.lang.Exception
@@ -19,9 +19,9 @@ import java.lang.Exception
 interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
 
     override val styleId: Int
-        get() = _Config.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar
+        get() = _SIF_Config.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar
     override val layoutId: Int
-        get() = _Config.LAYOUT_ACT_SIMPLE //R.layout.activity_simple
+        get() = _SIF_Config.LAYOUT_ACT_SIMPLE //R.layout.activity_simple
     /*
         override val isViewInitFirst: Boolean
             get() = false
@@ -30,7 +30,7 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
         get()= true
 
     val contentLayoutId: Int
-//    override val actBarId: Int= _Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
+//    override val actBarId: Int= _SIF_Config.LAYOUT_COMP_ACT_BAR_DEFAULT //R.layout.component_action_bar_default
     val isNavBarVisible
         get()= true
     var menuId: Int?
@@ -38,11 +38,11 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
 //        protected set
 
     val actBarViewContainerId
-        get()= _Config.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container
+        get()= _SIF_Config.ID_LL_BAR_ACT_CONTAINER //R.id.ll_bar_act_container
     val contentViewContainerId
-        get()= _Config.ID_VG_CONTENT_CONTAINER //R.id.ll_content_container
+        get()= _SIF_Config.ID_VG_CONTENT_CONTAINER //R.id.ll_content_container
     val navBarId
-        get()= _Config.ID_LL_BAR_NAV_CONTAINER //R.id.bnv_bar_nav_container
+        get()= _SIF_Config.ID_LL_BAR_NAV_CONTAINER //R.id.bnv_bar_nav_container
 
     /**
      * Harus dimodifikasi secara internal (private) agar tidak terjadi inkonsistensi
@@ -81,7 +81,7 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
             inflateAndFillViewStructure()
 
             act.__registerBackBtnView()
-            act.registerBackBtnView(actBarViewContainer.findViewById(_Config.ID_IV_BACK)) //R.id.iv_back
+            act.registerBackBtnView(actBarViewContainer.findViewById(_SIF_Config.ID_IV_BACK)) //R.id.iv_back
 
             val actTitle= act.getIntentData(_SIF_Constant.EXTRA_TITLE) ?: this::class.java.simpleName
 //        if(actTitle != null)
@@ -110,10 +110,10 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
     private fun inflateAndFillViewStructure(){
         _prop_act.notNull { act ->
             val actBar=
-                if(actBarId != _Config.LAYOUT_COMP_ACT_BAR_DEFAULT)
+                if(actBarId != _SIF_Config.LAYOUT_COMP_ACT_BAR_DEFAULT)
                     act.inflate(actBarId, actBarViewContainer, false)
                 else
-                    _ViewUtil.Template.actBar_Primary(act, _Config.TEMPLATE_VIEW_ACT_BAR_TYPE)
+                    _SIF_ViewUtil.Template.actBar_Primary(act, _SIF_Config.TEMPLATE_VIEW_ACT_BAR_TYPE)
             actBarViewContainer.addView(actBar)
 
             if(isContentLayoutInflatedFirst && contentLayoutId > 0){
@@ -136,9 +136,9 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
 
     fun setActBarTitle(title: String){
         try{
-            actBarViewContainer.findViewById<TextView>(_Config.ID_TV_TITLE).text= title //R.id.tv_title
+            actBarViewContainer.findViewById<TextView>(_SIF_Config.ID_TV_TITLE).text= title //R.id.tv_title
         } catch (e: Exception){
-            _ViewUtil.Comp.setTvTitleTxt(actBarViewContainer, title)
+            _SIF_ViewUtil.Comp.setTvTitleTxt(actBarViewContainer, title)
         } catch (e: Exception){
             loge("setActBarTitle() -> actBarViewContainer belum diinit!")
         }

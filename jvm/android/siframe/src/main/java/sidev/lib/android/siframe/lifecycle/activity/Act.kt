@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import sidev.lib.android.siframe._customizable._Config
 import sidev.lib.android.siframe.arch.presenter.*
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
@@ -25,9 +24,9 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util._AppUtil
-import sidev.lib.android.siframe.tool.`var`._SIF_Config
-import sidev.lib.android.siframe.tool.util.`fun`.getRootView
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.std.tool.util.`fun`.getRootView
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.exception.IllegalStateExc
 
@@ -97,7 +96,7 @@ abstract class Act : AppCompatActivity(), //Inheritable,
         = ArrayList()
 
     override val styleId: Int
-        get() = _Config.STYLE_APP
+        get() = _SIF_Config.STYLE_APP
     final override lateinit var layoutView: View
     open val isViewInitFirst= true
 

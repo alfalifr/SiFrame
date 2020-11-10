@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.tool.util
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import sidev.lib.android.siframe.tool.`var`._SIF_Config
+import sidev.lib.android.siframe._val._SIF_Config
 
 
 object _AppUtil{

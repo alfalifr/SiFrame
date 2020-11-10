@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Resource pada file ini merujuk pada colors.xml pada modul `AndroidStdLib` -->
     <color name="colorPrimary">@color/ijoBiruMuda</color>
     <color name="colorPrimaryDark">@color/warnaUtama</color>
     <color name="colorAccent">@color/warnaLatarTersier</color>

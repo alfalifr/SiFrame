@@ -13,7 +13,7 @@ import sidev.lib.android.siframe.arch.presenter.MviPresenter
 import sidev.lib.android.siframe.arch.type.Mvi
 import sidev.lib.android.siframe.intfc.lifecycle.ExpirableBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ViewModelBase
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.notNull

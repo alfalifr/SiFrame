@@ -1,25 +1,20 @@
 package sidev.lib.android.siframe.adapter
 
 import android.content.Context
-import android.util.SparseIntArray
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.CallSuper
-import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
-import sidev.lib.android.siframe._customizable._Config
-//import sidev.lib.universal.exception.TypeExc
 import sidev.lib.android.siframe.intfc.listener.Listener
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.siframe.tool.RvAdpContentArranger
-import sidev.lib.android.siframe.tool.util.`fun`.addLast
-import sidev.lib.android.siframe.tool.util.`fun`.iterator
-import sidev.lib.android.siframe.tool.util.`fun`.loge
-import sidev.lib.annotation.ChangeLog
+import sidev.lib.android.std.tool.util.`fun`.addLast
+import sidev.lib.android.std.tool.util.`fun`.iterator
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
-import sidev.lib.number.isNotNegative
 //import sidev.lib.universal.`fun`.isNull
 //import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
@@ -196,11 +191,11 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             else (selectedItemPos_list?.indexOf(pos) ?: -1) >= 0
 
         if(proceedVis){
-            v.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+            v.findViewById<ImageView>(_SIF_Config.ID_IV_CHECK) //R.id.iv_check
                 ?.visibility=
                     if(isCheckIndicatorShown) View.VISIBLE
                     else View.GONE
-            v.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
+            v.findViewById<ImageView>(_SIF_Config.ID_IV_OVERLAY) //R.id.iv_overlay
                 ?.visibility=
                     if(isOverlayShown) View.VISIBLE
                     else View.GONE
@@ -235,7 +230,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 //            loge("data != null position= $position dataInd= $dataInd headerView == null= ${headerView == null}")
             //<10 Juli 2020> => Dibuat jadi .notNull() agar saat bind header atau footer tidak dilakukan
             //  di dalam RvAdp ini.
-            holder.itemView.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+            holder.itemView.findViewById<ImageView>(_SIF_Config.ID_IV_CHECK) //R.id.iv_check
                 ?.visibility= if(isCheckIndicatorShown && dataInd == selectedItemPos_single) View.VISIBLE
             else View.GONE
 
@@ -462,15 +457,15 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             }
 
             if(isCheckIndicatorShown){
-                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+                selectedItemView?.findViewById<ImageView>(_SIF_Config.ID_IV_CHECK) //R.id.iv_check
                     ?.visibility= View.VISIBLE
-                selectedItemView_before?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+                selectedItemView_before?.findViewById<ImageView>(_SIF_Config.ID_IV_CHECK) //R.id.iv_check
                     ?.visibility= View.GONE
             }
             if(isOverlayShown){
-                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
+                selectedItemView?.findViewById<ImageView>(_SIF_Config.ID_IV_OVERLAY) //R.id.iv_overlay
                     ?.visibility= View.VISIBLE
-                selectedItemView_before?.findViewById<ImageView>(_Config.ID_IV_OVERLAY) //R.id.iv_overlay
+                selectedItemView_before?.findViewById<ImageView>(_SIF_Config.ID_IV_OVERLAY) //R.id.iv_overlay
                     ?.visibility= View.GONE
             }
         } else{
@@ -501,13 +496,13 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
             }
 
             if(isCheckIndicatorShown){
-                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_CHECK) //R.id.iv_check
+                selectedItemView?.findViewById<ImageView>(_SIF_Config.ID_IV_CHECK) //R.id.iv_check
                     ?.visibility=
                         if(isPosNotExisting) View.VISIBLE
                         else View.GONE
             }
             if(isOverlayShown){
-                selectedItemView?.findViewById<ImageView>(_Config.ID_IV_OVERLAY)
+                selectedItemView?.findViewById<ImageView>(_SIF_Config.ID_IV_OVERLAY)
                     ?.visibility=
                         if(isPosNotExisting) View.VISIBLE
                         else View.GONE
@@ -541,7 +536,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     }
 
     protected fun showCheckIndicator(isShown: Boolean= true, pos: Int= selectedItemPos_single){
-        getView(pos)?.findViewById<ImageView>(_Config.ID_IV_CHECK)
+        getView(pos)?.findViewById<ImageView>(_SIF_Config.ID_IV_CHECK)
             ?.visibility=
                 if(isShown) View.VISIBLE
                 else View.GONE
@@ -551,7 +546,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
         val vis= if(isShown) View.VISIBLE
             else View.GONE
         if(!isMultiSelectionEnabled){
-            selectedItemView?.findViewById<ImageView>(_Config.ID_IV_OVERLAY)
+            selectedItemView?.findViewById<ImageView>(_SIF_Config.ID_IV_OVERLAY)
                 ?.visibility= vis
         } else{
             for(selectedPos in selectedItemPos_list!!){

@@ -8,7 +8,6 @@ import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
-import sidev.lib.android.siframe.arch.view.ArchView
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.FragmentHostBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
@@ -16,11 +15,11 @@ import sidev.lib.android.siframe.intfc.prop.CtxProp
 import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
 import sidev.lib.android.siframe.intfc.prop.OnRequestPermissionsResultCallbackProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
-import sidev.lib.android.siframe.tool.`var`._SIF_Constant
+import sidev.lib.android.siframe._val._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.jvm.tool.util.ThreadUtil
 
 /**
@@ -48,7 +47,7 @@ interface ActFragBase: LifecycleRootBase, FragmentHostBase,
         val act= args[0] as Activity
         layoutView= args[1] as View
 
-        val registerKey= this::class.java.name +"@" +this.hashCode() +_SIF_Constant.PROP_STACK
+        val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
         doOnce(registerKey){
             registerActiveAct()
             _AppUtil.checkAppValidity(_prop_ctx)

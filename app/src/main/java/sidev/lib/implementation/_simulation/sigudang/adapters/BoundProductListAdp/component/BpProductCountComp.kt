@@ -8,7 +8,7 @@ import com.sigudang.android.models.BoundProduct
 import com.sigudang.android.utilities.view.component.NumberPickerComp
 import kotlinx.android.synthetic.main._simul_sigud_content_item_product_bound.view.*
 import sidev.lib.`val`.Assignment
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R

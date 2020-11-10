@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 
 
 class _BlankFrag: Fragment(){
@@ -15,6 +15,6 @@ class _BlankFrag: Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         //R.layout._t_blank_frag
-        return inflater.inflate(_Config.LAYOUT_BLANK, container, false)
+        return inflater.inflate(_SIF_Config.LAYOUT_BLANK, container, false)
     }
 }

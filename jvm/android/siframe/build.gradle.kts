@@ -127,7 +127,7 @@ dependencies {
     implementation("sidev.lib.kotlin.multi:Reflex-jvm:0.0.1x") //{ isTransitive= true }
 //    implementation(project(":Android-External")) //{ isTransitive= true }
 //    implementation(project(":SiFrame-Customizable"))
-    //implementation(project(":AndroidStdLib")) //TODO 8 Nov 2020 -> Untuk smtr, lib std untuk Android blum dipisah, karena mau ngerjakan EA.
+    implementation(project(":AndroidStdLib"))
 
 //    implementation(project("path" to ":jvm:android:external"))
 //    implementation(project("path" to ":jvm:android:siframe:customizable"))

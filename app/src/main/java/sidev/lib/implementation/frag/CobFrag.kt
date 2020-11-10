@@ -7,8 +7,9 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.cob_page.view.*
 import org.jetbrains.anko.textColor
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.*
 import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util._ThreadUtil
+import sidev.lib.android.std.tool.util.`fun`.*
 import sidev.lib.android.viewrap.wrapWithBuffer
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R

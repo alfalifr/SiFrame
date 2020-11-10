@@ -10,21 +10,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main._sif_page_rv.view.*
 import sidev.lib.android.siframe.R
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.adapter.SimpleRvAdp
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 import sidev.lib.android.siframe.intfc.listener.RvScrollListener
 import sidev.lib.android.siframe.intfc.prop.RvAdpProp
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
 
-//import sidev.lib.android.siframe.tool.util.`fun`.loge
+//import sidev.lib.android.std.tool.util.`fun`.loge
 
 abstract class RvFrag<Adp: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
     final override val layoutId: Int
-        get() = _Config.LAYOUT_RV //R.layout.content_abs_rv
+        get() = _SIF_Config.LAYOUT_RV //R.layout.content_abs_rv
 
     /**
      * Jika true, maka [fullScrollIv] akan ditampilkan jika user
@@ -61,11 +61,11 @@ abstract class RvFrag<Adp: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
         super.__initView(layoutView)
 //        rv= layoutView.findViewById(_Config.ID_RV) //.rv
 //        scrollView= layoutView.findViewById(_Config.ID_SV) //.rv
-        pb= layoutView.findViewById(_Config.ID_PB)
-        layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL)
+        pb= layoutView.findViewById(_SIF_Config.ID_PB)
+        layoutView.findViewById<SwipeRefreshLayout>(_SIF_Config.ID_SRL)
             .setOnRefreshListener { onRefreshListener?.invoke() }
 
-        val rvContainer= layoutView.findViewById<View>(_Config.ID_LL_RV_CONTAINER) as ViewGroup
+        val rvContainer= layoutView.findViewById<View>(_SIF_Config.ID_LL_RV_CONTAINER) as ViewGroup
         rvAdp= initRvAdp()
         rvAdp.setupLayoutManager(context!!).asNotNullTo { llm: LinearLayoutManager ->
             val rvLayoutId=
@@ -78,7 +78,7 @@ abstract class RvFrag<Adp: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
         rvAdp.rv= rv
         rvContainer.addView(rv)
 
-        fullScrollIv= layoutView.findViewById(_Config.ID_IV_ARROW) //.rv
+        fullScrollIv= layoutView.findViewById(_SIF_Config.ID_IV_ARROW) //.rv
         fullScrollIv.setOnClickListener { fullScroll(View.FOCUS_UP) }
 /*
         scrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
@@ -115,7 +115,7 @@ abstract class RvFrag<Adp: SimpleRvAdp<*, *>> : Frag(), RvAdpProp{
     }
 
     fun showRefresh(show: Boolean= true){
-        layoutView.findViewById<SwipeRefreshLayout>(_Config.ID_SRL)
+        layoutView.findViewById<SwipeRefreshLayout>(_SIF_Config.ID_SRL)
             .isRefreshing= show
     }
 

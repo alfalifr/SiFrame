@@ -15,8 +15,8 @@ import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.arch.viewmodel.LifeData
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.NestedTopMiddleBottomBase
 import sidev.lib.android.siframe.model.StringId
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.tool.dialog.DialogListView
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull

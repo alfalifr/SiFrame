@@ -5,14 +5,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RelativeLayout
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.collection.copyGrowTimely
 import sidev.lib.implementation.R
 import sidev.lib.implementation._cob.pageList
 import sidev.lib.implementation.adp.PageAdp
-import sidev.lib.implementation.model.Page
 
 class RvDbFrag : RvFrag<PageAdp>(){
     override fun initRvAdp(): PageAdp {

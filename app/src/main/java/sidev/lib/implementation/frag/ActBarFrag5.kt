@@ -3,11 +3,11 @@ package sidev.lib.implementation.frag
 import android.view.View
 import kotlinx.android.synthetic.main.frag_txt.view.*
 import org.jetbrains.anko.textColorResource
-import sidev.lib.android.siframe._customizable._ColorRes
+import sidev.lib.android.std._val._ColorRes
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
-import sidev.lib.android.siframe.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
 

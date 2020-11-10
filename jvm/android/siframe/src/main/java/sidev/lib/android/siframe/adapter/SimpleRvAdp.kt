@@ -8,16 +8,15 @@ import android.widget.LinearLayout
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.`val`.SuppressLiteral
-import sidev.lib.android.siframe._customizable._Config
+import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 //import sidev.lib.universal.exception.ResourceNotFoundExc
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.intfc.adp.MultiViewAdp
-import sidev.lib.android.siframe.tool.util.`fun`.forcedAddView
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.forcedAddView
+import sidev.lib.android.std.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
@@ -172,7 +171,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
             setupRv()
         }
     abstract val itemLayoutId: Int
-    val itemContainerLayoutId= _Config.LAYOUT_ITEM_ADP_CONTAINER //R.layout._t_item_adp_container
+    val itemContainerLayoutId= _SIF_Config.LAYOUT_ITEM_ADP_CONTAINER //R.layout._t_item_adp_container
 /*
     var isMultiSelectionEnabled= false
     var selectedItemPos_list: ArrayList<Int>?= null
@@ -313,7 +312,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
                 )
         }!!
 //            LayoutInflater.from(ctx).inflate(itemLayoutId, parent, false)
-        v.findViewById<LinearLayout>(_Config.ID_VG_CONTENT_CONTAINER)!! //R.id.ll_content_container
+        v.findViewById<LinearLayout>(_SIF_Config.ID_VG_CONTENT_CONTAINER)!! //R.id.ll_content_container
             .notNull { vg ->
                 setupItemContainer(vg)
                 vg.forcedAddView(contentV)
@@ -365,7 +364,7 @@ abstract class SimpleRvAdp <D, LM: RecyclerView.LayoutManager> (
         // headerView gak perlu di re-attach karena gak terjadi masalah.
         if(footerView != null && footerView!!.parent == null)
             getView(itemCount -1)
-                ?.findViewById<ViewGroup>(_Config.ID_VG_CONTENT_CONTAINER)
+                ?.findViewById<ViewGroup>(_SIF_Config.ID_VG_CONTENT_CONTAINER)
                 ?.addView(footerView!!)
 
         try {

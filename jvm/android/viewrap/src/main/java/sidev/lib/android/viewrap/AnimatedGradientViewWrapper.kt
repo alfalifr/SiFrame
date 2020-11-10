@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.view.View
 import kotlinx.android.synthetic.main.buffer_anim_gradient_rotation.view.*
-import sidev.lib.android.siframe.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.inflate
 
 
 /** Kelas Implementasi dari [ViewBufferWrapperImpl] yg [bufferView]-nya adalah layout dg id R.layout.buffer_anim_gradient_rotation. */

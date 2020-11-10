@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.lifecycle.activity.*
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 
 /*
 class SingleFragImplAct : SingleFragDrawerAct(){

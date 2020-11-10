@@ -3,12 +3,11 @@ package sidev.lib.implementation.frag
 import android.graphics.Color
 import android.os.Build
 import android.view.View
-import android.widget.ImageView
 import androidx.core.widget.ImageViewCompat
 import kotlinx.android.synthetic.main.frag_view_color.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util._ViewUtil
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.tool.util.`fun`.*
 import sidev.lib.implementation.R
 
 class ViewColorFrag: Frag() {

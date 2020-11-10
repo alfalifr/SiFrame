@@ -14,8 +14,8 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import sidev.lib.android.siframe._customizable._Config;
-import sidev.lib.android.siframe.tool.util._EnvUtil;
+import sidev.lib.android.std._val._Config;
+import sidev.lib.android.std.tool.util._EnvUtil;
 import sidev.lib.jvm.tool.util.TimeUtil;
 
 public class LogHP {
@@ -44,7 +44,7 @@ public class LogHP {
 
     public LogHP(Application app){
         this.app= app;
-        namaApp= app.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME()); //R.string.app_name);
+        namaApp= app.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME_RES()); //R.string.app_name);
         FOLDER_LOG_APP= _EnvUtil.INSTANCE.projectLogDir(app); //Environment.getExternalStorageDirectory().getAbsolutePath() +"/Android/Develop/LogHP/" +namaApp;
         alamatFile= FOLDER_LOG_APP;
 //        cekIjinPrint();
@@ -54,7 +54,7 @@ public class LogHP {
     public void gantiAktifitas(Activity akt){
         aktifitas= akt;
         app= aktifitas.getApplication();
-        namaApp= aktifitas.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME()); //R.string.app_name
+        namaApp= aktifitas.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME_RES()); //R.string.app_name
         namaAktifitas= aktifitas.getLocalClassName();
         if(namaAktifitas.contains(".")){
             String arrayStr[]= namaAktifitas.split("\\.");

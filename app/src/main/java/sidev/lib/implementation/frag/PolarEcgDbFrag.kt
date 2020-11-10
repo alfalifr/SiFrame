@@ -5,7 +5,7 @@ import android.view.View
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.SQLiteHandler
 import sidev.lib.android.siframe.tool.SQLiteHandler.CollectionTypeHandler
-import sidev.lib.android.siframe.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.collection.toArrayList
 import sidev.lib.implementation.adp.PolarEcgAdp
 import sidev.lib.implementation.model.PolarEcgData
