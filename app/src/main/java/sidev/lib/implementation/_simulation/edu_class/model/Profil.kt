@@ -8,4 +8,7 @@ import java.io.Serializable
  */
 data class Profil(private val _id: String,
                   var role: Int,
-                  var uname: String, var name: String, var nrp: String, var email: String): DataWithId(_id)
+                  var uname: String, var name: String, var nrp: String, var email: String): DataWithId<Profil>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): Profil = copy()
+}

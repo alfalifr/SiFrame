@@ -5,7 +5,7 @@ import sidev.lib.android.siframe.model.DataWithId
 /**
  * Gak usah, gak dipake
  */
-data class __AnswChoice(private val _id: String, var choice: Array<String>?, var correctChoice: Array<Int>?): DataWithId(_id){
+data class __AnswChoice(private val _id: String, var choice: Array<String>?, var correctChoice: Array<Int>?): DataWithId<__AnswChoice>(_id){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -32,4 +32,6 @@ data class __AnswChoice(private val _id: String, var choice: Array<String>?, var
         return result
     }
 
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): __AnswChoice = copy()
 }

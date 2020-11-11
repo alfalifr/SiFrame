@@ -54,7 +54,7 @@ val <TO> FK_M<TO>?.isIdEmpty: Boolean
  *          -toId lebih banyak dari toObj.
  *          -Ada toId yg tidak punya pasangan dg toObj.
  */
-fun <TO: DataWithId> FK_M<TO>?.tidyUp(): Boolean{
+fun <TO: DataWithId<TO>> FK_M<TO>?.tidyUp(): Boolean{
     if(this == null) return false
 
     //1. Cek apakah jml toObj dan toId sama. Jika toObj lebih banyak, maka toId dapat diturunkan dari toObj.id.
@@ -116,7 +116,7 @@ inline fun <reified TO> fkmOf(vararg pair: Pair<String, TO>): FK_M<TO>{
     return FK_M(idArr, objList.toTypedArray())
 }
 
-inline fun <reified TO: DataWithId> fkmFrom(vararg model: TO): FK_M<TO>{
+inline fun <reified TO: DataWithId<*>> fkmFrom(vararg model: TO): FK_M<TO>{
     val idArray= Array(model.size){ model[it].id }
     val objArray= Array(model.size){ model[it] }
     return FK_M(idArray, objArray)

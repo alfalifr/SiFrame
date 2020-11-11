@@ -18,4 +18,7 @@ data class Presence_(private val _id: String,
                      var date: String, var status: Int,
                      var news: String?,
                      var excuseReason: String?,
-                     var attachment: ArrayList<Any>?): DataWithId(_id)
+                     var attachment: ArrayList<Any>?): DataWithId<Presence_>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): Presence_ = copy()
+}

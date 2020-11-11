@@ -185,7 +185,7 @@ class ContentFrag : MvpRvFrag<ContentAdp>(), TopMiddleBottomBase{
         when(request){
             Edu_Class_Const.REQ_GET_CONTENT -> {
                 if(resCode == Edu_Class_Const.RES_OK){
-                    val data= data!![Edu_Class_Const.DATA_CONTENT] as ArrayList<Content>
+                    val data= data!![Edu_Class_Const.DATA_CONTENT] as ArrayList<Content<*>>
                     rvAdp.dataList= data
                 }
             }

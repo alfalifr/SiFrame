@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.sigudang.android.models.Bound;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -30,6 +32,10 @@ public class Cob {
         m.put("P", 1);
         m.put("A", 2);
         m.put("Z", 3);
+/*
+        Bound b= new Bound();
+        b.copy()
+ */
 
         Set<String> set= new LinkedHashSet<>();
         set.add("P");

@@ -10,4 +10,7 @@ import java.io.Serializable
  * @param title
  * @param desc
  */
-data class ContentRead(private val _id: String, var title: String?, var desc: String): Content(_id)
+data class ContentRead(private val _id: String, var title: String?, var desc: String): Content<ContentRead>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): ContentRead = copy()
+}

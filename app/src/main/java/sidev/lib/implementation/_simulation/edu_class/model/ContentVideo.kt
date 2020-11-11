@@ -9,4 +9,7 @@ import java.io.Serializable
  * Model yg berisi video dan catatan di bawahnya.
  * @param link ke video
  */
-data class ContentVideo(private val _id: String, var link: String, var note: String?): Content(_id)
+data class ContentVideo(private val _id: String, var link: String, var note: String?): Content<ContentVideo>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): ContentVideo = copy()
+}

@@ -26,6 +26,10 @@ fun File.withInputStream(): FileInputStream = FileInputStream(this)
 val kotlin_version= findProperty("kotlin_version").also{ println("${project.name} kotlin_version= $it")}
 val anko_version= findProperty("anko_version")
 
+val sidev_lib_version_std = findProperty("sidev_lib_version_std")
+val sidev_lib_version_std_x = findProperty("sidev_lib_version_std_x")
+val sidev_lib_version_std_new = findProperty("sidev_lib_version_std_new")
+
 val GROUP_ID= "sidev.lib.android" //"sidev.lib.jvm.android"
 val ARTIFACT_ID= project.name //"SiFrame"
 val BINTRAY_REPOSITORY= "SidevLib" //"JvmLib"
@@ -110,8 +114,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
 
 
-    implementation("sidev.lib.jvm:JvmStdLib:0.0.1xx") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin:KtStdLib-jvm:0.0.1x") //{ isTransitive= true }
+    implementation("sidev.lib.jvm:JvmStdLib:$sidev_lib_version_std_x") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:KtStdLib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
 //    implementation(project(":SiFrame"))
     implementation(project(":AndroidStdLib"))
 //    implementation(project("path" to ":jvm:android:siframe"))

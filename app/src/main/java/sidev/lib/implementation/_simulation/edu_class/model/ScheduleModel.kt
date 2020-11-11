@@ -10,4 +10,7 @@ import java.io.Serializable
  */
 data class ScheduleModel(private val _id: String,
                          var clazz: FK_M<ClassModel>?,
-                        var day: String, var duration: Duration, var place: String): DataWithId(_id)
+                        var day: String, var duration: Duration, var place: String): DataWithId<ScheduleModel>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): ScheduleModel = copy()
+}

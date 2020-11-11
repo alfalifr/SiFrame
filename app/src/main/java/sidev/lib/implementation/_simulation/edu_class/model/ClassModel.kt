@@ -19,4 +19,7 @@ data class ClassModel(private val _id: String,
                 var name: String, var subname: String= "_",
                 var teacher: String, var sks: Int,
                 var moduleList: FK_M<Module>?,
-                var img: PictModel?): DataWithId(_id)
+                var img: PictModel?): DataWithId<ClassModel>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): ClassModel = copy()
+}

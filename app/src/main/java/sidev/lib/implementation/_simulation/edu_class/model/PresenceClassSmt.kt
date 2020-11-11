@@ -2,6 +2,7 @@ package sidev.kuliah.tekber.edu_class.model
 
 import sidev.lib.android.siframe.model.DataWithId
 import sidev.lib.android.siframe.model.FK_M
+import sidev.lib.implementation.model.Content
 import java.io.Serializable
 
 /**
@@ -12,4 +13,7 @@ import java.io.Serializable
  */
 data class PresenceClassSmt(private val _id: String,
                     var smt: String,
-                    var presenceClassList: FK_M<PresenceClass>?): DataWithId(_id)
+                    var presenceClassList: FK_M<PresenceClass>?): DataWithId<PresenceClassSmt>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): PresenceClassSmt = copy()
+}

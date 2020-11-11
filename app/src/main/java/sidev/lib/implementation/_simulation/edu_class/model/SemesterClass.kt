@@ -11,4 +11,7 @@ import java.io.Serializable
  */
 data class SemesterClass(private val _id: String,
                     var clazz: FK_M<ClassModel>?,
-                    var semester: Int): DataWithId(_id)
+                    var semester: Int): DataWithId<SemesterClass>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): SemesterClass = copy()
+}

@@ -30,8 +30,8 @@ import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_Const
 import sidev.lib.implementation._simulation.edu_class.util.Edu_Class_ViewUtil.Comp.enableEd
 import java.lang.Exception
 
-class ContentAdp(c: Context, data: ArrayList<Content>?)
-    : RvMultiViewAdp<Content, LinearLayoutManager>(c, data){
+class ContentAdp(c: Context, data: ArrayList<Content<*>>?)
+    : RvMultiViewAdp<Content<*>, LinearLayoutManager>(c, data){
 
     val rvCheckBoxList= SparseArray<QuestionCheckBoxAdp>()
     val radioSelIndexList= SparseArray<Int>()
@@ -56,7 +56,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
         loge("init{} cName= $cName")
     }
 
-    override fun getItemViewType(pos: Int, data: Content): Int {
+    override fun getItemViewType(pos: Int, data: Content<*>): Int {
         return when(data){
             is ContentRead -> R.layout._simul_edu_comp_read
             is ContentVideo -> R.layout._simul_edu_comp_video
@@ -69,7 +69,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
         }
     }
 
-    override fun bindVhMulti(vh: SimpleViewHolder, pos: Int, viewType: Int, data: Content) {
+    override fun bindVhMulti(vh: SimpleViewHolder, pos: Int, viewType: Int, data: Content<*>) {
         val v= vh.itemView
 //        val parName= v.parent?.classSimpleName()
 //        loge("bindVhMulti() parName= $parName")
@@ -82,7 +82,7 @@ class ContentAdp(c: Context, data: ArrayList<Content>?)
         when(data){
             is ContentRead -> {
                 val titleVis= if(data.title != null){
-                    (v.et_title as EditText).setText(data.title!!)
+                    (v.et_title as EditText).txt= data.title!! //.setText()
                     View.VISIBLE
                 } else
                     View.GONE

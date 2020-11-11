@@ -17,4 +17,7 @@ data class ContentQuestion(private val _id: String, var question: String,
                            var answerKind: Int,
                            var answerChoice: ArrayList<String>?,
                             var answerByTeacher: ArrayList<String>?,
-                            var answerByReader: ArrayList<String>?): Content(_id)
+                            var answerByReader: ArrayList<String>?): Content<ContentQuestion>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): ContentQuestion = copy()
+}

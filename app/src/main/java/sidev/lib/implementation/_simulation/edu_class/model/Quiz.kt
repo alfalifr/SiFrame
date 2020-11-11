@@ -11,4 +11,7 @@ data class Quiz(private val _id: String,
             var title: String, var desc: String?,
             var questions: FK_M<Question>?,
             var correctCount: Int
-): DataWithId(_id)
+): DataWithId<Quiz>(_id){
+    @Deprecated("Masih blum diimplement scr benar.", ReplaceWith("copy()"))
+    override fun copy_(prop: Map<String, Any?>): Quiz = copy()
+}
