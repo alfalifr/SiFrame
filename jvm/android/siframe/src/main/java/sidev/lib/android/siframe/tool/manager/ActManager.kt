@@ -61,7 +61,7 @@ object ActManager {
     }
 
     fun getActStack(): Array<Activity> {
-        return actStack.copy(true).toTypedArray()
+        return actStack.copy(reversed = true).toTypedArray()
     }
 
     fun peekStack(): Activity {

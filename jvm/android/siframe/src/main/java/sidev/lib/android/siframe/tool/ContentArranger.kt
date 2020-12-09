@@ -1,14 +1,13 @@
 package sidev.lib.android.siframe.tool
 
-import android.util.SparseArray
 import android.util.SparseIntArray
 import androidx.core.util.set
-import sidev.lib.android.siframe.intfc.Arrangeable
+import sidev.lib.android.siframe.intfc.ReArrangeable
 
 /**
  * Sementara ini penggunaannya msh hanya untuk android.
  */
-abstract class ContentArranger<T>: Arrangeable<T> {
+abstract class ContentArranger<T>: ReArrangeable<T> {
     protected var sortedInd= SparseIntArray()
     protected var filteredInd= SparseIntArray()
 

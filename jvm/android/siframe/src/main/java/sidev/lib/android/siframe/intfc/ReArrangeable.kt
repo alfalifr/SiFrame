@@ -5,7 +5,7 @@ package sidev.lib.android.siframe.intfc
  *
  * @param T merupakan tipe data dari isi interface ini.
  */
-interface Arrangeable<T> {
+interface ReArrangeable<T> {
     /**
      * @param pos1 harus lebih kecil dari [pos2]
      */
