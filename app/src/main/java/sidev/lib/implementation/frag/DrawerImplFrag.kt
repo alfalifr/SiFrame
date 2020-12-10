@@ -6,9 +6,9 @@ import kotlinx.android.synthetic.main.comp_drawer_start_iv.view.tv
 import kotlinx.android.synthetic.main.comp_rb.view.*
 import kotlinx.android.synthetic.main.page_rg.view.*
 import org.jetbrains.anko.imageResource
-import sidev.lib.android.std._val._ColorRes
+import sidev.lib.android.std.`val`._ColorRes
 import sidev.lib.android.siframe.lifecycle.fragment.DrawerFrag
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R

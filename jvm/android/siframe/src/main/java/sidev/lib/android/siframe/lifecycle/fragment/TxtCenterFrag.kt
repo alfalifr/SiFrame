@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.lifecycle.fragment
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 
 open class TxtCenterFrag : Frag(){
     final override val layoutId: Int

@@ -9,11 +9,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import sidev.lib.`val`.Assignment
 import sidev.lib.android.siframe.R
-import sidev.lib.android.std._val._ColorRes
+import sidev.lib.android.std.`val`._ColorRes
 import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.android.std.tool.util.`fun`.findView
 import sidev.lib.android.std.tool.util.`fun`.findViewByType
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.notNull

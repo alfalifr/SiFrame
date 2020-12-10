@@ -4,11 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.intfc.prop.ActProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
-import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
 import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.android.std.tool.util.`fun`.loge

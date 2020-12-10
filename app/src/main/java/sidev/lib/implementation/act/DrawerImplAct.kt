@@ -5,7 +5,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.act_drawer.view.*
 import org.jetbrains.anko.textColorResource
 import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R
 

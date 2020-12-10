@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 
 
 abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){

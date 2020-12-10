@@ -4,7 +4,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.lifecycle.FragmentHostBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe.tool.util.`fun`.*
+import sidev.lib.android.std.tool.util.`fun`.commitFrag
 import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo

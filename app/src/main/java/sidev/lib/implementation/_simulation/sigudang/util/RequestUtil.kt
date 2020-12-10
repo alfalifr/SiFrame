@@ -24,7 +24,7 @@ import com.loopj.android.http.RequestParams
 //import com.sigudang.android.interfaces.CallBack
 import com.sigudang.android.utilities.constant.Constants
 import com.squareup.picasso.Picasso
-import sidev.lib.android.siframe.tool.util.`fun`.toast
+import sidev.lib.android.std.tool.util.`fun`.toast
 import sidev.lib.implementation._simulation.sigudang.interfaces.CallBack
 import java.lang.Exception
 

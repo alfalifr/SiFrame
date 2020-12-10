@@ -2,9 +2,9 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import android.view.ViewGroup
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.notNull

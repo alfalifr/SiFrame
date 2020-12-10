@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.intfc.util.ResetableUtil
-import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._BitmapUtil
 import sidev.lib.android.std.tool.util._EnvUtil
 import java.io.File

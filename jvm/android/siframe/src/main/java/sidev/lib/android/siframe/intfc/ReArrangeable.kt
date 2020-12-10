@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.intfc
 
+/*
 /**
  * Interface yg menandakan bahwa turunan ini dapat diurutkan maupun difilter.
  *
@@ -12,3 +13,4 @@ interface ReArrangeable<T> {
     fun sort(func: (pos1: Int, data1: T, pos2: Int, data2: T) -> Boolean)
     fun filter(func: (pos: Int, data: T) -> Boolean)
 }
+ */

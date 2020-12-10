@@ -1,4 +1,4 @@
-package sidev.lib.android.std._val
+package sidev.lib.android.std.`val`
 
 import android.app.Activity
 import sidev.lib.jvm.android.std.R

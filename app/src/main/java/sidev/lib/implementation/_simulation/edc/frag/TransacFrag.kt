@@ -54,8 +54,9 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
     lateinit var dialogSort: DialogListView<StringId>
     lateinit var dialogFilter: DialogListView<StringId>
     lateinit var dialogDuplicate: DialogConfirmationView
-    var sortFun: ((Int, Transaction, Int, Transaction) -> Boolean)?= null
-    var filterFun: ((Int, Transaction) -> Boolean)?= null
+//    var sortFun: ((Int, Transaction, Int, Transaction) -> Boolean)?= null
+    var sortFun: ((Transaction, Transaction) -> Int)?= null
+    var filterFun: ((Transaction) -> Boolean)?= null
 
 
     val sortMenu= arrayListOf(
@@ -161,17 +162,20 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
         dialogSort.setOnItemClickListener { v, pos, data ->
             loge("sort data.id= ${data.id}")
             sortFun= when(data.id){
-                "1" -> { pos1, data1, pos2, data2 ->
-                    data1.commodity!!.name!! < data2.commodity!!.name!!
+                "1" -> { data1, data2 ->
+//                    data1.commodity!!.name!! < data2.commodity!!.name!!
+                    data1.commodity!!.name!!.compareTo(data2.commodity!!.name!!)
                 }
-                "2" -> { pos1, data1, pos2, data2 ->
+                "2" -> { data1, data2 ->
                     val price1= data1.commodity!!.price!! *data1.sum!!
                     val price2= data2.commodity!!.price!! *data2.sum!!
 //                    loge("sort() LUAR!!! price1= $price1 price2= $price2")
-                    price1 < price2
+//                    price1 < price2
+                    price1.compareTo(price2)
                 }
-                "3" -> { pos1, data1, pos2, data2 ->
-                    data1.status!! < data2.status!!
+                "3" -> { data1, data2 ->
+//                    data1.status!! < data2.status!!
+                    data1.status!!.compareTo(data2.status!!)
                 }
                 else -> null
             }
@@ -180,7 +184,7 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
             override fun onRightBtnClick(dialog: DialogListView<StringId>, v: View) {
                 if(sortFun != null){
                     timeStart= System.currentTimeMillis()
-                    rvAdp.sort(func = sortFun!!)
+                    rvAdp.sort(comparator = sortFun!!)
                     timeEnd= System.currentTimeMillis()
                     timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
                     shownData.value= rvAdp.itemCount
@@ -208,10 +212,10 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
         dialogFilter.setOnItemClickListener { v, pos, data ->
             loge("filter data.id= ${data.id}")
             filterFun= when(data.id){
-                "1" ->  { pos, data -> data.orderType == Edc_Const.TYPE_TRANSACTION_BUY }
-                "2" ->  { pos, data -> data.orderType == Edc_Const.TYPE_TRANSACTION_SELL }
-                "3" ->  { pos, data -> data.status == Edc_Const.STATUS_TRANSACTION_APPROVED }
-                "4" ->  { pos, data -> data.status == Edc_Const.STATUS_TRANSACTION_REJECTED }
+                "1" ->  { data -> data.orderType == Edc_Const.TYPE_TRANSACTION_BUY }
+                "2" ->  { data -> data.orderType == Edc_Const.TYPE_TRANSACTION_SELL }
+                "3" ->  { data -> data.status == Edc_Const.STATUS_TRANSACTION_APPROVED }
+                "4" ->  { data -> data.status == Edc_Const.STATUS_TRANSACTION_REJECTED }
                 else -> null
             }
         }
@@ -219,7 +223,7 @@ class TransacFrag : RvFrag<TransacAdp>(), NestedTopMiddleBottomBase {
             override fun onRightBtnClick(dialog: DialogListView<StringId>, v: View) {
                 if(filterFun != null){
                     timeStart= System.currentTimeMillis()
-                    rvAdp.filter(func= filterFun!!)
+                    rvAdp.filter(filter= filterFun!!)
                     timeEnd= System.currentTimeMillis()
                     timeElapsed.value= (timeEnd -timeStart)/1000.toDouble()
                     shownData.value= rvAdp.itemCount

@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.db.Attribute
 import sidev.lib.android.std.db.DbCursor
 import sidev.lib.android.std.db.DbFactory

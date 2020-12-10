@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import sidev.lib.android.std._val._Constant
+import sidev.lib.android.std.`val`._Constant
 import sidev.lib.android.std.tool.util.`fun`.detachFromParent
 import sidev.lib.android.std.tool.util.`fun`.findView
 import sidev.lib.android.std.tool.util.`fun`.forcedAddView

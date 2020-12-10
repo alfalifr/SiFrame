@@ -1,6 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.arch.view.ArchView
 
 /**

@@ -2,10 +2,9 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import sidev.lib.android.siframe._val._SIF_Config
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.ComplexLifecycleSideBase
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.collection.isNotNullAndEmpty
 
 interface BackBtnBase: ComplexLifecycleSideBase {

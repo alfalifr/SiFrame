@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.adapter
 import android.content.Context
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.collection.findIndexed
 import sidev.lib.text.charCodeSum
 

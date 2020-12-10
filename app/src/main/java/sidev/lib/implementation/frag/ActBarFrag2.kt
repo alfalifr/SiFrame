@@ -6,7 +6,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerActBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R

@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.adapter.layoutmanager.LayoutManagerResp
 import sidev.lib.android.siframe.intfc.listener.Listener
 import sidev.lib.android.siframe.tool.RunQueue
@@ -15,6 +15,7 @@ import sidev.lib.android.std.tool.util.`fun`.iterator
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
+import sidev.lib.structure.util.Filter
 //import sidev.lib.universal.`fun`.isNull
 //import sidev.lib.universal.`fun`.notNull
 import java.lang.Exception
@@ -686,10 +687,13 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      *
      */
     //<29 Juni 2020> => Definisi baru: 3.
-    fun filter(resetFirst: Boolean= false, func: (pos: Int, data: D) -> Boolean){
+    fun filter(resetFirst: Boolean= false, filter: (D) -> Boolean){ //func: (pos: Int, data: D) -> Boolean
         if(resetFirst)
             contentArranger.reset()
-        contentArranger.filter(func)
+        contentArranger.filter(
+            object: Filter<D> { //TODO 10 Des 2020: Ini masih pake object notation soalnya error 'Interface Filter does not have constructors'.
+                override fun filter(e: D): Boolean = filter(e)
+            })
         notifyDataSetChanged()
     }
 /*
@@ -837,10 +841,10 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
      *                   Pada definisi ini, sortedIndMap selalu berukuran sama dg dataList.
      *
      */
-    fun sort(resetFirst: Boolean= false, func: (pos1: Int, data1: D, pos2: Int, data2: D) -> Boolean){
+    fun sort(resetFirst: Boolean= false, comparator: (e1: D, e2: D) -> Int){ //
         if(resetFirst)
             contentArranger.reset()
-        contentArranger.sort(func)
+        contentArranger.sort(Comparator { o1, o2 -> comparator(o1, o2) })
         notifyDataSetChanged()
     }
 /*
@@ -919,7 +923,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
     @CallSuper
     open fun searchItem(keyword: String, onlyShownItem: Boolean= true){
         if(keyword.isNotEmpty()){
-            filter(!onlyShownItem) { pos, data ->
+            filter(!onlyShownItem) { data ->
                 searchFilterFun(data, keyword)
             }
 /*
@@ -948,7 +952,7 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
 
     fun showOnlySelectedData(isShown: Boolean= true){
         if(!isShown)
-            filter { pos, data ->
+            contentArranger.filterIndexed { pos, _ ->
                 selectedItemPos_list?.contains(pos) ?: false
             }
         else

@@ -7,7 +7,7 @@ import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.comp_drawer_start_iv.view.*
 import kotlinx.android.synthetic.main.comp_nav_arrow.view.*
 import org.jetbrains.anko.imageResource
-import sidev.lib.android.std._val._ColorRes
+import sidev.lib.android.std.`val`._ColorRes
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.DrawerVpFrag
 import sidev.lib.android.siframe.lifecycle.fragment.Frag

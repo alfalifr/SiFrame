@@ -1,6 +1,7 @@
 package sidev.lib.android.std.tool.util
 
 import android.R.attr.path
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.provider.MediaStore
@@ -12,6 +13,8 @@ import kotlin.math.absoluteValue
 import android.graphics.*
 import android.net.Uri
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import sidev.lib.android.std.`val`._Constant
 //import sidev.lib.android.siframe._val._SIF_Constant
 import sidev.lib.jvm.tool.util.TimeUtil
 
@@ -19,8 +22,8 @@ import sidev.lib.jvm.tool.util.TimeUtil
 object _BitmapUtil {
     //menggunakan Gallery Intent
 //        val PICK_IMAGE_GALLERY_REQUEST= 1
-/*
-    private fun pickImageGallery_Int(actOrFrag: Any, requestCode: Int= _SIF_Constant.REQ_PICK_GALLERY){
+///*
+    private fun pickImageGallery_Int(actOrFrag: Any, requestCode: Int= _Constant.REQ_PICK_GALLERY){
         val intent = Intent()
         // Show only images, no videos or anything else
         intent.type= "image/*"
@@ -31,14 +34,14 @@ object _BitmapUtil {
             is Fragment -> actOrFrag.startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCode)
         }
     }
-    fun pickImageGallery(act: Activity, requestCode: Int= _SIF_Constant.REQ_PICK_GALLERY){
+    fun pickImageGallery(act: Activity, requestCode: Int= _Constant.REQ_PICK_GALLERY){
         pickImageGallery_Int(act, requestCode)
     }
-    fun pickImageGallery(frag: Fragment, requestCode: Int= _SIF_Constant.REQ_PICK_GALLERY){
+    fun pickImageGallery(frag: Fragment, requestCode: Int= _Constant.REQ_PICK_GALLERY){
         pickImageGallery_Int(frag, requestCode)
     }
 
-    private fun pickImageGalleryMultiple_Int(actOrFrag: Any, requestCode: Int= _SIF_Constant.REQ_PICK_GALLERY_MULTIPLE){
+    private fun pickImageGalleryMultiple_Int(actOrFrag: Any, requestCode: Int= _Constant.REQ_PICK_GALLERY_MULTIPLE){
         val intent = Intent()
         intent.type = "image/*"
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)

@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main._simul_edu_comp_nav_modul_item_container.v
 //import sidev.kuliah.tekber.edu_class.frag.ContentFrag
 import sidev.kuliah.tekber.edu_class.model.Module
 import sidev.kuliah.tekber.edu_class.model.Page
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 //import sidev.kuliah.tekber.edu_class.presenter.PageContentPres
 //import sidev.kuliah.tekber.edu_class.util.Const
 import sidev.lib.android.siframe.arch.presenter.Presenter
@@ -24,15 +24,14 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerBase
 import sidev.lib.android.siframe.lifecycle.fragment.mvp.MvpDrawerVpFrag
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
 //import sidev.lib.android.siframe.presenter.Presenter
-import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.android.std.tool.util._ViewUtil.setBgColorTintRes
 import sidev.lib.android.std.tool.util._ViewUtil.setColorTintRes
-import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getRootView
 import sidev.lib.android.std.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.toast
 import sidev.lib.android.siframe.view.ModVp
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
+import sidev.lib.android.std.tool.util.`fun`.getExtra
+import sidev.lib.android.std.tool.util.`fun`.toast
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R

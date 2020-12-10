@@ -1,12 +1,11 @@
 package sidev.lib.implementation.app
 
-import sidev.lib.android.std._val._ColorRes
+import sidev.lib.android.std.`val`._ColorRes
 import sidev.lib.android.siframe.lifecycle.app.App
-import sidev.lib.android.siframe._val._SIF_Config
-import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.`val`._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
-import sidev.lib.android.std._val._Config
-import sidev.lib.android.std.tool.util._ViewUtil
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util.`fun`.findViewByType
 import sidev.lib.implementation.R
 import sidev.lib.implementation.act.SingleFragImplAct

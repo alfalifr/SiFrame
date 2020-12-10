@@ -20,10 +20,10 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.model.PictModel
-import sidev.lib.android.std._val._ColorRes
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._ColorRes
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._BitmapUtil
 import sidev.lib.android.std.tool.util._ManifestUtil
 import sidev.lib.android.std.tool.util._ResUtil

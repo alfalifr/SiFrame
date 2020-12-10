@@ -7,10 +7,9 @@ import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.adapter.DialogListAdp
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
-import sidev.lib.android.std.tool.util._ViewUtil
 
 open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     override val layoutId: Int

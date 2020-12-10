@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.page_rv_btn.view.*
 //import kotlinx.android.synthetic.main._sif_page_rv.view.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.std.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.toast
+import sidev.lib.android.std.tool.util.`fun`.toast
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp

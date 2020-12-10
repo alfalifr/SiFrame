@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.adapter.decoration.RvSmoothScroller
 import sidev.lib.android.siframe.adapter.layoutmanager.LinearLm
 //import sidev.lib.universal.exception.ResourceNotFoundExc

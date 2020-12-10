@@ -19,7 +19,7 @@ import sidev.kuliah.tekber.edu_class.model.ContentRead
 import sidev.kuliah.tekber.edu_class.model.ContentVideo
 import sidev.lib.android.siframe.adapter.RvMultiViewAdp
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil.Comp.getTvNote
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.android.std.tool.util._ViewUtil.setColorTintRes
 import sidev.lib.android.std.tool.util.`fun`.*

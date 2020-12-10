@@ -2,7 +2,7 @@ package sidev.lib.implementation.adp
 
 import android.content.Context
 import android.widget.TextView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 //import kotlinx.android.synthetic.main._sif_comp_item_txt_desc.view.*
 //import kotlinx.android.synthetic.main._sif_comp_item_txt_desc.view.*
 import sidev.lib.android.siframe.adapter.RvAdp

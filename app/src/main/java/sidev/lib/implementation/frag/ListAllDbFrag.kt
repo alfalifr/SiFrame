@@ -7,8 +7,8 @@ import android.view.View
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.std.tool.util._DbUtil
 import sidev.lib.android.std.tool.util.`fun`.loge
-import sidev.lib.android.siframe.tool.util.`fun`.toast
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
+import sidev.lib.android.std.tool.util.`fun`.toast
 import sidev.lib.implementation.adp.StrAdp
 import sidev.lib.implementation.util.PageSqlite
 

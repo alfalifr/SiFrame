@@ -5,7 +5,7 @@ import android.widget.Button
 import kotlinx.android.synthetic.main.page_rv_btn.view.*
 import sidev.lib.android.siframe.arch.presenter.Presenter
 import sidev.lib.android.siframe.lifecycle.fragment.mvp.MvpFrag
-import sidev.lib.android.siframe.tool.util.`fun`.toast
+import sidev.lib.android.std.tool.util.`fun`.toast
 import sidev.lib.implementation.R
 import sidev.lib.implementation.adp.ContentAdp
 import sidev.lib.implementation.model.Content

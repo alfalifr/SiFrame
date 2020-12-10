@@ -1,7 +1,7 @@
 package sidev.lib.android.std.tool.util
 
 import android.content.Context
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.jvm.tool.util.TimeUtil
 
 object _StorageUtil{

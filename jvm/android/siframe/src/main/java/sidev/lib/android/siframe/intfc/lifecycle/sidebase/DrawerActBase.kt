@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LifecycleOwner
-import sidev.lib.android.std._val._ColorRes
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.std.`val`._ColorRes
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.std.tool.util._ResUtil
 import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.android.std.tool.util.`fun`.findViewByType

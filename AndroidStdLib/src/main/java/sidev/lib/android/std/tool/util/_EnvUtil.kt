@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build
 import android.os.Environment
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 //import sidev.lib.android.siframe.tool.util._ResUtil
 
 object _EnvUtil{

@@ -15,7 +15,7 @@ import sidev.lib.android.siframe.intfc.prop.CtxProp
 import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
 import sidev.lib.android.siframe.intfc.prop.OnRequestPermissionsResultCallbackProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
-import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce

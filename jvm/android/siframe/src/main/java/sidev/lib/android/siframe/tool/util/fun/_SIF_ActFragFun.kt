@@ -1,22 +1,12 @@
 package sidev.lib.android.siframe.tool.util.`fun`
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
 import sidev.lib._config_.CodeModification
 import sidev.lib.android.std._external._AnkoInternals
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
@@ -24,15 +14,271 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.siframe._val._SIF_Config
-import sidev.lib.android.siframe._val._SIF_Constant
-import sidev.lib.android.siframe.tool.util._SIF_BitmapUtil
-import sidev.lib.android.std.tool.util.`fun`.logw
+import sidev.lib.android.siframe.`val`._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Constant
+import sidev.lib.android.std.`val`._Constant
+import sidev.lib.android.std.tool.util.`fun`.startAct
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.annotation.Unsafe
-import sidev.lib.check.notNull
 
 
+@ChangeLog(
+    "Kamis, 10 Des 2020",
+    "Fungsi ini ditambahkan untuk menambah fitur dari fungsi pada lib AndroidStdLib",
+    CodeModification.ADDED
+)
+@ChangeLog("Sabtu, 10 Okt 2020", "param permission jadi vararg agar lebih robust")
+@ChangeLog(
+    "Sabtu, 10 Okt 2020",
+    "param ditambah `callback` agar dapat digunakan saat proses pengajuan permission dilakukan",
+    CodeModification.ADDED
+)
+fun Activity.checkPermission_sif(
+    vararg permissions: String,
+    callback: ((reqCode: Int, permissions: Array<out String>, grantResults: IntArray) -> Unit)? = null
+): Boolean {
+    if (Build.VERSION.SDK_INT >= 23) {
+        val ungrantedPermissions= ArrayList<String>()
+
+        for(permission in permissions){
+            if(checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
+                ungrantedPermissions += permission
+        }
+
+        return if(ungrantedPermissions.isEmpty()){
+            callback?.invoke(
+                _Constant.REQ_PERMISSION,
+                permissions,
+                IntArray(permissions.size){ PackageManager.PERMISSION_GRANTED }
+            )
+            true
+        } else {
+            if(callback != null && this is ActFragBase)
+                onRequestPermissionResultCallback=
+                    ActivityCompat.OnRequestPermissionsResultCallback { reqCode, permissions, grantResults ->
+                        callback.invoke(reqCode, permissions, grantResults)
+                }
+
+            ActivityCompat.requestPermissions(
+                this,
+                ungrantedPermissions.toTypedArray(),
+                _Constant.REQ_PERMISSION
+            )
+            false
+        }
+/*
+        return if (this.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+            true
+        } else {
+            //Log.v(TAG,"Permission is revoked");
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(permission),
+                _SIF_Constant.REQ_PERMISSION
+            )
+            false
+        }
+ */
+    } else { //permission is automatically granted on sdk<23 upon installation
+        //Log.v(TAG,"Permission is granted");
+        callback?.invoke(
+            _Constant.REQ_PERMISSION,
+            permissions,
+            IntArray(permissions.size){ PackageManager.PERMISSION_GRANTED }
+        )
+        return true
+    }
+}
+
+@JvmOverloads
+fun <T : Fragment> Context.startSingleFragAct(
+    fragClass: Class<out T>,
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    isCustomActBar: Boolean = true
+) {
+    startAct<SingleFragAct_Simple>(
+        SingleFragAct_Simple::class.java,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragClass.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+inline fun <reified T : Fragment> Context.startSingleFragAct(
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    isCustomActBar: Boolean = true
+) {
+    startAct<SingleFragAct_Simple>(
+        Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
+@JvmOverloads
+fun <T : Fragment> Context.startSingleFragAct_config(
+    fragCls: Class<out T>,
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    isCustomActBar: Boolean = true
+) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragCls.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+inline fun <reified T : Fragment> Context.startSingleFragAct_config(
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    isCustomActBar: Boolean = true
+) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
+@JvmOverloads
+fun <T : Fragment> Fragment.startSingleFragAct(
+    fragClass: Class<out T>,
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    customActBar: Boolean = true
+) {
+    startAct<SingleFragAct_Simple>(
+        SingleFragAct_Simple::class.java,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragClass.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+inline fun <reified T : Fragment> Fragment.startSingleFragAct(
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    customActBar: Boolean = true
+) {
+    startAct<SingleFragAct_Simple>(
+        Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
+@JvmOverloads
+fun <T : Fragment> Fragment.startSingleFragAct_config(
+    fragCls: Class<out T>,
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    customActBar: Boolean = true
+) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, fragCls.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+inline fun <reified T : Fragment> Fragment.startSingleFragAct_config(
+    vararg params: Pair<String, Any?>,
+    waitForResult: Boolean = false,
+    reqCode: Int = 0,
+    customActBar: Boolean = true
+) {
+    startAct(
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT,
+        Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
+        Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
+        *params,
+        waitForResult = waitForResult,
+        reqCode = reqCode
+    )
+}
+
+@JvmOverloads
+fun Activity.setResult(
+    vararg params: Pair<String, Any?>,
+    resCode: Int = Activity.RESULT_OK,
+    isFinished: Boolean = true
+) {
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
+    setResult(resCode, intent)
+    if(isFinished) this.finish()
+}
+@JvmOverloads
+fun Fragment.setResult(
+    vararg params: Pair<String, Any?>,
+    resCode: Int = Activity.RESULT_OK,
+    isFinished: Boolean = true
+) {
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
+    activity!!.setResult(resCode, intent)
+    if(isFinished) activity!!.finish()
+}
+
+
+
+fun <T : Activity> setSingleFragAct(cls: Class<T>, asDefault: Boolean = false){
+    if(!asDefault)
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT= cls
+    else
+        _SIF_Config.CLASS_SINGLE_FRAG_ACT_DEFAULT= cls
+}
+
+fun resetSingleFragActToDefault(){
+    _SIF_Config.CLASS_SINGLE_FRAG_ACT= _SIF_Config.CLASS_SINGLE_FRAG_ACT_DEFAULT
+}
+
+
+@Unsafe("Act yg dihasilkan tidak dapat di-reinstantiate pada Android.")
+fun createSimpleAct(layoutId: Int, initViewFunc: ((View) -> Unit)? = null): Act = object : Act(){
+    override val layoutId: Int get() = layoutId
+    override fun _initView(layoutView: View) {
+        initViewFunc?.invoke(layoutView)
+    }
+}
+
+@Unsafe("Frag yg dihasilkan tidak dapat di-reinstantiate pada Android.")
+fun createSimpleFrag(layoutId: Int, initViewFunc: ((View) -> Unit)? = null): Frag = object : Frag(){
+    override val layoutId: Int get() = layoutId
+    override fun _initView(layoutView: View) {
+        initViewFunc?.invoke(layoutView)
+    }
+}
+
+
+fun FragBase.forcedAttach(callingLifecyle: ActFragBase){
+    onLifecycleDetach()
+    onLifecycleAttach(callingLifecyle)
+}
+
+
+/*
 val Context.fragManager: FragmentManager?
     get()= when(this){
         is AppCompatActivity -> this.supportFragmentManager
@@ -492,3 +738,5 @@ fun createSimpleFrag(layoutId: Int, initViewFunc: ((View) -> Unit)? = null): Fra
         initViewFunc?.invoke(layoutView)
     }
 }
+
+ */

@@ -19,7 +19,7 @@ import sidev.lib.android.siframe.model.intfc.StorageKind
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.ToastApp
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.check.asNotNullTo
 import sidev.lib.jvm.tool.util.StringUtil
 import sidev.lib.jvm.tool.util.ThreadUtil

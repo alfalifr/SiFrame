@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main._simul_sigud_comp_vp_dot_indicator.view.*
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.lifecycle.fragment.VpFrag
-import sidev.lib.android.siframe.tool.util.`fun`.getExtra
+import sidev.lib.android.std.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.keys
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.R

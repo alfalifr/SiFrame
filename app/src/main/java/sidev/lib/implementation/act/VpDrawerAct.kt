@@ -10,7 +10,7 @@ import sidev.lib.android.siframe.intfc.customview.ModView
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.TopMiddleBottomBase
 import sidev.lib.android.siframe.lifecycle.activity.DrawerBarContentNavAct_ViewPager
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.implementation.R
 import sidev.lib.implementation.frag.*
 

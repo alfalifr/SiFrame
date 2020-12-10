@@ -1,4 +1,4 @@
-package sidev.lib.android.siframe._val
+package sidev.lib.android.siframe.`val`
 
 import android.app.Activity
 import sidev.lib.android.siframe.R

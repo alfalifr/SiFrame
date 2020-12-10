@@ -2,12 +2,18 @@ package sidev.lib.android.siframe.tool
 
 import android.util.SparseIntArray
 import androidx.core.util.set
-import sidev.lib.android.siframe.intfc.ReArrangeable
+import sidev.lib.android.std.tool.util.`fun`.iterator
+import sidev.lib.android.std.tool.util.`fun`.sort
+import sidev.lib.android.std.tool.util.`fun`.sortWith
+//import sidev.lib.android.siframe.intfc.ReArrangeable
+import sidev.lib.structure.data.Arranger
+import sidev.lib.structure.util.Comparison
+import sidev.lib.structure.util.Filter
 
 /**
  * Sementara ini penggunaannya msh hanya untuk android.
  */
-abstract class ContentArranger<T>: ReArrangeable<T> {
+abstract class ContentArranger<T>: Arranger<T> {
     protected var sortedInd= SparseIntArray()
     protected var filteredInd= SparseIntArray()
 
@@ -25,6 +31,62 @@ abstract class ContentArranger<T>: ReArrangeable<T> {
     abstract fun getContentCount(): Int
     abstract fun isContentEmpty(): Boolean
 
+    final override fun sort(comparator: Comparator<T>) {
+        if(isContentEmpty()) return
+
+        if(filteredInd.size() != sortedInd.size())
+            resetSort()
+
+        sortedInd.sortWith { n1, n2 -> comparator.compare(getContent(n1), getContent(n2)) }
+/*
+        for(i in 0 until resultInd.size())
+            for(u in i+1 until resultInd.size()){
+                val sortedIndI= sortedInd[i]
+                val sortedIndU= sortedInd[u]
+//                if(!func(i, getContent(sortedIndI), u, getContent(sortedIndU))){
+                    val temp= sortedInd[i]
+                    sortedInd[i]= sortedInd[u]
+                    sortedInd[u]= temp
+//                    loge("sort() TUKAR i= $i u= $u \n sortedIndMap[i]= ${sortedIndMap[i]} sortedIndMap[u]= ${sortedIndMap[u]}")
+                }
+            }
+ */
+        mapResultToSortedInd()
+    }
+
+    final override fun filter(filter: Filter<T>) {
+        if(isContentEmpty()) return
+
+        filteredInd.clear()
+
+        var u= -1
+        for(i in 0 until resultInd.size())
+            if(filter.filter(getContent(resultInd[i])))
+                filteredInd[++u]= resultInd[i]
+        mapResultToFilteredInd()
+    }
+
+    fun filterIndexed(filter: (Int, T) -> Boolean) {
+        if(isContentEmpty()) return
+
+        filteredInd.clear()
+
+        var u= -1
+        for(i in 0 until resultInd.size())
+            if(filter(i, getContent(resultInd[i])))
+                filteredInd[++u]= resultInd[i]
+        mapResultToFilteredInd()
+    }
+
+    override fun search(comparison: Comparison<T>): Int {
+        for((k, i) in resultInd){
+            if(comparison.comparison(getContent(i)) == 0)
+                return k
+        }
+        return -1
+    }
+
+    /*
     /**
      * [pos1] dijamin selalu lebih kecil dari [pos2].
      * [pos1] dan [pos2] merupakan indeks dari [resultInd],
@@ -49,7 +111,8 @@ abstract class ContentArranger<T>: ReArrangeable<T> {
             }
         mapResultToSortedInd()
     }
-
+ */
+/*
     /**
      * [pos] merupakan indeks dari [resultInd],
      * bkn indeks sesungguhnya dari konten yg sedang di-arrange.
@@ -65,6 +128,7 @@ abstract class ContentArranger<T>: ReArrangeable<T> {
                 filteredInd[++u]= resultInd[i]
         mapResultToFilteredInd()
     }
+ */
 
     protected fun mapResultToSortedInd(){
         resultInd= sortedInd.clone()

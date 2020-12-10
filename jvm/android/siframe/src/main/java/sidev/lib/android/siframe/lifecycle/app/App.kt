@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.lifecycle.app
 import android.content.Context
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.lifecycle.app.StdApp
 import kotlin.system.exitProcess
 

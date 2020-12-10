@@ -21,14 +21,44 @@ import sidev.lib.structure.data.Arrangeable
 
 
 val SparseArray<*>.lastIndex: Int
-    get()= keyAt(size()-1)
+    get()= size()-1 //keyAt(size()-1)
 val SparseIntArray.lastIndex: Int
-    get()= keyAt(size()-1)
+    get()= size()-1 //keyAt(size()-1)
 @get:RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 val SparseLongArray.lastIndex: Int
-    get()= keyAt(size()-1)
+    get()= size()-1 //keyAt(size()-1)
 val SparseBooleanArray.lastIndex: Int
-    get()= keyAt(size()-1)
+    get()= size()-1 //keyAt(size()-1)
+
+val SparseArray<*>.lastKey: Int
+    get()= keyAt(lastIndex)
+val SparseIntArray.lastKey: Int
+    get()= keyAt(lastIndex)
+@get:RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+val SparseLongArray.lastKey: Int
+    get()= keyAt(lastIndex)
+val SparseBooleanArray.lastKey: Int
+    get()= keyAt(lastIndex)
+
+val SparseArray<*>.firstKey: Int
+    get()= keyAt(0)
+val SparseIntArray.firstKey: Int
+    get()= keyAt(0)
+@get:RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+val SparseLongArray.firstKey: Int
+    get()= keyAt(0)
+val SparseBooleanArray.firstKey: Int
+    get()= keyAt(0)
+
+val SparseArray<*>.indices: IntRange
+    get()= 0 until size()
+val SparseIntArray.indices: IntRange
+    get()= 0 until size()
+@get:RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+val SparseLongArray.indices: IntRange
+    get()= 0 until size()
+val SparseBooleanArray.indices: IntRange
+    get()= 0 until size()
 
 fun SparseArray<*>.isEmpty(): Boolean = size() == 0
 fun SparseIntArray.isEmpty(): Boolean = size() == 0
@@ -175,10 +205,7 @@ operator fun <T> SparseArray<T>.iterator(): Iterator<Pair<Int, T>> {
 
         override fun next(): Pair<Int, T> {
             val key= this@iterator.keyAt(i++)
-            return Pair(
-                key,
-                this@iterator[key]
-            )
+            return key to this@iterator[key]!!
         }
     }
 }

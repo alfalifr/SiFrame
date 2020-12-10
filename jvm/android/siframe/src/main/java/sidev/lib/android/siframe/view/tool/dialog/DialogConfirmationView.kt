@@ -6,9 +6,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
-import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
 
 open class DialogConfirmationView(c: Context): DialogAbsView<DialogConfirmationView>(c){

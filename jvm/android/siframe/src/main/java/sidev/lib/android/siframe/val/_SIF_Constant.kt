@@ -1,7 +1,7 @@
-package sidev.lib.android.siframe._val
+package sidev.lib.android.siframe.`val`
 
-import android.view.View
 import androidx.fragment.app.Fragment
+import sidev.lib.android.std.`val`._Constant
 import kotlin.reflect.KClass
 
 /**
@@ -23,22 +23,23 @@ object _SIF_Constant{
     val TEMPLATE_VIEW_TYPE_ACT_BAR_DEFAULT= 0
     val TEMPLATE_VIEW_TYPE_ACT_BAR_SQUARE= 1
 
-    val REQ_PERMISSION= 1
-    val REQ_PICK_GALLERY= 2
-    val REQ_PICK_GALLERY_MULTIPLE= 3
+    val REQ_PERMISSION get()= _Constant.REQ_PERMISSION
+    val REQ_PICK_GALLERY get()= _Constant.REQ_PICK_GALLERY
+    val REQ_PICK_GALLERY_MULTIPLE get()= _Constant.REQ_PICK_GALLERY_MULTIPLE
 
-    val REQ_CODE= "req_code"
-    val EXTRA_DATA= "extra_data"
+    val REQ_CODE get()= _Constant.REQ_CODE
+    val EXTRA_DATA get()= _Constant.EXTRA_DATA
 
-    val MAIN_REF= "main_ref"
-    val _KEY_PREF_EXP_TIME= "_pref_exp_time"
+    val MAIN_REF get()= _Constant.MAIN_REF
+    val _KEY_PREF_EXP_TIME get()= _Constant._KEY_PREF_EXP_TIME
 
-    val FRAGMENT_NAME= "frag_name"
-    val EXTRA_IS_CUSTOM_ACT_BAR= "is_custom_act_bar"
-    val EXTRA_TITLE= "title"
-    val CALLING_LIFECYCLE= "calling_lifecycle"
-    val DRAWER_START_LAYOUT_ID= "drawer_start_layout_id"
-    val DRAWER_END_LAYOUT_ID= "drawer_end_layout_id"
+    val FRAGMENT_NAME get()= _Constant.FRAGMENT_NAME
+    val EXTRA_IS_CUSTOM_ACT_BAR get()= _Constant.EXTRA_IS_CUSTOM_ACT_BAR
+    val EXTRA_TITLE get()= _Constant.EXTRA_TITLE
+    val CALLING_LIFECYCLE get()= _Constant.CALLING_LIFECYCLE
+
+    const val DRAWER_START_LAYOUT_ID= "drawer_start_layout_id"
+    const val DRAWER_END_LAYOUT_ID= "drawer_end_layout_id"
 
     const val PROP_STACK= "::STACK"
 

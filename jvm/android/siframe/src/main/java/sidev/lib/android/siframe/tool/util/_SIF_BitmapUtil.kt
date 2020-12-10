@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.tool.util
 import android.app.Activity
 import android.content.Intent
 import androidx.fragment.app.Fragment
-import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.`val`._SIF_Constant
 
 object _SIF_BitmapUtil {
     private fun pickImageGallery_Int(actOrFrag: Any, requestCode: Int= _SIF_Constant.REQ_PICK_GALLERY){

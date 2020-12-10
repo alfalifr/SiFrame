@@ -24,9 +24,13 @@ import sidev.lib.android.siframe.intfc.lifecycle.InterruptableBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util._AppUtil
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Constant
+//import sidev.lib.android.siframe.tool.util.`fun`.getExtra
+import sidev.lib.android.std.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getRootView
 import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.set
 import sidev.lib.check.asNotNull
 import sidev.lib.exception.IllegalStateExc
 
@@ -273,6 +277,22 @@ abstract class Act : AppCompatActivity(), //Inheritable,
         return supportActionBar?.customView
     }
 
+    /**
+     * Same as [.startActivity] with no options
+     * specified.
+     *
+     * @param intent The intent to start.
+     *
+     * @throws android.content.ActivityNotFoundException
+     *
+     * @see .startActivity
+     * @see .startActivityForResult
+     */
+    override fun startActivity(intent: Intent?) {
+        if(intent != null && intent.getExtra<Any?>(_SIF_Constant.CALLING_LIFECYCLE) == null)
+            intent[_SIF_Constant.CALLING_LIFECYCLE]= this::class.java.name
+        super.startActivity(intent)
+    }
 
     @CallSuper
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

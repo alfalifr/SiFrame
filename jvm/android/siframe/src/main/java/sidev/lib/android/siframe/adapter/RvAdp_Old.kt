@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.intfc.adp.Adp
 import sidev.lib.android.siframe.tool.RunQueue
 import sidev.lib.android.std.tool.util.`fun`.loge

@@ -19,7 +19,7 @@ import sidev.lib.collection.iterator.toOtherIterator
 import sidev.lib.exception.ResourceNotFoundExc
 import sidev.lib.number.notNegativeOr
 import sidev.lib.structure.data.value.Val
-import sidev.lib.android.std._val._Config
+import sidev.lib.android.std.`val`._Config
 //import sidev.lib.universal.`fun`.iterator
 
 /**

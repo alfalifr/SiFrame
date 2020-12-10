@@ -15,8 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import org.jetbrains.anko.layoutInflater
-import sidev.lib.android.std._external._AnkoInternals.runOnUiThread
-import sidev.lib.android.std._val._Constant
+import sidev.lib.android.std.`val`._Constant
 //import sidev.lib.android.siframe.adapter.RvAdp
 //import sidev.lib.android.siframe.adapter.SimpleRvAdp
 //import sidev.lib.android.siframe._val._SIF_Constant

@@ -5,9 +5,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sigudang.android.fragments.BoundProcessFrag.viewpager_new.lessee.inbound.BoundVp_Lessee_In0Create
 import com.sigudang.android.utilities.constant.Constants
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
-import sidev.lib.android.siframe._val._SIF_Constant
-import sidev.lib.android.siframe.tool.util.`fun`.startAct
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
+import sidev.lib.android.std.tool.util.`fun`.startAct
 import sidev.lib.implementation.R
 import sidev.lib.implementation._cob.dumm_module
 import sidev.lib.implementation._simulation.edc.frag.TransacFrag

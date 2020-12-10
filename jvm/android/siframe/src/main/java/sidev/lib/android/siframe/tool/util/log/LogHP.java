@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import sidev.lib.android.std._val._Config;
+import sidev.lib.android.std.val._Config;
 import sidev.lib.android.std.tool.util._EnvUtil;
 import sidev.lib.jvm.tool.util.TimeUtil;
 

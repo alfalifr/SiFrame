@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.support.v4.act
-import sidev.lib.android.siframe._val._SIF_Config
+import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.arch.presenter.ArchPresenter
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
@@ -29,7 +29,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.LifecycleBase
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ViewPagerBase
-import sidev.lib.android.siframe._val._SIF_Constant
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.std.tool.util.`fun`.logew
 import sidev.lib.check.asNotNull
