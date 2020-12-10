@@ -56,6 +56,9 @@ plugins{
     id("maven-publish")
 }
 
+group= GROUP_ID //"sidev.lib.jvm.android"
+version= LIBRARY_VERSION_NAME //"1.0cob"
+
 apply("plugin" to "com.android.library")
 apply("plugin" to "kotlin-android")
 apply("plugin" to "kotlin-android-extensions")
