@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.std._external._AnkoInternals
 import java.io.Serializable
 import java.lang.Exception
@@ -22,7 +23,14 @@ fun <T> createIntent(ctx: Context?= null, clazz: Class<out T>?= null, params: Ar
     return intent
 }
 
-operator fun Intent.set(key: String, value: Any)= fillIntentArg(key, value)
+operator fun Intent.set(key: String, value: Any?)= fillIntentArg(key, value)
+operator fun <T> Intent.get(key: String, default: T?= null): T? = getExtra(key, default)
+
+fun <T> Intent.getExtra(key: String, default: T? = null): T? {
+    @Suppress(SuppressLiteral.UNCHECKED_CAST)
+    return try { (this.extras!![key] as T)!! }
+    catch (e: Exception) { default }
+}
 
 //@JvmStatic
 fun Intent.fillIntentArg(key: String, value: Any?) {

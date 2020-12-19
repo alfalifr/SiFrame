@@ -220,10 +220,6 @@ fun <T> Fragment.getIntent(key: String, default: T? = null): T? {
     return try { (activity!!.intent.extras!![key] as T)!! }
     catch (e: Exception) { default }
 }
-fun <T> Intent.getExtra(key: String, default: T? = null): T? {
-    return try { (this.extras!![key] as T)!! }
-    catch (e: Exception) { default }
-}
 
 
 val Activity.actReqCode: Int?

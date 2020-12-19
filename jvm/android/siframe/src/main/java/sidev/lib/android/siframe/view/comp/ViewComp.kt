@@ -18,8 +18,11 @@ import sidev.lib.collection.iterator.iteratorSimple
 import sidev.lib.collection.iterator.toOtherIterator
 import sidev.lib.exception.ResourceNotFoundExc
 import sidev.lib.number.notNegativeOr
-import sidev.lib.structure.data.value.Val
 import sidev.lib.android.std.`val`._Config
+import sidev.lib.structure.data.value.*
+import sidev.lib.`val`.SuppressLiteral
+import kotlin.Suppress
+
 //import sidev.lib.universal.`fun`.iterator
 
 /**
@@ -44,7 +47,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
 //    final override var isInit: Boolean= false
 
     abstract val viewLayoutId: Int
-    private val mData= SparseArray<Val<D>>()
+    private val mData= SparseArray<NullableVar<D>>()
     private var mAdditionalData: SparseArray<Any>?= null //by lazy{ SparseArray<Any>() }
     /** Yg disimpan adalah view dg id [compId], atau view yg didapatkan dari [onBind] scr penuh jika [compId] tidak ditemukan. */
     private var mView: SparseArray<View>?= null
@@ -109,6 +112,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * Lambda ini digunakan untuk mengkoversi data dari [rvAdp] menjadi inputData dg tipe [I].
      */
     protected open val rvAdpInputDataConverter: ((Any?) -> I?)?= {
+        @Suppress(SuppressLiteral.UNCHECKED_CAST)
         try{ it as I }
         catch (e: ClassCastException){ null }
     }
@@ -217,7 +221,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
         var valueBox= mData[dataPos]
 
         if(valueBox == null){
-            valueBox= Val()
+            valueBox= nullableVarOf() //Val()
             valueBox.value= initData(dataPos, inputData)
             mData[dataPos]= valueBox
         }
@@ -287,7 +291,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * Param [dataPos] adalah posisi data yg sebenarnya yg terdapat pada [rvAdp].
      * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
      */
-    open fun onDataRecycled(dataPos: Int, valueBox: Val<D>, additionalData: Any?){}
+    open fun onDataRecycled(dataPos: Int, valueBox: NullableVar<D>, additionalData: Any?){}
 
     /**
      * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
@@ -298,7 +302,7 @@ abstract class ViewComp<D, I>(val ctx: Context) {
      * @param v adalah view hasil inflate dari [viewLayoutId].
      * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
      */
-    abstract fun bindComponent(adpPos: Int, v: View, valueBox: Val<D>, additionalData: Any?, inputData: I?)
+    abstract fun bindComponent(adpPos: Int, v: View, valueBox: NullableVar<D>, additionalData: Any?, inputData: I?)
 
     /**
      * Fungsi yg digunakan untuk me-enabled atau tidak komponen view yg dikelola oleh kelas [ViewComp] ini.

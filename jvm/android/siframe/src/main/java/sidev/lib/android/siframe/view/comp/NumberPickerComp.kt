@@ -19,7 +19,7 @@ import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.notNull
 import sidev.lib.check.notNullTo
 import sidev.lib.number.roundClosest
-import sidev.lib.structure.data.value.Val
+import sidev.lib.structure.data.value.NullableVar
 
 open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
@@ -45,10 +45,12 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     override fun initData(dataPos: Int, inputData: I?): NumberPickerData?
         = NumberPickerData(getDefaultInitNumber(dataPos, inputData), defaultLowerBorder, defaultUpperBorder)
 
-    override fun bindComponent(adpPos: Int, v: View,
-                               valueBox: Val<NumberPickerData>,
-                               additionalData: Any?,
-                               inputData: I?) {
+    override fun bindComponent(
+        adpPos: Int, v: View,
+        valueBox: NullableVar<NumberPickerData>,
+        additionalData: Any?,
+        inputData: I?
+    ) {
         val ivPlus= v.findViewById<ImageView>(ivPlusId)!!
         val ivMinus= v.findViewById<ImageView>(ivMinusId)!!
         val etNumber= v.findView(etNumberId) ?: v.findViewByType<ModEt>()!!
