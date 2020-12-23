@@ -2,7 +2,10 @@ package sidev.lib.android.std.tool.util
 
 import android.content.Context
 import sidev.lib.android.std.`val`._Config
+import sidev.lib.check.isNull
+import sidev.lib.check.isNullTo
 import sidev.lib.jvm.tool.util.TimeUtil
+import kotlin.math.exp
 
 object _StorageUtil{
 
@@ -11,6 +14,8 @@ object _StorageUtil{
         /**
          * @param expDuration in sec
          */
+        operator fun set(c: Context, key: String, value: String?): Boolean = set(c, key, value, 0)
+        operator fun set(c: Context, key: String, valuePair: Pair<String?, Long>): Boolean = set(c, key, valuePair.first, valuePair.second)
         fun set(c: Context, key: String, value: String?, expDuration: Long= 0): Boolean {
             return if(value != null){
                 if(expDuration >= 1)
@@ -23,8 +28,14 @@ object _StorageUtil{
                 remove(c, key)
         }
 
+        fun setIfAbsent(c: Context, key: String, value: String?, expDuration: Long= 0): Boolean =
+            this[c, key].isNullTo {
+                set(c, key, value, expDuration)
+            } ?: false
+
         //untuk mendapatkan status negara pengguna
-        fun get(c: Context, key: String): String? {
+
+        operator fun get(c: Context, key: String): String? {
             val prefs = c.getSharedPreferences(_Config.MAIN_REF, Context.MODE_PRIVATE)
             val expTime= getExpTime(c, key)
             return if(expTime != null){

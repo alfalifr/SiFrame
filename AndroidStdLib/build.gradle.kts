@@ -254,3 +254,9 @@ tasks["bintrayUpload"].apply {
     dependsOn("bundleReleaseAar")
     dependsOn("publishToMavenLocal")
 }
+/*
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    languageVersion = "1.4"
+}
+ */

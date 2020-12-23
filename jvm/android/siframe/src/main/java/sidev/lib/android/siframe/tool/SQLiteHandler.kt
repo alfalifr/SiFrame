@@ -26,6 +26,7 @@ import sidev.lib.jvm.tool.util.ThreadUtil
 import sidev.lib.number.isNotNegative
 import sidev.lib.reflex.full.isCollection
 import java.lang.reflect.Field
+import kotlin.reflect.KProperty
 
 /**
  * Aturan penyimpanan data:
@@ -105,19 +106,24 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
     /**
      * Knp kok gak pake java.reflect aja? Krn gak smua declaredField merupakan attrib, sprti attrib yg berupa obj.
      */
-    protected lateinit var attribField: Array<Field>
+    protected var attribField: List<Field> = emptyList() //Array<Field>
         private set
-    var attribName= Array(0) {""}
+    var attribName: List<String> = emptyList()//= Array(0) {""}
         private set
+    private var attribNameArray: Array<String> = Array(0) {""}
+        set(v){
+            field= v
+            attribName= v.asList()
+        }
     /**
      * Index untuk tiap elemen dari [attribName] pada field yg terdapat dalam model [M].
      * Properti ini berguna saat mengakses field dari kelas model [M],
      * karena nama field pada kelas model [M] berbeda dg nama attribut pada DB,
      * yaitu nama attribut merupakan versi snake_case.
      */
-    protected var attribNameFieldIndex= Array(0) {it}
+    protected var attribNameFieldIndex: List<Int> = emptyList() //= Array(0) {it}
         private set
-    var attribType= Array(0) {""}
+    var attribType: List<String> = emptyList() //= Array(0) {""}
         private set
 
     /**
@@ -125,7 +131,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
      * TODO: <Sabtu, 26 Sep 2020> => Untuk smtr, data tipe koleksi yg disimpan hanya dapat berjumlah 1.
      *   Hal tersebut dikarenakan akan membingungkan untuk menyimpan banyak koleksi dalam 1 tabel.
      */
-    protected var collectionTypeAttribName= Array(0) {""}
+    protected var collectionTypeAttribName: List<String> = emptyList() //= Array(0) {""}
         private set
 
     val sqlCreateTable: String
@@ -302,6 +308,15 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         }
     */
 
+    fun getAttribName(field: Field): String? {
+        val fieldName= StringUtil.toSnakeCase(field.name, true)
+        return attribNameArray.find { it == fieldName }
+    }
+    fun getAttribName(field: KProperty<*>): String? {
+        val fieldName= StringUtil.toSnakeCase(field.name, true)
+        return attribNameArray.find { it == fieldName }
+    }
+
     /**
      * Sekalian assign ke declared field terkait attribField, attribName, attribType.
      */
@@ -410,7 +425,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                             type += " PRIMARY KEY"
                             break
                         }
-                    attribTypeList.add(type)
+                    attribTypeList += type
 
 //                    val i= attribNameList.lastIndex
 //                    loge("attribFieldList[$i] = ${attribFieldList[i]} attribNameList[$i] = ${attribNameList[i]} attribTypeList[$i] = ${attribTypeList[i]}")
@@ -444,11 +459,12 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             primaryKey= attribNameList[0]
         }
  */
-        attribField= attribFieldList.toTypedArray()
-        attribName= attribNameList.toTypedArray()
-        attribNameFieldIndex= attribNameFieldIndexList.toTypedArray()
-        attribType= attribTypeList.toTypedArray()
-        collectionTypeAttribName= collectionTypeAttribNameList.toTypedArray()
+        attribField= attribFieldList //.toTypedArray()
+//        attribName= attribNameList //.toTypedArray()
+        attribNameArray= attribNameList.toTypedArray()
+        attribNameFieldIndex= attribNameFieldIndexList //.toTypedArray()
+        attribType= attribTypeList //.toTypedArray()
+        collectionTypeAttribName= collectionTypeAttribNameList //.toTypedArray()
 /*
         for((i, name) in attribName.withIndex()){
 //            loge("i= $i attribName= $name attribType= ${attribType[i]}")
@@ -690,7 +706,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                     try{
                         val kursor= db.query(
                             tableName,
-                            attribName,
+                            attribNameArray,
                             primaryKeyWhereClause, arrayOf(perId),
                             null, null, null, null)
 
@@ -731,7 +747,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                kosongkanData()
                 val kursor  = db.query(
                         tableName,
-                        attribName,
+                        attribNameArray,
                         kondisi, argumen,
                         null, null, null, null)
 
@@ -785,7 +801,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                kosongkanData()
                 val kursor  = db.query(
                         tableName,
-                        attribName,
+                        attribNameArray,
                         condition, arg,
                         null, null, null, null)
 
@@ -1110,7 +1126,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
          * menyimpannya menjadi bbrp baris, sehingga fungsi ini dapat digunakan untuk merampingkan
          * data bbrp baris menjadi 1 baris dg data bertipe koleksi yg memiliki banyak element.
          */
-        fun <C: List<M>> flattenQueryResult(dataList: C, collectionAttribNameList: Array<String>): C
+        fun <C: List<M>> flattenQueryResult(dataList: C, collectionAttribNameList: List<String>): C
         //TODO: <Sabtu, 26 Sep 2020> => Buat implementasi default.
     }
 /*
