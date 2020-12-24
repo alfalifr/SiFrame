@@ -135,7 +135,7 @@ public class LogHP {
             penulisFile.println("----- PesanLokal= " +pesanLokal);
             penulisFile.println("----- Jml Stack= " +jmlStack);
 
-            int batas= jmlStack < batasStack ? jmlStack : batasStack;
+            int batas= Math.min(jmlStack, batasStack);
             for(int i= 0; i< batas; i++){
                 StackTraceElement perStack= stack[i];
                 Timestamp ts= new Timestamp(new Date().getTime());

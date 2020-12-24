@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addit
 import sidev.lib.android.siframe.view.comp.ViewComp
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
+import sidev.lib.structure.data.value.NullableVar
 import sidev.lib.structure.data.value.Val
 
 //import com.sigudang.android.utilities.view.component.ViewComp
@@ -50,7 +51,7 @@ class BpSendComp_Warehouse(c: Context)
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: Val<BpSendAdp_Warehouse>,
+        valueBox: NullableVar<BpSendAdp_Warehouse>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

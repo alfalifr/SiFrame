@@ -12,6 +12,7 @@ import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
 import sidev.lib.check.asNotNull
 import sidev.lib.implementation.R
+import sidev.lib.structure.data.value.NullableVar
 import sidev.lib.structure.data.value.Val
 
 class BpProductCountComp(c: Context) : NumberPickerComp<BoundProduct>(c){
@@ -34,7 +35,7 @@ class BpProductCountComp(c: Context) : NumberPickerComp<BoundProduct>(c){
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: Val<NumberPickerData>,
+        valueBox: NullableVar<NumberPickerData>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

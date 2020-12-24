@@ -10,6 +10,7 @@ import com.sigudang.android.utilities.view.component.ViewComp_
 import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addition.view.*
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
+import sidev.lib.structure.data.value.NullableVar
 import sidev.lib.structure.data.value.Val
 
 //import sidev.lib.android.siframe.arch.value.BoxedVal
@@ -57,7 +58,7 @@ class BpSendComp_Lessee(c: Context)
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: Val<BpSendAdp_Lessee>,
+        valueBox: NullableVar<BpSendAdp_Lessee>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

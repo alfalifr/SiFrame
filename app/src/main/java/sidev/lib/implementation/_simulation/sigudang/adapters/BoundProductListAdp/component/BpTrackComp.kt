@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addit
 import sidev.lib.android.siframe.view.comp.ViewComp
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
+import sidev.lib.structure.data.value.NullableVar
 import sidev.lib.structure.data.value.Val
 
 
@@ -30,7 +31,7 @@ class BpTrackComp(c: Context) : ViewComp<BpTrackAdp, BoundProduct>(c){
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: Val<BpTrackAdp>,
+        valueBox: NullableVar<BpTrackAdp>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

@@ -69,6 +69,7 @@ class MainAct : BarContentNavAct() {
     fun toViewColorFrag(v: View)= startSingleFragAct_config<ViewColorFrag>()
 
     fun toArrangeableFrag(v: View)= startSingleFragAct_config<ArrangeableFrag>()
+    fun toExternalDirFrag(v: View)= startSingleFragAct_config<ExternalDirFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()

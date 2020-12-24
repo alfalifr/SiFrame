@@ -14,6 +14,7 @@ import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._BitmapUtil
 import sidev.lib.android.std.tool.util._EnvUtil
+import sidev.lib.android.std.tool.util.`fun`.loge
 import java.io.File
 import java.io.IOException
 import java.lang.ClassCastException
@@ -132,10 +133,14 @@ object _ActFragUtil: ResetableUtil {
                         var bitmap = MediaStore.Images.Media.getBitmap(act!!.contentResolver, uri)
                         bitmap= _BitmapUtil.resizePict(bitmap, 500)
 
-                        val pictFile = _BitmapUtil.savePict(bitmap, _EnvUtil.projectTempDir(act!!))
-                        val fileDir= pictFile!!.absolutePath
+                        _EnvUtil.projectTempDir(act!!)?.let {
+                            val pictFile = _BitmapUtil.savePict(bitmap, it)
+                            val fileDir= pictFile!!.absolutePath
 
-                        func(bitmap, fileDir, pictFile)
+                            func(bitmap, fileDir, pictFile)
+                        } ?: run {
+                            loge("Tidak menyimpan file thumbnail karena file eksternal tidak tersedia.")
+                        }
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }

@@ -14,7 +14,9 @@ import android.graphics.*
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.std.`val`._Constant
+import sidev.lib.android.std.tool.util.`fun`.loge
 //import sidev.lib.android.siframe._val._SIF_Constant
 import sidev.lib.jvm.tool.util.TimeUtil
 
@@ -144,7 +146,8 @@ object _BitmapUtil {
     fun savePict(bm: Bitmap, pathFile: String,
                  fileName: String= TimeUtil.timestamp()
     ): File? {
-        val fileNameExt= fileName +".jpg"
+        val fileNameExt= "$fileName.jpg"
+        @Suppress(SuppressLiteral.NAME_SHADOWING)
         val pathFile= File(pathFile)
         val file = File("$pathFile/$fileNameExt")
         try {
@@ -188,8 +191,13 @@ object _BitmapUtil {
             var bitmap = MediaStore.Images.Media.getBitmap(c.contentResolver, uri)
             bitmap= resizePict(bitmap, 500)
 
-            val pictFile = savePict(bitmap, _EnvUtil.projectTempDir(c))
-            bitmap
+            _EnvUtil.projectTempDir(c)?.let {
+                savePict(bitmap, it)
+                bitmap
+            } ?: run {
+                loge("Tidak dapat menyimpan thumbnail karena external dir tidak tersedia.")
+                null
+            }
         } catch (e: IOException) {
             e.printStackTrace()
             null

@@ -40,16 +40,22 @@ class PolarEcgHandler(c: Context): SQLiteHandler<PolarEcgData>(c, EcgCollectionH
 
 //@SuppressWarnings(SuppressLiteral.UNCHECKED_CAST)
 internal class EcgCollectionHandler : CollectionTypeHandler<PolarEcgData> {
+    /**
+     * Merampingkan dataList hasil query dg model yg memiliki data bertipe koleksi.
+     * Hal tersebut dikarenakan Handler ini menangani data bertipe kolesi dg cara
+     * menyimpannya menjadi bbrp baris, sehingga fungsi ini dapat digunakan untuk merampingkan
+     * data bbrp baris menjadi 1 baris dg data bertipe koleksi yg memiliki banyak element.
+     */
     override fun <C : List<PolarEcgData>> flattenQueryResult(
         dataList: C,
-        collectionAttribNameList: Array<String>
+        collectionAttribNameList: List<String>
     ): C {
-        var lastTimestamp = dataList!![0]!!.timeStamp
+        var lastTimestamp = dataList[0].timeStamp
         var lastSamples: MutableList<Int?> = ArrayList()
         val newList: MutableList<PolarEcgData> = ArrayList()
         val limit = dataList.size
         for (i in 1 until limit) {
-            val data = dataList[i]!!
+            val data = dataList[i]
             val isSameRow = data.timeStamp === lastTimestamp
             if (!isSameRow) {
                 newList.add(

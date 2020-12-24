@@ -12,7 +12,7 @@ import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.view.comp.ViewComp
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
-import sidev.lib.structure.data.value.Val
+import sidev.lib.structure.data.value.NullableVar
 
 //import com.sigudang.android.utilities.view.component.ViewComp
 
@@ -24,10 +24,19 @@ class BpPackagingComp(c: Context) : ViewComp<BpPackagingAdp, BoundProduct>(c){
     override val isDataRecycled: Boolean
         get() = true
 
+    /**
+     * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
+     * Fungsi ini juga dipanggil sbg peng-init view setelah fungsi [inflateView] dipanggil.
+     *
+     * @param valueBox adalah wadah untuk menyimpan data yg diambil dari
+     *   input user pada view.
+     * @param v adalah view hasil inflate dari [viewLayoutId].
+     * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
+     */
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: Val<BpPackagingAdp>,
+        valueBox: NullableVar<BpPackagingAdp>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

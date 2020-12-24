@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main._simul_sigud_item_product_bound_with_addit
 import sidev.lib.android.siframe.view.comp.ViewComp
 import sidev.lib.check.notNull
 import sidev.lib.implementation.R
+import sidev.lib.structure.data.value.NullableVar
 import sidev.lib.structure.data.value.Val
 
 //import com.sigudang.android.utilities.view.component.ViewComp
@@ -23,10 +24,19 @@ class BpContainerComp(c: Context) : ViewComp<BpContainerAdp, BoundProduct>(c){
     override val isViewSaved: Boolean
         get() = true
 
+    /**
+     * Digunakan untuk mengatur tampilan saat view akan ditampilkan pada adapter.
+     * Fungsi ini juga dipanggil sbg peng-init view setelah fungsi [inflateView] dipanggil.
+     *
+     * @param valueBox adalah wadah untuk menyimpan data yg diambil dari
+     *   input user pada view.
+     * @param v adalah view hasil inflate dari [viewLayoutId].
+     * Param [additionalData] adalah data tambahan yg ditambahkan scr manual yg tidak terkait dg [rvAdp].
+     */
     override fun bindComponent(
         adpPos: Int,
         v: View,
-        valueBox: Val<BpContainerAdp>,
+        valueBox: NullableVar<BpContainerAdp>,
         additionalData: Any?,
         inputData: BoundProduct?
     ) {

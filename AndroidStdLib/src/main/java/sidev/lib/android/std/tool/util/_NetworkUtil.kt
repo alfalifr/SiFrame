@@ -15,9 +15,7 @@ import cz.msebera.android.httpclient.Header
 import sidev.lib.exception.NetworkExc
 
 object _NetworkUtil{
-    enum class Method{
-        GET, POST
-    }
+    enum class Method{ GET, POST }
     val CODE_SUCCESS_COMMON= 1
     val CODE_FAIL_COMMON= 2
     val CODE_FAIL_NO_INTERNET= 3
@@ -54,10 +52,11 @@ object _NetworkUtil{
             RQ!!.add(req)
             return RQ
         }
-
+        @JvmOverloads
         fun get(c: Context, url: String, params: RequestParams?= null, callback: NetworkCallback){
             request(c, Method.GET, url, params, callback)
         }
+        @JvmOverloads
         fun get(c: Context, url: String, params: RequestParams?= null,
                 onSuccess: (code: Int, response: String?) -> Unit){
             val callback= object : NetworkCallback {
@@ -66,9 +65,11 @@ object _NetworkUtil{
             request(c, Method.GET, url, params, callback)
         }
 
+        @JvmOverloads
         fun post(c: Context, url: String, params: RequestParams?= null, callback: NetworkCallback){
             request(c, Method.POST, url, params, callback)
         }
+        @JvmOverloads
         fun post(c: Context, url: String, params: RequestParams?= null,
                 onSuccess: (code: Int, response: String?) -> Unit){
             val callback= object : NetworkCallback {
@@ -77,6 +78,7 @@ object _NetworkUtil{
             request(c, Method.POST, url, params, callback)
         }
 
+        @JvmOverloads
         fun request(c: Context, method: Method, url: String, params: RequestParams?= null, callback: NetworkCallback): RequestQueue? {
             if(isNetworkActive(c)){
                 val methodVolley= when(method){
@@ -104,9 +106,11 @@ object _NetworkUtil{
      * (-) Gakda cache. Cuma plain library.
      */
     object Loopj{
+        @JvmOverloads
         fun get(c: Context, url: String, params: RequestParams?= null, token: String?= null, callback: NetworkCallback){
             request(c, Method.GET, url, params, token, callback)
         }
+        @JvmOverloads
         fun get(c: Context, url: String, params: RequestParams?= null, token: String?= null,
                 onSuccess: (code: Int, response: String?) -> Unit){
             val callback= object : NetworkCallback {
@@ -115,9 +119,11 @@ object _NetworkUtil{
             request(c, Method.GET, url, params, token, callback)
         }
 
+        @JvmOverloads
         fun post(c: Context, url: String, params: RequestParams?= null, token: String?= null, callback: NetworkCallback){
             request(c, Method.POST, url, params, token, callback)
         }
+        @JvmOverloads
         fun post(c: Context, url: String, params: RequestParams?= null, token: String?= null,
                 onSuccess: (code: Int, response: String?) -> Unit){
             val callback= object : NetworkCallback {
@@ -126,6 +132,7 @@ object _NetworkUtil{
             request(c, Method.POST, url, params, token, callback)
         }
 
+        @JvmOverloads
         fun request(c: Context, method: Method, url: String, params: RequestParams?= null, token: String?= null, callback: NetworkCallback){
             if(isNetworkActive(c)){
                 val connection= AsyncHttpClient()
