@@ -70,6 +70,7 @@ class MainAct : BarContentNavAct() {
 
     fun toArrangeableFrag(v: View)= startSingleFragAct_config<ArrangeableFrag>()
     fun toExternalDirFrag(v: View)= startSingleFragAct_config<ExternalDirFrag>()
+    fun toQuranFrag(v: View)= startSingleFragAct_config<QuranFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()

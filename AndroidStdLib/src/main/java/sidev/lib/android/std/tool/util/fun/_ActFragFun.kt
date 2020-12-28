@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import sidev.lib._config_.CodeModification
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.std._external._AnkoInternals
 import sidev.lib.android.std.`val`._Constant
 import sidev.lib.android.std.tool.util._BitmapUtil
@@ -213,10 +214,12 @@ fun <T> Fragment.getDefaultIntent(): T? {
 
 
 fun <T> Activity.getIntent(key: String, default: T? = null): T? {
+    @Suppress(SuppressLiteral.UNCHECKED_CAST)
     return try { (intent.extras!![key] as T)!! }
     catch (e: Exception) { default }
 }
 fun <T> Fragment.getIntent(key: String, default: T? = null): T? {
+    @Suppress(SuppressLiteral.UNCHECKED_CAST)
     return try { (activity!!.intent.extras!![key] as T)!! }
     catch (e: Exception) { default }
 }
@@ -233,7 +236,8 @@ fun <T : Activity> Context.startAct(
     actClass: Class<out T>,
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
-    reqCode: Int = 0
+    reqCode: Int = 0,
+    intentPreSettingFun: ((Intent) -> Unit)?= null
 ) {
     var inParamsSize= params.size +1
     val callingLifeCycleName=
@@ -242,6 +246,7 @@ fun <T : Activity> Context.startAct(
     val inParams= Array(inParamsSize){ if(it < params.size) params[it] else callingLifeCycleName!! }
 
     val intent= _AnkoInternals.createIntent(this, actClass, inParams)
+    intentPreSettingFun?.invoke(intent)
     if(!waitForResult || this !is Activity)
         startActivity(intent)
     else{
@@ -252,9 +257,10 @@ fun <T : Activity> Context.startAct(
 inline fun <reified T : Activity> Context.startAct(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
-    reqCode: Int = 0
+    reqCode: Int = 0,
+    noinline intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
-    this.startAct(T::class.java, *params, waitForResult = waitForResult, reqCode = reqCode)
+    this.startAct(T::class.java, *params, waitForResult = waitForResult, reqCode = reqCode, intentPreSettingFun = intentPreSettingFun)
 }
 /*
 inline fun <reified T: Activity> Context.startAct(vararg params: Pair<String, Any?>, waitForResult: Boolean= false, reqCode: Int= 0) {
@@ -278,13 +284,15 @@ fun <T : Activity> Fragment.startAct(
     actClass: Class<out T>,
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
-    reqCode: Int = 0
+    reqCode: Int = 0,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
 //    context!!.startAct<T>(*params)
     val callingLifeCycleName= Pair(_Constant.CALLING_LIFECYCLE, this::class.java.name)
-    val inParams= Array(params.size + 1){ if(it < params.size) params[it] else callingLifeCycleName!! }
+    val inParams= Array(params.size + 1){ if(it < params.size) params[it] else callingLifeCycleName }
 
     val intent= _AnkoInternals.createIntent(context!!, actClass, inParams)
+    intentPreSettingFun?.invoke(intent)
     if(!waitForResult)
         startActivity(intent)
     else{
@@ -295,7 +303,34 @@ fun <T : Activity> Fragment.startAct(
 inline fun <reified T : Activity> Fragment.startAct(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
-    reqCode: Int = 0
+    reqCode: Int = 0,
+    noinline intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
-    this.startAct(T::class.java, *params, waitForResult = waitForResult, reqCode = reqCode)
+    this.startAct(T::class.java, *params, waitForResult = waitForResult, reqCode = reqCode, intentPreSettingFun = intentPreSettingFun)
+}
+
+
+@JvmOverloads
+fun Activity.setResult(
+    vararg params: Pair<String, Any?>,
+    resCode: Int = Activity.RESULT_OK,
+    isFinished: Boolean = true,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
+) {
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
+    intentPreSettingFun?.invoke(intent)
+    setResult(resCode, intent)
+    if(isFinished) this.finish()
+}
+@JvmOverloads
+fun Fragment.setResult(
+    vararg params: Pair<String, Any?>,
+    resCode: Int = Activity.RESULT_OK,
+    isFinished: Boolean = true,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
+) {
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
+    intentPreSettingFun?.invoke(intent)
+    activity!!.setResult(resCode, intent)
+    if(isFinished) activity!!.finish()
 }

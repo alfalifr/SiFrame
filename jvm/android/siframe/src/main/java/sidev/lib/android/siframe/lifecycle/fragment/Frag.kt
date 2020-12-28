@@ -73,6 +73,9 @@ abstract class Frag : Fragment(),
     final override var _prop_hierarchyOder: Int= 0
         private set
 
+    override val id: String
+        get() = this::class.java.name
+
     val actSimple: Act?
         get() = activity as? Act ?: _prop_parentLifecycle as? Act
 //    val actBarContentNavAct

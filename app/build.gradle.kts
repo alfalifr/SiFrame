@@ -109,7 +109,9 @@ dependencies {
 
     implementation("sidev.lib.jvm:JvmStdLib:$sidev_lib_version_std_x") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:KtStdLib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:KtAsync-jvm:$sidev_lib_version_std") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:KtReflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
+    implementation("sidev.data:JvmQuranData:$sidev_lib_version_std") //{ isTransitive= true }
     implementation(project(":SiFrame"))
     implementation(project(":SiFrame-Customizable"))
     implementation(project(":Viewrap"))
@@ -120,7 +122,7 @@ dependencies {
 //    implementation(project("path" to ":jvm:android:siframe"))
 //    implementation(project("path" to ":jvm:android:siframe:customizable"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 }
 // */
 

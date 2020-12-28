@@ -16,6 +16,7 @@ import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
 import sidev.lib.android.siframe.intfc.prop.OnRequestPermissionsResultCallbackProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.`val`._SIF_Constant
+import sidev.lib.android.siframe.intfc.lifecycle.IdLifecyleOwner
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce
@@ -25,7 +26,7 @@ import sidev.lib.jvm.tool.util.ThreadUtil
 /**
  * Interface dasar dari semua Activity dari Fragment yang ada pada framework ini.
  */
-interface ActFragBase: LifecycleRootBase, FragmentHostBase,
+interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     OnRequestPermissionsResultCallbackProp, //ArchView,
     InitViewFun, CtxProp, HierarchyOrderProp {
 //    val layoutId: Int

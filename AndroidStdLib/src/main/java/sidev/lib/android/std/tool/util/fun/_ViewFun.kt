@@ -517,9 +517,18 @@ fun View.addOnGlobalLayoutListener(justOnce: Boolean= true, l: (View) -> Unit): 
 
 /** Digunakan untuk mengambil size sesaat sebelum view ditampilkan pada layar. */
 fun View.getInitSize(l: (width: Int, height: Int) -> Unit){
-    this.addOnGlobalLayoutListener {
+    this.addOnGlobalLayoutListener(true) {
         l(it.width, it.height)
     }
+}
+
+/**
+ * Meng-assign teks yang sama ke `this.extension` `TextView`.
+ * Fungsi ini berguna agar `this.extension` melakukan validasi ulang terhadap
+ * text yang sama namun memiliki aturan yg berbeda.
+ */
+fun TextView.reassignText(){
+    text= text
 }
 
 var EditText.txt: String

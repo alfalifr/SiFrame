@@ -62,7 +62,9 @@ abstract class Act : AppCompatActivity(), //Inheritable,
     final override var isBusy: Boolean= false
     final override var busyOfWhat: String= InterruptableBase.DEFAULT_BUSY_OF_WHAT
 
-//    override var isInherited: Boolean= false
+    override val id: String
+        get() = this::class.java.name
+    //    override var isInherited: Boolean= false
 //    override fun _configInheritable(){}
 
     /*

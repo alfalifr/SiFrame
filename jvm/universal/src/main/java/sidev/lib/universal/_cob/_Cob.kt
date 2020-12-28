@@ -493,3 +493,8 @@ internal enum class En{A, C, Z, E}
 internal fun <T> ArrayList<T>.aoe(){}
 
 internal operator fun Int.invoke(other: Any, other2: Any?= null) = prine("Int.invoke() = this= $this other= $other other2= $other2")
+
+
+internal fun adad(){
+
+}

@@ -2,13 +2,13 @@ package sidev.lib.android.siframe.tool.util.`fun`
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import sidev.lib._config_.CodeModification
-import sidev.lib.android.std._external._AnkoInternals
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.lifecycle.activity.Act
@@ -96,7 +96,8 @@ fun <T : Fragment> Context.startSingleFragAct(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    isCustomActBar: Boolean = true
+    isCustomActBar: Boolean = true,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct<SingleFragAct_Simple>(
         SingleFragAct_Simple::class.java,
@@ -104,21 +105,24 @@ fun <T : Fragment> Context.startSingleFragAct(
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 inline fun <reified T : Fragment> Context.startSingleFragAct(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    isCustomActBar: Boolean = true
+    isCustomActBar: Boolean = true,
+    noinline intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct<SingleFragAct_Simple>(
         Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 
@@ -128,7 +132,8 @@ fun <T : Fragment> Context.startSingleFragAct_config(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    isCustomActBar: Boolean = true
+    isCustomActBar: Boolean = true,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct(
         _SIF_Config.CLASS_SINGLE_FRAG_ACT,
@@ -136,14 +141,16 @@ fun <T : Fragment> Context.startSingleFragAct_config(
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 inline fun <reified T : Fragment> Context.startSingleFragAct_config(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    isCustomActBar: Boolean = true
+    isCustomActBar: Boolean = true,
+    noinline intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct(
         _SIF_Config.CLASS_SINGLE_FRAG_ACT,
@@ -151,7 +158,8 @@ inline fun <reified T : Fragment> Context.startSingleFragAct_config(
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, isCustomActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 
@@ -161,7 +169,8 @@ fun <T : Fragment> Fragment.startSingleFragAct(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    customActBar: Boolean = true
+    customActBar: Boolean = true,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct<SingleFragAct_Simple>(
         SingleFragAct_Simple::class.java,
@@ -169,21 +178,24 @@ fun <T : Fragment> Fragment.startSingleFragAct(
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 inline fun <reified T : Fragment> Fragment.startSingleFragAct(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    customActBar: Boolean = true
+    customActBar: Boolean = true,
+    noinline intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct<SingleFragAct_Simple>(
         Pair(_SIF_Constant.FRAGMENT_NAME, T::class.java.name),
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 
@@ -193,7 +205,8 @@ fun <T : Fragment> Fragment.startSingleFragAct_config(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    customActBar: Boolean = true
+    customActBar: Boolean = true,
+    intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct(
         _SIF_Config.CLASS_SINGLE_FRAG_ACT,
@@ -201,14 +214,16 @@ fun <T : Fragment> Fragment.startSingleFragAct_config(
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
 }
 inline fun <reified T : Fragment> Fragment.startSingleFragAct_config(
     vararg params: Pair<String, Any?>,
     waitForResult: Boolean = false,
     reqCode: Int = 0,
-    customActBar: Boolean = true
+    customActBar: Boolean = true,
+    noinline intentPreSettingFun: ((Intent) -> Unit)? = null
 ) {
     startAct(
         _SIF_Config.CLASS_SINGLE_FRAG_ACT,
@@ -216,29 +231,9 @@ inline fun <reified T : Fragment> Fragment.startSingleFragAct_config(
         Pair(_SIF_Constant.EXTRA_IS_CUSTOM_ACT_BAR, customActBar),
         *params,
         waitForResult = waitForResult,
-        reqCode = reqCode
+        reqCode = reqCode,
+        intentPreSettingFun = intentPreSettingFun
     )
-}
-
-@JvmOverloads
-fun Activity.setResult(
-    vararg params: Pair<String, Any?>,
-    resCode: Int = Activity.RESULT_OK,
-    isFinished: Boolean = true
-) {
-    val intent= _AnkoInternals.createIntent<Any>(params = params)
-    setResult(resCode, intent)
-    if(isFinished) this.finish()
-}
-@JvmOverloads
-fun Fragment.setResult(
-    vararg params: Pair<String, Any?>,
-    resCode: Int = Activity.RESULT_OK,
-    isFinished: Boolean = true
-) {
-    val intent= _AnkoInternals.createIntent<Any>(params = params)
-    activity!!.setResult(resCode, intent)
-    if(isFinished) activity!!.finish()
 }
 
 
@@ -279,6 +274,29 @@ fun FragBase.forcedAttach(callingLifecyle: ActFragBase){
 
 
 /*
+
+@JvmOverloads
+fun Activity.setResult(
+    vararg params: Pair<String, Any?>,
+    resCode: Int = Activity.RESULT_OK,
+    isFinished: Boolean = true
+) {
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
+    setResult(resCode, intent)
+    if(isFinished) this.finish()
+}
+@JvmOverloads
+fun Fragment.setResult(
+    vararg params: Pair<String, Any?>,
+    resCode: Int = Activity.RESULT_OK,
+    isFinished: Boolean = true
+) {
+    val intent= _AnkoInternals.createIntent<Any>(params = params)
+    activity!!.setResult(resCode, intent)
+    if(isFinished) activity!!.finish()
+}
+
+
 val Context.fragManager: FragmentManager?
     get()= when(this){
         is AppCompatActivity -> this.supportFragmentManager

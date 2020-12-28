@@ -126,6 +126,8 @@ dependencies {
     implementation("com.android.volley:volley:1.1.1") //{ isTransitive= true }
     implementation("com.loopj.android:android-async-http:1.4.9") //{ isTransitive= true }
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+
     implementation("sidev.lib.jvm:JvmStdLib:$sidev_lib_version_std_x") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:KtStdLib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
 }

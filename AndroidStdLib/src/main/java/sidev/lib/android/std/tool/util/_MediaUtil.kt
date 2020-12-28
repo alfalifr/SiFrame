@@ -170,7 +170,7 @@ object _MediaUtil {
             } catch (e: Exception) {
                 val msg= "Terjadi kesalahan saat menyiapkan media player."
                 (uri?.first ?: StdApp.getLateinit { ctx })?.toast(msg)
-                loge(msg)
+                loge(msg, e)
                 null
 //                ToastApp.tampilkanTeks(this, "HASIL_GAGAL!!! ${e.message}", Toast.LENGTH_LONG)
             }
@@ -243,8 +243,13 @@ object _MediaUtil {
                 recorder.setVideoEncoder(videoEncoder)
 
 //            val file= File(outputPath)
+            output.parentFile?.apply {
+                if(!exists()) mkdirs()
+            }
+/*
             if(output.parentFile?.exists() != true)
                 output.mkdirs()
+ */
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 recorder.setOutputFile(output)
             else
@@ -279,7 +284,7 @@ object _MediaUtil {
             } catch(error: Exception){
                 val msg= "Terjadi kesalahan saat menyiapkan media recorder."
                 StdApp.getLateinit { ctx.toast(msg) }
-                loge(msg)
+                loge(msg, error)
                 null
             }
         }
