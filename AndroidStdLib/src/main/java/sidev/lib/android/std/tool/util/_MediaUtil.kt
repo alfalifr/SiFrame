@@ -31,6 +31,8 @@ object _MediaUtil {
     /** Objek standar untuk media player. */
     object Player {
         var activePlayer: MediaPlayer?= null
+        var currentPosition: Int = 0
+            private set
 
         @JvmOverloads
         fun init(
@@ -177,7 +179,7 @@ object _MediaUtil {
         }
 
         @JvmOverloads
-        fun resume(player: MediaPlayer?= activePlayer): MediaPlayer? = (player ?: MediaPlayer()).apply {
+        fun resume(player: MediaPlayer?= activePlayer, currentPosition: Int = this.currentPosition): MediaPlayer? = (player ?: MediaPlayer()).apply {
             seekTo(currentPosition)
             start()
         }
@@ -185,6 +187,7 @@ object _MediaUtil {
         @JvmOverloads
         fun pause(player: MediaPlayer?= activePlayer): MediaPlayer? = (player ?: MediaPlayer()).apply {
 //        setAudioStreamType(AudioManager.STREAM_MUSIC)
+            this@Player.currentPosition= currentPosition
             pause()
         }
 

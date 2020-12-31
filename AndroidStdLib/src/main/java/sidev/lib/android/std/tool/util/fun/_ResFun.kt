@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.*
 import sidev.lib.android.std.tool.util._ResUtil
+import java.lang.Exception
 
 
 /**
@@ -49,6 +50,15 @@ infix fun Int.asResNameBy(c: Context): String = _ResUtil.getResName(c, this)
 infix fun Int.asResPackageBy(c: Context): String = _ResUtil.getResPackageName(c, this)
 infix fun Int.asResTypeBy(c: Context): String = _ResUtil.getResTypeName(c, this)
 infix fun Int.asResEntryBy(c: Context): String = _ResUtil.getResEntryName(c, this)
+
+infix fun Int.asResNameOrNullBy(c: Context): String? =
+    try { _ResUtil.getResName(c, this) } catch (e: Resources.NotFoundException){ null }
+infix fun Int.asResPackageOrNullBy(c: Context): String? =
+    try { _ResUtil.getResPackageName(c, this) } catch (e: Resources.NotFoundException){ null }
+infix fun Int.asResTypeOrNullBy(c: Context): String? =
+    try { _ResUtil.getResTypeName(c, this) } catch (e: Resources.NotFoundException){ null }
+infix fun Int.asResEntryOrNullBy(c: Context): String? =
+    try { _ResUtil.getResEntryName(c, this) } catch (e: Resources.NotFoundException){ null }
 
 fun Int.isIdDuplicatedInView(v: View): Boolean{
     var isIdFound= false

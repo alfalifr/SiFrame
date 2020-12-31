@@ -15,11 +15,22 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     override val layoutId: Int
         get() = _SIF_Config.LAYOUT_DIALOG_LIST //R.layout.dialog_list
 
-    private lateinit var adp: DialogListAdp<T> //DialogListAdapter
+    private var adp: DialogListAdp<T> = DialogListAdp(c, null) //DialogListAdapter
     private lateinit var rv: RecyclerView
 //    private lateinit var autoTv: AppCompatAutoCompleteTextView
     private lateinit var btnActionContainer: RelativeLayout
     private var isInternalEdit: Boolean= false
+
+    private val defaultTw: TextWatcher = object: TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if(s != null)
+                adp.filterByString(s.toString())
+//                    adp.searchByString(s.toString())
+        }
+    }
+    private var onItemClickListener: ((v: View?, pos: Int, data: T) -> Unit)?= null
 
     var dataList: List<T>?
         get()= adp.dataList
@@ -60,21 +71,13 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
 
     override fun initView(dialogView: View) {
 //        layoutView= LayoutInflater.from(c).inflate(layoutId, null, false)
-        adp= DialogListAdp(c, null)
+//        adp= DialogListAdp(c, null)
 //        adp.dialog= dialog
-        rv= findView(_SIF_Config.ID_RV) //R.id.rv_list
+        rv= dialogView.findViewById(_SIF_Config.ID_RV) //R.id.rv_list
         rv.adapter= adp
         rv.layoutManager= LinearLayoutManager(c)
 
-        addTextWatcher(object: TextWatcher{
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                adp.searchItem(s.toString())
-                if(s != null)
-                    adp.searchByString(s.toString())
-            }
-        })
+        addTextWatcher(defaultTw)
 /*
         autoTv= findView<View>(R.id.fill_filter)
             .findViewById(R.id.ed_fill_auto)
@@ -136,20 +139,34 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
         return this
     }
  */
+    fun setAdapter(adp: DialogListAdp<T>): DialogListAdp<T> {
+        val old= this.adp.apply {
+            rv= null
+            dataList= null
+            setOnItemClickListener(null)
+        }
 
-    fun setFilterClickListener(func: (v: View?, pos: Int, data: T) -> Unit): DialogListView<T> {
-        filterListener= object: DialogListFilterListener<T> {
+        this.adp= adp.apply {
+            rv= this@DialogListView.rv
+            setOnItemClickListener(this@DialogListView.onItemClickListener)
+        }
+        dataList= dataList
+
+        return old
+    }
+
+    fun setFilterClickListener(func: ((v: View?, pos: Int, data: T) -> Unit)?): DialogListView<T> {
+        filterListener= if(func != null) object: DialogListFilterListener<T> {
             override fun onFilterItemClick(v: View, pos: Int, data: T) {
                 func(v, pos, data)
             }
-        }
+        } else null
         return this
     }
 
     fun setOnItemClickListener(func: ((v: View?, pos: Int, data: T) -> Unit)?){
-        adp.setOnItemClickListener { v, pos, data ->
-            func?.invoke(v, pos, data)
-        }
+        onItemClickListener= func
+        adp.setOnItemClickListener(func)
     }
 
 
@@ -200,10 +217,8 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     }
 
     fun showtBtnAction(show: Boolean= true): DialogListView<T> {
-        val vis= if(show) View.VISIBLE
-        else View.GONE
-        findView<View>(_SIF_Config.ID_RL_BTN_CONTAINER) //R.id.rl_btn_container
-            .visibility= vis
+        val vis= if(show) View.VISIBLE else View.GONE
+        findView<View>(_SIF_Config.ID_RL_BTN_CONTAINER).visibility= vis //R.id.rl_btn_container
         return this
     }
 

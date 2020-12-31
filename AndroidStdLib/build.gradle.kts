@@ -69,7 +69,7 @@ android {
     buildToolsVersion = "30.0.2"
 
     defaultConfig {
-        minSdkVersion(14) //15
+        minSdkVersion(15)
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
@@ -130,6 +130,7 @@ dependencies {
 
     implementation("sidev.lib.jvm:JvmStdLib:$sidev_lib_version_std_x") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:KtStdLib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:KtAsync-jvm:$sidev_lib_version_std") //{ isTransitive= true }
 }
 
 

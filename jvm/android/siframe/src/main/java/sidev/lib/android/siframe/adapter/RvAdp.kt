@@ -1036,12 +1036,12 @@ abstract class RvAdp <D, LM: RecyclerView.LayoutManager> (ctx: Context)
          */
         abstract fun onClickItem(v: View?, pos: Int, data: D)
     }
-    fun setOnItemClickListener(l: (v: View?, pos: Int, data: D) -> Unit){
-        onItemClickListener= object: OnItemClickListener(){
+    fun setOnItemClickListener(l: ((v: View?, pos: Int, data: D) -> Unit)?){
+        onItemClickListener= if(l != null) object: OnItemClickListener(){
             override fun onClickItem(v: View?, pos: Int, data: D) {
                 l(v, pos, data)
             }
-        }
+        } else null
     }
 
     private val onLayoutCompletedQueue=

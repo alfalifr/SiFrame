@@ -3,9 +3,12 @@ package sidev.lib.android.siframe.adapter
 import android.content.Context
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.collection.findIndexed
 import sidev.lib.text.charCodeSum
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Adapter yg menampilkan isi dari [dataList] menjadi string
@@ -42,5 +45,23 @@ abstract class AnyToStringAdp<T, LM: RecyclerView.LayoutManager>(ctx: Context, d
     fun searchByString(str: String): T? {
         if(dataList == null) return null
         return dataList!!.findIndexed { getString(it.index, it.value) == str }?.value
+    }
+
+    /** Memfilter data dari [dataList] yg menghasilkan id dari [getId] sama dg param [id]. */
+    fun filterById(id: String, resetFirst: Boolean = true) {
+        var i = 0
+        @Suppress(SuppressLiteral.NAME_SHADOWING)
+        val id= id.toLowerCase(Locale.ROOT)
+        if(id.isBlank()) resetFilter()
+        else filter(resetFirst) { id in getId(i++, it).toLowerCase(Locale.ROOT) }
+    }
+
+    /** Memfilter data dari [dataList] yg menghasilkan string dari [getString] sama dg param [str]. */
+    fun filterByString(str: String, resetFirst: Boolean = true) {
+        var i= 0
+        @Suppress(SuppressLiteral.NAME_SHADOWING)
+        val str= str.toLowerCase(Locale.ROOT)
+        if(str.isBlank()) resetFilter()
+        else filter(resetFirst) { str in getString(i++, it).toLowerCase(Locale.ROOT) }
     }
 }

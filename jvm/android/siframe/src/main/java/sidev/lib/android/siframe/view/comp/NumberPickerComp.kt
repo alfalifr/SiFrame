@@ -1,12 +1,12 @@
 package sidev.lib.android.siframe.view.comp
 
 import android.content.Context
+import android.os.Build
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
-import android.widget.ImageView
 import sidev.lib.`val`.Assignment
 import sidev.lib.android.siframe.R
 import sidev.lib.android.std.`val`._ColorRes
@@ -16,10 +16,16 @@ import sidev.lib.android.std.tool.util.`fun`.findViewByType
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.view.ModEt
 import sidev.lib.android.siframe.view.comp.data.NumberPickerData
+import sidev.lib.android.std.tool.util.`fun`.asResNameOrNullBy
+import sidev.lib.android.std.tool.util.`fun`.txt
 import sidev.lib.check.notNull
 import sidev.lib.check.notNullTo
+import sidev.lib.exception.ClassCastExc
+import sidev.lib.exception.IllegalStateExc
 import sidev.lib.number.roundClosest
 import sidev.lib.structure.data.value.NullableVar
+import java.lang.ClassCastException
+import java.lang.NullPointerException
 
 open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx){
     override val viewLayoutId: Int
@@ -27,8 +33,8 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     override val isViewSaved: Boolean= true
 
     open val etNumberId: Int= _SIF_Config.ID_ET_NUMBER
-    open val ivPlusId: Int= _SIF_Config.ID_IV_PLUS
-    open val ivMinusId: Int= _SIF_Config.ID_IV_MINUS
+    open val vPlusId: Int= _SIF_Config.ID_IV_PLUS
+    open val vMinusId: Int= _SIF_Config.ID_IV_MINUS
 
     open var defaultLowerBorder: Int= 0
     open var defaultUpperBorder: Int= Int.MAX_VALUE
@@ -38,6 +44,23 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
     open var inBorderColorId= _ColorRes.COLOR_IMMUTABLE
 
     var onNumberChangeListener: ((adpPos: Int, oldNumber: Int, newNumber: Int, assignment: Assignment) -> Unit)?= null
+
+    protected inline fun <reified T: EditText> View.etNumberView(): T =
+        try {
+            findView(etNumberId) ?: findViewByType()!!
+        } catch (e: ClassCastException){
+            throw ClassCastExc(
+                fromClass = findView<View>(etNumberId)!!::class,
+                toClass = ModEt::class,
+                msg = "Harap menggunakan `ModEt` sbg View yg menampilkan text angka pada `NumberPickerComp`."
+            )
+        } catch (e: NullPointerException){
+            throw IllegalStateExc(
+                currentState = "v.findView<ModEt>(etNumberId) == null",
+                expectedState = "v.findView<ModEt>(etNumberId) != null",
+                detMsg = "Tidak ditemukan view dg id (${etNumberId.asResNameOrNullBy(ctx) ?: etNumberId}) yg bertipe `ModEt`,\natau tidak ada view yg bertipe `ModEt`."
+            )
+        }
 
     /** Dipanggil satu satu kali saat [initData] dipanggil untuk mengambil [NumberPickerData.number] yg awal. */
     open fun getDefaultInitNumber(dataPos: Int, inputData: I?): Int = defaultLowerBorder
@@ -51,15 +74,15 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
         additionalData: Any?,
         inputData: I?
     ) {
-        val ivPlus= v.findViewById<ImageView>(ivPlusId)!!
-        val ivMinus= v.findViewById<ImageView>(ivMinusId)!!
-        val etNumber= v.findView(etNumberId) ?: v.findViewByType<ModEt>()!!
+        val vPlus= v.findViewById<View>(vPlusId)!!
+        val vMinus= v.findViewById<View>(vMinusId)!!
+        val etNumber= v.etNumberView<ModEt>()
         //v.findViewById<ModEt>(R.id.et)!!
                 // Diganti [findViewByType] agar lebih fleksibel dg view yg beda id.
         val data= valueBox.value!!
 
-        ivMinus.setOnClickListener { etNumber.setText((data.number -1).toString()) }
-        ivPlus.setOnClickListener { etNumber.setText((data.number +1).toString()) }
+        vMinus.setOnClickListener { etNumber.setText((data.number -1).toString()) }
+        vPlus.setOnClickListener { etNumber.setText((data.number +1).toString()) }
 
         etNumber.inputType= InputType.TYPE_CLASS_NUMBER
         etNumber.hint= data.lowerBorder.toString()
@@ -70,15 +93,15 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                 if(s?.isNotBlank() == true){
                     var num= s.toString().toInt()
 
-                    val ivMinusColorId=
+                    val vMinusColorId=
                         if(num == data.lowerBorder) inBorderColorId
                         else enabledColorId
-                    val ivPlusColorId=
+                    val vPlusColorId=
                         if(num == data.upperBorder) inBorderColorId
                         else enabledColorId
 
-                    _ViewUtil.setBgColorTintRes(ivMinus, ivMinusColorId)
-                    _ViewUtil.setBgColorTintRes(ivPlus, ivPlusColorId)
+                    _ViewUtil.setBgColorTintRes(vMinus, vMinusColorId)
+                    _ViewUtil.setBgColorTintRes(vPlus, vPlusColorId)
 
                     if(!isInternalEdit){
                         val numRange= data.lowerBorder .. data.upperBorder
@@ -86,20 +109,27 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
                             isInternalEdit= true
                             num= num.roundClosest(numRange)
                             data.number= num
-                            s.clear()
-                            s.append(num.toString())
+                            if(Build.VERSION.SDK_INT >= 15){
+                                s.clear()
+                                s.append(num.toString())
+                            } else {
+                                etNumber.txt= num.toString()
+                            }
                             isInternalEdit= false
+                            //TODO: 29 Des 2020: Opsional, buat kompatibilitas untuk API di bawah 15.
+                            // Masalah: Untuk API 14, s.clear() dan s.append() tidak berfungsi sehingga
+                            //  angka yg diinput bisa menembus limit.
                         }
                     }
                     val oldNumber= data.number
                     data.number= num
                     onNumberChangeListener?.invoke(adpPos, oldNumber, num, assignment)
                     assignment= Assignment.ASSIGN
-                } else{
+                } else {
                     val oldNumber= data.number
                     data.number= data.lowerBorder
-                    _ViewUtil.setBgColorTintRes(ivMinus, inBorderColorId)
-                    _ViewUtil.setBgColorTintRes(ivPlus, enabledColorId)
+                    _ViewUtil.setBgColorTintRes(vMinus, inBorderColorId)
+                    _ViewUtil.setBgColorTintRes(vPlus, enabledColorId)
                     onNumberChangeListener?.invoke(adpPos, oldNumber, data.number, assignment)
                     assignment= Assignment.ASSIGN
                 }
@@ -116,16 +146,16 @@ open class NumberPickerComp<I>(ctx: Context): ViewComp<NumberPickerData, I>(ctx)
             val colorId= if(enable) enabledColorId
                 else disabledColorId
 
-            val ivPlus= view.findViewById<ImageView>(ivPlusId)!!
-            val ivMinus= view.findViewById<ImageView>(ivMinusId)!!
-            val etNumber= view.findView(etNumberId) ?: view.findViewByType<EditText>()!!
+            val vPlus= view.findViewById<View>(vPlusId)!!
+            val vMinus= view.findViewById<View>(vMinusId)!!
+            val etNumber= view.etNumberView<EditText>()
             //.findViewById<ModEt>(R.id.iv_plus)!!
 
-            _ViewUtil.setBgColorTintRes(ivMinus, colorId)
-            _ViewUtil.setBgColorTintRes(ivPlus, colorId)
+            _ViewUtil.setBgColorTintRes(vMinus, colorId)
+            _ViewUtil.setBgColorTintRes(vPlus, colorId)
 
-            ivMinus.isEnabled= enable
-            ivPlus.isEnabled= enable
+            vMinus.isEnabled= enable
+            vPlus.isEnabled= enable
             etNumber.isEnabled= enable
 
             //Agar warna [ivMinus] dan [ivMinus] sesuai dg keadaan data.number.

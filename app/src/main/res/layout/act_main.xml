@@ -280,6 +280,26 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/txt_normal_sm"
             android:textColor="@color/hitam"
+            android:text="To AsyncProgressFrag"
+            android:onClick="toAsyncProgressFrag"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
+            android:text="To DialogListFrag"
+            android:onClick="toDialogListFrag"/>
+
+        <TextView
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_normal_sm"
+            android:textColor="@color/hitam"
             android:text="==EDC== To TransacFrag"
             android:onClick="_simul_edc_toTransaction"/>
 

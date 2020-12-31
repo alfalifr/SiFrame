@@ -8,6 +8,7 @@ import sidev.data.quran.Ayat
 import sidev.data.quran.Quran
 import sidev.data.quran.Surat
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.std.tool.util.`fun`.asyncBuffer
 import sidev.lib.android.std.tool.util.`fun`.asyncOnContext
 import sidev.lib.android.std.tool.util.`fun`.toast
 import sidev.lib.implementation.R
@@ -18,14 +19,33 @@ import sidev.lib.async.async
 class QuranFrag: Frag() {
     override val layoutId: Int= R.layout.frag_txt
 
+    @ExperimentalStdlibApi
     override fun _initView(layoutView: View) {
         layoutView.pb.visibility= View.VISIBLE
 
         val surat= 114
         val ayatStart= Surat.ayatStart(surat)
-        val ayatEnd= ayatStart + Surat.ayatCount(surat)
+        val ayatCount= Surat.ayatCount(surat)
+        val ayatEnd= ayatStart +ayatCount
+        val ayatRange= ayatStart +1 .. ayatEnd
 
 
+        asyncBuffer("", { it.index <= ayatEnd }, {
+            layoutView.tv.text= it //laf
+        }, {
+            layoutView.pb.visibility= View.GONE
+        }, 1000, {
+            it.index in ayatRange
+        }) {
+            if(iteration.index in ayatRange)
+                it + Ayat.lafadz(iteration.index, false) +" "
+            else {
+                if(iteration.index > 0)
+                    Ayat[iteration.index]
+                it
+            }
+        }
+/*
         asyncOnContext({
             var laf= ""
             for(i in ayatStart +1 .. ayatEnd){
@@ -63,5 +83,6 @@ class QuranFrag: Frag() {
             layoutView.tv.text= it //laf
             layoutView.pb.visibility= View.GONE
         }
+ */
     }
 }

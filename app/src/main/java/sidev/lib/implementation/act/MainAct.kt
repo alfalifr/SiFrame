@@ -71,6 +71,8 @@ class MainAct : BarContentNavAct() {
     fun toArrangeableFrag(v: View)= startSingleFragAct_config<ArrangeableFrag>()
     fun toExternalDirFrag(v: View)= startSingleFragAct_config<ExternalDirFrag>()
     fun toQuranFrag(v: View)= startSingleFragAct_config<QuranFrag>()
+    fun toAsyncProgressFrag(v: View)= startSingleFragAct_config<AsyncProgressFrag>()
+    fun toDialogListFrag(v: View)= startSingleFragAct_config<DialogListFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
