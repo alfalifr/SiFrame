@@ -29,7 +29,7 @@ abstract class AnyToStringAdp<T, LM: RecyclerView.LayoutManager>(ctx: Context, d
 
     final override fun getItemId(pos: Int): Long{
         if(dataList == null) throw IndexOutOfBoundsException("dataList null")
-        return getId(pos, dataList!![pos]).charCodeSum
+        return getId(pos, dataList!![pos]).charCodeSum()
     }
 
     override fun bindVH(vh: SimpleViewHolder, pos: Int, data: T) {

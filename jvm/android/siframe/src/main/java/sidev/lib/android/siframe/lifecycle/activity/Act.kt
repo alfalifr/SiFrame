@@ -8,10 +8,10 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.arch.presenter.*
 import sidev.lib.android.siframe.intfc.listener.OnBackPressedListener
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
@@ -26,6 +26,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.rootbase.FragBase
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.`val`._SIF_Constant
+import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
 //import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getRootView
@@ -33,6 +34,7 @@ import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.std.tool.util.`fun`.set
 import sidev.lib.check.asNotNull
 import sidev.lib.exception.IllegalStateExc
+import kotlin.collections.ArrayList
 
 /**
  * Kelas dasar dalam framework yang digunakan sbg kelas Activity utama
@@ -101,6 +103,14 @@ abstract class Act : AppCompatActivity(), //Inheritable,
     final override var removedOnBackPressedListenerList: ArrayList<OnBackPressedListener>
         = ArrayList()
 
+    /**
+     * Isi pair Boolean `false` jika [OnRequestPermissionsResultCallback]
+     * hanya dipanggil sekali lalu dihilangkan dari list.
+     *
+     */
+    final override var onRequestPermissionResultCallbacks: Map<String, Pair<OnRequestPermissionsResultCallback, Boolean>>? = null
+        private set
+
     override val styleId: Int
         get() = _SIF_Config.STYLE_APP
     final override lateinit var layoutView: View
@@ -112,7 +122,7 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 //    override val lifecycleOwner: LifecycleOwner= this
 
     final override var presenter: ArchPresenter<*, *, *>?= null
-    override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?= null
+    //override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?= null
 
     //    final override var presenter: Presenter?= null
 //    override var callbackCtx: Context?= this
@@ -348,7 +358,65 @@ abstract class Act : AppCompatActivity(), //Inheritable,
         grantResults: IntArray
     ) {
         super<AppCompatActivity>.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        super<ActFragBase>.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        //super<ActFragBase>.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(onRequestPermissionResultCallbacks != null){
+            val removedKey = mutableListOf<String>()
+            for((key, c) in onRequestPermissionResultCallbacks!!){
+                c.first.onRequestPermissionsResult(requestCode, permissions, grantResults)
+                if(!c.second)
+                    removedKey.add(key)
+            }
+            val mutC= onRequestPermissionResultCallbacks as MutableMap
+            for(key in removedKey)
+                mutC.remove(key)
+        }
+    }
+
+    final override fun addOnRequestPermissionResultCallback(
+        c: OnRequestPermissionsResultCallback,
+        isPersistent: Boolean,
+        replaceExisting: Boolean
+    ): Boolean {
+        if(onRequestPermissionResultCallbacks == null)
+            onRequestPermissionResultCallbacks = mutableMapOf()
+        return if(replaceExisting || !onRequestPermissionResultCallbacks!!.containsKey(c.tag)){
+            (onRequestPermissionResultCallbacks as MutableMap)[c.tag] = c to isPersistent
+            true
+        } else false
+    }
+
+    final override fun addOnRequestPermissionResultCallback(
+        key: String,
+        isPersistent: Boolean,
+        replaceExisting: Boolean,
+        callback: (requestCode: Int, permissions: Array<out String>, grantResults: IntArray) -> Unit
+    ): OnRequestPermissionsResultCallback? {
+        if(onRequestPermissionResultCallbacks == null)
+            onRequestPermissionResultCallbacks = mutableMapOf()
+        val mutC= onRequestPermissionResultCallbacks as MutableMap
+        @Suppress(SuppressLiteral.NAME_SHADOWING)
+        val key = if(key.isBlank()) "_callback_${mutC.size}_" else key
+        return if(replaceExisting || !onRequestPermissionResultCallbacks!!.containsKey(key)){
+            val c= object: OnRequestPermissionsResultCallback {
+                override val tag: String = key
+                override fun onRequestPermissionsResult(
+                    requestCode: Int,
+                    permissions: Array<out String>,
+                    grantResults: IntArray
+                ) = callback.invoke(requestCode, permissions, grantResults)
+            }
+            mutC[c.tag] = c to isPersistent
+            c
+        } else null
+    }
+
+    final override fun removeOnRequestPermissionResultCallback(key: String): Boolean {
+        if(onRequestPermissionResultCallbacks == null) return false
+        val mutC= onRequestPermissionResultCallbacks as MutableMap
+        val bool= mutC.remove(key) != null
+        if(mutC.isEmpty())
+            onRequestPermissionResultCallbacks = null
+        return bool
     }
 
     //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}

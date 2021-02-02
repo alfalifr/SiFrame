@@ -17,6 +17,7 @@ import sidev.lib.android.siframe.intfc.prop.OnRequestPermissionsResultCallbackPr
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.lifecycle.IdLifecyleOwner
+import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce
@@ -34,7 +35,7 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     var layoutView: View
     override val _prop_ctx: Context
     override val _prop_fm: FragmentManager
-    override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?
+    //override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?
 
     //    val lifecycleCtx: Context
 

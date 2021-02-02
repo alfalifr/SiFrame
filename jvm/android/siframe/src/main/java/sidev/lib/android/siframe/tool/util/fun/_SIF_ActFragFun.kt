@@ -16,10 +16,13 @@ import sidev.lib.android.siframe.lifecycle.activity.SingleFragAct_Simple
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.`val`._SIF_Constant
+import sidev.lib.android.siframe.intfc.prop.OnRequestPermissionsResultCallbackProp
+//import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
 import sidev.lib.android.std.`val`._Constant
 import sidev.lib.android.std.tool.util.`fun`.startAct
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.annotation.Unsafe
+import sidev.lib.annotation.Warning
 
 
 @ChangeLog(
@@ -33,16 +36,24 @@ import sidev.lib.annotation.Unsafe
     "param ditambah `callback` agar dapat digunakan saat proses pengajuan permission dilakukan",
     CodeModification.ADDED
 )
+@Warning(
+    "Param `callback` berpotensi tidak dipanggil jika `permissions` belum di-grant dan `this Activity` bukan `OnRequestPermissionsResultCallbackProp`."
+)
 fun Activity.checkPermission_sif(
     vararg permissions: String,
+    isOneTime: Boolean = true,
     callback: ((reqCode: Int, permissions: Array<out String>, grantResults: IntArray) -> Unit)? = null
 ): Boolean {
     if (Build.VERSION.SDK_INT >= 23) {
         val ungrantedPermissions= ArrayList<String>()
+        val grantedPermissions= ArrayList<String>()
 
         for(permission in permissions){
-            if(checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
+            val result= checkCallingOrSelfPermission(permission)
+            if(result != PackageManager.PERMISSION_GRANTED)
                 ungrantedPermissions += permission
+            else
+                grantedPermissions += permission
         }
 
         return if(ungrantedPermissions.isEmpty()){
@@ -53,12 +64,31 @@ fun Activity.checkPermission_sif(
             )
             true
         } else {
-            if(callback != null && this is ActFragBase)
+            //val checkAttachment = callback != null && this is OnRequestPermissionsResultCallbackProp
+            val callbackOwner = if(callback != null && this is OnRequestPermissionsResultCallbackProp) this else null
+            val callbackObj = callbackOwner?.addOnRequestPermissionResultCallback(
+                _SIF_Constant.REQ_PERMISSION_CALLBACK_KEY,
+                true,
+                true,
+                callback = callback!!
+            )
+            callback?.invoke(
+                _Constant.REQ_PERMISSION,
+                grantedPermissions.toTypedArray(),
+                IntArray(grantedPermissions.size){ PackageManager.PERMISSION_GRANTED }
+            )
+/*
                 onRequestPermissionResultCallback=
                     ActivityCompat.OnRequestPermissionsResultCallback { reqCode, permissions, grantResults ->
                         callback.invoke(reqCode, permissions, grantResults)
                 }
-
+ */
+            if(isOneTime)
+                callbackOwner?.addOnRequestPermissionResultCallback(
+                    callbackObj!!, //Jika callbackOwner != null, maka callbackOwner juga != null.
+                    false,
+                    true
+                )
             ActivityCompat.requestPermissions(
                 this,
                 ungrantedPermissions.toTypedArray(),

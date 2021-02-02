@@ -24,6 +24,7 @@ object _SIF_Constant{
     val TEMPLATE_VIEW_TYPE_ACT_BAR_SQUARE= 1
 
     val REQ_PERMISSION get()= _Constant.REQ_PERMISSION
+    const val REQ_PERMISSION_CALLBACK_KEY: String = "_sif_permission_callback_"
     val REQ_PICK_GALLERY get()= _Constant.REQ_PICK_GALLERY
     val REQ_PICK_GALLERY_MULTIPLE get()= _Constant.REQ_PICK_GALLERY_MULTIPLE
 
