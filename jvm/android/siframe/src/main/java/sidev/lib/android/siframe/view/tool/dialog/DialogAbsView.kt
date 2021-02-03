@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.`val`._SIF_Config
+import sidev.lib.android.std.tool.util.`fun`.forcedAddView
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.property.mutableLazy
 
@@ -39,7 +40,9 @@ abstract class DialogAbsView<T: DialogAbsView<T>>(val c: Context){
 //        loge("DialogAbsView.layoutContainerView init")
         val layoutContainerView= LayoutInflater.from(c).inflate(layoutContainerId, null, false) //as ViewGroup
         layoutContainerView.findViewById<LinearLayout>(_SIF_Config.ID_VG_CONTENT_CONTAINER) //
-            .addView(layoutView)
+            .forcedAddView(layoutView).also {
+                loge("vg before = $it")
+            }
         layoutContainerView
     }
     protected abstract val layoutId: Int

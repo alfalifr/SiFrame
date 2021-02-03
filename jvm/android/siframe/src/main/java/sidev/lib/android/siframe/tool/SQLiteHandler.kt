@@ -15,6 +15,7 @@ import sidev.lib.android.siframe.intfc.listener.LiveVal
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
 import sidev.lib.android.siframe.model.intfc.Exclude
 import sidev.lib.android.siframe.model.intfc.ModelId
+import sidev.lib.android.siframe.model.intfc.ModelIncrement
 import sidev.lib.android.siframe.model.intfc.StorageKind
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.log.LogApp
@@ -77,6 +78,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
 
     open val prefixName: String= "_\$USER\$_"
 
+    var isInit: Boolean = false
+        private set
     /**
      * Helper yg ditujukan untuk pengaturan tabel inti pada kelas ini.
      * Properti ini memiliki setter private. Untuk settingan tambahan, gunakan [sqliteHelperDelegate].
@@ -99,7 +102,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
     protected val primaryKeyWhereClause
         get()= if(primaryKey.isNotBlank()) "$primaryKey = ?" else ""
 
-    var tableName: String= createTableName()
+    var tableName: String= ""
         protected set
     protected abstract val modelClass: Class<M>
 
@@ -155,11 +158,12 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
 //    private var isHandlerInited: Boolean= false
 
 //    private val DATA_HOLDER_= ViewModelHolder<M>()
-
+/*
     init{
         initHandler()
 //        DATA_HOLDER_.idVHM= "DATA_HOLDER_$tableName"
     }
+ */
 
 /*
     override fun onCreate(db: SQLiteDatabase?) {
@@ -190,7 +194,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
     abstract fun createModel(petaNilai: Map<String, *>): M
 
     fun initHandler(){
-//        tableName= createTableName()
+        tableName= createTableName()
+        isInit= true
         readAttribFromModel()
     }
 
@@ -417,7 +422,11 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                         collectionTypeAttribNameList += colName
                     attribNameFieldIndexList += i
 
-                    for(annot in field.annotations)
+                    for(annot in field.annotations){
+                        if(annot is ModelIncrement && type == "INTEGER"){
+                            type += " AUTO_INCREMENT"
+                            break
+                        }
                         if(annot is ModelId
                             && (annot.kind == StorageKind.ANY || annot.kind == StorageKind.SQLITE)
                         ){
@@ -425,8 +434,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                             type += " PRIMARY KEY"
                             break
                         }
+                    }
                     attribTypeList += type
-
 //                    val i= attribNameList.lastIndex
 //                    loge("attribFieldList[$i] = ${attribFieldList[i]} attribNameList[$i] = ${attribNameList[i]} attribTypeList[$i] = ${attribTypeList[i]}")
                 }
@@ -500,6 +509,8 @@ Koneksi
      * @return true jika koneksi ke db berhasil dan sebaliknya.
      */
     fun checkConn(assert: Boolean= true): Boolean{
+        if(!isInit)
+            initHandler()
         val error= createTable()
         return if(error != null){
             progressListener?.sendError(error, true)
@@ -596,8 +607,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                LogApp.e("SQLITE", "simpan data DALAM JML_MODEL= ${model.size}")
 
                 val resList= HashMap<String, Boolean>()
-                for(perModel in model){
-                    val id= getIdFromModel(perModel) ?: "" //perModel.id
+                for((i, perModel) in model.withIndex()){
+                    val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
                     try{
                         val nilai= extractVal(perModel)
                         val hasil= db.insert(tableName, null, nilai)
@@ -609,8 +620,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             resList[id]= true
                             progressListener?.progresSucc(perModel)
 //                            LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
-                        }
-                        else{
+                        } else {
                             resList[id]= false
                             progressListener?.progresDone()
                         }
@@ -774,10 +784,12 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                     if(isCollectionTypePresent && resList.size > 1)
                         collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
                     liveVal.value= resList
+                } else {
+                    liveVal.value= emptyList()
                 }
 //                db.close()
                 liveVal
-            }catch(error: Exception){
+            } catch(error: Exception){
                 liveVal.setVal(null, ERROR)
                 progressListener?.sendError(error, true)
                 null
@@ -828,7 +840,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 liveVal.value= count
 //                db.close()
                 liveVal
-            }catch(error: Exception){
+            } catch(error: Exception){
                 liveVal.setVal(null, ERROR)
                 progressListener?.sendError(error, true)
                 null
@@ -851,11 +863,11 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             try{
 //                loge("ifExists() try outer MELBU")
                 val resList= HashMap<String, Boolean>()
-                var i= -1
-                for(perModel in model){
-                    val id= getIdFromModel(perModel) ?: "" //perModel.id
+                //var i= -1
+                for((i, perModel) in model.withIndex()){
+                    val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
                     resList[id]= false
-                    i++
+                    //i++
 //                    loge("ifExists() for i= $i i $id")
                     try{
 //                        loge("ifExists() TRY!!!")
@@ -920,8 +932,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             try{
                 db.beginTransaction() //==========TRANSAKSI===========
                 val resList= HashMap<String, Boolean>()
-                for(perModel in model){
-                    val id= getIdFromModel(perModel) ?: "" //perModel.id
+                for((i, perModel) in model.withIndex()){
+                    val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
                     try{
                         val nilai= extractVal(perModel)
                         val hasil= db.update(tableName, nilai, primaryKeyWhereClause, arrayOf(id))
@@ -967,11 +979,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                loge("delete() TRY!!!")
                 val db= sqliteHelper.writableDatabase
                 val resList= HashMap<String, Boolean>()
-                for(perModel in model){
-                    val id= getIdFromModel(perModel) ?: "" //perModel.id
+                for((i, perModel) in model.withIndex()){
+                    val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
 //                    loge("delete() for id= $id")
-
-                    try{
+                    try {
 //                        loge("delete() TRY dalem !!!")
                         val hasil= db.delete(tableName, primaryKeyWhereClause, arrayOf(id))
 //                        loge("delete() hasil= $hasil")
@@ -1027,6 +1038,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //        val atributDideklarasikan= model::class.java.declaredFields
         var aksesibilitasAwal: Boolean
         for((i, perNamaAtribut) in attribName.withIndex()){
+            if("AUTO_INCREMENT" in attribType[i])
+                continue
             val atributIsi= attribField[i]
             aksesibilitasAwal= atributIsi.isAccessible
             atributIsi.isAccessible= true

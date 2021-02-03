@@ -28,7 +28,10 @@ import sidev.lib.android.std._external._AnkoInternals
 import sidev.lib.android.std.`val`._Constant
 import sidev.lib.android.std.tool.util._BitmapUtil
 import sidev.lib.annotation.ChangeLog
+import sidev.lib.annotation.Warning
+import sidev.lib.async.callback
 import sidev.lib.check.notNull
+import sidev.lib.exception.IllegalArgExc
 
 
 val Context.fragManager: FragmentManager?
@@ -125,10 +128,16 @@ fun Fragment.commitFrag(
     "param ditambah `callback` agar dapat digunakan saat proses pengajuan permission dilakukan",
     CodeModification.ADDED
 )
+@Warning("Param `callback` hanya dipanggil jika semua `permissions` di-grant.")
 fun Activity.checkPermission(
     vararg permissions: String,
     callback: ((reqCode: Int, permissions: Array<out String>, grantResults: IntArray) -> Unit)? = null
 ): Boolean {
+    if(permissions.isEmpty())
+        throw IllegalArgExc(
+            paramExcepted = *arrayOf("permissions"),
+            detailMsg = "Param `permissions` tidak boleh kosong."
+        )
     if (Build.VERSION.SDK_INT >= 23) {
         val ungrantedPermissions= ArrayList<String>()
 

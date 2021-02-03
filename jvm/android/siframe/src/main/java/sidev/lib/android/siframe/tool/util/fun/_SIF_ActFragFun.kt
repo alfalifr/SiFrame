@@ -23,6 +23,7 @@ import sidev.lib.android.std.tool.util.`fun`.startAct
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.annotation.Unsafe
 import sidev.lib.annotation.Warning
+import sidev.lib.exception.IllegalArgExc
 
 
 @ChangeLog(
@@ -44,6 +45,11 @@ fun Activity.checkPermission_sif(
     isOneTime: Boolean = true,
     callback: ((reqCode: Int, permissions: Array<out String>, grantResults: IntArray) -> Unit)? = null
 ): Boolean {
+    if(permissions.isEmpty())
+        throw IllegalArgExc(
+            paramExcepted = *arrayOf("permissions"),
+            detailMsg = "Param `permissions` tidak boleh kosong."
+        )
     if (Build.VERSION.SDK_INT >= 23) {
         val ungrantedPermissions= ArrayList<String>()
         val grantedPermissions= ArrayList<String>()
@@ -72,11 +78,13 @@ fun Activity.checkPermission_sif(
                 true,
                 callback = callback!!
             )
-            callback?.invoke(
-                _Constant.REQ_PERMISSION,
-                grantedPermissions.toTypedArray(),
-                IntArray(grantedPermissions.size){ PackageManager.PERMISSION_GRANTED }
-            )
+            if(grantedPermissions.isNotEmpty()){
+                callback?.invoke(
+                    _Constant.REQ_PERMISSION,
+                    grantedPermissions.toTypedArray(),
+                    IntArray(grantedPermissions.size){ PackageManager.PERMISSION_GRANTED }
+                )
+            }
 /*
                 onRequestPermissionResultCallback=
                     ActivityCompat.OnRequestPermissionsResultCallback { reqCode, permissions, grantResults ->

@@ -1,4 +1,4 @@
-package id.go.surabaya.ediscont.utilities.customview
+package sidev.lib.android.siframe.view.tool.dialog
 
 import android.content.Context
 import android.view.Gravity
@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
-import sidev.lib.android.siframe.view.tool.dialog.DialogAbsView
 
 open class DialogConfirmationView(c: Context): DialogAbsView<DialogConfirmationView>(c){
     override val layoutId: Int

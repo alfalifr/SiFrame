@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
-import id.go.surabaya.ediscont.utilities.customview.DialogConfirmationView
+import sidev.lib.android.siframe.view.tool.dialog.DialogConfirmationView
 import kotlinx.android.synthetic.main.bar_top_utility.view.*
 import kotlinx.android.synthetic.main.comp_performance_bar.view.*
 import org.jetbrains.anko.support.v4.runOnUiThread
