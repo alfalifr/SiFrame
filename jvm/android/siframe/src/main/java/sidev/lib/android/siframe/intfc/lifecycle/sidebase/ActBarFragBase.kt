@@ -12,6 +12,7 @@ import sidev.lib.check.notNullTo
 interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, ActProp {
     override val actBarId: Int
     var actBarView: View?
+    val isActBarInit: Boolean
 
     override fun ___initSideBase() {}
 
@@ -36,10 +37,13 @@ interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, 
      * sebagai wadah dari fragment ini.
      */
     fun getActBar(): View? {
-        return actBarView
-            ?: _prop_act?.inflate(actBarId).notNullTo {
-                actBarView= it
-                it
-            }
+        return actBarView ?: initActBar()
+    }
+
+    fun initActBar(): View? {
+        return _prop_act?.inflate(actBarId).notNullTo {
+            actBarView= it
+            it
+        }
     }
 }

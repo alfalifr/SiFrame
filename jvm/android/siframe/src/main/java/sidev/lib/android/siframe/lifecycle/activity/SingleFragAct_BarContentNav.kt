@@ -3,9 +3,11 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.view.View
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
+import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.notNull
+import sidev.lib.check.notNullTo
 
 //import sidev.kuliah.agradia.R
 
@@ -56,14 +58,23 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
             if(v) attachFragActBar()
         }
 
-
+/*
     override fun __initViewFlow(rootView: View) {
         super.__initViewFlow(rootView)
-        attachFragActBar()
     }
+ */
 
     override fun ___initSideBase() {
         super<SingleFragActBase>.___initSideBase()
+        if(isActBarViewFromFragment){
+            attachFragActBar()
+        } else {
+            fragment.asNotNull { frag: ActBarFragBase ->
+                val actBar= actBarViewContainer.getChildAt(0)
+                frag.actBarView= actBar
+                frag._initActBar(actBar)
+            }
+        }
     }
 
     protected fun attachFragActBar(){
@@ -71,9 +82,11 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
             if(isActBarViewFromFragment){
 //            loge("attachFragActBar() fragment::class.java.simpleName= ${fragment::class.java.simpleName}")
                 fragment.asNotNull { frag: ActBarFragBase ->
-                    frag.getActBar().notNull { actBar ->
+                    //frag.getActBar()
+                    frag.initActBar().notNull { actBar ->
                         if(defaultActBarView == null)
                             defaultActBarView= actBarViewContainer.getChildAt(0)
+                        //frag.actBarView= actBar
                         setActBarView(actBar)
                         frag._initActBar(actBar)
 //                        loge("attachFragActBar() asNotNull frag: ActBarFragBase")

@@ -147,6 +147,8 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
         }
 
         this.adp= adp.apply {
+            if(!this@DialogListView::rv.isInitialized)
+                layoutView
             rv= this@DialogListView.rv
             setOnItemClickListener(this@DialogListView.onItemClickListener)
         }
@@ -223,10 +225,14 @@ open class DialogListView<T>(c: Context): DialogAbsView<DialogListView<T>>(c){
     }
 
     fun setRightBtnString(str: String): DialogListView<T> {
+        if(!::btnActionContainer.isInitialized)
+            layoutView
         btnActionContainer.findViewById<Button>(_SIF_Config.ID_BTN_RIGHT).text= str
         return this
     }
     fun setLeftBtnString(str: String): DialogListView<T> {
+        if(!::btnActionContainer.isInitialized)
+            layoutView
         btnActionContainer.findViewById<Button>(_SIF_Config.ID_BTN_LEFT).text= str
         return this
     }
