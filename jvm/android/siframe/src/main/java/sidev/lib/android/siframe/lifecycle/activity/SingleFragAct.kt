@@ -2,9 +2,11 @@ package sidev.lib.android.siframe.lifecycle.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import sidev.lib.android.siframe.intfc.lifecycle.rootbase.ActFragBase
 
 
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragActBase
@@ -13,14 +15,15 @@ import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo
 
 abstract class SingleFragAct: Act(), SingleFragActBase {
-/*
-    override val _prop_act: AppCompatActivity
-        get() = this
-    override val _prop_intent: Intent
-        get() = intent
-    override val _prop_fm: FragmentManager
-        get() = supportFragmentManager
- */
+
+    /*
+        override val _prop_act: AppCompatActivity
+            get() = this
+        override val _prop_intent: Intent
+            get() = intent
+        override val _prop_fm: FragmentManager
+            get() = supportFragmentManager
+     */
     override val _prop_view: View
         get() = layoutView
 /*
@@ -52,7 +55,7 @@ abstract class SingleFragAct: Act(), SingleFragActBase {
     override fun ___initSideBase() {
         super<SingleFragActBase>.___initSideBase()
     }
-/*
+    /*
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)
         ___initSideBase()

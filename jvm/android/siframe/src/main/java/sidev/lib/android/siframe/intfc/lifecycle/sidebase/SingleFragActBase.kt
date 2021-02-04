@@ -31,6 +31,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     //    override val _prop_ctx: Context
     override val _prop_act: AppCompatActivity
 
+    //val isFragInited: Boolean
     var fragment: Fragment
     /**
      * Berguna untuk mengambil fragment saat Activity di-recreate karena screen rotation
@@ -55,6 +56,16 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     override fun ___initSideBase() {
 //        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         __initFrag()
+        try{
+            __attachFrag()
+            giveFrag()
+        } catch (e: UninitializedPropertyAccessException){
+            throw PropertyAccessExc(
+                kind = PropertyAccessExc.Kind.Uninitialized,
+                propertyName = "fragment",
+                ownerName = this::class.java.simpleName
+            )
+        }
 //        giveFrag()
 /*
         <12 Juli 2020> => Sementara dikomen karena dirasa belum kepake.
@@ -89,17 +100,8 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
             _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->
                     fragment= ReflexUtil.newInstance(fragName)
-                    giveFrag()
+                    //giveFrag()
                 }
-        }
-        try{ __attachFrag()
-            giveFrag()
-        } catch (e: UninitializedPropertyAccessException){
-            throw PropertyAccessExc(
-                kind = PropertyAccessExc.Kind.Uninitialized,
-                propertyName = "fragment",
-                ownerName = this::class.java.simpleName
-            )
         }
     }
 

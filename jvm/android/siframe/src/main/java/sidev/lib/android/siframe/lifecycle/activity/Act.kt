@@ -112,7 +112,8 @@ abstract class Act : AppCompatActivity(), //Inheritable,
         private set
 
     override val styleId: Int
-        get() = _SIF_Config.STYLE_APP
+        get() = _styleId
+    private var _styleId: Int = _SIF_Config.STYLE_APP
     final override lateinit var layoutView: View
     open val isViewInitFirst= true
 
@@ -135,7 +136,17 @@ abstract class Act : AppCompatActivity(), //Inheritable,
     override fun onCreate(savedInstanceState: Bundle?) {
         loge("Activity ${this::class.simpleName} onCreate()")
 //        isActivitySavedInstanceStateNull= savedInstanceState == null
-        setStyle(this)
+        //initStyle(this)
+        //Style hanya bisa diset sebelum `setContentView(layoutId)`.
+        var styleId= styleId
+        if(this is SingleFragActBase){
+            __initFrag()
+            fragment.asNotNull { frag: ActFragBase ->
+                styleId = frag.styleId
+            }
+        }
+        setTheme(styleId)
+
         super.onCreate(savedInstanceState)
         setContentView(layoutId)
 
@@ -287,6 +298,11 @@ abstract class Act : AppCompatActivity(), //Inheritable,
     }
     fun actBar(): View?{
         return supportActionBar?.customView
+    }
+
+    final override fun setStyle(styleId: Int) {
+        setTheme(styleId)
+        _styleId = styleId
     }
 
     /**

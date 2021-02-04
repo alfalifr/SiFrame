@@ -68,7 +68,7 @@ abstract class Frag : Fragment(),
     override val _prop_fm: FragmentManager
         get() = childFragmentManager
     override val _prop_ctx: Context
-        get() = context!!
+        get() = context ?: throw NullPointerException("`context` masih blum di-init (null).")
     final override var _prop_parentLifecycle: ActFragBase?= null
         private set
     final override var _prop_hierarchyOder: Int= 0
@@ -82,7 +82,8 @@ abstract class Frag : Fragment(),
 //    val actBarContentNavAct
 //        get() = activity as SimpleAbsBarContentNavAct?
     override val styleId: Int
-        get() = _SIF_Config.STYLE_APP
+        get() = _styleId
+    private var _styleId: Int = _SIF_Config.STYLE_APP
     final override lateinit var layoutView: View
 /*
     override val lifecycleCtx: Context
@@ -148,6 +149,11 @@ abstract class Frag : Fragment(),
             = onPostViewCreatedListener.addListener(tag, forceReplace){ func(layoutView) }
 
 
+
+    final override fun setStyle(styleId: Int) {
+        _prop_ctx.setTheme(styleId)
+        _styleId = styleId
+    }
 
     fun inflateView(c: Context, container: ViewGroup?, savedInstanceState: Bundle?): View{
         val v= if(!::layoutView.isInitialized){

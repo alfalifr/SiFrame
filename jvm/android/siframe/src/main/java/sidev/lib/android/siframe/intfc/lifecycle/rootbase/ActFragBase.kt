@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
+import androidx.annotation.StyleRes
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
@@ -79,9 +80,14 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     override fun _initView(layoutView: View)
     @CallSuper
     override fun __initView(layoutView: View){}
-
-    fun setStyle(act: Activity){
+/*
+    fun initStyle(act: Activity){
         act.setTheme(styleId)
+    }
+ */
+    //TODO 4 Feb 2021 -> Buat mekanisme setStyle untuk recreate view, trutama saat ada fragment attach
+    fun setStyle(@StyleRes styleId: Int){
+        _prop_ctx.setTheme(styleId)
     }
     fun <D> getIntentData(key: String, i: Intent?= null, default: D?= null): D{
         try{ return i?.extras?.get(key) as? D ?: default as D }

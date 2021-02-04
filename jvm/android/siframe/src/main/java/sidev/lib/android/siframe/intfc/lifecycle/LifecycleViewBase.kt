@@ -1,5 +1,6 @@
 package sidev.lib.android.siframe.intfc.lifecycle
 
+import androidx.annotation.StyleRes
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.arch.view.ArchView
 
@@ -24,6 +25,7 @@ import sidev.lib.android.siframe.arch.view.ArchView
  */
 interface LifecycleViewBase: LifecycleBase, ArchView {
     val layoutId: Int
+    @get:StyleRes
     val styleId: Int
         get() = _SIF_Config.STYLE_APP
 }
