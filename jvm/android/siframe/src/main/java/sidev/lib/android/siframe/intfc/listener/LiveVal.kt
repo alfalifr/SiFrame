@@ -30,7 +30,7 @@ open class LiveVal<T>(var ctx: Context){
         invokeListener()
     }
 
-    private fun invokeListener(){
+    internal fun invokeListener(){
         ctx.runOnUiThread{
             listener?.invoke(value, msg)
 //            loge("setVal() v= $value msg= $msg")

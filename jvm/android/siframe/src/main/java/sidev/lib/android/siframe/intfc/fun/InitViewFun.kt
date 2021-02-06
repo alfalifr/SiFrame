@@ -14,4 +14,11 @@ interface InitViewFun{
      *      Merupakan rootView pada Act yg simpel.
      */
     fun _initView(layoutView: View)
+
+    /**
+     * Untuk memanggil lagi [_initView]. Fungsi ini juga memanggil fungsi yang bertugas untuk
+     * inisiasi data yang akan ditampilkan pada view terkait.
+     * Perlu diperhatikan bahwa fungsi ini tidak membuat ulang view, hanya meng-init-ulang.
+     */
+    fun reinitView()
 }

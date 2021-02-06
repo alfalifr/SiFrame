@@ -56,6 +56,7 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
             _AppUtil.checkAppValidity(_prop_ctx)
         }
         _initDataFromIntent(act.intent)
+        _initData()
         __initViewFlow(layoutView)
     }
 
@@ -69,6 +70,7 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
 
     @CallSuper
     fun _initDataFromIntent(intent: Intent){}
+    fun _initData(){}
 
     fun _initView(){
 //        loge("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName}) initView() di panggil")
@@ -80,6 +82,19 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     override fun _initView(layoutView: View)
     @CallSuper
     override fun __initView(layoutView: View){}
+
+    override fun reinitView(){
+        /*
+        val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
+        doOnce(registerKey){
+            registerActiveAct()
+            _AppUtil.checkAppValidity(_prop_ctx)
+        }
+         */
+        //_initDataFromIntent(act.intent)
+        _initData()
+        __initViewFlow(layoutView)
+    }
 /*
     fun initStyle(act: Activity){
         act.setTheme(styleId)

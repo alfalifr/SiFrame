@@ -314,6 +314,19 @@ abstract class Frag : Fragment(),
 // */
 
     override fun ___initSideBase() {}
+
+    override fun reinitView(){
+/*
+        val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
+        doOnce(registerKey){
+            registerActiveAct()
+            _AppUtil.checkAppValidity(_prop_ctx)
+        }
+ */
+        _initDataFromIntent(act.intent)
+        _initData()
+        __initViewFlow(layoutView)
+    }
 /*
     override fun __initView(layoutView: View) {
         super.__initView(layoutView)

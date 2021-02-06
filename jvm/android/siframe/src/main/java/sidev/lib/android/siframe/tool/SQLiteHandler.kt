@@ -607,6 +607,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                LogApp.e("SQLITE", "simpan data DALAM JML_MODEL= ${model.size}")
 
                 val resList= HashMap<String, Boolean>()
+                liveVal.value= resList
                 for((i, perModel) in model.withIndex()){
                     val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
                     try{
@@ -619,6 +620,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         if(hasil >= 0){
                             resList[id]= true
                             progressListener?.progresSucc(perModel)
+                            liveVal.invokeListener()
 //                            LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
                         } else {
                             resList[id]= false
@@ -629,7 +631,6 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         progressListener?.progresDone()
                     }
                 }
-                liveVal.value= resList
                 liveVal
 //                db.close()
             } catch(error: Exception){
@@ -674,19 +675,22 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 
                 if(kursor.moveToFirst()){
                     var resList= ArrayList<M>()
+                    liveVal.value= resList
                     do{
                         if(kursor.count > 0){
                             val model= createModel(mapValue(kursor))
                             resList.add(model)
 //                            isiData(model)
                             progressListener?.progresSucc(model)
+                            liveVal.invokeListener()
                         } else
                             progressListener?.progresDone()
                     } while(kursor.moveToNext())
                     kursor.close()
                     if(isCollectionTypePresent && resList.size > 1)
                         collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
-                    liveVal.value= resList
+                } else {
+                    liveVal.value= emptyList()
                 }
 //                liveVal= DATA_HOLDER_
 //                db.close()
@@ -712,6 +716,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 val db= sqliteHelper.readableDatabase
 //                kosongkanData()
                 var resList= ArrayList<M>()
+                liveVal.value= resList
                 for(perId in id){
                     try{
                         val kursor= db.query(
@@ -725,6 +730,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             resList.add(model)
 //                        isiData(model)
                             progressListener?.progresSucc(model)
+                            liveVal.invokeListener()
                         } else
                             progressListener?.progresDone()
                         kursor.close()
@@ -734,7 +740,6 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 }
                 if(isCollectionTypePresent && resList.size > 1)
                     collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
-                liveVal.value= resList
                 liveVal
 //                db.close()
             } catch(error: Exception){
@@ -771,19 +776,20 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
  */
                 if(kursor.moveToFirst()){
                     var resList= ArrayList<M>()
+                    liveVal.value= resList
                     do{
                         if(kursor.count > 0){
                             val model= createModel(mapValue(kursor))
                             resList.add(model)
 //                            isiData(model)
                             progressListener?.progresSucc(model)
+                            liveVal.invokeListener()
                         } else
                             progressListener?.progresDone()
                     } while(kursor.moveToNext())
                     kursor.close()
                     if(isCollectionTypePresent && resList.size > 1)
                         collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
-                    liveVal.value= resList
                 } else {
                     liveVal.value= emptyList()
                 }
@@ -863,6 +869,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             try{
 //                loge("ifExists() try outer MELBU")
                 val resList= HashMap<String, Boolean>()
+                liveVal.value= resList
                 //var i= -1
                 for((i, perModel) in model.withIndex()){
                     val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
@@ -888,6 +895,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                                     resList[id]= true
 //                            isiData(model)
                                     progressListener?.progresSucc(perModel)
+                                    liveVal.invokeListener()
                                 } else
                                     progressListener?.progresDone()
                             } while(kursor.moveToNext())
@@ -899,7 +907,6 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         progressListener?.progresDone()
                     }
                 }
-                liveVal.value= resList
                 liveVal
             } catch (e: Exception){
 //                loge("ifExists() EXC outer")
@@ -932,6 +939,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             try{
                 db.beginTransaction() //==========TRANSAKSI===========
                 val resList= HashMap<String, Boolean>()
+                liveVal.value= resList
                 for((i, perModel) in model.withIndex()){
                     val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
                     try{
@@ -941,6 +949,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             resList[id]= true
 //                            val petaNilai= ModelUtil.petaNilai(nilai)
                             progressListener?.progresSucc(perModel)
+                            liveVal.invokeListener()
                         }
                         else{
                             resList[id]= false
@@ -951,7 +960,6 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         progressListener?.progresDone()
                     }
                 }
-                liveVal.value= resList
                 db.setTransactionSuccessful()
                 liveVal
             }catch(error: Exception){
@@ -979,6 +987,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                loge("delete() TRY!!!")
                 val db= sqliteHelper.writableDatabase
                 val resList= HashMap<String, Boolean>()
+                liveVal.value= resList
                 for((i, perModel) in model.withIndex()){
                     val id= getIdFromModel(perModel) ?: "<id_$i>" //perModel.id
 //                    loge("delete() for id= $id")
@@ -989,6 +998,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         if(hasil > 0){
                             resList[id]= true
                             progressListener?.progresSucc(perModel)
+                            liveVal.invokeListener()
                         } else{
                             resList[id]= false
                             progressListener?.progresDone()
@@ -999,7 +1009,6 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         loge("delete() e.message= ${e.message}")
                     }
                 }
-                liveVal.value= resList
                 liveVal
 //                db.close()
             } catch(error: Exception){

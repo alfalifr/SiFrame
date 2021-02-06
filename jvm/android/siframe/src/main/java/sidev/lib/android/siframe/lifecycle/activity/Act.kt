@@ -27,6 +27,7 @@ import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
+import sidev.lib.android.siframe.tool.util.`fun`.doOnce
 //import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getRootView
@@ -252,6 +253,19 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 
         if(this is MviView<*, *, *>)
             restoreCurrentState(true)
+    }
+
+    override fun reinitView(){
+/*
+        val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
+        doOnce(registerKey){
+            registerActiveAct()
+            _AppUtil.checkAppValidity(_prop_ctx)
+        }
+ */
+        _initDataFromIntent(intent)
+        _initData()
+        __initViewFlow(layoutView)
     }
 
 /*
