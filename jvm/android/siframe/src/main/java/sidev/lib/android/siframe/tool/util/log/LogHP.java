@@ -45,7 +45,7 @@ public class LogHP {
     public LogHP(Application app){
         this.app= app;
         namaApp= app.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME_RES()); //R.string.app_name);
-        FOLDER_LOG_APP= _EnvUtil.INSTANCE.projectLogDir(app); //Environment.getExternalStorageDirectory().getAbsolutePath() +"/Android/Develop/LogHP/" +namaApp;
+        FOLDER_LOG_APP= _EnvUtil.INSTANCE.projectLogDir(app, true); //Environment.getExternalStorageDirectory().getAbsolutePath() +"/Android/Develop/LogHP/" +namaApp;
         alamatFile= FOLDER_LOG_APP;
 //        cekIjinPrint();
         cekFolder();

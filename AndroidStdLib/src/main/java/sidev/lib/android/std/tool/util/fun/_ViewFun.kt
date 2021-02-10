@@ -606,6 +606,8 @@ var View.bgColorTint: Int
     get()= _ViewUtil.getBgColorTintInt(this)
     set(@ColorInt v){ _ViewUtil.setBgColorTintInt(this, v) }
 
+fun View.clearBgColorTint() = _ViewUtil.clearBgColorTintInt(this)
+
 /**
  * Mengubah warna tint dari bg menggunakan [ColorRes]. Tidak dapat mengambil [ColorRes] karena
  * tidak mungkin dilakukan pada View.
@@ -623,6 +625,8 @@ var View.bgColorTintRes: Int
 var ImageView.colorTint: Int
     get()= _ViewUtil.getColorTintInt(this)
     set(@ColorInt v){ _ViewUtil.setColorTintInt(this, v) }
+
+fun ImageView.clearColorTint() = _ViewUtil.clearColorTint(this)
 
 /**
  * Mengubah warna tint dari drawable menggunakan [ColorRes]. Tidak dapat mengambil [ColorRes] karena

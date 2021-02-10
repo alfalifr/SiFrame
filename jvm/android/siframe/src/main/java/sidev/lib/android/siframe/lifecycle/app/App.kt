@@ -5,6 +5,7 @@ import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.LogHP
 import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.lifecycle.app.StdApp
+import sidev.lib.android.std.tool.util.`fun`.loge
 import kotlin.system.exitProcess
 
 open class App: StdApp(){
@@ -16,8 +17,38 @@ open class App: StdApp(){
         val ctx: Context
             get()= StdApp.ctx
     }
-    var logHpError: LogHP?= null
-        internal set
+    private var uncaughtExceptionHandler: Thread.UncaughtExceptionHandler?= null
+    protected var logHpError: LogHP?= null
+    var logOnFileActive: Boolean = _Config.LOG_ON_FILE
+        set(v){
+            _Config.LOG_ON_FILE = v
+            if(v){
+                if(logHpError == null){
+                    logHpError= LogHP(this)
+                    logHpError!!.letakFolder("Error")
+//            loge("logHpError.alamatFile= ${logHpError.alamatFile}")
+                    uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { thread, throwable ->
+                        LogApp.e(throwable::class.java.simpleName, throwable.message, throwable)
+                        try{
+                            logHpError!!.printError(thread, throwable)
+                            throwable.printStackTrace()
+                        } catch(error: Exception){
+                            LogApp.e(error::class.java.simpleName, error.message, error)
+                            error.printStackTrace()
+                        }
+                        exitProcess(1)
+                    }
+                }
+//            if(_Config.DEBUG){ -> tidak perlu semenjak _Config.LOG_ON_FILE juga membutuhkan _Config.DEBUG
+                Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler)
+            } else {
+                logHpError= null
+                if(Thread.getDefaultUncaughtExceptionHandler() == uncaughtExceptionHandler)
+                    Thread.setDefaultUncaughtExceptionHandler(null)
+                uncaughtExceptionHandler= null
+            }
+            field = v
+        }
 /*
     var currentAct: SimpleAbsAct?= null
         set(v){
@@ -39,10 +70,12 @@ open class App: StdApp(){
 
     override fun onCreate() {
         super.onCreate()
+        logOnFileActive = _Config.LOG_ON_FILE
+        LogApp.log = _Config.LOG
 //        ctx= this
 //        LogApp.log= BuildConfig.MODE_LOG
-
-        if(_Config.LOG_ON_FILE){
+/*
+        if(logOnFileActive){
             logHpError= LogHP(this)
             logHpError!!.letakFolder("Error")
 //            loge("logHpError.alamatFile= ${logHpError.alamatFile}")
@@ -61,6 +94,7 @@ open class App: StdApp(){
             }
 //            }
         }
+ */
     }
 /*
     //Sampe sini!!!

@@ -2,6 +2,7 @@ package sidev.lib.android.std.`val`
 
 import android.app.Activity
 import sidev.lib.jvm.android.std.R
+import sidev.lib.android.std.lifecycle.app.StdApp
 
 //import sidev.lib.android.siframe.customizable.R
 //import sidev.lib.android.siframe.R
@@ -18,8 +19,9 @@ object _Config {
 
     /**
      * Flag apakah mode debug diijinkan dalam app ini.
+     * Flag ini akan di-init otomatis oleh kelas [StdApp].
      */
-    var DEBUG= true
+    var DEBUG= false
 
     /**
      * Flag apakah proses log diijinkan dalam app ini.
@@ -27,7 +29,7 @@ object _Config {
      * Jika [LOG] di-assign true tapi [DEBUG] false, maka hasil akhirnya [LOG] false.
      * Artinya, [LOG] diijinkan jika [DEBUG] juga diijinkan.
      */
-    var LOG= DEBUG
+    var LOG= true
         get()= field && DEBUG
 
     /**

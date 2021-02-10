@@ -2,6 +2,9 @@ package sidev.lib.android.std.lifecycle.app
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import sidev.lib.android.std.`val`._Config
+
 //import sidev.lib.android.std._val._Config
 //import sidev.lib.android.siframe.tool.util.log.LogApp
 //import sidev.lib.android.siframe.tool.util.log.LogHP
@@ -42,6 +45,9 @@ open class StdApp: Application(){
     override fun onCreate() {
         super.onCreate()
         ctx= this
+
+        val appInfo = packageManager.getApplicationInfo(packageName, 0)
+        _Config.DEBUG = 0 != appInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
     }
     /*
     var logHpError: LogHP?= null

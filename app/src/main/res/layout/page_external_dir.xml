@@ -66,4 +66,84 @@
             android:textColor="@color/hitam"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Dir App Spec:"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_dir_proj_spec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Dir App Spec"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Dir App Spec NOT:"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_dir_proj_spec_not"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Dir App Spec NOT"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TempDir: "
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_dir_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temp Dir"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LogDir: "
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_dir_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Dir"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
 </LinearLayout>

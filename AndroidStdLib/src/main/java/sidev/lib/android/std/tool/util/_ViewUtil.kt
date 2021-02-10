@@ -1,6 +1,5 @@
 package sidev.lib.android.std.tool.util
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -9,11 +8,7 @@ import android.content.res.Resources
 import android.graphics.*
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.*
-import android.hardware.Camera
 import android.os.Build
-import android.text.Editable
-import android.text.TextWatcher
-import android.text.method.PasswordTransformationMethod
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.transition.TransitionSet
@@ -22,7 +17,6 @@ import android.util.TypedValue
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.*
 import androidx.appcompat.app.AlertDialog
@@ -397,16 +391,24 @@ object  _ViewUtil{
     fun setColorTintRes(drawable: Drawable, @ColorRes colorId: Int, ctx: Context?= null)=
         setColorTintInt(drawable, _ResUtil.getColor(ctx ?: StdApp.ctx, colorId))
     fun setColorTintInt(drawable: Drawable, @ColorInt color: Int)= DrawableCompat.setTint(drawable, color)
+    fun clearColorTint(drawable: Drawable)= DrawableCompat.setTintList(drawable, null)
 
     fun setColorTintRes(iv: ImageView, @ColorRes colorId: Int)= setColorTintInt(iv, _ResUtil.getColor(iv.context, colorId))
     fun setColorTintInt(iv: ImageView, @ColorInt color: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
-        val drawable= iv.drawable
-        if(drawable != null)
-            ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(color))
+        if(color == null){
+            ImageViewCompat.setImageTintList(iv, null)
+        } else {
+            val drawable= iv.drawable
+            if(drawable != null)
+                ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(color))
 //            setColorTintInt(drawable, color)
-        else
-            iv.setImageDrawable(ColorDrawable(color))
+            else
+                iv.setImageDrawable(ColorDrawable(color))
+        }
 //        iv.drawable.colorFilter = BlendModeColorFilter(color, blendMode) //Masih error karena masalah kompatibilitas API
+    }
+    fun clearColorTint(iv: ImageView) { //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+        ImageViewCompat.setImageTintList(iv, null)
     }
 
     fun setImgRes(iv: ImageView, @DrawableRes drawableId: Int) = iv.setImageResource(drawableId)
@@ -444,6 +446,9 @@ object  _ViewUtil{
         else
             v.backgroundDrawable= ColorDrawable(color)
 //        v.background.colorFilter = BlendModeColorFilter(color, blendMode) //Masih error karena masalah kompatibilitas API
+    }
+    fun clearBgColorTintInt(v: View){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
+        ViewCompat.setBackgroundTintList(v, null)
     }
 
 /*
