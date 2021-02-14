@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import sidev.lib.android.siframe.lifecycle.fragment.RvFrag
 import sidev.lib.android.siframe.tool.SQLiteHandler
-import sidev.lib.android.siframe.tool.SQLiteHandler.CollectionTypeHandler
+//import sidev.lib.android.siframe.tool.SQLiteHandler.CollectionTypeHandler
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.collection.toArrayList
 import sidev.lib.implementation.adp.PolarEcgAdp
@@ -16,11 +16,11 @@ class PolarEcgDbFrag : RvFrag<PolarEcgAdp>(){
     override fun initRvAdp(): PolarEcgAdp = PolarEcgAdp(context!!)
 
     override fun _initView(layoutView: View) {
-        rvAdp.dataList = PolarEcgHandler(context!!).attribName.toArrayList()
+        rvAdp.dataList = PolarEcgHandler(context!!).attribs.map { it.value.name }.toArrayList()
     }
 }
 
-class PolarEcgHandler(c: Context): SQLiteHandler<PolarEcgData>(c, EcgCollectionHandler()){
+class PolarEcgHandler(c: Context): SQLiteHandler<PolarEcgData>(c/*, EcgCollectionHandler()*/){
     override val modelClass: Class<PolarEcgData>
         get() = PolarEcgData::class.java
 
@@ -37,7 +37,7 @@ class PolarEcgHandler(c: Context): SQLiteHandler<PolarEcgData>(c, EcgCollectionH
     }
 }
 
-
+/*
 //@SuppressWarnings(SuppressLiteral.UNCHECKED_CAST)
 internal class EcgCollectionHandler : CollectionTypeHandler<PolarEcgData> {
     /**
@@ -83,3 +83,5 @@ internal class EcgCollectionHandler : CollectionTypeHandler<PolarEcgData> {
         return if (field.name == "samples") Int::class.java else null
     }
 }
+
+ */

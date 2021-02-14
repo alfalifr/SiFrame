@@ -13,9 +13,9 @@ interface Attribute {
         INTEGER,
         STRING,
         DOUBLE,
-        FLOAT,
-        NULL; //Attribute dg tipe ini tidak akan disimpan pada DB.
-
+        //FLOAT,
+        NULL //Attribute dg tipe ini tidak akan disimpan pada DB.
+        ;
         companion object{
             fun getByName(typeName: String): Type = when (typeName.toUpperCase(Locale.ROOT)){
                 INTEGER.name -> INTEGER
@@ -23,7 +23,7 @@ interface Attribute {
                 STRING.name -> STRING
                 "TEXT" -> STRING
                 DOUBLE.name -> DOUBLE
-                FLOAT.name -> FLOAT
+                //FLOAT.name -> FLOAT
                 else -> NULL
             }
             fun getByClass(typeClass: Class<*>): Type = getByName(when(typeClass){

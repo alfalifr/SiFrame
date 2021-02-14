@@ -59,6 +59,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
 //        sqlite.ifExists()
         sqlite.ifExists(data).observe { map ->
             map.notNull { map ->
+                if(map.isEmpty()) return@notNull
                 val exists= map.values.first()
                 loge("sqlite.ifExists() NOT NULL exists= $exists")
                 var res= R.drawable.ic_check_circle
@@ -81,6 +82,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
                 loge("insert() NOT EXISTS")
                 sqlite.insert(data).observe { map ->
                     map.notNull { map ->
+                        if(map.isEmpty()) return@notNull
                         for((k, v) in map){
                             loge("insert k= $k v= $v")
                         }
@@ -103,6 +105,7 @@ class PageAdp(c: Context, data: ArrayList<Page>?) : RvAdp<Page, LinearLm>(c, dat
                 loge("delete() EXISTS")
                 sqlite.delete(data).observe { map ->
                     map.notNull { map ->
+                        if(map.isEmpty()) return@notNull
                         for((k, v) in map){
                             loge("delete k= $k v= $v")
                         }

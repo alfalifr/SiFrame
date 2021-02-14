@@ -3,6 +3,7 @@ package sidev.lib.implementation.util
 import android.content.Context
 import sidev.lib.android.siframe.tool.util.`fun`.fkmId
 import sidev.lib.android.siframe.tool.SQLiteHandler
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.implementation.model.Page
 
 class PageSqlite(c: Context) : SQLiteHandler<Page>(c){
@@ -10,9 +11,10 @@ class PageSqlite(c: Context) : SQLiteHandler<Page>(c){
         get() = Page::class.java
 
     override fun createModel(petaNilai: Map<String, *>): Page {
-        val id= petaNilai[attribName[0]] as String
-        val contentFk= petaNilai[attribName[1]] as String
-        val no= petaNilai[attribName[2]] as Int
+        loge("PageSqlite.createModel() petaNilai= $petaNilai")
+        val id= petaNilai["id"] as String //attribName[0]
+        val contentFk= petaNilai["contentFk"] as String //attribName[1]
+        val no= petaNilai["no"] as Int //attribName[2]
 
         return Page(id, fkmId(contentFk), no)
     }

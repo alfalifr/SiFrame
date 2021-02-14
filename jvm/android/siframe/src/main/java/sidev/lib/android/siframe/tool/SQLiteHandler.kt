@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.std.db.Attribute
 import sidev.lib.android.siframe.intfc.listener.LiveVal
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
@@ -22,10 +23,15 @@ import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.ToastApp
 import sidev.lib.android.std.`val`._Config
 import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
+import sidev.lib.collection.ReadOnlyMap
+import sidev.lib.collection.asReadOnly
+import sidev.lib.collection.find
+import sidev.lib.exception.IllegalArgExc
+import sidev.lib.exception.IllegalStateExc
 import sidev.lib.jvm.tool.util.StringUtil
 import sidev.lib.jvm.tool.util.ThreadUtil
-import sidev.lib.number.isNotNegative
-import sidev.lib.reflex.full.isCollection
+import sidev.lib.reflex.jvm.declaredFieldsTree
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
 
@@ -49,6 +55,59 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
 //    val ctx: Context= App.ctx
 //    : SQLiteOpenHelper(konteks, BuildConfig.DB_NAMA, null, BuildConfig.DB_VERSI){
 
+    private fun <T: Any, O: Any> getUnkownTypeAndValue(oriClass: Class<T>, inValue: T?, outIsNullable: Boolean): Pair<Class<O>, O?>? {
+        if(otherTypeHandler == null)
+            return null
+        val type = otherTypeHandler!!.getTypeInDb(oriClass)
+        val outValue = otherTypeHandler!!.getValueInDb(oriClass, inValue)
+        if(type == null){
+            if(outValue != null) throw IllegalStateExc(
+                currentState = "type == null && outValue != null",
+                expectedState = "type != null && outValue != null",
+                detMsg = "`outValue` ($outValue) harus memiliki type, currentType=$type"
+            )
+            return null
+        }
+        if(outValue == null){
+            if(!outIsNullable) throw IllegalStateExc(
+                currentState = "outValue == null && !outIsNullable",
+                expectedState = "outValue == null && outIsNullable",
+                detMsg = "`outValue` == null namun syarat menentukan bahwa `outValue` != null (`outIsNullable`='$outIsNullable', )"
+            )
+            //@Suppress(SuppressLiteral.UNCHECKED_CAST)
+            //return (type to outValue) as Pair<Class<O>, O?>?
+        } else if(type != outValue::class.java) throw IllegalStateExc(
+            currentState = "type != outValue::class.java",
+            expectedState = "type == outValue::class.java",
+            detMsg = "`type` ($type) harus sama dg `outValue::class.java` (${outValue::class.java})"
+        )
+        //Hanya untuk mengecek apakah hasil return, yaitu `type`, sesuai dengan tipe yg ada pada DB, yaitu enum `SQLiteHandler.Type`
+        getTypeInDb(type)
+        @Suppress(SuppressLiteral.UNCHECKED_CAST)
+        return (type to outValue) as Pair<Class<O>, O?>?
+        //return if(type != null) type to outValue else null
+    }
+
+    var otherTypeHandler: OtherTypeHandler?= null
+    interface OtherTypeHandler {
+        fun <T: Any> getTypeInDb(oriClass: Class<out T>): Class<*>?
+        fun <T: Any> getValueInDb(oriClass: Class<out T>, inValue: T?): Any?
+    }
+/*
+    enum class DbType {
+        STRING,
+        INTEGER,
+        DOUBLE,
+    }
+ */
+
+    /**
+     * [repr] adalah representasi string pada skema DB.
+     * Contoh: INTEGER AUTO_INCREMENT PRIMARY KEY
+     */
+    data class DbRepresentation(val name: String, val type: Attribute.Type, val repr: String)
+
+/*
     constructor(ctx: Context, collectionTypeHandler: CollectionTypeHandler<M>): this(ctx){
         this.collectionTypeHandler= collectionTypeHandler
         initHandler()
@@ -58,6 +117,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             createTable(true)
  */
     }
+ */
 
     companion object{
         val TYPE_NULL= Attribute.Type.NULL.name /* "NULL" / *jika suatu field tidak merepresentasikan nilai scr langsung, atau dg kata lain merupakan object,
@@ -66,7 +126,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         var EXCLUDED_FIELD_NAME= "_id" //Replika dari id. <2 Juni 2020> => field yg gak dianggap adalah yg dg nama berawalan _
         val ERROR= "error"
     }
-
+/*
     /**
      * Property ini digunakan pada instansiasi kelas ini,
      * jadi tidak perlu diubah nilainya setelahnya,
@@ -75,6 +135,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
      */
     protected var collectionTypeHandler: CollectionTypeHandler<M>?= null
     protected var isCollectionTypePresent: Boolean= false
+    //TODO 14 Feb 2021 -> Disable dulu
+ */
 
     open val prefixName: String= "_\$USER\$_"
 
@@ -105,19 +167,11 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
     var tableName: String= ""
         protected set
     protected abstract val modelClass: Class<M>
-
-    /**
-     * Knp kok gak pake java.reflect aja? Krn gak smua declaredField merupakan attrib, sprti attrib yg berupa obj.
-     */
+/*
+    var attribName: ReadOnlyList<String> = emptyList<String>().asReadOnly(false) //= Array(0) {""}
+        private set
     protected var attribField: List<Field> = emptyList() //Array<Field>
         private set
-    var attribName: List<String> = emptyList()//= Array(0) {""}
-        private set
-    private var attribNameArray: Array<String> = Array(0) {""}
-        set(v){
-            field= v
-            attribName= v.asList()
-        }
     /**
      * Index untuk tiap elemen dari [attribName] pada field yg terdapat dalam model [M].
      * Properti ini berguna saat mengakses field dari kelas model [M],
@@ -128,7 +182,27 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         private set
     var attribType: List<String> = emptyList() //= Array(0) {""}
         private set
+ */
 
+    /**
+     * Knp kok gak pake java.reflect aja? Krn gak smua declaredField merupakan attrib, sprti attrib yg berupa obj.
+     * Value berisi Pair antara nama dan tipe attribut di dalam DB.
+     */
+    var attribs: ReadOnlyMap<Field, DbRepresentation> =
+        emptyMap<Field, DbRepresentation>().asReadOnly(false) //Array<Field>
+        private set
+    /**
+     * Untuk kebutuhan kueri saat menggunakan SQLiteOpenHelper.readableDatabase.query().
+     */
+    private val attribNameArray: Array<String> by lazy {
+        if(attribs.isEmpty()) throw IllegalStateExc(
+            currentState = "attribs.isEmpty()",
+            expectedState = "attribs.isNotEmpty()",
+            detMsg = "Properti `attribNameArray` diakses saat `attribs.isEmpty()`"
+        )
+        attribs.map { it.value.name }.toTypedArray()
+    } //= Array(0) {""}
+/*
     /**
      * Nama attribut dg tipe koleksi pada DB.
      * TODO: <Sabtu, 26 Sep 2020> => Untuk smtr, data tipe koleksi yg disimpan hanya dapat berjumlah 1.
@@ -136,15 +210,19 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
      */
     protected var collectionTypeAttribName: List<String> = emptyList() //= Array(0) {""}
         private set
+ */
 
     val sqlCreateTable: String
         get(){
             var queryPembuatanTabel= "CREATE TABLE $tableName ("
-            for(i in attribName.indices){
-                queryPembuatanTabel += "${attribName[i]} ${attribType[i]}"
-                if(i < attribName.size -1)
-                    queryPembuatanTabel += ", "
+            //var i= 0
+            for((_, pair) in attribs){
+                val (name, type)= pair
+                queryPembuatanTabel += "$name ${type.name}, "
+                //if(i < attribName.size -1)
+                //queryPembuatanTabel += ", "
             }
+            queryPembuatanTabel= queryPembuatanTabel.removeSuffix(", ")
             return "$queryPembuatanTabel);"
         }
     val sqlDropTable: String
@@ -236,8 +314,32 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
 
     private fun mapValue(valueCursor: Cursor): HashMap<String, Any>{
         val valMap= HashMap<String, Any>()
-        val attribs= modelClass.declaredFields
+        //val attribs= modelClass.declaredFields
         var defAcces: Boolean
+        fora@ for((i, attrib) in attribs.iterator().withIndex()){
+            val (field, repr)= attrib
+            val (_, type)= repr
+            defAcces= field.isAccessible
+//            loge("labeliAtribut() atributAsli= ${attrib.name} tipe= ${attrib.type}")
+            valMap[field.name]= when(field.type){
+                Int::class.java -> valueCursor.getInt(i)
+                Long::class.java -> valueCursor.getInt(i).toLong()
+                Boolean::class.java -> valueCursor.getInt(i) == 1
+                String::class.java -> valueCursor.getString(i)
+                Double::class.java -> valueCursor.getDouble(i)
+                Float::class.java -> valueCursor.getDouble(i).toFloat()
+                Byte::class.java -> valueCursor.getInt(i).toByte()
+                Short::class.java -> valueCursor.getInt(i).toShort()
+                else -> when(type){
+                    Attribute.Type.INTEGER -> valueCursor.getInt(i)
+                    Attribute.Type.STRING -> valueCursor.getString(i)
+                    Attribute.Type.DOUBLE -> valueCursor.getDouble(i) // == 1
+                    Attribute.Type.NULL -> continue@fora
+                }
+            }
+            field.isAccessible= defAcces
+        }
+/*
         for(i in attribNameFieldIndex){
             val attrib= attribs[i]
             defAcces= attrib.isAccessible
@@ -255,6 +357,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                     }
             attribs[i].isAccessible= defAcces
         }
+ */
         return valMap
     }
 
@@ -313,13 +416,50 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         }
     */
 
-    fun getAttribName(field: Field): String? {
+    fun getAttribName(field: Field): String? = attribs[field]?.name
+/*
+    {
         val fieldName= StringUtil.toSnakeCase(field.name, true)
         return attribNameArray.find { it == fieldName }
     }
-    fun getAttribName(field: KProperty<*>): String? {
+ */
+    fun getAttribName(field: KProperty<*>): String? = attribs.find {
+        it.key.let {
+            it.name == field.name && it.type == field.returnType.classifier?.javaClass
+        }
+    }?.value?.name
+/*
+    {
         val fieldName= StringUtil.toSnakeCase(field.name, true)
         return attribNameArray.find { it == fieldName }
+    }
+ */
+
+    private fun getTypeInDb(cls: Class<*>): Attribute.Type = when(cls) {
+        Int::class.java -> Attribute.Type.INTEGER
+        Long::class.java -> Attribute.Type.INTEGER
+        Boolean::class.java -> Attribute.Type.INTEGER
+        String::class.java -> Attribute.Type.STRING
+        Double::class.java -> Attribute.Type.DOUBLE
+        Float::class.java -> Attribute.Type.DOUBLE
+        else -> {
+            val outCls= otherTypeHandler?.getTypeInDb(cls)
+/*
+            if(outCls == null) throw IllegalArgExc(
+                paramExcepted = *arrayOf("cls"),
+                detailMsg = "Param `cls` ($cls) merupakan kelas yg tidak diketahui dalam DB."
+            )
+ */
+            if(cls == outCls) throw IllegalStateExc(
+                currentState = "cls == outCls",
+                expectedState = "cls != outCls",
+                detMsg = "Param `cls` ($cls) == `outCls` ($outCls) sehingga akan menyebabkan infinite loop"
+            )
+            if(outCls == null) {
+                loge("Param `cls` ($cls) merupakan kelas yg tidak diketahui dalam DB. Return Attribute.Type.NULL")
+                Attribute.Type.NULL
+            } else getTypeInDb(outCls)
+        }
     }
 
     /**
@@ -343,13 +483,15 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             }
  */
 
-        val attribFieldList= ArrayList<Field>(attribCount)
-        val attribNameList= ArrayList<String>(attribCount)
-        val attribNameFieldIndexList= ArrayList<Int>(attribCount)
-        val attribTypeList= ArrayList<String>(attribCount)
-        val collectionTypeAttribNameList= ArrayList<String>(attribCount)
+        //val attribFieldList= ArrayList<Field>(attribCount)
+        val attribFieldList_= HashMap<Field, DbRepresentation>(attribCount)
+        //val attribNameList= ArrayList<String>(attribCount)
+        //val attribNameFieldIndexList= ArrayList<Int>(attribCount)
+        //val attribTypeList= ArrayList<String>(attribCount)
+        //val collectionTypeAttribNameList= ArrayList<String>(attribCount)
 
         for(i in 0 until attribCount){
+        //for(field in modelClass.declaredFieldsTree){
             //Tidak mengambil private prop
 /*
             val pub= Modifier.isPublic(attribs[i].modifiers)
@@ -370,8 +512,10 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                     == true
                 ) continue
 
-                var isCollection= false
-                var type= when(val fieldType= field.type){
+                //var isCollection= false
+                val type= getTypeInDb(field.type)//.name
+/*
+                    when(val fieldType= field.type){
                     Int::class.java -> "INTEGER"
                     Long::class.java -> "INTEGER"
                     Boolean::class.java -> "INTEGER"
@@ -380,10 +524,12 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                     Float::class.java -> "DOUBLE"
                     else -> {
                         var type= if(fieldType.kotlin.isCollection || fieldType.isArray)
+/*
                             collectionTypeHandler?.resolveColumnType(field)?.let {
                                 Attribute.Type.getByClass(it)
 //                                    .also { attr -> loge("==DALAM== readAttr() field= $field attrType= $attr class= $it") }
                             }?.name ?: TYPE_NULL
+ */
                         else TYPE_NULL
 
                         isCollection= type != TYPE_NULL
@@ -413,29 +559,33 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                         type
                     }
                 }
+ */
 //                loge("i= $i type= $type")
-                if(type != TYPE_NULL){
+                val typeName= type.name
+                if(typeName != TYPE_NULL){
                     val colName= StringUtil.toSnakeCase(attName, true)
-                    attribFieldList += field
-                    attribNameList += colName
-                    if(isCollection)
-                        collectionTypeAttribNameList += colName
-                    attribNameFieldIndexList += i
+                    //attribFieldList += field
+                    //attribNameList += colName
+
+                    //if(isCollection)
+                        //collectionTypeAttribNameList += colName
+                    //attribNameFieldIndexList += i
+                    var typeStr= type.name
 
                     for(annot in field.annotations){
-                        if(annot is ModelIncrement && type == "INTEGER"){
-                            type += " AUTO_INCREMENT"
+                        if(annot is ModelIncrement && typeName == "INTEGER"){
+                            typeStr += " AUTO_INCREMENT"
                             break
                         }
                         if(annot is ModelId
                             && (annot.kind == StorageKind.ANY || annot.kind == StorageKind.SQLITE)
                         ){
                             primaryKey= colName //attribNameList[i]
-                            type += " PRIMARY KEY"
+                            typeStr += " PRIMARY KEY"
                             break
                         }
                     }
-                    attribTypeList += type
+                    attribFieldList_[field]= DbRepresentation(colName, type, typeStr)
 //                    val i= attribNameList.lastIndex
 //                    loge("attribFieldList[$i] = ${attribFieldList[i]} attribNameList[$i] = ${attribNameList[i]} attribTypeList[$i] = ${attribTypeList[i]}")
                 }
@@ -449,7 +599,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             }
 //            field.isAccessible= defAccessibility
         }
-
+/*
         //TODO: <Sabtu, 26 Sep 2020> => Untuk smtr, tabel yg memiliki kolom bertipe koleksi dan punya id,
         //  tidak akan disimpan. Hal tersebut dikarenakan handler ini menjadikan kolom bertipe
         //  koleksi menjadi bbrp baris sehingga id tidak bisa sama.
@@ -458,6 +608,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             collectionTypeHandler= null // Jika tidak ada koleksi yg disimpan, maka akan sia" nilainya disimpan.
             collectionTypeAttribNameList.clear()
         }
+ */
 /*
         <Sabtu, 26 Sep 2020> => primaryKey tidak dianggap sbg keharusan. Hal tersebut lebih masuk akal.
         if(primaryKey.isEmpty()){
@@ -468,12 +619,16 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             primaryKey= attribNameList[0]
         }
  */
+        this.attribs = attribFieldList_.asReadOnly(false) //.toTypedArray()
+        loge("readAttribFromModel() attribs= ${this.attribs}")
+/*
         attribField= attribFieldList //.toTypedArray()
 //        attribName= attribNameList //.toTypedArray()
         attribNameArray= attribNameList.toTypedArray()
         attribNameFieldIndex= attribNameFieldIndexList //.toTypedArray()
         attribType= attribTypeList //.toTypedArray()
-        collectionTypeAttribName= collectionTypeAttribNameList //.toTypedArray()
+ */
+        //collectionTypeAttribName= collectionTypeAttribNameList //.toTypedArray()
 /*
         for((i, name) in attribName.withIndex()){
 //            loge("i= $i attribName= $name attribType= ${attribType[i]}")
@@ -494,12 +649,17 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         catch (e: Exception){ null }
 
 
-    fun getAttribType(attribName: String): Attribute.Type{
+    fun getAttribType(attribName: String): Attribute.Type = attribs.find {
+        it.value.name == attribName
+    }?.value?.type ?: Attribute.Type.NULL
+/*
+    {
         val ind= this.attribName.indexOf(attribName)
         return if(ind.isNotNegative())
             Attribute.Type.getByName(attribType[ind])
         else Attribute.Type.NULL
     }
+ */
 /*
 ===================
 Koneksi
@@ -650,7 +810,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     fun readAllData(mulaiBaris: Int= 0, batas: Int= 0): LiveVal<List<M>>{
         checkConn()
 
-        var liveVal= LiveVal<List<M>>(ctx)
+        val liveVal= LiveVal<List<M>>(ctx)
         ThreadUtil.Pool.submit {
 //            var liveVal= LiveVal<List<M>>()
             try{
@@ -674,7 +834,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                LogApp.e("SQLITE", "bacaSemuaData kursor.count= ${kursor.count}")
 
                 if(kursor.moveToFirst()){
-                    var resList= ArrayList<M>()
+                    val resList= ArrayList<M>()
                     liveVal.value= resList
                     do{
                         if(kursor.count > 0){
@@ -687,8 +847,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             progressListener?.progresDone()
                     } while(kursor.moveToNext())
                     kursor.close()
+                    /*
                     if(isCollectionTypePresent && resList.size > 1)
                         collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
+                     */
                 } else {
                     liveVal.value= emptyList()
                 }
@@ -715,7 +877,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             try{
                 val db= sqliteHelper.readableDatabase
 //                kosongkanData()
-                var resList= ArrayList<M>()
+                val resList= ArrayList<M>()
                 liveVal.value= resList
                 for(perId in id){
                     try{
@@ -738,8 +900,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         progressListener?.progresDone()
                     }
                 }
+                /*
                 if(isCollectionTypePresent && resList.size > 1)
                     collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
+                 */
                 liveVal
 //                db.close()
             } catch(error: Exception){
@@ -775,7 +939,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                     LogApp.e("SQLITE", "bacaData argumen= $perArgumen")
  */
                 if(kursor.moveToFirst()){
-                    var resList= ArrayList<M>()
+                    val resList= ArrayList<M>()
                     liveVal.value= resList
                     do{
                         if(kursor.count > 0){
@@ -788,8 +952,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             progressListener?.progresDone()
                     } while(kursor.moveToNext())
                     kursor.close()
+                    /*
                     if(isCollectionTypePresent && resList.size > 1)
                         collectionTypeHandler?.flattenQueryResult(resList, collectionTypeAttribName)?.let { resList= it }
+                     */
                 } else {
                     liveVal.value= emptyList()
                 }
@@ -882,7 +1048,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                    val hasil= db.query(tableName, attribName, strCondition, null)//db.update(tableName, values, strCondition, null)
                         val kursor  = db.query(
                             tableName,
-                            arrayOf(primaryKey),
+                            arrayOf(attribs.values.first().name), //arrayOf(primaryKey), -> Pokoknya attrib pertamanya apapun itu
                             strCondition, null,
                             null, null, null, null)
 
@@ -1046,23 +1212,41 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         val nilai= ContentValues()
 //        val atributDideklarasikan= model::class.java.declaredFields
         var aksesibilitasAwal: Boolean
-        for((i, perNamaAtribut) in attribName.withIndex()){
-            if("AUTO_INCREMENT" in attribType[i])
+        for((field, repr) in attribs){
+            //val (field, repr) = attrib
+            if("AUTO_INCREMENT" in repr.repr)
                 continue
-            val atributIsi= attribField[i]
-            aksesibilitasAwal= atributIsi.isAccessible
-            atributIsi.isAccessible= true
+            //val atributIsi= attribField[i]
+            val fieldName= field.name
+            aksesibilitasAwal= field.isAccessible
+            field.isAccessible= true
 
-            val perNilai= atributIsi.get(model)
+            val perNilai= field.get(model)
             if(perNilai != null){
 //                if(!atributIsi.type.interfaces.ifExists { intfc -> intfc == Fk::class.java }){
-                    when(atributIsi.type){
-                        Int::class.java -> nilai.put(perNamaAtribut, perNilai as Int) ///*atributIsi.getInt(model)*/)
-                        Long::class.java -> nilai.put(perNamaAtribut, perNilai as Long)
-                        Boolean::class.java -> nilai.put(perNamaAtribut, if(perNilai as Boolean) 1 else 0)
-                        String::class.java -> nilai.put(perNamaAtribut, perNilai as String)
-                        Double::class.java -> nilai.put(perNamaAtribut, perNilai as Double) //atributIsi.getDouble(model))
-                        Float::class.java -> nilai.put(perNamaAtribut, perNilai as Float) //atributIsi.getDouble(model))
+                    when(field.type){
+                        Int::class.java -> nilai.put(fieldName, perNilai as Int) ///*atributIsi.getInt(model)*/)
+                        Long::class.java -> nilai.put(fieldName, perNilai as Long)
+                        Boolean::class.java -> nilai.put(fieldName, if(perNilai as Boolean) 1 else 0)
+                        String::class.java -> nilai.put(fieldName, perNilai as String)
+                        Double::class.java -> nilai.put(fieldName, perNilai as Double) //atributIsi.getDouble(model))
+                        Float::class.java -> nilai.put(fieldName, perNilai as Float) //atributIsi.getDouble(model))
+                        Byte::class.java -> nilai.put(fieldName, perNilai as Byte) //atributIsi.getDouble(model))
+                        Short::class.java -> nilai.put(fieldName, perNilai as Short) //atributIsi.getDouble(model))
+                        else -> {
+                            @Suppress(SuppressLiteral.UNCHECKED_CAST)
+                            getUnkownTypeAndValue<Any, Any>(field.type as Class<Any>, perNilai, true).notNull { (_, inValue) ->
+                                when(repr.type){
+                                    Attribute.Type.INTEGER -> nilai.put(fieldName, inValue as Int)
+                                    Attribute.Type.STRING -> nilai.put(fieldName, inValue as String)
+                                    Attribute.Type.DOUBLE -> nilai.put(fieldName, inValue as Double)
+                                    Attribute.Type.NULL -> {
+                                        //do nothing
+                                        loge("Nilai dari field ($field), yaitu '$inValue', tidak disimpan karena repr.type == '${repr.type}'")
+                                    }
+                                }
+                            }
+                        }
                     }
 //                }
                 /*
@@ -1078,21 +1262,21 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 }
                 */
             } else{
-                nilai.putNull(perNamaAtribut)
-                LogApp.e("SQLITE", "NILAI NULL!!! namaAtribut= $perNamaAtribut")
+                nilai.putNull(fieldName)
+                LogApp.e("SQLITE", "NILAI NULL!!! namaAtribut= $fieldName")
             }
-            atributIsi.isAccessible= aksesibilitasAwal
+            field.isAccessible= aksesibilitasAwal
         }
         return nilai
     }
 
     fun getConditionString(model: M): String{
         var res= ""
-        for((i, field) in attribField.withIndex()){
-            val name= attribName[i]
+        for((field, repr) in attribs){
+            //val name= attribName[i]
             val defAcces= field.isAccessible
             field.isAccessible= true
-            var value= field.get(model)
+            val value= field.get(model)
             /*
             if(field.type.iff{
                     it.interfaces.ifExists { intfc -> intfc == Fk::class.java }
@@ -1101,7 +1285,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             */
             field.isAccessible= defAcces
 
-            res += "$name = $value AND "
+            res += "${repr.name} = $value AND "
         }
         res= res.removeSuffix("AND ")
 //        loge("getConditionString() res= $res")
@@ -1124,6 +1308,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 
 
 
+/*
+    //TODO 14 Feb 2021 -> Disable dulu.
     /**
      * Interface menangani masalah penyimpanan data dg tipe koleksi (Collection atau Array).
      */
@@ -1151,6 +1337,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         fun <C: List<M>> flattenQueryResult(dataList: C, collectionAttribNameList: List<String>): C
         //TODO: <Sabtu, 26 Sep 2020> => Buat implementasi default.
     }
+ */
 /*
     //@return null jika tidak ada objek pengawasProgres
     fun progresBerjalan(): Boolean?{
