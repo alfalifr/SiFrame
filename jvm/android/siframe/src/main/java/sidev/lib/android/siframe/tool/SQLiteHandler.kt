@@ -32,8 +32,12 @@ import sidev.lib.exception.IllegalStateExc
 import sidev.lib.jvm.tool.util.StringUtil
 import sidev.lib.jvm.tool.util.ThreadUtil
 import sidev.lib.reflex.jvm.declaredFieldsTree
+import sidev.lib.reflex.jvm.primitiveClass
 import java.lang.reflect.Field
+import java.lang.reflect.Modifier
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
 
 /**
  * Aturan penyimpanan data:
@@ -76,11 +80,12 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             )
             //@Suppress(SuppressLiteral.UNCHECKED_CAST)
             //return (type to outValue) as Pair<Class<O>, O?>?
-        } else if(type != outValue::class.java) throw IllegalStateExc(
-            currentState = "type != outValue::class.java",
-            expectedState = "type == outValue::class.java",
-            detMsg = "`type` ($type) harus sama dg `outValue::class.java` (${outValue::class.java})"
-        )
+        } else if(!(type == outValue::class.java || (type.isPrimitive && type == outValue::class.java.primitiveClass)))
+            throw IllegalStateExc(
+                currentState = "type != outValue::class.java",
+                expectedState = "type == outValue::class.java",
+                detMsg = "`type` ($type) harus sama dg `outValue::class.java` (${outValue::class.java}) (outValue=$outValue)"
+            )
         //Hanya untuk mengecek apakah hasil return, yaitu `type`, sesuai dengan tipe yg ada pada DB, yaitu enum `SQLiteHandler.Type`
         getTypeInDb(type)
         @Suppress(SuppressLiteral.UNCHECKED_CAST)
@@ -216,9 +221,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         get(){
             var queryPembuatanTabel= "CREATE TABLE $tableName ("
             //var i= 0
-            for((_, pair) in attribs){
-                val (name, type)= pair
-                queryPembuatanTabel += "$name ${type.name}, "
+            for((_, repr) in attribs){
+                queryPembuatanTabel += "${repr.name} ${repr.repr}, "
                 //if(i < attribName.size -1)
                 //queryPembuatanTabel += ", "
             }
@@ -318,7 +322,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         var defAcces: Boolean
         fora@ for((i, attrib) in attribs.iterator().withIndex()){
             val (field, repr)= attrib
-            val (_, type)= repr
+            //val (_, type)= repr
             defAcces= field.isAccessible
 //            loge("labeliAtribut() atributAsli= ${attrib.name} tipe= ${attrib.type}")
             valMap[field.name]= when(field.type){
@@ -330,7 +334,7 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                 Float::class.java -> valueCursor.getDouble(i).toFloat()
                 Byte::class.java -> valueCursor.getInt(i).toByte()
                 Short::class.java -> valueCursor.getInt(i).toShort()
-                else -> when(type){
+                else -> when(repr.type){
                     Attribute.Type.INTEGER -> valueCursor.getInt(i)
                     Attribute.Type.STRING -> valueCursor.getString(i)
                     Attribute.Type.DOUBLE -> valueCursor.getDouble(i) // == 1
@@ -499,8 +503,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             val priv= Modifier.isPrivate(attribs[i].modifiers)
             val isAc= attribs[i].isAccessible
  */
-
             val field= attribs[i]
+            if(Modifier.isStatic(field.modifiers)) continue //Hanya menyimpan yang berupa internal state, bkn static.
 //            val defAccessibility= field.isAccessible
             val attName= field.name
 //            field.isAccessible= true
@@ -619,6 +623,11 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
             primaryKey= attribNameList[0]
         }
  */
+        if(attribFieldList_.isEmpty()) throw IllegalStateExc(
+            currentState = "attribs.isEmpty()",
+            expectedState = "attribs.isNotEmpty()",
+            detMsg = "`attrib` tidak boleh kosong karena brarti tidak ada yg disimpan di DB '$tableName'. fields $modelClass = $attribs"
+        )
         this.attribs = attribFieldList_.asReadOnly(false) //.toTypedArray()
         loge("readAttribFromModel() attribs= ${this.attribs}")
 /*
@@ -784,17 +793,19 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                            LogApp.e("SQLITE", "hasil simpan data DALAM HASIL= $hasil")
                         } else {
                             resList[id]= false
+                            liveVal.invokeListener()
                             progressListener?.progresDone()
                         }
                     } catch (e: Exception){
                         resList[id]= false
+                        liveVal.setVal(liveVal.value, e.toString())
                         progressListener?.progresDone()
                     }
                 }
                 liveVal
 //                db.close()
             } catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 LogApp.e("SQLITE", "simpan data GAGAL!!!!!\n error= ${error::class.java.simpleName} \n pesan= ${error.message} \n karena= ${error.cause}")
                 progressListener?.sendError(error, true)
                 null
@@ -858,7 +869,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                db.close()
                 liveVal
             }catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 progressListener?.sendError(error, true)
                 null
 //                liveVal= null
@@ -896,7 +907,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         } else
                             progressListener?.progresDone()
                         kursor.close()
-                    }catch (e: Exception){
+                    } catch (e: Exception){
+                        liveVal.setVal(liveVal.value, e.toString())
                         progressListener?.progresDone()
                     }
                 }
@@ -907,7 +919,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 liveVal
 //                db.close()
             } catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 progressListener?.sendError(error, true)
                 null
             }
@@ -916,7 +928,62 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     }
 
     @JvmOverloads
-    fun read(kondisi: String= "", vararg argumen: String): LiveVal<List<M>>{
+    fun readByPropertyK(
+        vararg condition: Pair<KProperty1<M, *>, String>,
+        groupBy: String?= null,
+        having: String?= null,
+        orderBy: String?= null,
+        limit: String?= null
+    ): LiveVal<List<M>> {
+        checkConn()
+        var cond= ""
+        val fields= attribs.keys
+        for((prop, string) in condition){
+            val key= fields.find {
+                it.name == prop.name
+                        && prop.returnType.classifier.asNotNullTo { cls: KClass<*> ->
+                    it.type == cls.java
+                } == true
+            } ?: throw IllegalArgExc(
+                paramExcepted = *arrayOf("condition"),
+                detailMsg = "Param `condition` memiliki property ($prop) yg tidak ada di [$this.attrib]"
+            )
+            val repr= attribs[key]!!
+            cond += "${repr.name} $string AND "
+        }
+        cond= cond.removeSuffix(" AND ")
+        return read(cond, groupBy = groupBy, having = having, orderBy = orderBy, limit = limit)
+    }
+
+    @JvmOverloads
+    fun readByProperty(
+        vararg condition: Pair<Field, String>,
+        groupBy: String?= null,
+        having: String?= null,
+        orderBy: String?= null,
+        limit: String?= null
+    ): LiveVal<List<M>> {
+        checkConn()
+        var cond= ""
+        for((field, string) in condition){
+            val repr= attribs[field] ?: throw IllegalArgExc(
+                paramExcepted = *arrayOf("condition"),
+                detailMsg = "Param `condition` memiliki field ($field) yg tidak ada di [$this.attrib]"
+            )
+            cond += "${repr.name} $string AND "
+        }
+        cond= cond.removeSuffix(" AND ")
+        return read(cond, groupBy = groupBy, having = having, orderBy = orderBy, limit = limit)
+    }
+
+    @JvmOverloads
+    fun read(
+        kondisi: String= "", vararg argumen: String,
+        groupBy: String?= null,
+        having: String?= null,
+        orderBy: String?= null,
+        limit: String?= null
+    ): LiveVal<List<M>>{
         checkConn()
 
         val liveVal= LiveVal<List<M>>(ctx)
@@ -925,10 +992,11 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 val db= sqliteHelper.readableDatabase
 //                kosongkanData()
                 val kursor  = db.query(
-                        tableName,
-                        attribNameArray,
-                        kondisi, argumen,
-                        null, null, null, null)
+                    tableName,
+                    attribNameArray,
+                    kondisi, argumen,
+                    groupBy, having, orderBy, limit
+                )
 
                 progressListener?.total(if(totalFix > 0) totalFix else kursor.count, "read")
 /*
@@ -962,7 +1030,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                db.close()
                 liveVal
             } catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 progressListener?.sendError(error, true)
                 null
             }
@@ -1013,7 +1081,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 //                db.close()
                 liveVal
             } catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 progressListener?.sendError(error, true)
                 null
             }
@@ -1070,13 +1138,14 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         }
                     } catch (e: Exception){
 //                        loge("ifExists() EXC")
+                        liveVal.setVal(liveVal.value, e.toString())
                         progressListener?.progresDone()
                     }
                 }
                 liveVal
             } catch (e: Exception){
 //                loge("ifExists() EXC outer")
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, e.toString())
                 progressListener?.sendError(e, true)
                 null
             }
@@ -1123,13 +1192,14 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         }
                     } catch (e: Exception){
                         resList[id]= false
+                        liveVal.setVal(liveVal.value, e.toString())
                         progressListener?.progresDone()
                     }
                 }
                 db.setTransactionSuccessful()
                 liveVal
             }catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 progressListener?.sendError(error, true)
                 null
             } finally{
@@ -1171,6 +1241,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         }
                     } catch (e: Exception){
                         resList[id]= false
+                        liveVal.setVal(liveVal.value, e.toString())
                         progressListener?.progresDone()
                         loge("delete() e.message= ${e.message}")
                     }
@@ -1178,7 +1249,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                 liveVal
 //                db.close()
             } catch(error: Exception){
-                liveVal.setVal(null, ERROR)
+                liveVal.setVal(null, error.toString())
                 progressListener?.sendError(error, true)
                 loge("delete() error.message= ${error.message}")
                 null
@@ -1217,7 +1288,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
             if("AUTO_INCREMENT" in repr.repr)
                 continue
             //val atributIsi= attribField[i]
-            val fieldName= field.name
+            val fieldName= repr.name
             aksesibilitasAwal= field.isAccessible
             field.isAccessible= true
 
