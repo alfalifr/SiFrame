@@ -11,13 +11,11 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import sidev.lib.`val`.SuppressLiteral
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.std.db.Attribute
 import sidev.lib.android.siframe.intfc.listener.LiveVal
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
-import sidev.lib.android.siframe.model.intfc.Exclude
-import sidev.lib.android.siframe.model.intfc.ModelId
-import sidev.lib.android.siframe.model.intfc.ModelIncrement
-import sidev.lib.android.siframe.model.intfc.StorageKind
+import sidev.lib.android.siframe.model.intfc.*
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.siframe.tool.util.log.LogApp
 import sidev.lib.android.siframe.tool.util.log.ToastApp
@@ -575,18 +573,23 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
                         //collectionTypeAttribNameList += colName
                     //attribNameFieldIndexList += i
                     var typeStr= type.name
-
                     for(annot in field.annotations){
-                        if(annot is ModelIncrement && typeName == "INTEGER"){
-                            typeStr += " AUTO_INCREMENT"
-                            break
+                        if(annot is ModelUnique){
+                            if(!(annot.kind == StorageKind.ANY || annot.kind == StorageKind.SQLITE))
+                                continue
+                            typeStr += " UNIQUE"
+                            break //Karena kalo udah UNIQUE, gak usah pake PRIMARY KEY atau AUTOINCREMENT
                         }
-                        if(annot is ModelId
-                            && (annot.kind == StorageKind.ANY || annot.kind == StorageKind.SQLITE)
-                        ){
+                        if(annot is ModelId){
+                            if(!(annot.kind == StorageKind.ANY || annot.kind == StorageKind.SQLITE))
+                                continue
                             primaryKey= colName //attribNameList[i]
                             typeStr += " PRIMARY KEY"
-                            break
+                        }
+                        if(annot is ModelIncrement && typeName == "INTEGER"){
+                            if(!(annot.kind == StorageKind.ANY || annot.kind == StorageKind.SQLITE))
+                                continue
+                            typeStr += " ${_SIF_Constant.Internal.DB_AUTO_INCREMENT}"
                         }
                     }
                     attribFieldList_[field]= DbRepresentation(colName, type, typeStr)
@@ -1042,7 +1045,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     /**
      * @return jml row yg udah ada.
      */
-    fun ifExists(condition: String, arg: Array<String>): LiveVal<Int>{
+    fun ifExists(condition: String, vararg arg: String/*arg: Array<String>*/): LiveVal<Int>{
         checkConn()
 
         val liveVal= LiveVal<Int>(ctx)
@@ -1058,6 +1061,8 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                         null, null, null, null)
 
                 progressListener?.total(if(totalFix > 0) totalFix else kursor.count, "read")
+
+
 /*
                 LogApp.e("SQLITE", "bacaData===========LUAR METHOD=============== jmlKursor= ${kursor.count} kursor.moveToFirst()= ${kursor.moveToFirst()} ${progressListener == null}")
 
@@ -1071,12 +1076,16 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
                             val model= createModel(mapValue(kursor))
                             count++
 //                            isiData(model)
+                            //liveVal.value= ++count
                             progressListener?.progresSucc(model)
-                        } else
+                        } else {
+                            //liveVal.value= count
                             progressListener?.progresDone()
+                        }
                     } while(kursor.moveToNext())
                     kursor.close()
                 }
+                //else liveVal.value= count
                 liveVal.value= count
 //                db.close()
                 liveVal
@@ -1285,7 +1294,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         var aksesibilitasAwal: Boolean
         for((field, repr) in attribs){
             //val (field, repr) = attrib
-            if("AUTO_INCREMENT" in repr.repr)
+            if(_SIF_Constant.Internal.DB_AUTO_INCREMENT in repr.repr)
                 continue
             //val atributIsi= attribField[i]
             val fieldName= repr.name

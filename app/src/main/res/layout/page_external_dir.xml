@@ -146,4 +146,90 @@
             android:textColor="@color/hitam"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="InternalDir: "
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_dir_internal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Internal Dir"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Direct Internal Dir: "
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_dir_internal_direct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Direct Internal Dir"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="========== App Spec Cache Dir ==========="
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cache Dir: "
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_app_cache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Direct Internal Dir"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exists: "
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_app_cache_exists"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exists"
+            android:textSize="12sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
 </LinearLayout>
