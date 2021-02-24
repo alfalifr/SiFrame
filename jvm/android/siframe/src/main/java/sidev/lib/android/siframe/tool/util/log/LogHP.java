@@ -5,13 +5,16 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+//import kotlin.Throwable;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 
 import sidev.lib.android.std.val._Config;
@@ -19,8 +22,14 @@ import sidev.lib.android.std.tool.util._EnvUtil;
 import sidev.lib.jvm.tool.util.TimeUtil;
 
 public class LogHP {
-    public final String FOLDER_LOG_APP;
     private Application app;
+    @NonNull
+    private final String FOLDER_LOG_APP;
+    @NonNull
+    private String rootFolder;
+    @NonNull
+    private String subPath = "";
+    @NonNull
     private String alamatFile;
     private Activity aktifitas;
     private String namaApp;
@@ -34,24 +43,26 @@ public class LogHP {
     private int barisKe= 0;
     private boolean fileYgSama= false;
 
-    public LogHP(Activity aktifitas){
+    public LogHP(@NonNull Activity aktifitas){
         gantiAktifitas(aktifitas);
         FOLDER_LOG_APP= Environment.getExternalStorageDirectory().getAbsolutePath() +"/Android/Develop/LogHP/" +namaApp;
-        alamatFile= FOLDER_LOG_APP;
+        rootFolder = FOLDER_LOG_APP;
+        alamatFile= rootFolder;
         cekIjinPrint();
         cekFolder();
     }
 
-    public LogHP(Application app){
+    public LogHP(@NonNull Application app){
         this.app= app;
         namaApp= app.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME_RES()); //R.string.app_name);
         FOLDER_LOG_APP= _EnvUtil.INSTANCE.projectLogDir(app, true); //Environment.getExternalStorageDirectory().getAbsolutePath() +"/Android/Develop/LogHP/" +namaApp;
-        alamatFile= FOLDER_LOG_APP;
+        rootFolder = FOLDER_LOG_APP;
+        alamatFile= rootFolder;
 //        cekIjinPrint();
         cekFolder();
     }
 
-    public void gantiAktifitas(Activity akt){
+    public void gantiAktifitas(@NonNull Activity akt){
         aktifitas= akt;
         app= aktifitas.getApplication();
         namaApp= aktifitas.getResources().getString(_Config.INSTANCE.getSTRING_APP_NAME_RES()); //R.string.app_name
@@ -62,16 +73,33 @@ public class LogHP {
         }
     }
 
-    public void letakFolder(String subPath){
+    public void letakFolder(@NonNull String subPath){
         if(!subPath.startsWith("/"))
             subPath= "/" +subPath;
-        alamatFile= FOLDER_LOG_APP +subPath;
+        alamatFile= rootFolder +subPath;
+        this.subPath= subPath;
+        cekFolder();
+    }
+
+    public void folderRoot(@NonNull String path){
+        rootFolder = path;
+        alamatFile= rootFolder +subPath;
         cekFolder();
     }
 
     public void fileBaru(){
         barisKe= 0;
         fileYgSama= false;
+    }
+
+    @NonNull
+    public String alamatFile(){
+        return alamatFile;
+    }
+
+    @NonNull
+    public String getRootFolder(){
+        return rootFolder;
     }
 
     private void cekFolder(){
@@ -110,10 +138,10 @@ public class LogHP {
         }
     }
 
-    public void printError(Thread t, Throwable e){
+    public void printError(@NonNull Thread t, @NonNull Throwable e){
         printError(t, e, 20);
     }
-    public void printError(Thread t, Throwable e, int batasStack){
+    public void printError(@NonNull Thread t, @NonNull Throwable e, int batasStack){
         if(!cekIjinLog()) return;
         cekFile();
         StackTraceElement stack[]= e.getStackTrace();
@@ -149,13 +177,29 @@ public class LogHP {
 
 
 //KARENA==========
+            ArrayList<Throwable> writtenT = new ArrayList<>();
+            writtenT.add(e);
             Throwable eKarena= e.getCause();
-            if(eKarena != null){
-                StackTraceElement stackKarena[]= eKarena.getStackTrace();
-                String karena= e.getCause().getMessage();
-                penulisFile.println("----- Karena= " +karena);
+            int causeInt= 0;
 
-                for(int i= 0; i< stackKarena.length; i++){
+            while(eKarena != null){
+                if(writtenT.contains(eKarena)) break; //Agar gak cyclic reference sehingga infinite loop.
+                writtenT.add(eKarena);
+                causeInt++;
+
+                StackTraceElement stackKarena[]= eKarena.getStackTrace();
+                String karena= eKarena.getMessage();
+
+                jmlStack= stackKarena.length;
+                batas= Math.min(jmlStack, batasStack);
+
+                penulisFile.println();
+                penulisFile.println("----- Karena (" +causeInt + ")");
+                penulisFile.println("----- Jenis= " +eKarena.getClass().getSimpleName());
+                penulisFile.println("----- Pesan= " +karena);
+                penulisFile.println("----- Jml Stack= " +jmlStack);
+
+                for(int i= 0; i< batas; i++){
                     StackTraceElement perStack= stackKarena[i];
                     Timestamp ts= new Timestamp(new Date().getTime());
                     String strTimestamp= ts.toString();
@@ -163,6 +207,9 @@ public class LogHP {
 
                     penulisFile.println(strDiprint);
                 }
+                if(batas < jmlStack)
+                    penulisFile.println("----- dan " +(jmlStack -batas) +" stack lainnya -----");
+                eKarena= eKarena.getCause();
             }
             penulisFile.close();
             fileYgSama= true;
@@ -170,7 +217,7 @@ public class LogHP {
             LogApp.e("LOG_HP", "ERROR", err);
         }
     }
-    public void printLog(String tag, String pesan){
+    public void printLog(@NonNull String tag, @NonNull String pesan){
 //        String namaApp= aktifitas.getResources().getString(R.string.app_name);
         if(!cekIjinLog()) return;
         cekFile();

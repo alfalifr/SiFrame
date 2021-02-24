@@ -75,6 +75,7 @@ class MainAct : BarContentNavAct() {
     fun toDialogListFrag(v: View)= startSingleFragAct_config<DialogListFrag>()
     fun toLogOnFileFrag(v: View)= startSingleFragAct_config<LogOnFileFrag>()
     fun toDownloadFrag(v: View)= startSingleFragAct_config<DownloadFrag>()
+    fun toSizeFrag(v: View)= startSingleFragAct_config<SizeFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()

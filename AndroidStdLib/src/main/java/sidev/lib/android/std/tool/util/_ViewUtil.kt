@@ -1,12 +1,14 @@
 package sidev.lib.android.std.tool.util
 
+//import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+//import sidev.lib.android.siframe.model.PictModel
+//import sidev.lib.android.siframe.tool.util.`fun`.*
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.*
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.*
 import android.os.Build
 import android.transition.ChangeBounds
@@ -23,14 +25,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-//import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import org.jetbrains.anko.backgroundDrawable
 import org.jetbrains.anko.layoutInflater
 import org.jetbrains.anko.windowManager
-//import sidev.lib.android.siframe.model.PictModel
-//import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.android.std.lifecycle.app.StdApp
 import sidev.lib.android.std.tool.util.`fun`.*
 import sidev.lib.annotation.Unsafe
@@ -55,11 +55,56 @@ object  _ViewUtil{
         sp,
         (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics)
     )
+
+    @JvmOverloads
+    fun pxToDp(px: Float, context: Context? = null): Float =
+        (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics).let {
+            px / it.density
+        }
+
+    @JvmOverloads
+    fun pxToSp(px: Float, context: Context? = null): Float =
+        (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics).let {
+            px / it.scaledDensity
+        }
+
+    @JvmOverloads
+    fun pxToUnit(px: Float, unit: Int, context: Context? = null): Float =
+        (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics).let { when (unit) {
+            TypedValue.COMPLEX_UNIT_PX -> px
+            TypedValue.COMPLEX_UNIT_DIP -> px / it.density
+            TypedValue.COMPLEX_UNIT_SP -> px / it.scaledDensity
+            TypedValue.COMPLEX_UNIT_PT -> px / it.xdpi / (1.0f / 72)
+            TypedValue.COMPLEX_UNIT_IN -> px / it.xdpi
+            TypedValue.COMPLEX_UNIT_MM -> px / it.xdpi / (1.0f / 25.4f)
+            else -> 0f
+        } }
+    @JvmOverloads
+    fun unitToPx(value: Float, unit: Int, context: Context? = null): Float = TypedValue.applyDimension(
+        unit, value, (context?.resources?.displayMetrics ?: Resources.getSystem().displayMetrics)
+    )
 /*
     fun dpToPx(dp : Float): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }
  */
+    @JvmOverloads
+    fun setTextAutoSize(
+        tv: TextView, min: Int, max: Int, step: Int = 1,
+        unit: Int = TypedValue.COMPLEX_UNIT_SP
+    ) = TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(tv, min, max, step, unit)
+
+    /**
+     * Mengaktifkan / non-aktifkan autoSize text pada `this.extension` TextView
+     * dengan cara mengubah [TextView.getAutoSizeTextType] menjadi
+     * [TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM] untuk aktif
+     * dan [TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE] untuk non-aktif.
+     */
+    fun enableTextAutoSize(tv: TextView, enable: Boolean = true) =
+        TextViewCompat.setAutoSizeTextTypeWithDefaults(
+            tv, if(enable) TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM
+            else TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+        )
 
     fun getScreenWidth(ctx: Context) : Int {
         val dm = DisplayMetrics()
@@ -183,7 +228,7 @@ object  _ViewUtil{
     /**
      * Merubah stroke color dari view background
      */
-    fun changeDrawableStrokeColor(@ColorRes colorId: Int, vararg v: View, context: Context?= null){
+    fun changeDrawableStrokeColor(@ColorRes colorId: Int, vararg v: View, context: Context? = null){
         if(v.isEmpty())
             return
         val ctx= context ?: v.first().context
@@ -197,7 +242,7 @@ object  _ViewUtil{
     /**
      * merubah warna dari bbrp [tv].
      */
-    fun changeTextColor(@ColorRes colorId: Int, vararg tv: TextView, context: Context?= null){
+    fun changeTextColor(@ColorRes colorId: Int, vararg tv: TextView, context: Context? = null){
         if(tv.isEmpty())
             return
         val ctx= context ?: tv.first().context
@@ -334,7 +379,8 @@ object  _ViewUtil{
             is PaintDrawable -> drawable.paint.color
 //            is VectorDrawableCompat -> drawable.setTintList()
             is GradientDrawable -> {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) drawable.color?.defaultColor ?: -1
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) drawable.color?.defaultColor
+                    ?: -1
                 else -1
             }
             else -> when {
@@ -352,7 +398,7 @@ object  _ViewUtil{
         is PorterDuffColorFilter -> {
             try {
                 PorterDuffColorFilter::class.java.getField("mColor").get(colorFilter) as Int
-            } catch (e: ClassCastException){
+            } catch (e: ClassCastException) {
                 loge("_ViewUtil.getColorTintInt() tidak dapat mengambil \"mColor\" dari $colorFilter")
                 -1
             }
@@ -388,12 +434,20 @@ object  _ViewUtil{
     }
 
     @Unsafe("Jika app tidak meng-extend `StdApp`, maka param `ctx` tidak boleh null.")
-    fun setColorTintRes(drawable: Drawable, @ColorRes colorId: Int, ctx: Context?= null)=
+    fun setColorTintRes(drawable: Drawable, @ColorRes colorId: Int, ctx: Context? = null)=
         setColorTintInt(drawable, _ResUtil.getColor(ctx ?: StdApp.ctx, colorId))
-    fun setColorTintInt(drawable: Drawable, @ColorInt color: Int)= DrawableCompat.setTint(drawable, color)
+    fun setColorTintInt(drawable: Drawable, @ColorInt color: Int)= DrawableCompat.setTint(
+        drawable,
+        color
+    )
     fun clearColorTint(drawable: Drawable)= DrawableCompat.setTintList(drawable, null)
 
-    fun setColorTintRes(iv: ImageView, @ColorRes colorId: Int)= setColorTintInt(iv, _ResUtil.getColor(iv.context, colorId))
+    fun setColorTintRes(iv: ImageView, @ColorRes colorId: Int)= setColorTintInt(
+        iv, _ResUtil.getColor(
+            iv.context,
+            colorId
+        )
+    )
     fun setColorTintInt(iv: ImageView, @ColorInt color: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
         if(color == null){
             ImageViewCompat.setImageTintList(iv, null)
@@ -437,7 +491,12 @@ object  _ViewUtil{
     fun getBgAlpha(v: View): Int = v.background?.let { DrawableCompat.getAlpha(it) } ?: 0
 
 
-    fun setBgColorTintRes(v: View, @ColorRes colorId: Int) = setBgColorTintInt(v, _ResUtil.getColor(v.context, colorId))
+    fun setBgColorTintRes(v: View, @ColorRes colorId: Int) = setBgColorTintInt(
+        v, _ResUtil.getColor(
+            v.context,
+            colorId
+        )
+    )
     fun setBgColorTintInt(v: View, @ColorInt color: Int){ //, blendMode: BlendMode= BlendMode.SRC_ATOP){
         val drawable= v.background
         if(drawable != null)

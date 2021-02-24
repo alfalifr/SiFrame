@@ -1,4 +1,4 @@
-package sidev.lib.jvm.android.std
+package sidev.lib.android.std
 
 import android.util.SparseIntArray
 import androidx.core.util.set

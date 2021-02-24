@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_src"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="20 sp"
+        android:textSize="20sp"
+        android:textColor="@color/hitam"/>
+
+    <TextView
+        android:id="@+id/tv_dest"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="20 sp"
+        android:textSize="20sp"
+        android:textColor="@color/hitam"/>
+
+    <TextView
+        android:id="@+id/tv_auto"
+        android:layout_margin="10dp"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:text="20 sp"
+        android:textSize="20sp"
+        android:textColor="@color/hitam"/>
+    <TextView
+        android:id="@+id/tv_auto_size"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sizenya"
+        android:textSize="20sp"
+        android:textColor="@color/hitam"/>
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sp Pixel: "
+            android:textSize="15sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_sp_pixel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sp Pixel"
+            android:textSize="15sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sp _ViewUtil: "
+            android:textSize="15sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_sp_util"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sp _ViewUtil"
+            android:textSize="15sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sp Resource: "
+            android:textSize="15sp"
+            android:textColor="@color/hitam"/>
+        <TextView
+            android:id="@+id/tv_sp_res"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sp Resource"
+            android:textSize="15sp"
+            android:textColor="@color/hitam"/>
+    </LinearLayout>
+
+</LinearLayout>

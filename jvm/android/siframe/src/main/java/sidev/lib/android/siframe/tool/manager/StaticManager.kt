@@ -75,8 +75,8 @@ object StaticManager: LifecycleObserver {
         } else existingOne
     }
 
-    private var removedOwner: TaggedVal<String, LifecycleOwner>?= null
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    //private var removedOwner: TaggedVal<String, LifecycleOwner>?= null
+    //@OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun unregisterLifecycleOwner(callingOwner: LifecycleOwner){
         loge("Lifecycle.Event.ON_DESTROY callingOwner::class.java.simpleName = ${callingOwner::class.java.simpleName}")
         var removedLc: TaggedVal<String, LifecycleOwner>?= null
@@ -85,7 +85,7 @@ object StaticManager: LifecycleObserver {
             it.value.name == callingOwner.name
         })
             removedLc= null
-        removedOwner= removedLc
+        //removedOwner= removedLc
         callingOwner.lifecycle.removeObserver(this)
         if(taggedLifecycleOwners!!.isEmpty())
             taggedLifecycleOwners = null
@@ -133,7 +133,14 @@ object StaticManager: LifecycleObserver {
         return before
     }
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun removeObjAttachedToLifecyle(callingOwner: LifecycleOwner){
+    fun removeObjAttachedToLifecyle(callingOwner: LifecycleOwner): Boolean {
+        val taggedRemovedOwner= //removedOwner ?:
+            taggedLifecycleOwners?.findLast { it.value.name == callingOwner.name }
+            ?: run {
+                loge("objects detached from lifecycle= ${callingOwner::class.java.simpleName} ==FALSE==")
+                return false
+            }
+        /*
         if(removedOwner == null)
             throw IllegalStateExc(
                 stateOwner = this::class,
@@ -141,16 +148,19 @@ object StaticManager: LifecycleObserver {
                 expectedState = "this.removedOwner != null",
                 detMsg = "Terjadi kesalahan alur eksekusi"
             )
+         */
         if(staticObjList != null){
             val keys= staticObjList!!.keys
-            val (removedTag, removedOwner)= removedOwner!!
-            if(removedOwner.name != callingOwner.name)
+            val (removedTag, removedOwner)= taggedRemovedOwner //!!
+/*
+            if(removedOwner.name != callingOwner.name) // Harusnya sama, jadi gak perlu dicek lagi.
                 throw IllegalStateExc(
                     stateOwner = this::class,
                     currentState = "removedOwner.name != callingOwner.name",
                     expectedState = "removedOwner.name == callingOwner.name",
                     detMsg = "Terjadi kesalahan alur eksekusi"
                 )
+ */
             val ownerKey= getObjKeyForOwner(removedOwner, removedTag!!) //callingOwner.name //.className()
             val removedObjKeyList= ArrayList<String>()
             for(key in keys){
@@ -169,7 +179,9 @@ object StaticManager: LifecycleObserver {
                 staticObjList = null
                 loge("staticObjList= null")
             }
+            unregisterLifecycleOwner(removedOwner)
         }
-        removedOwner= null
+        //removedOwner= null
+        return true
     }
 }
