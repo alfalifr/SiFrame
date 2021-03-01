@@ -19,6 +19,7 @@ class LifecycleCheckFrag: Frag() {
 
     override fun _initDataFromIntent(intent: Intent) {
         super._initDataFromIntent(intent)
+        loge("LifecycleCheckFrag ======== $order _initDataFromIntent")
         order= intent["_order_"] ?: 0
     }
 

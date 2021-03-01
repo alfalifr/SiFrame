@@ -215,7 +215,7 @@ abstract class Frag : Fragment(),
     }
 
     override fun onAttach(context: Context) {
-        if(context is Activity){
+        if(context is Activity){ //Harusnya aman untuk naruh _initData() di onAttach() karena tidak tergantung pada Context
             _initDataFromIntent(context.intent)
             _initData()
         }
