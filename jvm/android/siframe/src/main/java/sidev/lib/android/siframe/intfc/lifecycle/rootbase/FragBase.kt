@@ -1,12 +1,16 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
+import android.app.Activity
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
 import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
 import sidev.lib.android.siframe.intfc.prop.ParentLifecycleProp
+import sidev.lib.android.siframe.tool.util._AppUtil
+import sidev.lib.android.siframe.tool.util.`fun`.doOnce
 
 interface FragBase: ActFragBase, ParentLifecycleProp{
     /**

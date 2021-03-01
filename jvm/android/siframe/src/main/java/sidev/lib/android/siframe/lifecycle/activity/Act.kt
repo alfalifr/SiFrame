@@ -135,6 +135,9 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
+        _initDataFromIntent(intent)
+        _initData()
+
         loge("Activity ${this::class.simpleName} onCreate()")
 //        isActivitySavedInstanceStateNull= savedInstanceState == null
         //initStyle(this)
@@ -157,7 +160,7 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 //        layoutView= v
 
 //        doWhenNotIherited {
-            ___initRootBase(this, getRootView())
+            ___initRootBase(this, getRootView(), false)
 //        }
         ___initSideBase()
 

@@ -192,7 +192,7 @@ abstract class Frag : Fragment(),
         catch (e: Exception){ if(_prop_parentLifecycle is Activity) _prop_parentLifecycle else null } as? Activity
             ?: throw IllegalStateException("Fragment: \"${this::class.qualifiedName}\" tidak dapat di-init karena activity null. \nUntuk mengakomodasikan activity, pass nilai activity pada \"_prop_parentLifecycle\".")
 
-        ___initRootBase(act, view)
+        ___initRootBase(act, view, false)
         ___initSideBase()
 /*
         layoutView= view
@@ -215,6 +215,10 @@ abstract class Frag : Fragment(),
     }
 
     override fun onAttach(context: Context) {
+        if(context is Activity){
+            _initDataFromIntent(context.intent)
+            _initData()
+        }
         loge("Fragment ${this::class.simpleName} onAttach(ctx) context: ${context::class}")
         super.onAttach(context)
         loge("Fragment ${this::class.java.simpleName} is attached to context!!!")

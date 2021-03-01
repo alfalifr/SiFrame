@@ -49,14 +49,17 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     override fun ___initRootBase(vararg args: Any) {
         val act= args[0] as Activity
         layoutView= args[1] as View
+        val continueInitData= args.size < 3 || args[2].let { it is Boolean && it }
 
         val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
         doOnce(registerKey){
             registerActiveAct()
             _AppUtil.checkAppValidity(_prop_ctx)
         }
-        _initDataFromIntent(act.intent)
-        _initData()
+        if(continueInitData){
+            _initDataFromIntent(act.intent)
+            _initData()
+        }
         __initViewFlow(layoutView)
     }
 

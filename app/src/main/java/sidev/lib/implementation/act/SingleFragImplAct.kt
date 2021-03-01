@@ -1,5 +1,7 @@
 package sidev.lib.implementation.act
 
+import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -45,6 +47,52 @@ class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
     override fun _initEndDrawerView(endDrawerView: View) {
         endDrawerView.tv.text= "Ini teks sebenarnya dari EndDrawer SingleFragImplAct"
         endDrawerView.tv.textColorResource= _ColorRes.TEXT_LIGHT
+    }
+ */
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        loge("SingleFragImplAct ======== onCreate")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loge("SingleFragImplAct ======== onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loge("SingleFragImplAct ======== onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        loge("SingleFragImplAct ======== onPause")
+    }
+
+    /**
+     * Called when the Fragment is no longer started.  This is generally
+     * tied to [Activity.onStop] of the containing
+     * Activity's lifecycle.
+     */
+    override fun onStop() {
+        super.onStop()
+        loge("SingleFragImplAct ======== onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        loge("SingleFragImplAct ======== onDestroy")
+    }
+/*
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        loge("SingleFragImplAct ======== onAttach")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        loge("SingleFragImplAct ======== onDetach")
     }
  */
 }
