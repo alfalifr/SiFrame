@@ -8,6 +8,11 @@ val ScriptHandlerScope.kotlin_version
     get()= findProperty("kotlin_version")
  */
 
+
+fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? =
+    add("implementation", dependencyNotation)
+
+
 buildscript {
     val kotlin_version by extra("1.3.72")
 //    val kotlin_version = findProperty("kotlin_version")
@@ -28,6 +33,9 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath("com.github.dcendents:android-maven-gradle-plugin:2.0")
         classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
+
+        //Gson
+        //implementation("com.google.code.gson:gson:2.8.6")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
