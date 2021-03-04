@@ -7,7 +7,17 @@ import java.net.URI
 val ScriptHandlerScope.kotlin_version
     get()= findProperty("kotlin_version")
  */
+fun File.withInputStream(): java.io.FileInputStream = java.io.FileInputStream(this)
 
+
+val PKG_REPOSITORY= "SidevLib_Private" //"JvmLib"
+
+val prop= java.util.Properties().apply { load(file("/setting.properties").withInputStream()) }
+
+val githubUser= prop["githubUser"] as String //prop.loadPropertyFromResources("setting.properties", "bintrayUser")
+val githubApiKey= prop["githubApiKey"] as String //prop.loadPropertyFromResources("setting.properties", "bintrayApiKey")
+
+//val githubPkgUrl= "https://maven.pkg.github.com/$githubUser/$PKG_REPOSITORY"
 
 fun DependencyHandler.implementation(dependencyNotation: Any): Dependency? =
     add("implementation", dependencyNotation)
@@ -46,8 +56,27 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url = URI("https://dl.bintray.com/alfalifr/SidevLib") }
+        //maven { url = URI("https://dl.bintray.com/alfalifr/SidevLib") }
 //        maven { url = URI("https://dl.bintray.com/alfalifr/JvmLib") }
+
+        maven {
+            name = "GitHubPackages"
+            /** Configure path of your package repository on Github
+             *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
+             */
+            //this@maven.
+            url = uri("https://maven.pkg.github.com/$githubUser/$PKG_REPOSITORY") // Github Package
+            credentials {
+                //Fetch these details from the properties file or from Environment variables
+
+                println(githubUser)
+                println(githubApiKey)
+                
+                username = githubUser //githubProperties.get("gpr.usr") as String? ?: System.getenv("GPR_USER")
+                password = githubApiKey //githubProperties.get("gpr.key") as String? ?: System.getenv("GPR_API_KEY")
+            }
+            //publish = false
+        }
     }
 }
 

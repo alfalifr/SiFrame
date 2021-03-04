@@ -145,12 +145,12 @@ dependencies {
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test.ext:junit:1.1.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
-
+    
 //    implementation(project("path" to ":jvm:universal"))
     //SidevLib
-    implementation("sidev.lib.jvm:JvmStdLib:$sidev_lib_version_std_x") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin:KtStdLib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin:KtReflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
+    implementation("sidev.lib.jvm:jvmstdlib:$sidev_lib_version_std_x") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:ktstdlib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:ktreflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
 //    implementation(project(":Android-External")) //{ isTransitive= true }
 //    implementation(project(":SiFrame-Customizable"))
     implementation(project(":AndroidStdLib"))

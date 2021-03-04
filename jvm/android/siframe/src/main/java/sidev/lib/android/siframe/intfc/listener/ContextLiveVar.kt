@@ -3,7 +3,7 @@ package sidev.lib.android.siframe.intfc.listener
 import android.content.Context
 import sidev.lib.android.std._external._AnkoInternals.runOnUiThread
 
-open class LiveVal<T>(var ctx: Context){
+open class ContextLiveVar<T>(var ctx: Context){
     companion object{
         val DEFAULT= "default"
     }

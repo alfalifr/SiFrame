@@ -13,7 +13,7 @@ import androidx.annotation.RequiresApi
 import sidev.lib.`val`.SuppressLiteral
 import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.std.db.Attribute
-import sidev.lib.android.siframe.intfc.listener.LiveVal
+import sidev.lib.android.siframe.intfc.listener.ContextLiveVar
 import sidev.lib.android.siframe.intfc.listener.ProgressListener
 import sidev.lib.android.siframe.model.intfc.*
 import sidev.lib.android.std.tool.util.`fun`.loge
@@ -29,7 +29,6 @@ import sidev.lib.exception.IllegalArgExc
 import sidev.lib.exception.IllegalStateExc
 import sidev.lib.jvm.tool.util.StringUtil
 import sidev.lib.jvm.tool.util.ThreadUtil
-import sidev.lib.reflex.jvm.declaredFieldsTree
 import sidev.lib.reflex.jvm.primitiveClass
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -283,8 +282,8 @@ abstract class SQLiteHandler<M>(val ctx: Context/*= App.ctx*/){
         return ctx.deleteDatabase(sqliteHelper.databaseName)
     }
 
-    fun dropTable(): LiveVal<Boolean>{
-        val liveVal= LiveVal<Boolean>(ctx)
+    fun dropTable(): ContextLiveVar<Boolean>{
+        val liveVal= ContextLiveVar<Boolean>(ctx)
         ThreadUtil.Pool.submit {
             val db= sqliteHelper.writableDatabase
             try{
@@ -757,7 +756,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     //@return true jika db terbuka, bisa berarti db sudah ada atau belum ada dan akan dibuat
     //      false jika db terkunci
 
-    fun insert(vararg model: M): LiveVal<Map<String, Boolean>>{
+    fun insert(vararg model: M): ContextLiveVar<Map<String, Boolean>>{
         progressListener?.total(if(totalFix > 0) totalFix else model.size, "save")
 /*
         loge("simpan data LUAR JML_MODEL= ${model.size}")
@@ -771,7 +770,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
 
         checkConn()
 
-        val liveVal= LiveVal<Map<String, Boolean>>(ctx)
+        val liveVal= ContextLiveVar<Map<String, Boolean>>(ctx)
         ThreadUtil.Pool.submit {
             try{
                 val db= sqliteHelper.writableDatabase
@@ -821,10 +820,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     //@param mulaiBaris -> 0 baris pertama
     //      batas -> jml kueri yang ditampilkan. 0 berarti tidak ada hasil (0 baris)
     @JvmOverloads
-    fun readAllData(mulaiBaris: Int= 0, batas: Int= 0): LiveVal<List<M>>{
+    fun readAllData(mulaiBaris: Int= 0, batas: Int= 0): ContextLiveVar<List<M>>{
         checkConn()
 
-        val liveVal= LiveVal<List<M>>(ctx)
+        val liveVal= ContextLiveVar<List<M>>(ctx)
         ThreadUtil.Pool.submit {
 //            var liveVal= LiveVal<List<M>>()
             try{
@@ -882,10 +881,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         return liveVal
     }
 
-    fun readWithId(vararg id: String): LiveVal<List<M>>{
+    fun readWithId(vararg id: String): ContextLiveVar<List<M>>{
         checkConn()
 
-        val liveVal= LiveVal<List<M>>(ctx)
+        val liveVal= ContextLiveVar<List<M>>(ctx)
         ThreadUtil.Pool.submit {
             progressListener?.total(if(totalFix > 0) totalFix else id.size, "readWithId")
             try{
@@ -937,7 +936,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         having: String?= null,
         orderBy: String?= null,
         limit: String?= null
-    ): LiveVal<List<M>> {
+    ): ContextLiveVar<List<M>> {
         checkConn()
         var cond= ""
         val fields= attribs.keys
@@ -965,7 +964,7 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         having: String?= null,
         orderBy: String?= null,
         limit: String?= null
-    ): LiveVal<List<M>> {
+    ): ContextLiveVar<List<M>> {
         checkConn()
         var cond= ""
         for((field, string) in condition){
@@ -986,10 +985,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         having: String?= null,
         orderBy: String?= null,
         limit: String?= null
-    ): LiveVal<List<M>>{
+    ): ContextLiveVar<List<M>>{
         checkConn()
 
-        val liveVal= LiveVal<List<M>>(ctx)
+        val liveVal= ContextLiveVar<List<M>>(ctx)
         ThreadUtil.Pool.submit {
             try{
                 val db= sqliteHelper.readableDatabase
@@ -1045,10 +1044,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     /**
      * @return jml row yg udah ada.
      */
-    fun ifExists(condition: String, vararg arg: String/*arg: Array<String>*/): LiveVal<Int>{
+    fun ifExists(condition: String, vararg arg: String/*arg: Array<String>*/): ContextLiveVar<Int>{
         checkConn()
 
-        val liveVal= LiveVal<Int>(ctx)
+        val liveVal= ContextLiveVar<Int>(ctx)
         ThreadUtil.Pool.submit {
             var count= 0
             try{
@@ -1101,10 +1100,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     /**
      * @return map id => Boolean
      */
-    fun ifExists(vararg model: M): LiveVal<Map<String, Boolean>>{
+    fun ifExists(vararg model: M): ContextLiveVar<Map<String, Boolean>>{
         checkConn()
 
-        val liveVal= LiveVal<Map<String, Boolean>>(ctx)
+        val liveVal= ContextLiveVar<Map<String, Boolean>>(ctx)
 //        loge("ifExists() MELBU AWAL!!!")
         val future= ThreadUtil.Pool.submit {
             val db= sqliteHelper.writableDatabase
@@ -1172,10 +1171,10 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
     /**
      * @return List pasangan Id => Boolean, true jika berhasil dan sebaliknya.
      */
-    fun update(vararg model: M): LiveVal<Map<String, Boolean>>{
+    fun update(vararg model: M): ContextLiveVar<Map<String, Boolean>>{
         checkConn()
 
-        val liveVal= LiveVal<Map<String, Boolean>>(ctx)
+        val liveVal= ContextLiveVar<Map<String, Boolean>>(ctx)
         ThreadUtil.Pool.submit {
             progressListener?.total(if(totalFix > 0) totalFix else model.size, "update")
 
@@ -1220,11 +1219,11 @@ dan Pengawas ViewModel/Handler yg memberi input Progres dan Total
         return liveVal
     }
 
-    fun delete(vararg model: M): LiveVal<Map<String, Boolean>>{
+    fun delete(vararg model: M): ContextLiveVar<Map<String, Boolean>>{
 //        loge("delete() MASUK")
         checkConn()
 
-        val liveVal= LiveVal<Map<String, Boolean>>(ctx)
+        val liveVal= ContextLiveVar<Map<String, Boolean>>(ctx)
         ThreadUtil.Pool.submit {
             progressListener?.total(if(totalFix > 0) totalFix else model.size, "delete")
 //            loge("delete() submit")

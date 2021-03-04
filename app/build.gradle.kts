@@ -107,11 +107,11 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.6")
 
 
-    implementation("sidev.lib.jvm:JvmStdLib:$sidev_lib_version_std_x") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin:KtStdLib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin:KtAsync-jvm:$sidev_lib_version_std") //{ isTransitive= true }
-    implementation("sidev.lib.kotlin:KtReflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
-    implementation("sidev.data:JvmQuranData:$sidev_lib_version_std") //{ isTransitive= true }
+    implementation("sidev.lib.jvm:jvmstdlib:$sidev_lib_version_std_x") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:ktstdlib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:ktasync-jvm:$sidev_lib_version_std") //{ isTransitive= true }
+    implementation("sidev.lib.kotlin:ktreflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
+    implementation("sidev.data:jvmqurandata:$sidev_lib_version_std") //{ isTransitive= true }
     implementation(project(":SiFrame"))
     implementation(project(":SiFrame-Customizable"))
     implementation(project(":Viewrap"))
