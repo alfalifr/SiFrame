@@ -153,7 +153,8 @@ dependencies {
     implementation("sidev.lib.kotlin:ktreflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
 //    implementation(project(":Android-External")) //{ isTransitive= true }
 //    implementation(project(":SiFrame-Customizable"))
-    implementation(project(":AndroidStdLib"))
+    //implementation(project(":AndroidStdLib"))
+    implementation(project(":androidstdlib"))
 
 //    implementation(project("path" to ":jvm:android:external"))
 //    implementation(project("path" to ":jvm:android:siframe:customizable"))

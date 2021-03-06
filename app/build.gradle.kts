@@ -112,10 +112,11 @@ dependencies {
     implementation("sidev.lib.kotlin:ktasync-jvm:$sidev_lib_version_std") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:ktreflex-jvm:$sidev_lib_version_std") //{ isTransitive= true }
     implementation("sidev.data:jvmqurandata:$sidev_lib_version_std") //{ isTransitive= true }
-    implementation(project(":SiFrame"))
+    implementation(project(":siframe"))
     implementation(project(":SiFrame-Customizable"))
-    implementation(project(":Viewrap"))
-    implementation(project(":AndroidStdLib"))
+    implementation(project(":viewrap"))
+    //implementation(project(":AndroidStdLib"))
+    implementation(project(":androidstdlib"))
 
 //    implementation(project(mapOf("path" to ":jvm:android:viewrap")))
 //    implementation(project("path" to ":jvm:universal"))

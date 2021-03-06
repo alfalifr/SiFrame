@@ -99,7 +99,10 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
 
             _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->
-                    fragment= ReflexUtil.newInstance(fragName)
+                    fragment= ReflexUtil.newInstance<Fragment>(fragName).asNotNull { it: FragBase ->
+                        it._initDataFromIntent(_prop_intent)  // Segera setelah frag di-init, frag dikasih data dari intent.
+                        it._initData()
+                    }!!
                     //giveFrag()
                 }
         }

@@ -117,6 +117,9 @@ abstract class Frag : Fragment(),
      * Dipakai untuk judul pada TabLayout yang dipasang pada ViewPager
      */
     open val fragTitle= this::class.java.simpleName
+
+    private var isDataInit= false
+
     //override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?= null
     /**
      * Isi pair Boolean `false` jika [OnRequestPermissionsResultCallback]
@@ -214,8 +217,13 @@ abstract class Frag : Fragment(),
  */
     }
 
+    override fun _initDataFromIntent(intent: Intent) {
+        super._initDataFromIntent(intent)
+        isDataInit= true
+    }
+
     override fun onAttach(context: Context) {
-        if(context is Activity){ //Harusnya aman untuk naruh _initData() di onAttach() karena tidak tergantung pada Context
+        if(!isDataInit && context is Activity){ //Harusnya aman untuk naruh _initData() di onAttach() karena tidak tergantung pada Context
             _initDataFromIntent(context.intent)
             _initData()
         }

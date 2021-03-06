@@ -7,6 +7,7 @@ import sidev.lib.android.siframe.lifecycle.fragment.ActBarFrag
 import sidev.lib.android.std.`val`._Config
 import sidev.lib.android.std.tool.util._ViewUtil
 import sidev.lib.check.asNotNull
+import sidev.lib.console.prine
 import sidev.lib.implementation.R
 
 class ActBarFrag : ActBarFrag(){
@@ -21,6 +22,7 @@ class ActBarFrag : ActBarFrag(){
         actSimple.asNotNull { act: ActBarFromFragBase ->
             act.isActBarViewFromFragment= true
         }
+        prine("halo")
 /*
             .asNotNull { act: MultipleActBarViewPagerActBase<*> ->
             loge("act.isVpTitleFragBased= true")

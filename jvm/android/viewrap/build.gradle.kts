@@ -130,7 +130,8 @@ dependencies {
     implementation("sidev.lib.jvm:jvmstdlib:$sidev_lib_version_std_x") //{ isTransitive= true }
     implementation("sidev.lib.kotlin:ktstdlib-jvm:$sidev_lib_version_std_new") //{ isTransitive= true }
 //    implementation(project(":SiFrame"))
-    implementation(project(":AndroidStdLib"))
+    //implementation(project(":AndroidStdLib"))
+    implementation(project(":androidstdlib"))
 //    implementation(project("path" to ":jvm:android:siframe"))
 //    implementation(project("path" to ":jvm:universal"))
 
