@@ -12,14 +12,14 @@ import sidev.lib.android.siframe.intfc.prop.*
  * Fun yg berawal dg __ brarti harus dipanggil.
  */
 interface ComplexLifecycleSideBase: LifecycleSideBase,
-    ActProp, CtxProp, ViewProp, IntentProp, FragmentManagerProp {
+    AppCompatActProp, ViewProp, IntentProp, FragmentManagerProp {
 
     /**
      * Untuk menginit inheritor dari interface lifecyle.Base.
      * Harus dipanggil agar object keinit.
      */
-    override val _prop_act: AppCompatActivity?
-    override val _prop_ctx: Context?
+    override val _prop_ctx: AppCompatActivity?
+    //override val _prop_ctx: Context?
     override val _prop_view: View?
     override val _prop_intent: Intent?
     override val _prop_fm: FragmentManager?

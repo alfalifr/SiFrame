@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
 import sidev.lib.check.asNotNull
+import sidev.lib.check.notNullTo
+import sidev.lib.exception.IllegalAccessExc
 import sidev.lib.exception.IllegalStateExc
 
 abstract class ActBarFrag : Frag(), ActBarFragBase {
     final override var actBarView: View?= null
     final override var isActBarInit: Boolean = false
         private set
+    final override var isMultipleActBar: Boolean = false
+
     override var isActBarViewFromFragment: Boolean= false
         set(v){
             field= v
@@ -19,8 +23,10 @@ abstract class ActBarFrag : Frag(), ActBarFragBase {
                 act.isActBarViewFromFragment= v
             }
         }
-    final override val _prop_act: AppCompatActivity?
-        get() = actSimple
+    final override val _prop_ctx: AppCompatActivity
+        get() = activity.notNullTo {
+            if(it is AppCompatActivity) it else null
+        } ?: throw IllegalAccessExc(msg = "Fragment ($this) blum ter-attach di AppCompatActivity")
 
     override fun ___initSideBase() {
         super<Frag>.___initSideBase()
@@ -28,14 +34,15 @@ abstract class ActBarFrag : Frag(), ActBarFragBase {
     }
 
     final override fun initActBar(): View? {
-        if(isActBarInit)
-            throw IllegalStateExc(
-                stateOwner = this::class,
-                currentState = "isActBarInit == true",
-                expectedState = "isActBarInit == false"
-            )
+///*
+        if(isActBarInit && !isMultipleActBar) throw IllegalStateExc(
+            stateOwner = this::class,
+            currentState = "isActBarInit == true",
+            expectedState = "isActBarInit == false"
+        )
+// */
         val v= super.initActBar()
-        isActBarInit = true
+        //isActBarInit = true
         return v
     }
 }

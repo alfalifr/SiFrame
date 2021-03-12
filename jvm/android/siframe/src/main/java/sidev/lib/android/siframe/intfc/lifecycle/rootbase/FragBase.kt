@@ -1,16 +1,14 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
-import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.lifecycle.LifecycleViewBase
-import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
 import sidev.lib.android.siframe.intfc.prop.ParentLifecycleProp
-import sidev.lib.android.siframe.tool.util._AppUtil
-import sidev.lib.android.siframe.tool.util.`fun`.doOnce
+import sidev.lib.android.siframe.intfc.lifecycle.sidebase.SingleFragActBase
 
 interface FragBase: ActFragBase, ParentLifecycleProp{
     /**
@@ -44,4 +42,12 @@ interface FragBase: ActFragBase, ParentLifecycleProp{
      */
     @CallSuper
     fun onLifecycleDetach(){}
+
+    /**
+     * Mirip dg [_initData(intent)], namun parameter yg di-pass adalah [Fragment.getArguments].
+     * Untuk case [SingleFragActBase], [arguments] merupakan gabungan dari [Fragment.getArguments] + [Intent.getExtras].
+     * [arguments] jadi `null` jika [Fragment.getArguments] atau gabungannya dg [Intent.getExtras] `null` atau jumlahnya 0.
+     */
+    //@CallSuper
+    fun _initAllData(arguments: Bundle?){}
 }

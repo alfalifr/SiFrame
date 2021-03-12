@@ -1,7 +1,9 @@
 package sidev.lib.android.siframe.intfc.listener
 
 import android.content.Context
-import sidev.lib.android.std._external._AnkoInternals.runOnUiThread
+import org.jetbrains.anko.runOnUiThread
+
+//import sidev.lib.android.std._external._AnkoInternals.runOnUiThread
 
 open class ContextLiveVar<T>(var ctx: Context){
     companion object{
@@ -31,7 +33,7 @@ open class ContextLiveVar<T>(var ctx: Context){
     }
 
     internal fun invokeListener(){
-        ctx.runOnUiThread{
+        ctx.runOnUiThread {
             listener?.invoke(value, msg)
 //            loge("setVal() v= $value msg= $msg")
             msg= DEFAULT

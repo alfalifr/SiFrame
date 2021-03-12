@@ -30,8 +30,8 @@ abstract class BoundVpProcessFrag: VpFrag<Frag>(), TopMiddleBottomBase{
     private val boundDataListForSingleProcess= SparseArray<Bound>()
 
 
-    override fun _initDataFromIntent(intent: Intent) {
-        super._initDataFromIntent(intent)
+    override fun _initData(intent: Intent) {
+        super._initData(intent)
         boundData= intent.getExtra(Constants.DATA_BOUND)!!
         //Init data awal dalam boundProcess.
         val newInstance= boundData.clone()

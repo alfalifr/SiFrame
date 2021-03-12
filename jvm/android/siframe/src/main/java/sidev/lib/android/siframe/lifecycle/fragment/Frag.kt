@@ -33,11 +33,15 @@ import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.std.tool.util.`fun`.logew
+import sidev.lib.android.std.tool.util.`fun`.putExtraToNested
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo
+import sidev.lib.check.notNull
+import sidev.lib.exception.IllegalAccessExc
 import sidev.lib.exception.IllegalStateExc
 import sidev.lib.jvm.tool.manager.ListenerManager
 import sidev.lib.jvm.tool.manager.createSimpleListener
+import sidev.lib.property.oneInitVar
 import sidev.lib.reflex.clazz
 
 /**
@@ -69,6 +73,9 @@ abstract class Frag : Fragment(),
         get() = childFragmentManager
     override val _prop_ctx: Context
         get() = context ?: throw NullPointerException("`context` masih blum di-init (null).")
+    override val _prop_intent: Intent?
+        get() = activity?.intent
+
     final override var _prop_parentLifecycle: ActFragBase?= null
         private set
     final override var _prop_hierarchyOder: Int= 0
@@ -84,7 +91,12 @@ abstract class Frag : Fragment(),
     override val styleId: Int
         get() = _styleId
     private var _styleId: Int = _SIF_Config.STYLE_APP
-    final override lateinit var layoutView: View
+
+    private var isLayoutViewInit= false
+    final override var layoutView: View by oneInitVar { _, _ ->
+        currentState.ordinal <= LifecycleBase.State.CREATED.ordinal
+                || !isLayoutViewInit
+    }
 /*
     override val lifecycleCtx: Context
         get() = context!!
@@ -159,14 +171,16 @@ abstract class Frag : Fragment(),
     }
 
     fun inflateView(c: Context, container: ViewGroup?, savedInstanceState: Bundle?): View{
-        val v= if(!::layoutView.isInitialized){
+        val v= try { //if(!::layoutView.isInitialized)
 //            callbackCtx= c
+            layoutView
+        } catch (e: IllegalAccessExc) {
             isContextInit= true
             val infl= LayoutInflater.from(c)
             val vInt= onCreateView(infl, container, savedInstanceState)!!
             onViewCreated(vInt, savedInstanceState)
             vInt
-        } else layoutView
+        }
         return v
     }
 
@@ -177,7 +191,10 @@ abstract class Frag : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
 //        Log.e("SimpleAbsFrag", "Fragment ${this::class.java.simpleName} onCreateView!!!")
-        return inflater.inflate(layoutId, container, false)
+        return inflater.inflate(layoutId, container, false).also {
+            layoutView= it
+            isLayoutViewInit= true
+        }
     }
 
     @CallSuper
@@ -217,15 +234,15 @@ abstract class Frag : Fragment(),
  */
     }
 
-    override fun _initDataFromIntent(intent: Intent) {
-        super._initDataFromIntent(intent)
+    override fun _initData(intent: Intent) {
+        super._initData(intent)
         isDataInit= true
     }
 
     override fun onAttach(context: Context) {
-        if(!isDataInit && context is Activity){ //Harusnya aman untuk naruh _initData() di onAttach() karena tidak tergantung pada Context
-            _initDataFromIntent(context.intent)
-            _initData()
+        if(!isDataInit){ //Harusnya aman untuk naruh _initData() di onAttach() karena tidak tergantung pada Context
+            //arguments?.also { intent.putExtra(it, false) }
+            _initAllData()
         }
         loge("Fragment ${this::class.simpleName} onAttach(ctx) context: ${context::class}")
         super.onAttach(context)
@@ -327,6 +344,7 @@ abstract class Frag : Fragment(),
 
     override fun ___initSideBase() {}
 
+    @CallSuper
     override fun reinitView(){
 /*
         val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
@@ -335,9 +353,35 @@ abstract class Frag : Fragment(),
             _AppUtil.checkAppValidity(_prop_ctx)
         }
  */
-        _initDataFromIntent(act.intent)
-        _initData()
+        _initAllData()
+        //_initData()
         __initViewFlow(layoutView)
+    }
+
+    //TODO 12 Mar 2021 -> Masukan fungsi ke interface `FragBase`
+    private fun _initAllData(){
+        val intent= activity?.intent
+        //if(intent != null)
+        //  _initData(intent)
+        // -> Belum tentu `this` Fragment dipanggil oleh `SingleFragActBase`.
+        //Selain itu, jika memang `this` Fragment dipanggil oleh `SingleFragActBase`, maka harusnya
+        // `getArguments()` juga menyimpan `getActivity().getIntent().getExtras()`.
+
+        val arg= arguments?.apply {
+            intent?.extras.notNull {
+                putExtraToNested(it)
+            }
+        } ?: {
+            val ext= intent?.extras
+            if(ext == null) null
+            else {
+                Bundle().apply {
+                    putExtraToNested(ext)
+                }
+            }
+        }()
+        //if(arg != null && !arg.isEmpty)
+        _initAllData(arg)
     }
 /*
     override fun __initView(layoutView: View) {
@@ -543,6 +587,20 @@ abstract class Frag : Fragment(),
         if(mutC.isEmpty())
             onRequestPermissionResultCallbacks = null
         return bool
+    }
+
+    /**
+     * Called when the view previously created by [.onCreateView] has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after [.onStop] and before [.onDestroy].  It is called
+     * *regardless* of whether [.onCreateView] returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isLayoutViewInit= false
     }
 
     //    override fun onPresenterSucc(reqCode: String, resCode: Int, data: Map<String, Any>?) {}

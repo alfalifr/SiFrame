@@ -1,12 +1,14 @@
 package sidev.lib.android.siframe.intfc.lifecycle.rootbase
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
-import sidev.lib.android.siframe.intfc.prop.ActProp
+import sidev.lib.android.siframe.intfc.prop.AppCompatActProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.tool.util._SIF_ViewUtil
@@ -16,8 +18,8 @@ import sidev.lib.check.asNotNull
 import sidev.lib.check.notNull
 import java.lang.Exception
 
-interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
-
+interface BarContentNavBase: ActFragBase, InitActBarFun, AppCompatActProp {
+    override val _prop_ctx: AppCompatActivity
     override val styleId: Int
         get() = _SIF_Config.STYLE_NO_ACT_BAR //R.style.AppThemeNoActionBar
     override val layoutId: Int
@@ -74,7 +76,7 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
 
     override fun __initViewFlow(rootView: View) {
 //        Log.e("BarContentNavAct", "__initViewFlow className= ${this::class.java.simpleName}")
-        _prop_act.asNotNull { act: Act ->
+        _prop_ctx.asNotNull { act: Act ->
             act.supportActionBar?.hide()
 
             initViewRoot()
@@ -100,7 +102,7 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
 
 
     private fun initViewRoot(){
-        _prop_act.notNull { act ->
+        _prop_ctx.notNull { act ->
             contentViewContainer= act.findViewById(contentViewContainerId) //ll_content_container
             actBarViewContainer= act.findViewById(actBarViewContainerId) //ll_bar_act_container
             navBar= act.findViewById(navBarId) //bnv_bar_nav_container
@@ -108,7 +110,7 @@ interface BarContentNavBase: ActFragBase, InitActBarFun, ActProp {
     }
 
     private fun inflateAndFillViewStructure(){
-        _prop_act.notNull { act ->
+        _prop_ctx.notNull { act ->
             val actBar=
                 if(actBarId != _SIF_Config.LAYOUT_COMP_ACT_BAR_DEFAULT)
                     act.inflate(actBarId, actBarViewContainer, false)

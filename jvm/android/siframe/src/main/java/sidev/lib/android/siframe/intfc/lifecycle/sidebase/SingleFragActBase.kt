@@ -1,6 +1,8 @@
 package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 
+import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,20 +18,23 @@ import sidev.lib.android.siframe.tool.util.`fun`.*
 import sidev.lib.android.std.tool.util.`fun`.commitFrag
 import sidev.lib.android.std.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.android.std.tool.util.`fun`.putExtraToNested
 import sidev.lib.check.asNotNull
 import sidev.lib.check.isNull
 import sidev.lib.check.notNull
+import sidev.lib.exception.IllegalInheritanceExc
+import sidev.lib.exception.IllegalStateExc
 import sidev.lib.exception.PropertyAccessExc
 import sidev.lib.jvm.tool.util.ReflexUtil
 
-interface SingleFragActBase: ComplexLifecycleSideBase{
+interface SingleFragActBase: ComplexLifecycleSideBase {
     override val layoutId: Int
         get() = _SIF_Config.LAYOUT_ACT_SINGLE_FRAG //.LAYOUT_ACT_SIMPLE
 
     override val _prop_view: View
     override val _prop_intent: Intent
     //    override val _prop_ctx: Context
-    override val _prop_act: AppCompatActivity
+    override val _prop_ctx: AppCompatActivity
 
     //val isFragInited: Boolean
     var fragment: Fragment
@@ -53,7 +58,13 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     var isTitleFragBased: Boolean
 
 
+    private fun throwInheritanceExc(): Nothing = throw IllegalInheritanceExc(
+        SingleFragActBase::class, this::class,
+        "Interface `SingleFragActBase` hanya boleh di-extend oleh `${Activity::class}` atau `${Fragment::class}`."
+    )
+
     override fun ___initSideBase() {
+        if(this !is Activity && this !is Fragment) throwInheritanceExc()
 //        isFragLate= _sideBase_intent.getExtra(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)!! //(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate) //getIntentData(_SIF_Constant.EXTRA_TYPE_LATE, default = isFragLate)
         __initFrag()
         try{
@@ -93,15 +104,38 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
         try{ fragment::class } //Hanya sbg pengecekan kalau fragment sebelumnya udah diinit.
                 // Metode ini digunakan untuk menanggulangi 2x instansiasi fragment.
         catch(e: UninitializedPropertyAccessException){
-            if(this is FragmentActivity)
-                supportFragmentManager.findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
+            (when(this){
+                is FragmentActivity -> supportFragmentManager
+                is Fragment -> childFragmentManager
+                else -> throwInheritanceExc()
+            }).findFragmentByTag(_SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
                     .notNull { fragment= it; return } //Jika fragment sebelumnya udah ada, maka gak usah init yg baru.
 
-            _prop_intent.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
+            val ext= _prop_intent.extras ?: throw IllegalStateExc(
+                currentState = "_prop_intent.extras == null",
+                expectedState = "_prop_intent.extras != null",
+                detMsg = "_initFrag() dipanggil saat _prop_intent.extras == null.\n" +
+                        "_prop_intent.extras diperlukan untuk mengambil nama fragment yg akan di-attach pada `SingleFragActBase`."
+            )
+            ext.getExtra<String>(_SIF_Constant.FRAGMENT_NAME)
                 .notNull { fragName ->
                     fragment= ReflexUtil.newInstance<Fragment>(fragName).asNotNull { it: FragBase ->
-                        it._initDataFromIntent(_prop_intent)  // Segera setelah frag di-init, frag dikasih data dari intent.
-                        it._initData()
+                        val intent= _prop_intent //?.intent
+                        it._initData(intent)  // Segera setelah frag di-init, frag dikasih data dari intent.
+                        //intent.da
+                        val arg= (it as Fragment).arguments?.apply {
+                            putExtraToNested(ext)
+                        } ?: {
+                            //if(ext == null) null
+                            //else
+                            Bundle().apply {
+                                putExtraToNested(ext)
+                                it.arguments= this
+                            }
+                        }()
+                        //if(!arg.isEmpty)
+                        it._initAllData(arg)
+                        //it._initData()
                     }!!
                     //giveFrag()
                 }
@@ -109,7 +143,7 @@ interface SingleFragActBase: ComplexLifecycleSideBase{
     }
 
     fun __attachFrag(){
-        _prop_act.commitFrag(fragment, fragContainerId = fragContainerId, tag = _SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
+        _prop_ctx.commitFrag(fragment, fragContainerId = fragContainerId, tag = _SIF_Constant.Internal.TAG_SINGLE_FRAG_ACT)
         if(this is ActFragBase)
             fragment.asNotNull { frag: FragBase -> frag.onLifecycleAttach(this) }
         if(isTitleFragBased)

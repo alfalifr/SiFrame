@@ -9,7 +9,6 @@ import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.siframe.tool.util.`fun`.startSingleFragAct_config
 import sidev.lib.android.std.tool.util.`fun`.get
 import sidev.lib.android.std.tool.util.`fun`.loge
-import sidev.lib.check.notNull
 import sidev.lib.implementation.R
 
 class LifecycleCheckFrag: Frag() {
@@ -17,8 +16,8 @@ class LifecycleCheckFrag: Frag() {
 
     private var order: Int= -1
 
-    override fun _initDataFromIntent(intent: Intent) {
-        super._initDataFromIntent(intent)
+    override fun _initData(intent: Intent) {
+        super._initData(intent)
         loge("LifecycleCheckFrag ======== $order _initDataFromIntent")
         order= intent["_order_"] ?: 0
     }

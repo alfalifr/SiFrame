@@ -3,16 +3,17 @@ package sidev.lib.android.siframe.intfc.lifecycle.sidebase
 import android.view.View
 import sidev.lib.android.siframe.intfc.`fun`.InitActBarFun
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.base.LifecycleSideBase
-import sidev.lib.android.siframe.intfc.prop.ActProp
+import sidev.lib.android.siframe.intfc.prop.AppCompatActProp
 import sidev.lib.android.siframe.lifecycle.activity.BarContentNavAct
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
 import sidev.lib.android.std.tool.util.`fun`.inflate
 import sidev.lib.check.notNullTo
 
-interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, ActProp {
+interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, AppCompatActProp {
     override val actBarId: Int
     var actBarView: View?
     val isActBarInit: Boolean
+    val isMultipleActBar: Boolean
 
     override fun ___initSideBase() {}
 
@@ -20,13 +21,13 @@ interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, 
      * @return true jika actBar berhasil diganti dan sebaliknya.
      */
     fun setActBar(actBar: View): Boolean{
-        return when(_prop_act){
+        return when(_prop_ctx){
             is BarContentNavAct -> {
-                (_prop_act as BarContentNavAct).setActBarView(actBar)
+                (_prop_ctx as BarContentNavAct).setActBarView(actBar)
                 true
             }
             is MultipleActBarViewPagerBase<*> ->
-                (_prop_act as MultipleActBarViewPagerBase<in Frag>).setActBarView(this as Frag, actBar)
+                (_prop_ctx as MultipleActBarViewPagerBase<in Frag>).setActBarView(this as Frag, actBar)
             else -> false
         }
     }
@@ -41,7 +42,7 @@ interface ActBarFragBase: LifecycleSideBase, InitActBarFun, ActBarFromFragBase, 
     }
 
     fun initActBar(): View? {
-        return _prop_act?.inflate(actBarId).notNullTo {
+        return _prop_ctx?.inflate(actBarId).notNullTo {
             actBarView= it
             it
         }

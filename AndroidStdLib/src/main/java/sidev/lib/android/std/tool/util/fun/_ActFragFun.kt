@@ -21,17 +21,18 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LifecycleOwner
 import sidev.lib._config_.CodeModification
 import sidev.lib.`val`.SuppressLiteral
-import sidev.lib.android.std._external._AnkoInternals
+//import sidev.lib.android.std._external._AnkoInternals
 import sidev.lib.android.std.`val`._Constant
 import sidev.lib.android.std.tool.util._BitmapUtil
 import sidev.lib.annotation.ChangeLog
 import sidev.lib.annotation.Warning
-import sidev.lib.async.callback
 import sidev.lib.check.notNull
 import sidev.lib.exception.IllegalArgExc
+import sidev.lib.exception.IllegalStateExc
 
 
 val Context.fragManager: FragmentManager?
@@ -46,7 +47,13 @@ fun Context.toast(msg: String, length: Int = Toast.LENGTH_LONG){
     Toast.makeText(this, msg, length).show()
 }
 @JvmOverloads
-fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_LONG){
+fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_LONG, forceShow: Boolean = true){
+    if(forceShow && context == null) throw IllegalStateExc(
+        stateOwner = this::class,
+        currentState = "forceShow && context == null",
+        expectedState = "forceShow && context != null",
+        detMsg = "`this.context == null` namun toast dipaksa untuk dimunculkan (`forceShow == true`)"
+    )
     context?.toast(msg, length)
 }
 
@@ -63,8 +70,9 @@ fun FragmentManager.commitFrag(
     fragment: Fragment,
     fragContainerView: ViewGroup? = null,
     @IdRes fragContainerId: Int = fragContainerView?.id ?: View.NO_ID,
-    tag: String = fragment::class.java.name, forceReplace: Boolean = true
-): Fragment{
+    tag: String = fragment::class.java.name, forceReplace: Boolean = true,
+    transactionInit: ((FragmentTransaction) -> Unit)?= null
+): Fragment {
     if(!forceReplace)
         findFragmentByTag(tag).notNull { return it }
 
@@ -87,6 +95,7 @@ fun FragmentManager.commitFrag(
             }
  */
     fragTrans.replace(containerId, fragment, tag)
+    transactionInit?.invoke(fragTrans)
     fragTrans.commit()
     return fragment
 }
@@ -96,28 +105,32 @@ fun FragmentActivity.commitFrag(
     fragment: Fragment,
     fragContainerView: ViewGroup? = null,
     @IdRes fragContainerId: Int = fragContainerView?.id ?: View.NO_ID,
-    tag: String = fragment::class.java.name, forceReplace: Boolean = true
+    tag: String = fragment::class.java.name, forceReplace: Boolean = true,
+    transactionInit: ((FragmentTransaction) -> Unit)?= null
 ): Fragment
     = supportFragmentManager.commitFrag(
     fragment,
     fragContainerView,
     fragContainerId,
     tag,
-    forceReplace
+    forceReplace,
+    transactionInit
 )
 @JvmOverloads
 fun Fragment.commitFrag(
     fragment: Fragment,
     fragContainerView: ViewGroup? = null,
     @IdRes fragContainerId: Int = fragContainerView?.id ?: View.NO_ID,
-    tag: String = fragment::class.java.name, forceReplace: Boolean = true
+    tag: String = fragment::class.java.name, forceReplace: Boolean = true,
+    transactionInit: ((FragmentTransaction) -> Unit)?= null
 ): Fragment
     = childFragmentManager.commitFrag(
     fragment,
     fragContainerView,
     fragContainerId,
     tag,
-    forceReplace
+    forceReplace,
+    transactionInit
 )
 
 
@@ -254,7 +267,7 @@ fun <T : Activity> Context.startAct(
         else { inParamsSize = params.size; null }
     val inParams= Array(inParamsSize){ if(it < params.size) params[it] else callingLifeCycleName!! }
 
-    val intent= _AnkoInternals.createIntent(this, actClass, inParams)
+    val intent= createIntent(this, actClass, inParams)
     intentPreSettingFun?.invoke(intent)
     if(!waitForResult || this !is Activity)
         startActivity(intent)
@@ -300,7 +313,7 @@ fun <T : Activity> Fragment.startAct(
     val callingLifeCycleName= Pair(_Constant.CALLING_LIFECYCLE, this::class.java.name)
     val inParams= Array(params.size + 1){ if(it < params.size) params[it] else callingLifeCycleName }
 
-    val intent= _AnkoInternals.createIntent(context!!, actClass, inParams)
+    val intent= createIntent(context!!, actClass, inParams)
     intentPreSettingFun?.invoke(intent)
     if(!waitForResult)
         startActivity(intent)
@@ -324,10 +337,10 @@ fun Activity.setResult(
     vararg params: Pair<String, Any?>,
     resCode: Int = Activity.RESULT_OK,
     isFinished: Boolean = true,
-    intentPreSettingFun: ((Intent) -> Unit)? = null
+    intentInit: ((Intent) -> Unit)? = null
 ) {
-    val intent= _AnkoInternals.createIntent<Any>(params = params)
-    intentPreSettingFun?.invoke(intent)
+    val intent= createIntent<Any>(params = params)
+    intentInit?.invoke(intent)
     setResult(resCode, intent)
     if(isFinished) this.finish()
 }
@@ -336,10 +349,10 @@ fun Fragment.setResult(
     vararg params: Pair<String, Any?>,
     resCode: Int = Activity.RESULT_OK,
     isFinished: Boolean = true,
-    intentPreSettingFun: ((Intent) -> Unit)? = null
+    intentInit: ((Intent) -> Unit)? = null
 ) {
-    val intent= _AnkoInternals.createIntent<Any>(params = params)
-    intentPreSettingFun?.invoke(intent)
+    val intent= createIntent<Any>(params = params)
+    intentInit?.invoke(intent)
     activity!!.setResult(resCode, intent)
     if(isFinished) activity!!.finish()
 }

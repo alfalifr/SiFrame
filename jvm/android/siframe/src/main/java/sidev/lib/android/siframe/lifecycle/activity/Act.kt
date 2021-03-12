@@ -27,14 +27,16 @@ import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.`val`._SIF_Config
 import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
-import sidev.lib.android.siframe.tool.util.`fun`.doOnce
 //import sidev.lib.android.siframe.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getExtra
 import sidev.lib.android.std.tool.util.`fun`.getRootView
 import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.android.std.tool.util.`fun`.set
 import sidev.lib.check.asNotNull
+import sidev.lib.exception.IllegalAccessExc
 import sidev.lib.exception.IllegalStateExc
+import sidev.lib.property.mutableLazy
+import sidev.lib.property.oneInitVar
 import kotlin.collections.ArrayList
 
 /**
@@ -79,10 +81,10 @@ abstract class Act : AppCompatActivity(), //Inheritable,
         get() = lifecycleCtx
  */
 
-    final override val _prop_act: AppCompatActivity
+    final override val _prop_ctx: AppCompatActivity
         get() = this
-    final override val _prop_ctx: Context
-        get()= this
+    //final override val _prop_ctx: Context
+        //get()= this
     final override val _prop_intent: Intent
         get() = intent
     final override val _prop_fm: FragmentManager
@@ -115,7 +117,11 @@ abstract class Act : AppCompatActivity(), //Inheritable,
     override val styleId: Int
         get() = _styleId
     private var _styleId: Int = _SIF_Config.STYLE_APP
-    final override lateinit var layoutView: View
+    final override var layoutView: View by oneInitVar { _, _ ->
+        currentState.ordinal <= LifecycleBase.State.CREATED.ordinal
+    }
+        //private set(v){ field= v }
+        //get()= field ?: throw IllegalAccessExc()
     open val isViewInitFirst= true
 
     final override lateinit var _vmProvider: ViewModelProvider
@@ -132,11 +138,22 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 
     //    private val onDestroyListenerQueue= RunQueue<Any?, Unit_>()
 
+    /**
+     * Cause this Activity to be recreated with a new instance.  This results
+     * in essentially the same flow as when the Activity is created due to
+     * a configuration change -- the current instance will go through its
+     * lifecycle to [.onDestroy] and a new instance then created after it.
+     */
+    @CallSuper
+    override fun recreate() {
+        currentState= LifecycleBase.State.INITIALIZED
+        super.recreate()
+    }
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
-        _initDataFromIntent(intent)
-        _initData()
+        _initData(intent)
+        //_initData()
 
         loge("Activity ${this::class.simpleName} onCreate()")
 //        isActivitySavedInstanceStateNull= savedInstanceState == null
@@ -160,7 +177,8 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 //        layoutView= v
 
 //        doWhenNotIherited {
-            ___initRootBase(this, getRootView(), false)
+        layoutView= getRootView()
+        ___initRootBase(false)
 //        }
         ___initSideBase()
 
@@ -266,8 +284,8 @@ abstract class Act : AppCompatActivity(), //Inheritable,
             _AppUtil.checkAppValidity(_prop_ctx)
         }
  */
-        _initDataFromIntent(intent)
-        _initData()
+        _initData(intent)
+        //_initData()
         __initViewFlow(layoutView)
     }
 

@@ -15,8 +15,8 @@ import sidev.lib.android.std.tool.util.`fun`.findViewByType
 import sidev.lib.android.std.tool.util.`fun`.loge
 
 interface DrawerActBase : DrawerBase{
-    override val _prop_act: AppCompatActivity
-    override val _prop_ctx: Context
+    override val _prop_ctx: AppCompatActivity
+    //override val _prop_ctx: Context
 
     override var rootDrawerLayout: DrawerLayout
     override var contentViewContainer: ViewGroup
@@ -29,8 +29,8 @@ interface DrawerActBase : DrawerBase{
         startDrawerContainer= rootView.findViewById(startDrawerContainerId)
         endDrawerContainer= rootView.findViewById(endDrawerContainerId)
 
-        val drawerWidthPercent= _ResUtil.getDimen(_prop_ctx, _SIF_Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
-        val drawerWidth= _ViewUtil.getPercentOfScreenWidth(_prop_act, drawerWidthPercent)
+        val drawerWidthPercent= _ResUtil.getDimen(this._prop_ctx, _SIF_Config.DIMEN_DRAWER_HORIZONTAL_WIDTH_PERCENT)
+        val drawerWidth= _ViewUtil.getPercentOfScreenWidth(this._prop_ctx, drawerWidthPercent)
 
         val lpStart= DrawerLayout.LayoutParams(drawerWidth, ViewGroup.LayoutParams.MATCH_PARENT)
         lpStart.gravity= Gravity.START

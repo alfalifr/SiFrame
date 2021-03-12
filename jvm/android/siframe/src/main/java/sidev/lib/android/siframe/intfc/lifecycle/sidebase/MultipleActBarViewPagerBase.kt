@@ -19,7 +19,7 @@ import sidev.lib.check.notNull
 import sidev.lib.check.trya
 import java.lang.Exception
 
-interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFragBase{
+interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFragBase {
     val actBarViewList: SparseArray<View>
     /**
      * Child pada ViewGroup ini harus 1.
@@ -93,10 +93,12 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
                 if(isActBarViewFromFragment){
                     val frag= vpFragList[pos]
                     if(frag is ActBarFragBase){
-                        frag.getActBar().notNull { actBar ->
-                            setActBarView(frag, actBar)
-                            frag._initActBar(actBar)
-                        }.isNull { resetDefaultActBar() }
+                        if(!frag.isActBarInit || frag.isMultipleActBar){
+                            frag.getActBar().notNull { actBar ->
+                                setActBarView(frag, actBar)
+                                frag._initActBar(actBar)
+                            }.isNull { resetDefaultActBar() }
+                        }
                     } else
                         resetDefaultActBar()
                 }

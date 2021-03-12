@@ -69,8 +69,8 @@ class ContentFragMain : MvpDrawerVpFrag<ContentFrag>(){ //, PresenterCallbackCom
 //    override fun _initMiddleView(middleView: View) {}
 //    override fun _initTopView(topView: View) {}
 
-    override fun _initDataFromIntent(intent: Intent) {
-        super._initDataFromIntent(intent)
+    override fun _initData(intent: Intent) {
+        super._initData(intent)
         module= intent.getExtra(Edu_Class_Const.DATA_MODULE)!!
     }
 

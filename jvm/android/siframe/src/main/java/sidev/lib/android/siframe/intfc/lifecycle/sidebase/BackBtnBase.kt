@@ -9,7 +9,7 @@ import sidev.lib.collection.isNotNullAndEmpty
 
 interface BackBtnBase: ComplexLifecycleSideBase {
     //    val actBackBtn: Activity
-    override val _prop_act: AppCompatActivity
+    override val _prop_ctx: AppCompatActivity
     var backBtnViewList: ArrayList<View>
     var onBackPressedListenerList: ArrayList<OnBackPressedListener>
     /**
@@ -38,7 +38,7 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         backBtnViewList= registerBackBtnView()
         for(backBtn in backBtnViewList){
             backBtn.setOnClickListener{
-                _prop_act.onBackPressed()
+                _prop_ctx.onBackPressed()
             }
         }
     }
@@ -50,7 +50,7 @@ interface BackBtnBase: ComplexLifecycleSideBase {
         if(!backBtnViewList.contains(v)){
             backBtnViewList.add(v)
             v.setOnClickListener {
-                _prop_act.onBackPressed()
+                _prop_ctx.onBackPressed()
             }
         }
     }

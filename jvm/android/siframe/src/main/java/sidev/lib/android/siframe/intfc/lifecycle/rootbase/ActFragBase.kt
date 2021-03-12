@@ -7,22 +7,21 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
-import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import sidev.lib.android.siframe.intfc.`fun`.InitViewFun
 import sidev.lib.android.siframe.intfc.lifecycle.FragmentHostBase
 import sidev.lib.android.siframe.intfc.lifecycle.rootbase.base.LifecycleRootBase
-import sidev.lib.android.siframe.intfc.prop.CtxProp
-import sidev.lib.android.siframe.intfc.prop.HierarchyOrderProp
-import sidev.lib.android.siframe.intfc.prop.OnRequestPermissionsResultCallbackProp
 import sidev.lib.android.siframe.lifecycle.activity.Act
 import sidev.lib.android.siframe.`val`._SIF_Constant
 import sidev.lib.android.siframe.intfc.lifecycle.IdLifecyleOwner
-import sidev.lib.android.siframe.intfc.listener.OnRequestPermissionsResultCallback
+import sidev.lib.android.siframe.intfc.prop.*
 import sidev.lib.android.siframe.tool.manager.ActManager
 import sidev.lib.android.siframe.tool.util._AppUtil
 import sidev.lib.android.siframe.tool.util.`fun`.doOnce
 import sidev.lib.android.std.tool.util.`fun`.loge
+import sidev.lib.check.notNull
+import sidev.lib.exception.IllegalInheritanceExc
 import sidev.lib.jvm.tool.util.ThreadUtil
 
 /**
@@ -30,12 +29,13 @@ import sidev.lib.jvm.tool.util.ThreadUtil
  */
 interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     OnRequestPermissionsResultCallbackProp, //ArchView,
-    InitViewFun, CtxProp, HierarchyOrderProp {
+    InitViewFun, CtxProp, IntentProp, HierarchyOrderProp {
 //    val layoutId: Int
 //    val styleId: Int
-    var layoutView: View
+    val layoutView: View
     override val _prop_ctx: Context
     override val _prop_fm: FragmentManager
+    override val _prop_intent: Intent?
     //override var onRequestPermissionResultCallback: ActivityCompat.OnRequestPermissionsResultCallback?
 
     //    val lifecycleCtx: Context
@@ -47,9 +47,13 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
      */
     @CallSuper
     override fun ___initRootBase(vararg args: Any) {
-        val act= args[0] as Activity
-        layoutView= args[1] as View
-        val continueInitData= args.size < 3 || args[2].let { it is Boolean && it }
+        //val act= args[0] as Activity
+        if(this !is Activity && this !is Fragment) throw IllegalInheritanceExc(
+            ActFragBase::class, this::class,
+            "Kelas `ActFragBase` hanya boleh di-implement oleh `Activity` atau `Fragment`"
+        )
+        //layoutView= args[0] as View
+        val continueInitData= args.isEmpty() || args[0].let { it is Boolean && it }
 
         val registerKey= this::class.java.name +"@" +this.hashCode() + _SIF_Constant.PROP_STACK
         doOnce(registerKey){
@@ -57,8 +61,8 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
             _AppUtil.checkAppValidity(_prop_ctx)
         }
         if(continueInitData){
-            _initDataFromIntent(act.intent)
-            _initData()
+            _prop_intent.notNull { _initData(it) }
+            //_initData()
         }
         __initViewFlow(layoutView)
     }
@@ -71,9 +75,9 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
         _initView(layoutView)
     }
 
-    @CallSuper
-    fun _initDataFromIntent(intent: Intent){}
-    fun _initData(){}
+    //@CallSuper
+    fun _initData(intent: Intent){}
+    //fun _initData(){}
 
     fun _initView(){
 //        loge("SimpleAbsActFragView", "Act/Frag ini (${this::class.java.simpleName}) initView() di panggil")
@@ -95,7 +99,7 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
         }
          */
         //_initDataFromIntent(act.intent)
-        _initData()
+        _prop_intent.notNull { _initData(it) }
         __initViewFlow(layoutView)
     }
 /*
@@ -107,7 +111,7 @@ interface ActFragBase: IdLifecyleOwner, LifecycleRootBase, FragmentHostBase,
     fun setStyle(@StyleRes styleId: Int){
         _prop_ctx.setTheme(styleId)
     }
-    fun <D> getIntentData(key: String, i: Intent?= null, default: D?= null): D{
+    fun <D> getIntentData(key: String, i: Intent?= null, default: D?= null): D {
         try{ return i?.extras?.get(key) as? D ?: default as D }
         catch (e: ClassCastException){
             throw IllegalArgumentException("Tidak ada nilai dg key: $key pada intent: $i dan default == null")

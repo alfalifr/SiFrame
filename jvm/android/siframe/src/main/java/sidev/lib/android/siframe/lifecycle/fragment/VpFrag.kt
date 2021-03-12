@@ -18,7 +18,7 @@ import sidev.lib.check.asNotNullTo
 import java.lang.Exception
 
 abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
-    final override val _prop_act: AppCompatActivity
+    final override val _prop_ctx: AppCompatActivity
         get() = act as AppCompatActivity
     final override val _prop_view: View
         get() = layoutView
@@ -77,8 +77,8 @@ abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
         super<Frag>.___initSideBase()
         super<MultipleActBarViewPagerBase>.___initSideBase()
 
-        if(_prop_act is BackBtnBase){
-            (_prop_act as BackBtnBase).addOnBackBtnListener{
+        if(_prop_ctx is BackBtnBase){
+            (_prop_ctx as BackBtnBase).addOnBackBtnListener{
                 if(isVpBackOnBackPressed)
                     pageBackward()
                 else false

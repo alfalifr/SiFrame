@@ -11,7 +11,7 @@ import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.check.asNotNullTo
 
 abstract class DrawerFrag : Frag(), DrawerFragBase {
-    final override val _prop_act: AppCompatActivity?
+    final override val _prop_ctx: AppCompatActivity
         get() = activity as AppCompatActivity
     final override val _prop_view: View
         get() = layoutView
