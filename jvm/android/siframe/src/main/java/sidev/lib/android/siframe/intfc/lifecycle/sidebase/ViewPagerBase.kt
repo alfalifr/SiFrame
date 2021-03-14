@@ -24,6 +24,7 @@ import sidev.lib.annotation.ChangeLog
 import sidev.lib.check.asNotNull
 import sidev.lib.check.trya
 import sidev.lib.collection.toArrayList
+import sidev.lib.exception.IllegalAccessExc
 import java.lang.Exception
 
 interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
@@ -239,10 +240,14 @@ interface ViewPagerBase<F: Frag>: ComplexLifecycleSideBase {
                     try{ act.setActBarTitle(vpFragList.first().fragTitle) }
                     catch (e: Exception){}
                 }
-            this.asNotNull { act: MultipleActBarViewPagerBase<*> ->
-                act.actBarViewList.clear()
-                act.attachActBarView(0)
-            }
+/*
+            try {
+                this.asNotNull { act: MultipleActBarViewPagerBase<*> ->
+                    act.actBarViewList.clear()
+                    act.attachActBarView(0)
+                }
+            } catch (e: IllegalAccessExc){}
+ */
         } else{
             vp.adapter= null
         }

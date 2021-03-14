@@ -3,6 +3,7 @@ package sidev.lib.android.siframe.lifecycle.activity
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import sidev.lib.android.siframe.adapter.VpFragAdp
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.MultipleActBarViewPagerBase
@@ -57,6 +58,8 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
             field= v
             if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
+    final override var isMultiActBarInit: Boolean = false
+        private set
     final override val actBarContainer_vp: ViewGroup
         get() = actBarViewContainer
     final override var defaultActBarView: View?= null
@@ -86,6 +89,16 @@ abstract class BarContentNavAct_ViewPager<F: Frag>
             if(isVpBackOnBackPressed)
                 pageBackward()
             else false
+        }
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        if(isActBarViewFromFragment && !isMultiActBarInit){
+            actBarViewList.clear()
+            attachActBarView(0)
+            attachActBarTitle(0)
+            isMultiActBarInit= true
         }
     }
 

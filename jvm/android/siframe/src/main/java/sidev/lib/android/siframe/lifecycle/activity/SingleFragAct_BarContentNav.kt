@@ -1,13 +1,14 @@
 package sidev.lib.android.siframe.lifecycle.activity
 
 import android.view.View
+import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.*
 import sidev.lib.android.siframe.lifecycle.fragment.Frag
-import sidev.lib.android.std.tool.util.`fun`.inflate
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.asNotNullTo
 import sidev.lib.check.notNull
-import sidev.lib.check.notNullTo
+import sidev.lib.exception.IllegalAccessExc
 
 //import sidev.kuliah.agradia.R
 
@@ -57,6 +58,7 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
             field= v
             if(v) attachFragActBar()
         }
+    private var isFragActBarAttached= false
 
 /*
     override fun __initViewFlow(rootView: View) {
@@ -66,6 +68,7 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
 
     override fun ___initSideBase() {
         super<SingleFragActBase>.___initSideBase()
+        loge("SingleFragAct_BarContentNav ___initSideBase() isActBarViewFromFragment= $isActBarViewFromFragment")
         if(isActBarViewFromFragment){
             attachFragActBar()
         } else {
@@ -78,7 +81,7 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
     }
 
     protected fun attachFragActBar(){
-        try{ //di try-catch karena fragment bisa di lateinit namun tidak bisa dicek langsung di kelas ini.
+        isFragActBarAttached= try { //di try-catch karena fragment bisa di lateinit namun tidak bisa dicek langsung di kelas ini.
             if(isActBarViewFromFragment){
 //            loge("attachFragActBar() fragment::class.java.simpleName= ${fragment::class.java.simpleName}")
                 fragment.asNotNull { frag: ActBarFragBase ->
@@ -94,16 +97,28 @@ abstract class SingleFragAct_BarContentNav: BarContentNavAct(), SingleFragActBas
                 }.asNotNull { frag: MultipleActBarViewPagerBase<*> ->
 //                    loge("attachFragActBar() asNotNull frag: MultipleActBarViewPagerActBase")
                     frag.isActBarViewFromFragment= isActBarViewFromFragment
+                    frag.vpFragList
                     frag.attachActBarView(frag.vp.currentItem)
                 }
             }
-        } catch(e: Exception){}
+            true
+        } catch(e: Exception){
+            loge("SingleFragAct_BarContentNav attachFragActBar ERROR!!!", e)
+            false
+        }
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        if(isActBarViewFromFragment && !isFragActBarAttached)
+            attachFragActBar()
     }
 
     fun resetDefaultActBar(){
         if(defaultActBarView != null){
             actBarViewContainer.removeAllViews()
             actBarViewContainer.addView(defaultActBarView)
+            isFragActBarAttached= false
         }
     }
 }

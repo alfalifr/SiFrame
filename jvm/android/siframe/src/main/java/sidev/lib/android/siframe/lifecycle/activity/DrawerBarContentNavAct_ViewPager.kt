@@ -27,6 +27,7 @@ abstract class DrawerBarContentNavAct_ViewPager<F: Frag>
     final override val _prop_backBtnBase: BackBtnBase?
         get() = this
 
+
     override fun __initViewFlow(rootView: View) {
         super.__initViewFlow(rootView)
         __initDrawer(rootView)

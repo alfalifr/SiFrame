@@ -3,11 +3,12 @@ package sidev.lib.android.siframe.lifecycle.fragment
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.BackBtnBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.DrawerFragBase
 import sidev.lib.check.asNotNullTo
 
-abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
+abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase {
     final override val layoutId: Int
         get() = super<DrawerFragBase>.layoutId
     final override val contentLayoutId: Int
@@ -20,7 +21,7 @@ abstract class DrawerVpFrag<F: Frag> : VpFrag<F>(), DrawerFragBase{
 
     final override val _prop_backBtnBase: BackBtnBase?
         get() = activity.asNotNullTo { act: BackBtnBase -> act }
-/*
+    /*
     final override val onBackBtnListener: OnBackPressedListener
             = object : OnBackPressedListener {
         override fun onBackPressed_(): Boolean {

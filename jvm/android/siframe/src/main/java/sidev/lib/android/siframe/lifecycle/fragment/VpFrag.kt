@@ -5,6 +5,7 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import org.jetbrains.anko.support.v4.act
@@ -51,6 +52,8 @@ abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
             field= v
             if(v) try{ attachActBarView(vp.currentItem) } catch(e: Exception){}
         }
+    final override var isMultiActBarInit: Boolean = false
+        private set
 
     @ChangeLog("2 Juli 2020", "Programmer gak perlu mendefinisikan scr langsung.")
     override var vpFragListStartMark: Array<Int> = arrayOf()
@@ -83,6 +86,16 @@ abstract class VpFrag<F: Frag> : Frag(), MultipleActBarViewPagerBase<F>{
                     pageBackward()
                 else false
             }
+        }
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        if(isActBarViewFromFragment && !isMultiActBarInit){
+            actBarViewList.clear()
+            attachActBarView(0)
+            attachActBarTitle(0)
+            isMultiActBarInit= true
         }
     }
 }

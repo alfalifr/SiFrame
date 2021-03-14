@@ -4,6 +4,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFragBase
 import sidev.lib.android.siframe.intfc.lifecycle.sidebase.ActBarFromFragBase
+import sidev.lib.android.std.tool.util.`fun`.loge
 import sidev.lib.check.asNotNull
 import sidev.lib.check.notNullTo
 import sidev.lib.exception.IllegalAccessExc
@@ -25,6 +26,7 @@ abstract class ActBarFrag : Frag(), ActBarFragBase {
         }
     final override val _prop_ctx: AppCompatActivity
         get() = activity.notNullTo {
+            loge("ActBarFrag _prop_ctx it= $it")
             if(it is AppCompatActivity) it else null
         } ?: throw IllegalAccessExc(msg = "Fragment ($this) blum ter-attach di AppCompatActivity")
 

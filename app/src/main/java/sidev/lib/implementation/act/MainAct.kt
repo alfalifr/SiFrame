@@ -78,6 +78,7 @@ class MainAct : BarContentNavAct() {
     fun toSizeFrag(v: View)= startSingleFragAct_config<SizeFrag>()
     fun toLifecycleCheckFrag(v: View)= startSingleFragAct_config<LifecycleCheckFrag>()
     fun toFragTransFrag(v: View)= startSingleFragAct_config<FragTransFrag>()
+    fun toResFrag(v: View)= startSingleFragAct_config<ResFrag>()
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()
 
 //    fun toDrawerImpl2Frag(v: View)= startSingleFragAct_config<DrawerImplFrag>()

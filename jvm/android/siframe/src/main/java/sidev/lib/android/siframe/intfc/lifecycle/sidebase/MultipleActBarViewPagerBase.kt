@@ -29,6 +29,7 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
      * View actBar sebelum diganti oleh view yg ada pada actBarViewList.
      */
     var defaultActBarView: View?
+    val isMultiActBarInit: Boolean
 
     override var isActBarViewFromFragment: Boolean
 
@@ -69,10 +70,12 @@ interface MultipleActBarViewPagerBase<F: Frag> : ViewPagerBase<F>, ActBarFromFra
                 currentPosition= position
             }
         })
+/*
         if(vpFragList.isNotEmpty()){
             attachActBarView(0)
             attachActBarTitle(0)
         }
+ */
     }
 
     fun attachActBarView(pos: Int){

@@ -233,6 +233,7 @@ abstract class Act : AppCompatActivity(), //Inheritable,
 
     private var frag: Fragment?= null
     private var isActBarAttached= false //agar attachActBarView() inisial dilakukan sekali
+    @CallSuper
     override fun onAttachFragment(fragment: Fragment) {
         loge("Activity ${this::class.simpleName} onAttachFragment() fragment: ${fragment::class}")
         super.onAttachFragment(fragment)

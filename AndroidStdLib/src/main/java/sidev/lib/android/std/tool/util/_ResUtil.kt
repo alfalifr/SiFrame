@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import sidev.lib.exception.IllegalArgExc
 //import sidev.lib.android.siframe.tool.util.`fun`.childrenTree
 import java.util.*
 
@@ -64,6 +65,55 @@ object _ResUtil{
 
     fun getResEntryName(c: Context, res: Int): String
         = c.resources.getResourceEntryName(res)
+
+    /**
+     * Pola resource identifier lengkap [pkg]:[type]/[entry].
+     * Return Int resource identifier (R.[type].[entry]) atau 0 jika tidak ditemukan resource identifiernya.
+     */
+    fun getResId(c: Context, type: String, entry: String, pkg: String = c.packageName): Int
+        = c.resources.getIdentifier(entry, type, pkg)
+
+    /**
+     * Pola resource identifier lengkap [pkg]:[type]/[entry].
+     * Return Int resource identifier (R.[type].[entry]) atau 0 jika tidak ditemukan resource identifiernya.
+     */
+    fun getResId(c: Context, resName: String): Int {
+        val isWithPkg= '.' in resName
+        var pkg: String?= null
+        val pkgSeps= listOf('@', ':')
+        var pkgSepIndex: Int= -1
+
+        if(isWithPkg){
+            var foundSep: Char?= null
+            for(sep in pkgSeps){
+                pkgSepIndex= resName.indexOf(sep)
+                if(pkgSepIndex >= 0){
+                    foundSep= sep
+                    break
+                }
+            }
+            if(foundSep == null) throw IllegalArgExc(
+                paramExcepted = *arrayOf("resName"),
+                detailMsg = "Param `resName` disertai nama package, namun tidak disertai char pemisah ['@', ':']"
+            )
+            pkg= resName.substring(0, resName.indexOf(foundSep))
+        } else {
+            for(sep in pkgSeps){
+                pkgSepIndex= resName.indexOf(sep)
+                if(pkgSepIndex >= 0)
+                    break
+            }
+        }
+        if('/' !in resName) throw IllegalArgExc(
+            paramExcepted = *arrayOf("resName"),
+            detailMsg = "Param `resName` tidak memiliki char pemisah antara type dan entry resource '/'"
+        )
+        val slashIndex= resName.indexOf('/')
+        val entry= resName.substring(slashIndex +1)
+        val type= resName.substring(pkgSepIndex +1, slashIndex)
+
+        return getResId(c, type, entry, pkg ?: c.packageName)
+    }
 
 
     fun isResType(c: Context, res: Int, type: Type): Boolean

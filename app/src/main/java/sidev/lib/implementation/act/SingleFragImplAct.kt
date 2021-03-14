@@ -25,9 +25,9 @@ class SingleFragImplAct : SingleFragDrawerAct(){
  */
 
 class SingleFragImplAct : SingleFragDrawerAct_BarContentNav_Simple(){
-//    override var startDrawerLayoutId: Int= R.layout.comp_drawer_start
+    //    override var startDrawerLayoutId: Int= R.layout.comp_drawer_start
 //    override var endDrawerLayoutId: Int= _Config.INT_EMPTY
-
+    override var isActBarViewFromFragment: Boolean= true
 
     override fun _initActBar(actBarView: View) {
 //        isActBarViewFromFragment= true
