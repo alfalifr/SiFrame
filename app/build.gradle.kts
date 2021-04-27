@@ -95,6 +95,8 @@ dependencies {
 
     implementation("com.squareup.picasso:picasso:2.71828")
 
+    implementation("androidx.preference:preference:1.1.1")
+
     //Loading dots
     implementation("com.romandanylyk:pageindicatorview:1.0.3")
     // google vision

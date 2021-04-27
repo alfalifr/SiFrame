@@ -130,7 +130,7 @@ dependencies {
     //Load Gambar dari Server
     implementation("com.squareup.picasso:picasso:2.71828")
 
-    //anko
+    //ankoB
     implementation("org.jetbrains.anko:anko:$anko_version")
     implementation("org.jetbrains.anko:anko-design:$anko_version")
     implementation("org.jetbrains.anko:anko-sqlite:$anko_version")

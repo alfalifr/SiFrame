@@ -43,6 +43,8 @@ operator fun <T> Bundle.get(
     isSearchNested: Boolean= false
 ): T? = getExtra(key, default, isSearchNested)
 
+operator fun Bundle.plus(other: Bundle): Bundle= Bundle(this).apply { putAll(other) }
+
 /**
  * Menambahkan [bundle] langsung ke `this` `Intent` secara linier, bkn nested `Bundle`.
  */
@@ -150,8 +152,12 @@ private fun <T> Bundle.getExtraNested(
     return default
 }
 
-fun Bundle.getNewKey(): String {
+fun Bundle.getNewKey(prefix: String = "_"): String {
     val keys= keySet()
+
+    if(prefix !in keys)
+        return prefix
+
     var i= -1
     var newKey: String
     do{
@@ -160,15 +166,22 @@ fun Bundle.getNewKey(): String {
     return newKey
 }
 
-internal fun Bundle.getNewKeys(count: Int): List<String> {
+internal fun Bundle.getNewKeys(count: Int, prefix: String = "_"): List<String> {
     val keys= keySet()
     val res= mutableListOf<String>()
 
     var i= -1
+    var limit= count
+
+    if(prefix !in keys){
+        res += prefix
+        limit--
+    }
+
     var newKey: String
-    for(u in 0 until count){
+    for(u in 0 until limit){
         do{
-            newKey= _Constant.EXTRA_DATA +"_${++i}"
+            newKey= _Constant.EXTRA_DATA +"$prefix${++i}"
         } while(newKey in keys)
         res += newKey
     }
